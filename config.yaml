@@ -1,0 +1,213 @@
+# Configuration for Tariff Radar System
+
+# Data Sources Configuration
+sources:
+  rss:
+    # Direct RSS Feeds (more reliable than RSSHub!)
+    - type: direct_rss
+      url: "http://feeds.reuters.com/reuters/businessNews"
+      name: "Reuters Business"
+      priority: high
+      
+    - type: direct_rss
+      url: "http://feeds.reuters.com/reuters/companyNews"
+      name: "Reuters Company News"
+      priority: high
+      
+    - type: direct_rss
+      url: "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml"
+      name: "NY Times Business"
+      priority: medium
+      
+    - type: direct_rss
+      url: "https://www.theguardian.com/business/economics/rss"
+      name: "Guardian Economics"
+      priority: medium
+    
+    # ===== Chinese Sources (WORKING ONLY) =====
+    
+    # These sources are confirmed working via RSSHub:
+    
+    # 1. NDRC (National Development & Reform Commission) - 国家发改委
+    # Economic policy news - sometimes includes tariff-related content
+    - type: rsshub
+      url: "http://rsshub:1200/gov/ndrc/xwdt/xwfb"
+      name: "NDRC News"
+      priority: medium
+    
+    # 2. People's Daily (人民日报) - Official party newspaper
+    # Chinese government perspective on trade issues
+    # Usually publishes 12-24 hours after official announcements
+    - type: rsshub
+      url: "http://rsshub:1200/people"
+      name: "People's Daily"
+      priority: medium
+    
+    # ===== Chinese Sources (NOT WORKING - Blocked) =====
+    # These require Chinese proxy/VPN to access:
+    #
+    # - MOFCOM (Ministry of Commerce) - 商务部
+    #   Most important! Always first for tariff announcements
+    #   Status: Blocked (503 error)
+    #
+    # - GACC (Customs) - 海关总署  
+    #   Tariff implementation details
+    #   Status: Blocked (503 error)
+    #
+    # - MOF (Ministry of Finance) - 财政部
+    #   Tax policy
+    #   Status: Blocked (503 error)
+    #
+    # - State Council - 国务院
+    #   High-level policies
+    #   Status: Blocked (503 error)
+    #
+    # - Xinhua News - 新华社
+    #   State media
+    #   Status: Blocked (503 error)
+    #
+    # To enable these: Add Chinese proxy to docker-compose.yml
+    # See: WEB_SCRAPING_STATUS.md for details
+      
+  scrapers:
+    # Direct scraping for critical sources
+    - url: "http://gss.mof.gov.cn/zhengwuxinxi/zhengcefabu/"
+      name: "MOF Tax Policy"
+      selector: ".news-list a"
+      priority: high
+      
+    - url: "http://www.gov.cn/zhengce/"
+      name: "State Council Policies"
+      selector: ".news_list li"
+      priority: high
+
+# Keywords for initial filtering
+keywords:
+  chinese:
+    primary: ["关税", "加征关税", "关税清单", "关税排除", "关税豁免", "税委会公告", "国务院关税税则委员会"]
+    secondary: ["反制措施", "对等反制", "301关税", "中美贸易", "贸易战", "贸易摩擦"]
+    control: ["出口管制", "不可靠实体清单", "实体清单", "科技限制"]
+    sectors: ["半导体", "芯片", "稀土", "光刻机", "电动车", "太阳能", "钢铁", "铝材"]
+    
+  english:
+    primary: ["tariff", "surcharge", "customs duties", "301 tariffs", "exclusion", "exemption"]
+    secondary: ["retaliation", "countermeasure", "trade war", "MOFCOM", "GACC"]
+    control: ["export control", "entity list", "unreliable entity"]
+
+# AI Analysis Thresholds
+thresholds:
+  keyword_min: 1          # Minimum keyword matches to proceed
+  semantic_min: 0.78      # Minimum semantic similarity score
+  classifier_min: 0.6     # Minimum classifier confidence
+  alert_score: 0.80       # Auto-alert threshold
+  review_score: 0.60      # Manual review threshold
+
+# Semantic Analysis
+embeddings:
+  model: "BAAI/bge-m3"    # Multilingual embeddings
+  device: "cpu"           # or "cuda" if GPU available
+  batch_size: 32
+  
+vector_store:
+  collection: "tariff_articles"
+  dimension: 1024
+  similarity_threshold: 0.78
+
+# LLM Configuration
+llm:
+  provider: "perplexity"  # openai, anthropic, or perplexity
+  model: "llama-3.1-sonar-small-128k-online"  # Perplexity model with online search
+  temperature: 0.1        # Low for consistency
+  max_tokens: 300
+  timeout: 30
+  
+  # Triage prompt template
+  triage_prompt: |
+    You are analyzing news about US-China trade relations and tariffs.
+    
+    Article: {title}
+    Source: {source}
+    Content: {content}
+    
+    Questions:
+    1. Is this relevant to US-China tariffs, trade war, or countermeasures? (YES/NO)
+    2. Summary in 2-3 lines (Hebrew or English)
+    3. Tags (choose relevant): Retaliation, Exemption, List_Update, 301_Tariffs, Semiconductors, EV, Solar, Steel, Export_Control
+    
+    Respond in JSON format:
+    {"relevant": true/false, "summary": "...", "tags": ["tag1", "tag2"], "confidence": 0.95}
+
+# Notification Settings
+notifications:
+  wecom:
+    enabled: true
+    corp_id: "${WECOM_CORP_ID}"
+    agent_id: "${WECOM_AGENT_ID}"
+    corp_secret: "${WECOM_CORP_SECRET}"
+    to_user: "@all"
+    message_format: "markdown"
+    
+  email:
+    enabled: true
+    smtp_host: "${SMTP_HOST}"
+    smtp_port: 587
+    smtp_user: "${SMTP_USER}"
+    smtp_password: "${SMTP_PASSWORD}"
+    to: "${EMAIL_TO}"
+    subject_prefix: "[Tariff Alert]"
+    
+  telegram:
+    enabled: false
+    bot_token: "${TELEGRAM_BOT_TOKEN}"
+    chat_id: "${TELEGRAM_CHAT_ID}"
+
+# Alert Policies
+alerts:
+  immediate:
+    # Send immediately for high-priority sources
+    sources: ["MOFCOM Official", "GACC Official", "MOF Tax Policy"]
+    min_score: 0.8
+    
+  batched:
+    # Batch alerts every 30 minutes for medium priority
+    interval: 1800  # seconds
+    min_score: 0.6
+    max_items: 10
+    
+  # Auto-approve from trusted government sources
+  auto_approve:
+    sources: ["MOFCOM Announcements", "GACC News"]
+    keywords: ["公告", "通知", "决定", "办法"]
+
+# Deduplication & Change Detection
+deduplication:
+  hash_fields: ["normalized_title", "source", "date"]
+  similarity_threshold: 0.95
+  
+change_detection:
+  enabled: true
+  significant_keywords: ["公告", "补充", "修订", "实施", "调整", "暂停", "恢复"]
+  min_change_ratio: 0.1
+
+# Scheduling
+schedule:
+  # Main ingestion job
+  ingest_interval: 300    # 5 minutes
+  
+  # Cleanup old items
+  cleanup_interval: 86400 # 24 hours
+  retention_days: 90
+  
+  # Recompute embeddings for new items
+  embedding_interval: 600 # 10 minutes
+
+# Monitoring
+monitoring:
+  enabled: true
+  health_check_interval: 60
+  metrics_retention: 7    # days
+  
+logging:
+  level: INFO
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/tariff_radar.log"
