@@ -549,15 +549,6 @@
         </div>
 
         <div class="section">
-            <h3>AI Stock Analysis 📊</h3>
-            <button class="btn-analyze" id="analyze-stock-btn">🔍 Analyze Stock</button>
-            <input type="text" id="ai-symbol-input" placeholder="+ stock symbol (e.g., AAPL)" 
-                   style="margin-left: 10px; padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); 
-                          background: rgba(255,255,255,0.05); color: white; font-size: 0.85em;">
-            <div id="ai-analysis-results" style="margin-top: 12px;"></div>
-        </div>
-
-        <div class="section">
             <h3>Top Market Movers 📈</h3>
             <div id="top-movers" style="display: grid; gap: 10px;">
                 <p style="text-align: center; opacity: 0.6;">Loading top market movers...</p>
@@ -605,56 +596,46 @@
                 </div>
                 
                 <div class="ai-analysis-grid">
-                    <!-- Stock Selector -->
+                    <!-- Stock Input -->
                     <div class="ai-selector-card">
-                        <h4>📈 Stock Analysis</h4>
+                        <h4>🤖 AI Stock Analysis</h4>
                         <div class="stock-selector">
-                            <select id="stock-selector" onchange="analyzeStock(this.value)">
-                                <option value="">Select a stock to analyze</option>
-                                <option value="AAPL">Apple (AAPL)</option>
-                                <option value="GOOGL">Google (GOOGL)</option>
-                                <option value="MSFT">Microsoft (MSFT)</option>
-                                <option value="TSLA">Tesla (TSLA)</option>
-                                <option value="NVDA">NVIDIA (NVDA)</option>
-                                <option value="AMZN">Amazon (AMZN)</option>
-                                <option value="META">Meta (META)</option>
-                                <option value="NFLX">Netflix (NFLX)</option>
-                            </select>
+                            <input type="text" id="ai-stock-input" placeholder="Enter stock symbol (e.g., AAPL)" 
+                                   style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em; text-transform: uppercase;">
+                            <button onclick="analyzeStock()" style="width: 100%; margin-top: 8px; background: #3b82f6; border: none; border-radius: 6px; padding: 8px; color: white; cursor: pointer; font-size: 0.85em;">
+                                🔍 Analyze Stock
+                            </button>
                         </div>
                         <div id="selected-stock-analysis" style="margin-top: 15px;">
-                            <p style="text-align: center; opacity: 0.6;">Select a stock above for detailed AI analysis</p>
+                            <p style="text-align: center; opacity: 0.6;">Enter a stock symbol above for comprehensive AI analysis</p>
                         </div>
                     </div>
 
-                    <!-- Neural Network Predictions -->
+                    <!-- AI Comprehensive Analysis -->
                     <div class="ai-prediction-card">
-                        <h4>🧠 Neural Network Predictions</h4>
-                        <div id="neural-predictions">
+                        <h4>🎯 AI Comprehensive Analysis</h4>
+                        <div id="ai-comprehensive-results">
                             <div class="prediction-item">
-                                <span class="prediction-label">Short-term (1 day):</span>
-                                <span class="prediction-value neutral">Analysis pending</span>
+                                <span class="prediction-label">Overall Prediction:</span>
+                                <span class="prediction-value neutral">Waiting for analysis</span>
                             </div>
                             <div class="prediction-item">
-                                <span class="prediction-label">Medium-term (1 week):</span>
-                                <span class="prediction-value neutral">Analysis pending</span>
+                                <span class="prediction-label">Confidence Level:</span>
+                                <span class="prediction-value neutral">--</span>
                             </div>
                             <div class="prediction-item">
-                                <span class="prediction-label">Long-term (1 month):</span>
-                                <span class="prediction-value neutral">Analysis pending</span>
+                                <span class="prediction-label">Target Price:</span>
+                                <span class="prediction-value neutral">--</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Time Series Analysis -->
+                    <!-- AI Technical Analysis -->
                     <div class="ai-timeseries-card">
-                        <h4>📊 Time Series Analysis</h4>
-                        <div id="timeseries-results">
+                        <h4>📊 AI Technical Analysis</h4>
+                        <div id="ai-technical-results">
                             <div class="timeseries-metric">
-                                <span class="metric-name">Volatility Index:</span>
-                                <span class="metric-value">--</span>
-                            </div>
-                            <div class="timeseries-metric">
-                                <span class="metric-name">Trend Strength:</span>
+                                <span class="metric-name">Trend Direction:</span>
                                 <span class="metric-value">--</span>
                             </div>
                             <div class="timeseries-metric">
@@ -665,15 +646,19 @@
                                 <span class="metric-name">Resistance Level:</span>
                                 <span class="metric-value">--</span>
                             </div>
+                            <div class="timeseries-metric">
+                                <span class="metric-name">RSI Signal:</span>
+                                <span class="metric-value">--</span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Risk Assessment -->
+                    <!-- AI Risk Assessment -->
                     <div class="ai-risk-card">
-                        <h4>⚠️ Risk Assessment</h4>
-                        <div id="risk-assessment">
+                        <h4>⚠️ AI Risk Assessment</h4>
+                        <div id="ai-risk-assessment">
                             <div class="risk-gauge">
-                                <div class="risk-indicator" id="risk-indicator">
+                                <div class="risk-indicator" id="ai-risk-indicator">
                                     <div class="risk-needle"></div>
                                 </div>
                                 <div class="risk-labels">
@@ -682,8 +667,8 @@
                                     <span class="risk-high">High</span>
                                 </div>
                             </div>
-                            <div id="risk-factors">
-                                <p style="text-align: center; opacity: 0.6;">Select a stock for risk analysis</p>
+                            <div id="ai-risk-factors">
+                                <p style="text-align: center; opacity: 0.6;">Enter a stock symbol for AI risk analysis</p>
                             </div>
                         </div>
                     </div>
@@ -1273,6 +1258,137 @@
         loadWatchlist(); // Refresh the list
     }
 
+    // AI Analysis Functions
+    window.analyzeStock = async function() {
+        console.log('analyzeStock function called');
+        const symbol = document.getElementById('ai-stock-input').value.trim().toUpperCase();
+        console.log('Symbol entered:', symbol);
+        
+        if (!symbol) {
+            alert('Please enter a stock symbol');
+            return;
+        }
+        
+        // Update UI to show loading
+        document.getElementById('selected-stock-analysis').innerHTML = '<p style="text-align: center;">🤖 Analyzing ' + symbol + '...</p>';
+        document.getElementById('ai-comprehensive-results').innerHTML = '<p style="text-align: center;">🔄 Running AI analysis...</p>';
+        document.getElementById('ai-technical-results').innerHTML = '<p style="text-align: center;">📊 Processing technical data...</p>';
+        document.getElementById('ai-risk-factors').innerHTML = '<p style="text-align: center;">⚠️ Calculating risk factors...</p>';
+        
+        try {
+            // Get comprehensive AI analysis
+            const response = await fetch(`/api/ai/comprehensive-analysis/${symbol}`);
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                const analysis = data.analysis;
+                const prediction = data.prediction;
+                
+                // Update stock info
+                document.getElementById('selected-stock-analysis').innerHTML = `
+                    <div style="background: rgba(59, 130, 246, 0.1); border-radius: 6px; padding: 10px;">
+                        <strong style="color: #3b82f6;">${symbol}</strong><br>
+                        <small>AI Analysis Complete</small><br>
+                        <span style="color: #10b981;">Last Updated: ${new Date().toLocaleTimeString()}</span>
+                    </div>
+                `;
+                
+                // Update comprehensive analysis
+                const directionColor = prediction.direction === 'up' ? '#10b981' : prediction.direction === 'down' ? '#ef4444' : '#f59e0b';
+                document.getElementById('ai-comprehensive-results').innerHTML = `
+                    <div class="prediction-item">
+                        <span class="prediction-label">Overall Prediction:</span>
+                        <span class="prediction-value" style="color: ${directionColor};">${prediction.direction.toUpperCase()}</span>
+                    </div>
+                    <div class="prediction-item">
+                        <span class="prediction-label">Confidence Level:</span>
+                        <span class="prediction-value">${(prediction.confidence * 100).toFixed(1)}%</span>
+                    </div>
+                    <div class="prediction-item">
+                        <span class="prediction-label">Target Price:</span>
+                        <span class="prediction-value">$${prediction.target_price}</span>
+                    </div>
+                `;
+                
+                // Update technical analysis
+                const technical = analysis.technical;
+                const trendColor = technical.trend === 'bullish' ? '#10b981' : technical.trend === 'bearish' ? '#ef4444' : '#f59e0b';
+                document.getElementById('ai-technical-results').innerHTML = `
+                    <div class="timeseries-metric">
+                        <span class="metric-name">Trend Direction:</span>
+                        <span class="metric-value" style="color: ${trendColor};">${technical.trend}</span>
+                    </div>
+                    <div class="timeseries-metric">
+                        <span class="metric-name">Support Level:</span>
+                        <span class="metric-value">$${technical.support_level}</span>
+                    </div>
+                    <div class="timeseries-metric">
+                        <span class="metric-name">Resistance Level:</span>
+                        <span class="metric-value">$${technical.resistance_level}</span>
+                    </div>
+                    <div class="timeseries-metric">
+                        <span class="metric-name">RSI Signal:</span>
+                        <span class="metric-value">${technical.macd_signal}</span>
+                    </div>
+                `;
+                
+                // Update risk assessment
+                const risk = analysis.risk_assessment;
+                updateRiskGauge(risk.risk_score);
+                document.getElementById('ai-risk-factors').innerHTML = `
+                    <div style="font-size: 0.9em;">
+                        <strong>Risk Level:</strong> ${risk.volatility}<br>
+                        <strong>Beta:</strong> ${risk.beta}<br>
+                        <strong>Liquidity:</strong> ${risk.liquidity}<br>
+                        <strong>Overall Score:</strong> ${(risk.risk_score * 100).toFixed(0)}%
+                    </div>
+                `;
+                
+            } else {
+                document.getElementById('selected-stock-analysis').innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Analysis failed</p>';
+                document.getElementById('ai-comprehensive-results').innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Failed to get AI analysis</p>';
+                document.getElementById('ai-technical-results').innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Technical analysis unavailable</p>';
+                document.getElementById('ai-risk-factors').innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Risk analysis failed</p>';
+            }
+        } catch (error) {
+            document.getElementById('selected-stock-analysis').innerHTML = `<p style="color: #ef4444; text-align: center;">❌ Error: ${error.message}</p>`;
+            document.getElementById('ai-comprehensive-results').innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Connection error</p>';
+            document.getElementById('ai-technical-results').innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Network error</p>';
+            document.getElementById('ai-risk-factors').innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Service unavailable</p>';
+        }
+    }
+    
+    window.updateRiskGauge = function(riskScore) {
+        console.log('Updating risk gauge with score:', riskScore);
+        // Update risk gauge needle position
+        const needle = document.querySelector('#ai-risk-indicator .risk-needle');
+        if (needle) {
+            // Convert risk score (0-1) to degrees (-90 to 90)
+            const degrees = (riskScore * 180) - 90;
+            needle.style.transform = `translateX(-50%) rotate(${degrees}deg)`;
+        }
+    }
+    
+    // Allow Enter key to trigger analysis
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.getElementById('ai-stock-input');
+        const button = document.querySelector('button[onclick="analyzeStock()"]');
+        
+        if (input) {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    analyzeStock();
+                }
+            });
+        }
+        
+        if (button) {
+            button.addEventListener('click', function() {
+                analyzeStock();
+            });
+        }
+    });
+
     // Auto-load data when tabs are opened
     document.addEventListener('DOMContentLoaded', function() {
         // Load ML status
@@ -1309,7 +1425,37 @@
         
         // Load watchlist
         loadWatchlist();
+        
+        // Load AI market intelligence
+        loadAIMarketIntelligence();
     });
+    
+    async function loadAIMarketIntelligence() {
+        const intelligenceDiv = document.getElementById('ai-intelligence-container');
+        intelligenceDiv.innerHTML = '<p style="text-align: center;">🤖 Loading AI market intelligence...</p>';
+        
+        try {
+            const response = await fetch('/api/ai/market-intelligence');
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                intelligenceDiv.innerHTML = `
+                    <div style="background: rgba(59, 130, 246, 0.1); border-radius: 8px; padding: 15px;">
+                        <h4 style="color: #3b82f6; margin-bottom: 10px;">🧠 Market Intelligence</h4>
+                        <div style="font-size: 0.9em;">
+                            <strong>Market Sentiment:</strong> ${data.sentiment || 'Analyzing...'}<br>
+                            <strong>Overall Trend:</strong> ${data.trend || 'Processing...'}<br>
+                            <strong>Risk Level:</strong> ${data.risk_level || 'Calculating...'}
+                        </div>
+                    </div>
+                `;
+            } else {
+                intelligenceDiv.innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Failed to load market intelligence</p>';
+            }
+        } catch (error) {
+            intelligenceDiv.innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Market intelligence unavailable</p>';
+        }
+    }
 
     </script>
 </body>
