@@ -1,0 +1,988 @@
+{
+  "Index": "NDX, S&P 500",
+  "P/E": "28.52",
+  "EPS (ttm)": "4.14",
+  "Insider Own": "31.43%",
+  "Shs Outstand": "430.00M",
+  "Perf Week": "-1.69%",
+  "Market Cap": "73.45B",
+  "Forward P/E": "24.63",
+  "EPS next Y": "13.50%",
+  "Insider Trans": "-1.57%",
+  "Shs Float": "419.79M",
+  "Perf Month": "-3.95%",
+  "Enterprise Value": "64.35B",
+  "PEG": "2.63",
+  "EPS next Q": "2.31",
+  "Inst Own": "55.46%",
+  "Short Float": "5.04%",
+  "Perf Quarter": "-14.71%",
+  "Income": "2.62B",
+  "P/S": "6.34",
+  "EPS this Y": "2.85%",
+  "Inst Trans": "-0.52%",
+  "Short Ratio": "4.44",
+  "Perf Half Y": "3.76%",
+  "Sales": "11.58B",
+  "P/B": "9.31",
+  "ROA": "9.85%",
+  "Short Interest": "5.04%",
+  "Perf YTD": "-10.06%",
+  "Book/sh": "12.69",
+  "P/C": "6.45",
+  "EPS next 5Y": "10.84%",
+  "ROE": "33.26%",
+  "52W High": "163.93 -27.90%",
+  "Perf Year": "-10.80%",
+  "Cash/sh": "18.31",
+  "P/FCF": "17.22",
+  "EPS past 3/5Y": "- -",
+  "ROIC": "32.81%",
+  "52W Low": "99.88 18.33%",
+  "Perf 3Y": "5.75%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "23.96",
+  "Sales past 3/5Y": "22.82% 18.23%",
+  "Gross Margin": "72.06%",
+  "Volatility": "2.20% 2.11%",
+  "Perf 5Y": "-",
+  "Dividend TTM": "-",
+  "EV/Sales": "5.56",
+  "EPS Y/Y TTM": "-44.56%",
+  "Oper. Margin": "22.48%",
+  "ATR (14)": "2.63",
+  "Perf 10Y": "-",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "1.23",
+  "Sales Y/Y TTM": "10.23%",
+  "Profit Margin": "22.67%",
+  "RSI (14)": "34.90",
+  "Recom": "2.65",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "1.23",
+  "EPS Q/Q": "19.90%",
+  "SMA20": "-3.21%",
+  "Beta": "1.11",
+  "Target Price": "137.29",
+  "Payout": "0.00%",
+  "Debt/Eq": "0.29",
+  "Sales Q/Q": "12.66%",
+  "SMA50": "-4.91%",
+  "Rel Volume": "1.07",
+  "Prev Close": "120.15",
+  "Employees": "7300",
+  "LT Debt/Eq": "0.03",
+  "Earnings": "Nov 06 AMC",
+  "SMA200": "-8.86%",
+  "Avg Volume": "4.77M",
+  "Price": "118.19",
+  "IPO": "Dec 10, 2020",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "9.90% 2.18%",
+  "Trades": "",
+  "Volume": "5,086,862",
+  "Change": "-1.63%",
+  "Insider Trading": [
+    {
+      "Owner": "Blecharczyk Nathan",
+      "Relationship": "Officer",
+      "Date": "Oct 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "120.30",
+      "Shares": "11,540",
+      "Value": "1,388,262"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Oct 09 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "120.46",
+      "Shares": "600",
+      "Value": "72,276"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Oct 02 '25",
+      "Transaction": "Sale",
+      "Cost": "122.47",
+      "Shares": "600",
+      "Value": "73,482"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Oct 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "122.47",
+      "Shares": "600",
+      "Value": "73,482"
+    },
+    {
+      "Owner": "Gebbia Joseph",
+      "Relationship": "Director",
+      "Date": "Sep 29 '25",
+      "Transaction": "Sale",
+      "Cost": "123.57",
+      "Shares": "236,000",
+      "Value": "29,162,764"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Sep 25 '25",
+      "Transaction": "Sale",
+      "Cost": "122.91",
+      "Shares": "600",
+      "Value": "73,746"
+    },
+    {
+      "Owner": "Blecharczyk Nathan",
+      "Relationship": "Officer",
+      "Date": "Sep 26 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "121.84",
+      "Shares": "11,540",
+      "Value": "1,406,034"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Sep 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "122.91",
+      "Shares": "600",
+      "Value": "73,746"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Sep 18 '25",
+      "Transaction": "Sale",
+      "Cost": "123.74",
+      "Shares": "600",
+      "Value": "74,244"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Sep 18 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "123.74",
+      "Shares": "600",
+      "Value": "74,244"
+    },
+    {
+      "Owner": "Gebbia Joseph",
+      "Relationship": "Director",
+      "Date": "Sep 15 '25",
+      "Transaction": "Sale",
+      "Cost": "120.76",
+      "Shares": "236,000",
+      "Value": "28,499,875"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Sep 11 '25",
+      "Transaction": "Sale",
+      "Cost": "123.68",
+      "Shares": "600",
+      "Value": "74,208"
+    },
+    {
+      "Owner": "Blecharczyk Nathan",
+      "Relationship": "Officer",
+      "Date": "Sep 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "122.99",
+      "Shares": "11,540",
+      "Value": "1,419,305"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Sep 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "123.68",
+      "Shares": "600",
+      "Value": "74,208"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Sep 04 '25",
+      "Transaction": "Sale",
+      "Cost": "124.65",
+      "Shares": "600",
+      "Value": "74,790"
+    },
+    {
+      "Owner": "Mertz Elinor",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "128.42",
+      "Shares": "4,630",
+      "Value": "594,585"
+    },
+    {
+      "Owner": "Gebbia Joseph",
+      "Relationship": "Director",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "127.53",
+      "Shares": "236,000",
+      "Value": "30,096,394"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Sep 04 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "124.65",
+      "Shares": "600",
+      "Value": "74,790"
+    },
+    {
+      "Owner": "Joseph Gebbia",
+      "Relationship": "Director",
+      "Date": "Sep 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "130.53",
+      "Shares": "1,648,000",
+      "Value": "215,113,440"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Aug 28 '25",
+      "Transaction": "Sale",
+      "Cost": "130.19",
+      "Shares": "600",
+      "Value": "78,114"
+    },
+    {
+      "Owner": "Mertz Elinor",
+      "Relationship": "Officer",
+      "Date": "Sep 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "128.42",
+      "Shares": "4,630",
+      "Value": "594,585"
+    },
+    {
+      "Owner": "Blecharczyk Nathan",
+      "Relationship": "Officer",
+      "Date": "Aug 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "130.04",
+      "Shares": "107,693",
+      "Value": "14,004,451"
+    },
+    {
+      "Owner": "Blecharczyk Nathan",
+      "Relationship": "Officer",
+      "Date": "Aug 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "130.01",
+      "Shares": "3,847",
+      "Value": "500,148"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Aug 28 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "130.19",
+      "Shares": "600",
+      "Value": "78,114"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "124.96",
+      "Shares": "600",
+      "Value": "74,976"
+    },
+    {
+      "Owner": "Blecharczyk Nathan",
+      "Relationship": "Chief Strategy Officer",
+      "Date": "Aug 20 '25",
+      "Transaction": "Sale",
+      "Cost": "125.20",
+      "Shares": "2,246",
+      "Value": "281,199"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "124.96",
+      "Shares": "600",
+      "Value": "74,976"
+    },
+    {
+      "Owner": "Gebbia Joseph",
+      "Relationship": "Director",
+      "Date": "Aug 18 '25",
+      "Transaction": "Sale",
+      "Cost": "125.36",
+      "Shares": "236,000",
+      "Value": "29,586,130"
+    },
+    {
+      "Owner": "Blecharczyk Nathan",
+      "Relationship": "Officer",
+      "Date": "Aug 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "125.20",
+      "Shares": "2,246",
+      "Value": "281,199"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Aug 14 '25",
+      "Transaction": "Sale",
+      "Cost": "123.62",
+      "Shares": "600",
+      "Value": "74,172"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Aug 14 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "123.62",
+      "Shares": "600",
+      "Value": "74,172"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Aug 07 '25",
+      "Transaction": "Sale",
+      "Cost": "120.50",
+      "Shares": "600",
+      "Value": "72,300"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Aug 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "120.50",
+      "Shares": "600",
+      "Value": "72,300"
+    },
+    {
+      "Owner": "Gebbia Joseph",
+      "Relationship": "Director",
+      "Date": "Aug 04 '25",
+      "Transaction": "Sale",
+      "Cost": "129.71",
+      "Shares": "236,000",
+      "Value": "30,611,498"
+    },
+    {
+      "Owner": "Mertz Elinor",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Aug 04 '25",
+      "Transaction": "Sale",
+      "Cost": "129.10",
+      "Shares": "6,250",
+      "Value": "806,875"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Jul 31 '25",
+      "Transaction": "Sale",
+      "Cost": "134.75",
+      "Shares": "600",
+      "Value": "80,850"
+    },
+    {
+      "Owner": "Mertz Elinor",
+      "Relationship": "Officer",
+      "Date": "Aug 04 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "129.10",
+      "Shares": "6,250",
+      "Value": "806,875"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Jul 31 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "134.75",
+      "Shares": "600",
+      "Value": "80,850"
+    },
+    {
+      "Owner": "Bernstein David C",
+      "Relationship": "Chief Accounting Officer",
+      "Date": "Jul 24 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "40.18",
+      "Shares": "5,000",
+      "Value": "200,900"
+    },
+    {
+      "Owner": "Bernstein David C",
+      "Relationship": "Chief Accounting Officer",
+      "Date": "Jul 24 '25",
+      "Transaction": "Sale",
+      "Cost": "142.00",
+      "Shares": "5,000",
+      "Value": "710,000"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Jul 24 '25",
+      "Transaction": "Sale",
+      "Cost": "139.39",
+      "Shares": "600",
+      "Value": "83,634"
+    },
+    {
+      "Owner": "Chesky Brian",
+      "Relationship": "Officer",
+      "Date": "Jul 24 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "141.40",
+      "Shares": "3,897",
+      "Value": "551,032"
+    },
+    {
+      "Owner": "Bernstein David C",
+      "Relationship": "Officer",
+      "Date": "Jul 24 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "142.00",
+      "Shares": "5,000",
+      "Value": "710,000"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Jul 24 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "139.39",
+      "Shares": "600",
+      "Value": "83,634"
+    },
+    {
+      "Owner": "Gebbia Joseph",
+      "Relationship": "Director",
+      "Date": "Jul 21 '25",
+      "Transaction": "Sale",
+      "Cost": "138.83",
+      "Shares": "236,000",
+      "Value": "32,763,775"
+    },
+    {
+      "Owner": "Chesky Brian",
+      "Relationship": "Officer",
+      "Date": "Jul 23 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "140.27",
+      "Shares": "13,675",
+      "Value": "1,918,202"
+    },
+    {
+      "Owner": "Chesky Brian",
+      "Relationship": "Officer",
+      "Date": "Jul 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "140.00",
+      "Shares": "1,355",
+      "Value": "189,700"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Jul 17 '25",
+      "Transaction": "Sale",
+      "Cost": "137.58",
+      "Shares": "600",
+      "Value": "82,548"
+    },
+    {
+      "Owner": "Chesky Brian",
+      "Relationship": "Officer",
+      "Date": "Jul 18 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "140.13",
+      "Shares": "4,623",
+      "Value": "647,842"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Jul 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "137.58",
+      "Shares": "600",
+      "Value": "82,548"
+    },
+    {
+      "Owner": "Chesky Brian",
+      "Relationship": "Officer",
+      "Date": "Jul 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "140.01",
+      "Shares": "1,800",
+      "Value": "252,012"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Jul 10 '25",
+      "Transaction": "Sale",
+      "Cost": "137.21",
+      "Shares": "600",
+      "Value": "82,326"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Jul 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "137.21",
+      "Shares": "600",
+      "Value": "82,326"
+    },
+    {
+      "Owner": "Gebbia Joseph",
+      "Relationship": "Director",
+      "Date": "Jul 07 '25",
+      "Transaction": "Sale",
+      "Cost": "136.40",
+      "Shares": "236,000",
+      "Value": "32,191,202"
+    },
+    {
+      "Owner": "Mertz Elinor",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Jul 07 '25",
+      "Transaction": "Sale",
+      "Cost": "135.86",
+      "Shares": "6,250",
+      "Value": "849,125"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Jul 03 '25",
+      "Transaction": "Sale",
+      "Cost": "136.27",
+      "Shares": "600",
+      "Value": "81,762"
+    },
+    {
+      "Owner": "Mertz Elinor",
+      "Relationship": "Officer",
+      "Date": "Jul 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "135.86",
+      "Shares": "6,250",
+      "Value": "849,125"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Jul 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "136.27",
+      "Shares": "600",
+      "Value": "81,762"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Jun 26 '25",
+      "Transaction": "Sale",
+      "Cost": "130.33",
+      "Shares": "600",
+      "Value": "78,198"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Jun 26 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "130.33",
+      "Shares": "600",
+      "Value": "78,198"
+    },
+    {
+      "Owner": "Gebbia Joseph",
+      "Relationship": "Director",
+      "Date": "Jun 23 '25",
+      "Transaction": "Sale",
+      "Cost": "129.46",
+      "Shares": "236,000",
+      "Value": "30,553,187"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Jun 20 '25",
+      "Transaction": "Sale",
+      "Cost": "132.27",
+      "Shares": "600",
+      "Value": "79,362"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Jun 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "132.27",
+      "Shares": "600",
+      "Value": "79,362"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Jun 12 '25",
+      "Transaction": "Sale",
+      "Cost": "137.13",
+      "Shares": "600",
+      "Value": "82,278"
+    },
+    {
+      "Owner": "Bernstein David C",
+      "Relationship": "Chief Accounting Officer",
+      "Date": "Jun 11 '25",
+      "Transaction": "Sale",
+      "Cost": "140.24",
+      "Shares": "5,000",
+      "Value": "701,200"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Jun 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "137.13",
+      "Shares": "600",
+      "Value": "82,278"
+    },
+    {
+      "Owner": "Chesky Brian",
+      "Relationship": "Officer",
+      "Date": "Jun 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "140.00",
+      "Shares": "1,200",
+      "Value": "168,006"
+    },
+    {
+      "Owner": "Gebbia Joseph",
+      "Relationship": "Director",
+      "Date": "Jun 09 '25",
+      "Transaction": "Sale",
+      "Cost": "139.40",
+      "Shares": "236,000",
+      "Value": "32,897,547"
+    },
+    {
+      "Owner": "Bernstein David C",
+      "Relationship": "Officer",
+      "Date": "Jun 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "140.24",
+      "Shares": "5,000",
+      "Value": "701,200"
+    },
+    {
+      "Owner": "Chesky Brian",
+      "Relationship": "Officer",
+      "Date": "Jun 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "140.13",
+      "Shares": "3,218",
+      "Value": "450,941"
+    },
+    {
+      "Owner": "Chesky Brian",
+      "Relationship": "CEO and Chairman",
+      "Date": "Jun 06 '25",
+      "Transaction": "Sale",
+      "Cost": "141.19",
+      "Shares": "16,500",
+      "Value": "2,329,644"
+    },
+    {
+      "Owner": "Chesky Brian",
+      "Relationship": "Officer",
+      "Date": "Jun 09 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "140.37",
+      "Shares": "1,000",
+      "Value": "140,368"
+    },
+    {
+      "Owner": "Bernstein David C",
+      "Relationship": "Chief Accounting Officer",
+      "Date": "Jun 05 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "40.18",
+      "Shares": "5,000",
+      "Value": "200,900"
+    },
+    {
+      "Owner": "Bernstein David C",
+      "Relationship": "Chief Accounting Officer",
+      "Date": "Jun 05 '25",
+      "Transaction": "Sale",
+      "Cost": "136.67",
+      "Shares": "6,000",
+      "Value": "820,000"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Jun 05 '25",
+      "Transaction": "Sale",
+      "Cost": "133.50",
+      "Shares": "600",
+      "Value": "80,100"
+    },
+    {
+      "Owner": "Mertz Elinor",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Jun 04 '25",
+      "Transaction": "Sale",
+      "Cost": "132.28",
+      "Shares": "6,250",
+      "Value": "826,750"
+    },
+    {
+      "Owner": "Chesky Brian",
+      "Relationship": "Officer",
+      "Date": "Jun 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "180.70",
+      "Shares": "24,192",
+      "Value": "4,371,598"
+    },
+    {
+      "Owner": "Bernstein David C",
+      "Relationship": "Officer",
+      "Date": "Jun 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "136.67",
+      "Shares": "6,000",
+      "Value": "820,000"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Jun 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "133.50",
+      "Shares": "600",
+      "Value": "80,100"
+    },
+    {
+      "Owner": "Mertz Elinor",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Jun 02 '25",
+      "Transaction": "Sale",
+      "Cost": "128.85",
+      "Shares": "4,809",
+      "Value": "619,640"
+    },
+    {
+      "Owner": "Mertz Elinor",
+      "Relationship": "Officer",
+      "Date": "Jun 04 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "132.28",
+      "Shares": "6,250",
+      "Value": "826,750"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "May 29 '25",
+      "Transaction": "Sale",
+      "Cost": "130.00",
+      "Shares": "1,475",
+      "Value": "191,750"
+    },
+    {
+      "Owner": "Chesky Brian",
+      "Relationship": "CEO and Chairman",
+      "Date": "May 29 '25",
+      "Transaction": "Sale",
+      "Cost": "128.33",
+      "Shares": "8,000",
+      "Value": "1,026,676"
+    },
+    {
+      "Owner": "Mertz Elinor",
+      "Relationship": "Officer",
+      "Date": "Jun 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "128.85",
+      "Shares": "4,809",
+      "Value": "619,640"
+    },
+    {
+      "Owner": "Gebbia Joseph",
+      "Relationship": "Director",
+      "Date": "May 28 '25",
+      "Transaction": "Sale",
+      "Cost": "128.66",
+      "Shares": "236,000",
+      "Value": "30,363,054"
+    },
+    {
+      "Owner": "Gebbia Joseph",
+      "Relationship": "Director",
+      "Date": "May 28 '25",
+      "Transaction": "Sale",
+      "Cost": "128.70",
+      "Shares": "2,509",
+      "Value": "322,896"
+    },
+    {
+      "Owner": "Chesky Brian",
+      "Relationship": "Officer",
+      "Date": "May 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "128.33",
+      "Shares": "8,000",
+      "Value": "1,026,676"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "May 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "130.00",
+      "Shares": "1,475",
+      "Value": "191,750"
+    },
+    {
+      "Owner": "Joseph Gebbia",
+      "Relationship": "Director",
+      "Date": "May 28 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "129.40",
+      "Shares": "1,654,509",
+      "Value": "214,093,465"
+    },
+    {
+      "Owner": "Gebbia Joseph",
+      "Relationship": "Director",
+      "Date": "May 20 '25",
+      "Transaction": "Sale",
+      "Cost": "132.52",
+      "Shares": "214,285",
+      "Value": "28,397,328"
+    },
+    {
+      "Owner": "Blecharczyk Nathan",
+      "Relationship": "Chief Strategy Officer",
+      "Date": "May 20 '25",
+      "Transaction": "Sale",
+      "Cost": "134.03",
+      "Shares": "2,245",
+      "Value": "300,897"
+    },
+    {
+      "Owner": "Blecharczyk Nathan",
+      "Relationship": "Officer",
+      "Date": "May 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "134.03",
+      "Shares": "2,245",
+      "Value": "300,897"
+    },
+    {
+      "Owner": "Gebbia Joseph",
+      "Relationship": "Director",
+      "Date": "May 06 '25",
+      "Transaction": "Sale",
+      "Cost": "122.84",
+      "Shares": "214,285",
+      "Value": "26,322,888"
+    },
+    {
+      "Owner": "Mertz Elinor",
+      "Relationship": "Chief Financial Officer",
+      "Date": "May 05 '25",
+      "Transaction": "Sale",
+      "Cost": "123.43",
+      "Shares": "6,250",
+      "Value": "771,438"
+    },
+    {
+      "Owner": "Mertz Elinor",
+      "Relationship": "Officer",
+      "Date": "May 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "123.43",
+      "Shares": "6,250",
+      "Value": "771,438"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Apr 29 '25",
+      "Transaction": "Sale",
+      "Cost": "123.28",
+      "Shares": "700",
+      "Value": "86,296"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Apr 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "123.28",
+      "Shares": "700",
+      "Value": "86,296"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Apr 22 '25",
+      "Transaction": "Sale",
+      "Cost": "112.59",
+      "Shares": "700",
+      "Value": "78,813"
+    },
+    {
+      "Owner": "Gebbia Joseph",
+      "Relationship": "Director",
+      "Date": "Apr 22 '25",
+      "Transaction": "Sale",
+      "Cost": "114.22",
+      "Shares": "214,285",
+      "Value": "24,476,145"
+    },
+    {
+      "Owner": "BALOGH ARISTOTLE N",
+      "Relationship": "Officer",
+      "Date": "Apr 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "112.59",
+      "Shares": "700",
+      "Value": "78,813"
+    }
+  ],
+  "Dividends": []
+}

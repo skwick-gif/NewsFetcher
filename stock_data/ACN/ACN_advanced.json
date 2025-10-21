@@ -1,0 +1,718 @@
+{
+  "Index": "S&P 500",
+  "P/E": "19.82",
+  "EPS (ttm)": "12.15",
+  "Insider Own": "0.26%",
+  "Shs Outstand": "621.86M",
+  "Perf Week": "-1.79%",
+  "Market Cap": "150.07B",
+  "Forward P/E": "16.24",
+  "EPS next Y": "7.65%",
+  "Insider Trans": "-0.90%",
+  "Shs Float": "621.24M",
+  "Perf Month": "-1.31%",
+  "Enterprise Value": "147.81B",
+  "PEG": "2.72",
+  "EPS next Q": "3.75",
+  "Inst Own": "80.28%",
+  "Short Float": "2.14%",
+  "Perf Quarter": "-13.95%",
+  "Income": "7.68B",
+  "P/S": "2.15",
+  "EPS this Y": "6.62%",
+  "Inst Trans": "1.30%",
+  "Short Ratio": "2.69",
+  "Perf Half Y": "-15.52%",
+  "Sales": "69.67B",
+  "P/B": "4.80",
+  "ROA": "12.66%",
+  "Short Interest": "2.14%",
+  "Perf YTD": "-31.51%",
+  "Book/sh": "50.17",
+  "P/C": "13.07",
+  "EPS next 5Y": "7.30%",
+  "ROE": "25.82%",
+  "52W High": "398.35 -39.52%",
+  "Perf Year": "-33.14%",
+  "Cash/sh": "18.44",
+  "P/FCF": "13.80",
+  "EPS past 3/5Y": "4.30% 9.01%",
+  "ROIC": "19.93%",
+  "52W Low": "229.40 5.03%",
+  "Perf 3Y": "-12.17%",
+  "Dividend Est.": "6.35 (2.64%)",
+  "EV/EBITDA": "11.79",
+  "Sales past 3/5Y": "4.19% 9.47%",
+  "Gross Margin": "31.90%",
+  "Volatility": "2.77% 2.91%",
+  "Perf 5Y": "7.81%",
+  "Dividend TTM": "6.07 (2.52%)",
+  "EV/Sales": "2.12",
+  "EPS Y/Y TTM": "6.18%",
+  "Oper. Margin": "15.55%",
+  "ATR (14)": "6.86",
+  "Perf 10Y": "142.42%",
+  "Dividend Ex-Date": "Oct 10, 2025",
+  "Quick Ratio": "1.42",
+  "Sales Y/Y TTM": "7.36%",
+  "Profit Margin": "11.02%",
+  "RSI (14)": "43.41",
+  "Recom": "1.93",
+  "Dividend Gr. 3/5Y": "15.12% 13.09%",
+  "Current Ratio": "1.42",
+  "EPS Q/Q": "-15.45%",
+  "SMA20": "-0.72%",
+  "Beta": "1.28",
+  "Target Price": "278.30",
+  "Payout": "48.71%",
+  "Debt/Eq": "0.26",
+  "Sales Q/Q": "7.26%",
+  "SMA50": "-2.60%",
+  "Rel Volume": "0.92",
+  "Prev Close": "252.04",
+  "Employees": "779000",
+  "LT Debt/Eq": "0.24",
+  "Earnings": "Sep 25 BMO",
+  "SMA200": "-20.85%",
+  "Avg Volume": "4.93M",
+  "Price": "240.94",
+  "IPO": "Jul 19, 2001",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "1.75% 1.27%",
+  "Trades": "",
+  "Volume": "4,542,727",
+  "Change": "-4.40%",
+  "Insider Trading": [
+    {
+      "Owner": "Macchi Mauro",
+      "Relationship": "Chief Executive Officer-EMEA",
+      "Date": "Jul 11 '25",
+      "Transaction": "Sale",
+      "Cost": "282.34",
+      "Shares": "500",
+      "Value": "141,171"
+    },
+    {
+      "Owner": "Sweet Julie Spellman",
+      "Relationship": "Chair and CEO",
+      "Date": "Jul 11 '25",
+      "Transaction": "Sale",
+      "Cost": "282.45",
+      "Shares": "2,251",
+      "Value": "635,789"
+    },
+    {
+      "Owner": "Beatty Angela",
+      "Relationship": "Chief Leadership & HR Officer",
+      "Date": "Jul 11 '25",
+      "Transaction": "Sale",
+      "Cost": "282.34",
+      "Shares": "203",
+      "Value": "57,315"
+    },
+    {
+      "Owner": "Beatty Angela",
+      "Relationship": "Officer",
+      "Date": "Jul 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "287.21",
+      "Shares": "203",
+      "Value": "58,304"
+    },
+    {
+      "Owner": "Macchi Mauro",
+      "Relationship": "Officer",
+      "Date": "Jul 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "287.21",
+      "Shares": "500",
+      "Value": "143,605"
+    },
+    {
+      "Owner": "Sweet Julie Spellman",
+      "Relationship": "Officer",
+      "Date": "Jul 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "287.21",
+      "Shares": "2,251",
+      "Value": "646,510"
+    },
+    {
+      "Owner": "Walsh John F",
+      "Relationship": "Chief Operating Officer",
+      "Date": "May 13 '25",
+      "Transaction": "Sale",
+      "Cost": "325.00",
+      "Shares": "2,500",
+      "Value": "812,500"
+    },
+    {
+      "Owner": "Walsh John F",
+      "Relationship": "Officer",
+      "Date": "May 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "325.00",
+      "Shares": "2,500",
+      "Value": "812,500"
+    },
+    {
+      "Owner": "Macchi Mauro",
+      "Relationship": "Chief Executive Officer-EMEA",
+      "Date": "May 01 '25",
+      "Transaction": "Sale",
+      "Cost": "302.36",
+      "Shares": "500",
+      "Value": "151,180"
+    },
+    {
+      "Owner": "Park Angie Y",
+      "Relationship": "Chief Financial Officer",
+      "Date": "May 01 '25",
+      "Transaction": "Sale",
+      "Cost": "302.36",
+      "Shares": "1,250",
+      "Value": "377,950"
+    },
+    {
+      "Owner": "Macchi Mauro",
+      "Relationship": "Officer",
+      "Date": "May 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "300.00",
+      "Shares": "500",
+      "Value": "150,000"
+    },
+    {
+      "Owner": "Park Angie Y",
+      "Relationship": "Officer",
+      "Date": "May 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "302.36",
+      "Shares": "1,250",
+      "Value": "377,950"
+    },
+    {
+      "Owner": "Sweet Julie Spellman",
+      "Relationship": "Chair and CEO",
+      "Date": "Apr 11 '25",
+      "Transaction": "Sale",
+      "Cost": "281.63",
+      "Shares": "2,284",
+      "Value": "643,254"
+    },
+    {
+      "Owner": "Sharma Manish",
+      "Relationship": "CEO-The Americas",
+      "Date": "Apr 11 '25",
+      "Transaction": "Sale",
+      "Cost": "281.59",
+      "Shares": "962",
+      "Value": "270,887"
+    },
+    {
+      "Owner": "Unruch Joel",
+      "Relationship": "General Counsel/Corp Secretary",
+      "Date": "Apr 11 '25",
+      "Transaction": "Sale",
+      "Cost": "281.78",
+      "Shares": "3,563",
+      "Value": "1,003,970"
+    },
+    {
+      "Owner": "Macchi Mauro",
+      "Relationship": "Chief Executive Officer-EMEA",
+      "Date": "Apr 11 '25",
+      "Transaction": "Sale",
+      "Cost": "281.57",
+      "Shares": "500",
+      "Value": "140,787"
+    },
+    {
+      "Owner": "Beatty Angela",
+      "Relationship": "Chief Leadership & HR Officer",
+      "Date": "Apr 11 '25",
+      "Transaction": "Sale",
+      "Cost": "281.90",
+      "Shares": "169",
+      "Value": "47,641"
+    },
+    {
+      "Owner": "Sharma Manish",
+      "Relationship": "Officer",
+      "Date": "Apr 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "282.58",
+      "Shares": "962",
+      "Value": "271,841"
+    },
+    {
+      "Owner": "Beatty Angela",
+      "Relationship": "Officer",
+      "Date": "Apr 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "282.58",
+      "Shares": "169",
+      "Value": "47,756"
+    },
+    {
+      "Owner": "Macchi Mauro",
+      "Relationship": "Officer",
+      "Date": "Apr 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "282.58",
+      "Shares": "500",
+      "Value": "141,290"
+    },
+    {
+      "Owner": "Sweet Julie Spellman",
+      "Relationship": "Officer",
+      "Date": "Apr 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "282.58",
+      "Shares": "2,284",
+      "Value": "645,413"
+    },
+    {
+      "Owner": "Unruch Joel",
+      "Relationship": "Officer",
+      "Date": "Apr 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "282.58",
+      "Shares": "3,563",
+      "Value": "1,006,833"
+    },
+    {
+      "Owner": "Sweet Julie Spellman",
+      "Relationship": "Chair and CEO",
+      "Date": "Feb 05 '25",
+      "Transaction": "Sale",
+      "Cost": "394.47",
+      "Shares": "8,793",
+      "Value": "3,468,539"
+    },
+    {
+      "Owner": "Sekido Ryoji",
+      "Relationship": "Co-CEO Asia Pacific",
+      "Date": "Feb 05 '25",
+      "Transaction": "Sale",
+      "Cost": "394.37",
+      "Shares": "1,700",
+      "Value": "670,429"
+    },
+    {
+      "Owner": "Sharma Manish",
+      "Relationship": "CEO-The Americas",
+      "Date": "Feb 05 '25",
+      "Transaction": "Sale",
+      "Cost": "394.44",
+      "Shares": "2,136",
+      "Value": "842,533"
+    },
+    {
+      "Owner": "Burgum Melissa A",
+      "Relationship": "Chief Accounting Officer",
+      "Date": "Feb 05 '25",
+      "Transaction": "Sale",
+      "Cost": "394.46",
+      "Shares": "232",
+      "Value": "91,514"
+    },
+    {
+      "Owner": "Sweet Julie Spellman",
+      "Relationship": "Officer",
+      "Date": "Feb 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "390.82",
+      "Shares": "8,793",
+      "Value": "3,436,480"
+    },
+    {
+      "Owner": "Burgum Melissa A",
+      "Relationship": "Officer",
+      "Date": "Feb 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "390.82",
+      "Shares": "232",
+      "Value": "90,670"
+    },
+    {
+      "Owner": "Sekido Ryoji",
+      "Relationship": "Officer",
+      "Date": "Feb 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "390.82",
+      "Shares": "1,700",
+      "Value": "664,394"
+    },
+    {
+      "Owner": "Sharma Manish",
+      "Relationship": "Officer",
+      "Date": "Feb 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "390.82",
+      "Shares": "2,136",
+      "Value": "834,792"
+    },
+    {
+      "Owner": "Walsh John F",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Jan 23 '25",
+      "Transaction": "Sale",
+      "Cost": "361.09",
+      "Shares": "2,500",
+      "Value": "902,720"
+    },
+    {
+      "Owner": "Unruch Joel",
+      "Relationship": "General Counsel/Corp Secretary",
+      "Date": "Jan 24 '25",
+      "Transaction": "Sale",
+      "Cost": "362.78",
+      "Shares": "4,750",
+      "Value": "1,723,185"
+    },
+    {
+      "Owner": "Unruch Joel",
+      "Relationship": "Officer",
+      "Date": "Jan 24 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "362.14",
+      "Shares": "4,750",
+      "Value": "1,720,165"
+    },
+    {
+      "Owner": "Walsh John F",
+      "Relationship": "Officer",
+      "Date": "Jan 23 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "358.09",
+      "Shares": "2,500",
+      "Value": "895,225"
+    },
+    {
+      "Owner": "Burgum Melissa A",
+      "Relationship": "Chief Accounting Officer",
+      "Date": "Jan 21 '25",
+      "Transaction": "Sale",
+      "Cost": "354.54",
+      "Shares": "1,487",
+      "Value": "527,200"
+    },
+    {
+      "Owner": "Burgum Melissa A",
+      "Relationship": "Officer",
+      "Date": "Jan 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "349.25",
+      "Shares": "1,487",
+      "Value": "519,335"
+    },
+    {
+      "Owner": "Sweet Julie Spellman",
+      "Relationship": "Chair and CEO",
+      "Date": "Jan 17 '25",
+      "Transaction": "Sale",
+      "Cost": "354.48",
+      "Shares": "2,497",
+      "Value": "885,143"
+    },
+    {
+      "Owner": "Park Angie Y",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Sale",
+      "Cost": "354.38",
+      "Shares": "685",
+      "Value": "242,753"
+    },
+    {
+      "Owner": "Sharma Manish",
+      "Relationship": "CEO-The Americas",
+      "Date": "Jan 17 '25",
+      "Transaction": "Sale",
+      "Cost": "354.55",
+      "Shares": "1,557",
+      "Value": "552,031"
+    },
+    {
+      "Owner": "Beatty Angela",
+      "Relationship": "Chief Leadership & HR Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Sale",
+      "Cost": "354.47",
+      "Shares": "961",
+      "Value": "340,642"
+    },
+    {
+      "Owner": "Macchi Mauro",
+      "Relationship": "Chief Executive Officer-EMEA",
+      "Date": "Jan 17 '25",
+      "Transaction": "Sale",
+      "Cost": "354.32",
+      "Shares": "1,000",
+      "Value": "354,323"
+    },
+    {
+      "Owner": "Macchi Mauro",
+      "Relationship": "Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "354.92",
+      "Shares": "1,000",
+      "Value": "354,920"
+    },
+    {
+      "Owner": "Sweet Julie Spellman",
+      "Relationship": "Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "354.92",
+      "Shares": "2,497",
+      "Value": "886,235"
+    },
+    {
+      "Owner": "Beatty Angela",
+      "Relationship": "Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "354.92",
+      "Shares": "961",
+      "Value": "341,078"
+    },
+    {
+      "Owner": "Sharma Manish",
+      "Relationship": "Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "354.92",
+      "Shares": "1,557",
+      "Value": "552,610"
+    },
+    {
+      "Owner": "Park Angie Y",
+      "Relationship": "Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "354.92",
+      "Shares": "685",
+      "Value": "243,120"
+    },
+    {
+      "Owner": "Beatty Angela",
+      "Relationship": "Chief Leadership & HR Officer",
+      "Date": "Dec 23 '24",
+      "Transaction": "Sale",
+      "Cost": "358.50",
+      "Shares": "375",
+      "Value": "134,439"
+    },
+    {
+      "Owner": "Beatty Angela",
+      "Relationship": "Officer",
+      "Date": "Dec 23 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "358.50",
+      "Shares": "375",
+      "Value": "134,439"
+    },
+    {
+      "Owner": "Sekido Ryoji",
+      "Relationship": "Co-CEO Asia Pacific",
+      "Date": "Nov 04 '24",
+      "Transaction": "Sale",
+      "Cost": "343.70",
+      "Shares": "3,191",
+      "Value": "1,096,761"
+    },
+    {
+      "Owner": "Sekido Ryoji",
+      "Relationship": "Officer",
+      "Date": "Nov 04 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "345.26",
+      "Shares": "3,191",
+      "Value": "1,101,725"
+    },
+    {
+      "Owner": "Sweet Julie Spellman",
+      "Relationship": "Chair and CEO",
+      "Date": "Oct 28 '24",
+      "Transaction": "Sale",
+      "Cost": "362.07",
+      "Shares": "8,136",
+      "Value": "2,945,768"
+    },
+    {
+      "Owner": "Sweet Julie Spellman",
+      "Relationship": "Officer",
+      "Date": "Oct 28 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "364.00",
+      "Shares": "8,136",
+      "Value": "2,961,504"
+    },
+    {
+      "Owner": "Unruch Joel",
+      "Relationship": "General Counsel/Corp Secretary",
+      "Date": "Oct 23 '24",
+      "Transaction": "Sale",
+      "Cost": "369.97",
+      "Shares": "4,750",
+      "Value": "1,757,378"
+    },
+    {
+      "Owner": "Unruch Joel",
+      "Relationship": "Officer",
+      "Date": "Oct 23 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "370.84",
+      "Shares": "4,750",
+      "Value": "1,761,490"
+    },
+    {
+      "Owner": "Sharma Manish",
+      "Relationship": "CEO-The Americas",
+      "Date": "Oct 22 '24",
+      "Transaction": "Sale",
+      "Cost": "372.10",
+      "Shares": "4,618",
+      "Value": "1,718,351"
+    },
+    {
+      "Owner": "Beatty Angela",
+      "Relationship": "Chief Leadership & HR Officer",
+      "Date": "Oct 22 '24",
+      "Transaction": "Sale",
+      "Cost": "372.18",
+      "Shares": "673",
+      "Value": "250,477"
+    },
+    {
+      "Owner": "Macchi Mauro",
+      "Relationship": "Chief Executive Officer-EMEA",
+      "Date": "Oct 22 '24",
+      "Transaction": "Sale",
+      "Cost": "372.35",
+      "Shares": "1,000",
+      "Value": "372,351"
+    },
+    {
+      "Owner": "Beatty Angela",
+      "Relationship": "Officer",
+      "Date": "Oct 22 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "372.18",
+      "Shares": "673",
+      "Value": "250,477"
+    },
+    {
+      "Owner": "Sweet Julie Spellman",
+      "Relationship": "Chair and CEO",
+      "Date": "Oct 21 '24",
+      "Transaction": "Sale",
+      "Cost": "376.16",
+      "Shares": "9,000",
+      "Value": "3,385,464"
+    },
+    {
+      "Owner": "Macchi Mauro",
+      "Relationship": "Officer",
+      "Date": "Oct 22 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "374.62",
+      "Shares": "1,000",
+      "Value": "374,620"
+    },
+    {
+      "Owner": "Sharma Manish",
+      "Relationship": "Officer",
+      "Date": "Oct 22 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "374.62",
+      "Shares": "4,618",
+      "Value": "1,729,995"
+    },
+    {
+      "Owner": "Sweet Julie Spellman",
+      "Relationship": "Officer",
+      "Date": "Oct 21 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "375.00",
+      "Shares": "9,000",
+      "Value": "3,375,000"
+    },
+    {
+      "Owner": "Shook Ellyn",
+      "Relationship": "Officer",
+      "Date": "Oct 18 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "375.51",
+      "Shares": "5,000",
+      "Value": "1,877,550"
+    },
+    {
+      "Owner": "Framil Leonardo",
+      "Relationship": "Officer",
+      "Date": "Oct 18 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "375.51",
+      "Shares": "3,000",
+      "Value": "1,126,530"
+    },
+    {
+      "Owner": "McClure Kathleen R",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Oct 17 '24",
+      "Transaction": "Sale",
+      "Cost": "373.22",
+      "Shares": "5,090",
+      "Value": "1,899,700"
+    },
+    {
+      "Owner": "Walsh John F",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Oct 17 '24",
+      "Transaction": "Sale",
+      "Cost": "373.24",
+      "Shares": "5,000",
+      "Value": "1,866,219"
+    },
+    {
+      "Owner": "Burgum Melissa A",
+      "Relationship": "Chief Accounting Officer",
+      "Date": "Oct 17 '24",
+      "Transaction": "Sale",
+      "Cost": "373.25",
+      "Shares": "458",
+      "Value": "170,947"
+    },
+    {
+      "Owner": "McClure Kathleen R",
+      "Relationship": "Officer",
+      "Date": "Oct 17 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "373.00",
+      "Shares": "5,090",
+      "Value": "1,898,570"
+    },
+    {
+      "Owner": "Walsh John F",
+      "Relationship": "Officer",
+      "Date": "Oct 17 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "373.00",
+      "Shares": "5,000",
+      "Value": "1,865,000"
+    },
+    {
+      "Owner": "Burgum Melissa A",
+      "Relationship": "Officer",
+      "Date": "Oct 17 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "373.00",
+      "Shares": "458",
+      "Value": "170,834"
+    }
+  ],
+  "Dividends": []
+}

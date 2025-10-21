@@ -1,0 +1,600 @@
+# ================================================================
+# MarketPulse - Comprehensive Data Sources Configuration
+# ================================================================
+# Last Updated: October 19, 2025
+# Purpose: Define all RSS feeds, APIs, and Perplexity search queries
+# ================================================================
+
+# ================================================================
+# RSS FEEDS - Financial News (Real-time, 5-15 min refresh)
+# ================================================================
+rss_feeds:
+  # ============================================================
+  # TIER 1: Major Financial News (Refresh: Every 5 minutes)
+  # ============================================================
+  major_news:
+    - name: "Reuters Business"
+      url: "https://news.google.com/rss/search?q=reuters+business&hl=en-US&gl=US&ceid=US:en"
+      category: "general"
+      weight: 1.0
+      keywords_boost: 1.2  # High credibility
+      note: "Using Google News RSS for Reuters (direct feed unavailable)"
+      
+    - name: "Bloomberg Markets"
+      url: "https://feeds.bloomberg.com/markets/news.rss"
+      category: "general"
+      weight: 1.0
+      keywords_boost: 1.2
+      
+    - name: "Wall Street Journal - Markets"
+      url: "https://feeds.a.dj.com/rss/RSSMarketsMain.xml"
+      category: "general"
+      weight: 1.0
+      keywords_boost: 1.2
+      
+    - name: "Financial Times - Companies"
+      url: "https://www.ft.com/companies?format=rss"
+      category: "general"
+      weight: 1.0
+      keywords_boost: 1.2
+      
+    - name: "CNBC Breaking News"
+      url: "https://www.cnbc.com/id/100003114/device/rss/rss.html"
+      category: "breaking"
+      weight: 1.1  # Breaking news higher weight
+      keywords_boost: 1.3
+      
+  # ============================================================
+  # TIER 2: Market-Specific News (Refresh: Every 10 minutes)
+  # ============================================================
+  market_specific:
+    - name: "MarketWatch - Top Stories"
+      url: "http://feeds.marketwatch.com/marketwatch/topstories/"
+      category: "general"
+      weight: 0.9
+      
+    - name: "Seeking Alpha - Market News"
+      url: "https://seekingalpha.com/market_currents.xml"
+      category: "analysis"
+      weight: 0.8  # Opinion/analysis weighted lower
+      
+    - name: "Yahoo Finance - Stock Market News"
+      url: "https://finance.yahoo.com/news/rssindex"
+      category: "general"
+      weight: 0.85
+      
+    - name: "Barron's - Market News"
+      url: "https://www.barrons.com/xml/rss/3_7510.xml"
+      category: "general"
+      weight: 0.9
+      
+    - name: "The Motley Fool"
+      url: "https://www.fool.com/feeds/index.aspx"
+      category: "analysis"
+      weight: 0.7
+      
+  # ============================================================
+  # TIER 3: Sector-Specific Feeds (Refresh: Every 15 minutes)
+  # ============================================================
+  sector_technology:
+    - name: "TechCrunch"
+      url: "https://techcrunch.com/feed/"
+      category: "technology"
+      weight: 0.8
+      sectors: ["tech", "software", "semiconductors"]
+      
+    - name: "The Verge - Tech"
+      url: "https://www.theverge.com/rss/index.xml"
+      category: "technology"
+      weight: 0.7
+      sectors: ["tech", "consumer_electronics"]
+      
+    - name: "Ars Technica"
+      url: "http://feeds.arstechnica.com/arstechnica/index"
+      category: "technology"
+      weight: 0.75
+      sectors: ["tech", "semiconductors"]
+      
+  sector_biotech:
+    - name: "FierceBiotech"
+      url: "https://www.fiercebiotech.com/rss/xml"
+      category: "biotech"
+      weight: 0.9
+      sectors: ["biotech", "pharma", "healthcare"]
+      
+    - name: "BioSpace"
+      url: "https://www.biospace.com/rss/"
+      category: "biotech"
+      weight: 0.85
+      sectors: ["biotech", "pharma"]
+      
+    - name: "Endpoints News"
+      url: "https://endpts.com/feed/"
+      category: "biotech"
+      weight: 0.9
+      sectors: ["biotech", "pharma"]
+      
+  sector_energy:
+    - name: "Oil Price"
+      url: "https://oilprice.com/rss/main"
+      category: "energy"
+      weight: 0.85
+      sectors: ["energy", "oil_gas"]
+      
+    - name: "Renewable Energy World"
+      url: "https://www.renewableenergyworld.com/feeds/all-content.rss"
+      category: "energy"
+      weight: 0.8
+      sectors: ["energy", "renewables"]
+      
+  sector_finance:
+    - name: "American Banker"
+      url: "https://www.americanbanker.com/feed"
+      category: "finance"
+      weight: 0.85
+      sectors: ["banking", "fintech"]
+      
+    - name: "The Financial Brand"
+      url: "https://thefinancialbrand.com/feed/"
+      category: "finance"
+      weight: 0.8
+      sectors: ["banking", "fintech"]
+      
+  sector_retail:
+    - name: "Retail Dive"
+      url: "https://www.retaildive.com/feeds/news/"
+      category: "retail"
+      weight: 0.8
+      sectors: ["retail", "consumer"]
+      
+    - name: "Chain Store Age"
+      url: "https://chainstoreage.com/rss.xml"
+      category: "retail"
+      weight: 0.75
+      sectors: ["retail"]
+      
+  sector_automotive:
+    - name: "Automotive News"
+      url: "https://www.autonews.com/rss.xml"
+      category: "automotive"
+      weight: 0.8
+      sectors: ["automotive"]
+      
+    - name: "Electrek"
+      url: "https://electrek.co/feed/"
+      category: "automotive"
+      weight: 0.75
+      sectors: ["automotive", "ev"]
+      
+  # ============================================================
+  # TIER 4: Global Markets (Refresh: Every 10 minutes)
+  # ============================================================
+  global_markets:
+    - name: "Financial Times - World Economy"
+      url: "https://www.ft.com/world-economy?format=rss"
+      category: "global"
+      weight: 0.95
+      
+    - name: "The Economist - Finance"
+      url: "https://www.economist.com/finance-and-economics/rss.xml"
+      category: "global"
+      weight: 0.95
+      
+    - name: "Nikkei Asia - Markets"
+      url: "https://asia.nikkei.com/rss/feed/nar"
+      category: "asia"
+      weight: 0.85
+      regions: ["asia", "japan"]
+      
+    - name: "South China Morning Post - Business"
+      url: "https://www.scmp.com/rss/91/feed"
+      category: "asia"
+      weight: 0.8
+      regions: ["asia", "china"]
+
+  # ============================================================
+  # TIER 3: Chinese Financial News (Refresh: Every 15 minutes)
+  # ============================================================
+  chinese_news:
+    - name: "Xinhua Finance (English)"
+      url: "http://www.xinhuanet.com/english/rss/finance.xml"
+      category: "china"
+      weight: 0.9
+      keywords_boost: 1.5  # Chinese source boost
+      language: "en"
+      regions: ["china"]
+      
+    - name: "China Daily Business"
+      url: "https://www.chinadaily.com.cn/rss/business_rss.xml"
+      category: "china" 
+      weight: 0.85
+      keywords_boost: 1.5
+      language: "en"
+      regions: ["china"]
+      
+    - name: "People's Daily English"
+      url: "http://en.people.cn/rss/business.xml"
+      category: "china"
+      weight: 0.8
+      keywords_boost: 1.5
+      language: "en" 
+      regions: ["china"]
+      
+    - name: "Global Times Business"
+      url: "https://www.globaltimes.cn/rss/business.xml"
+      category: "china"
+      weight: 0.7
+      keywords_boost: 1.5
+      language: "en"
+      regions: ["china"]
+      
+    - name: "Caixin Global"
+      url: "https://www.caixinglobal.com/rss/"
+      category: "china"
+      weight: 0.9
+      keywords_boost: 1.6  # High-quality Chinese financial news
+      language: "en"
+      regions: ["china"]
+
+# ================================================================
+# REGULATORY FILINGS - SEC, FDA, USPTO, FTC
+# ================================================================
+regulatory_sources:
+  sec_edgar:
+    - name: "SEC Latest Filings"
+      url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=&company=&dateb=&owner=include&start=0&count=100&output=atom"
+      type: "api"
+      refresh_minutes: 60  # Check hourly
+      filing_types: ["10-K", "10-Q", "8-K", "Form 4", "S-1", "13D", "13F"]
+      weight: 1.2  # Regulatory filings high importance
+      
+  fda:
+    - name: "FDA Drug Approvals"
+      url: "https://www.fda.gov/about-fda/contact-fda/stay-connected/rss-feeds/drug-approvals/rss.xml"
+      type: "rss"
+      refresh_minutes: 120  # Check every 2 hours
+      weight: 1.3  # Very high impact
+      sectors: ["pharma", "biotech"]
+      
+    - name: "FDA Medical Device Approvals"
+      url: "https://www.fda.gov/about-fda/contact-fda/stay-connected/rss-feeds/medical-device-approvals/rss.xml"
+      type: "rss"
+      refresh_minutes: 120
+      weight: 1.2
+      sectors: ["medical_devices", "healthcare"]
+      
+    - name: "FDA Safety Alerts"
+      url: "https://www.fda.gov/about-fda/contact-fda/stay-connected/rss-feeds/fda-safety-alerts/rss.xml"
+      type: "rss"
+      refresh_minutes: 30  # Safety alerts checked often
+      weight: 1.4  # Very high impact (negative)
+      sectors: ["pharma", "biotech", "healthcare"]
+      
+  uspto:
+    - name: "USPTO Patent Grants"
+      api_url: "https://developer.uspto.gov/api-catalog"
+      type: "api"
+      refresh_minutes: 1440  # Daily
+      weight: 0.7  # Lower immediate impact
+      
+  ftc:
+    - name: "FTC Press Releases"
+      url: "https://www.ftc.gov/feeds/ftc-all-news.xml"
+      type: "rss"
+      refresh_minutes: 240  # Every 4 hours
+      weight: 1.1  # Antitrust/regulatory impact
+      
+# ================================================================
+# COMMODITIES & INDICES (Real-time via APIs)
+# ================================================================
+commodities_apis:
+  - name: "Gold Spot (XAU/USD)"
+    provider: "alpha_vantage"
+    symbol: "XAUUSD"
+    interval: "5min"
+    weight: 0.9
+    
+  - name: "Oil WTI (CL)"
+    provider: "alpha_vantage"
+    symbol: "WTICOUSD"
+    interval: "5min"
+    weight: 0.95
+    sectors: ["energy"]
+    
+  - name: "Bitcoin (BTC/USD)"
+    provider: "yahoo_finance"
+    symbol: "BTC-USD"
+    interval: "5min"
+    weight: 0.85
+    sectors: ["crypto", "fintech"]
+    
+  - name: "VIX (Fear Index)"
+    provider: "yahoo_finance"
+    symbol: "^VIX"
+    interval: "5min"
+    weight: 1.0  # Market sentiment indicator
+    
+# ================================================================
+# SOCIAL MEDIA SOURCES
+# ================================================================
+social_media:
+  twitter:
+    searches:
+      - query: "$SYMBOL breaking"
+        max_results: 100
+        refresh_minutes: 5
+        weight: 0.6  # Social media lower credibility
+        
+      - query: "$(SYMBOL) FDA approval"
+        max_results: 50
+        refresh_minutes: 10
+        weight: 0.7
+        
+      - query: "$(SYMBOL) earnings"
+        max_results: 50
+        refresh_minutes: 30
+        weight: 0.65
+        
+    influencers:  # Higher credibility
+      - username: "DeItaone"
+        weight: 0.9
+      - username: "FirstSquawk"
+        weight: 0.9
+      - username: "zerohedge"
+        weight: 0.75
+        
+  reddit:
+    subreddits:
+      - name: "wallstreetbets"
+        weight: 0.5  # Entertainment value
+        refresh_minutes: 10
+        min_upvotes: 100
+        
+      - name: "stocks"
+        weight: 0.65
+        refresh_minutes: 15
+        min_upvotes: 50
+        
+      - name: "investing"
+        weight: 0.7
+        refresh_minutes: 15
+        min_upvotes: 50
+        
+      - name: "SecurityAnalysis"
+        weight: 0.8  # More serious analysis
+        refresh_minutes: 30
+        min_upvotes: 25
+
+# ================================================================
+# PERPLEXITY AI - Automated Search Queries
+# ================================================================
+perplexity_scheduled_searches:
+  # These run on schedule to DISCOVER new events
+  market_scanning:
+    - query_template: "What are the top 5 breaking financial news stories in the last hour affecting US stocks?"
+      schedule_minutes: 30
+      priority: "high"
+      purpose: "market_scan"
+      
+    - query_template: "Are there any FDA drug approvals or rejections announced today?"
+      schedule_minutes: 60
+      priority: "high"
+      purpose: "regulatory_scan"
+      sectors: ["pharma", "biotech"]
+      
+    - query_template: "What major earnings reports were released in the last 2 hours?"
+      schedule_minutes: 120
+      priority: "high"
+      purpose: "earnings_scan"
+      
+    - query_template: "Any breaking news about tech sector mergers, acquisitions, or antitrust?"
+      schedule_minutes: 60
+      priority: "medium"
+      purpose: "sector_scan"
+      sectors: ["tech"]
+      
+    - query_template: "Latest geopolitical developments affecting energy or commodity prices?"
+      schedule_minutes: 120
+      priority: "medium"
+      purpose: "geopolitical_scan"
+      sectors: ["energy", "commodities"]
+      
+    - query_template: "Any major insider trading (Form 4) filings by CEOs or board members today?"
+      schedule_minutes: 240
+      priority: "medium"
+      purpose: "insider_activity_scan"
+      
+  sector_specific:
+    - query_template: "Breaking biotech news: clinical trial results, FDA decisions, or major partnerships?"
+      schedule_minutes: 120
+      priority: "high"
+      purpose: "sector_scan"
+      sectors: ["biotech", "pharma"]
+      
+    - query_template: "Latest developments in AI/semiconductor sector affecting major stocks?"
+      schedule_minutes: 60
+      priority: "high"
+      purpose: "sector_scan"
+      sectors: ["tech", "semiconductors"]
+      
+    - query_template: "Electric vehicle news: production numbers, sales, or new models announced?"
+      schedule_minutes: 180
+      priority: "medium"
+      purpose: "sector_scan"
+      sectors: ["automotive", "ev"]
+      
+    - query_template: "Banking sector: any stress tests, regulatory actions, or major deals?"
+      schedule_minutes: 240
+      priority: "medium"
+      purpose: "sector_scan"
+      sectors: ["banking", "finance"]
+
+  # Symbol-specific deep dives (triggered by alerts)
+  symbol_analysis:
+    - query_template: "Detailed analysis of {symbol}: latest news, analyst ratings, and price targets"
+      trigger: "alert_fired"
+      priority: "critical"
+      purpose: "deep_analysis"
+      
+    - query_template: "Why is {symbol} stock moving {direction} by {percentage}% today?"
+      trigger: "price_movement"
+      threshold: 3.0  # 3% movement
+      priority: "high"
+      purpose: "movement_explanation"
+      
+    - query_template: "What are the key risks for {symbol} based on recent news and fundamentals?"
+      trigger: "alert_fired"
+      priority: "high"
+      purpose: "risk_assessment"
+
+# ================================================================
+# PERPLEXITY AI - Analysis Prompts (Second usage)
+# ================================================================
+perplexity_analysis:
+  # After RSS/keywords detect event, Perplexity provides deep analysis
+  event_analysis:
+    prompt_template: |
+      An event was detected:
+      - Symbol: {symbol}
+      - Headline: {headline}
+      - Source: {source}
+      - Keywords matched: {keywords}
+      - Sentiment score: {sentiment_score}
+      
+      Provide:
+      1. Immediate impact assessment (bullish/bearish/neutral)
+      2. Price target implications
+      3. Key risks or opportunities
+      4. Recommended action (BUY/SELL/HOLD)
+      5. Confidence level (0-1)
+    
+    system_prompt: "You are a financial analyst providing actionable trading insights."
+    temperature: 0.2
+    max_tokens: 800
+
+# ================================================================
+# SCRAPING SCHEDULE CONFIGURATION
+# ================================================================
+scheduler:
+  rss_feeds:
+    major_news_interval: 300  # 5 minutes
+    market_specific_interval: 600  # 10 minutes
+    sector_specific_interval: 900  # 15 minutes
+    global_markets_interval: 600  # 10 minutes
+    
+  regulatory:
+    sec_edgar_interval: 3600  # 1 hour
+    fda_interval: 7200  # 2 hours
+    ftc_interval: 14400  # 4 hours
+    
+  social_media:
+    twitter_interval: 300  # 5 minutes
+    reddit_interval: 900  # 15 minutes
+    
+  perplexity:
+    market_scan_interval: 1800  # 30 minutes
+    sector_scan_interval: 3600  # 60 minutes
+    
+  commodities:
+    realtime_interval: 300  # 5 minutes
+
+# ================================================================
+# DATA QUALITY & DEDUPLICATION
+# ================================================================
+deduplication:
+  similarity_threshold: 0.85  # 85% text similarity = duplicate
+  time_window_hours: 24  # Dedupe within 24 hours
+  title_weight: 0.6
+  content_weight: 0.4
+  
+validation:
+  min_title_length: 20
+  min_content_length: 100
+  max_age_hours: 48  # Ignore articles older than 48 hours
+  blacklist_domains: []  # Add spam domains here
+  
+# ================================================================
+# RATE LIMITING & PERFORMANCE
+# ================================================================
+rate_limits:
+  rss_concurrent_requests: 10
+  rss_timeout_seconds: 15
+  perplexity_max_per_hour: 100  # Cost control
+  twitter_max_per_day: 10000
+  reddit_max_per_day: unlimited
+  
+caching:
+  rss_cache_ttl: 300  # 5 minutes
+  api_cache_ttl: 60  # 1 minute
+  perplexity_cache_ttl: 3600  # 1 hour (expensive API)
+
+# ================================================================
+# ALERT TRIGGERS
+# ================================================================
+alert_triggers:
+  keyword_score_threshold:
+    critical: 2.5
+    important: 1.5
+    watch: 0.8
+    
+  price_movement_threshold:
+    critical: 5.0  # 5% move
+    important: 3.0  # 3% move
+    watch: 2.0  # 2% move
+    
+  volume_spike_threshold:
+    critical: 3.0  # 3x average volume
+    important: 2.0  # 2x average volume
+    
+  perplexity_confidence_threshold:
+    min_confidence: 0.7  # Only alert if Perplexity is 70%+ confident
+
+# ================================================================
+# NOTIFICATION CHANNELS
+# ================================================================
+notifications:
+  critical:
+    channels: ["whatsapp", "telegram", "dashboard", "email"]
+    rate_limit_minutes: 15  # Max 1 per 15 min per symbol
+    
+  important:
+    channels: ["telegram", "dashboard"]
+    rate_limit_minutes: 30
+    
+  watch:
+    channels: ["dashboard"]
+    rate_limit_minutes: 60
+    
+  quiet_hours:
+    enabled: false  # Set true to disable alerts at night
+    start_hour: 22  # 10 PM
+    end_hour: 6  # 6 AM
+    timezone: "America/New_York"
+
+# ================================================================
+# SYMBOLS TO MONITOR (Can be dynamic from user watchlist)
+# ================================================================
+watchlist:
+  default_symbols:
+    - "AAPL"
+    - "MSFT"
+    - "GOOGL"
+    - "AMZN"
+    - "TSLA"
+    - "NVDA"
+    - "META"
+    - "AMD"
+    - "NFLX"
+    - "JPM"
+    - "BAC"
+    - "PFE"
+    - "JNJ"
+    - "XOM"
+    - "CVX"
+    
+  sectors:
+    technology: ["AAPL", "MSFT", "GOOGL", "NVDA", "AMD", "INTC"]
+    healthcare: ["PFE", "JNJ", "UNH", "ABBV", "LLY"]
+    finance: ["JPM", "BAC", "WFC", "GS", "MS"]
+    energy: ["XOM", "CVX", "COP", "SLB"]
+    consumer: ["AMZN", "TSLA", "WMT", "HD", "NKE"]

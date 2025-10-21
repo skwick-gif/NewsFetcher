@@ -1,0 +1,718 @@
+{
+  "Index": "S&P 500",
+  "P/E": "32.82",
+  "EPS (ttm)": "7.09",
+  "Insider Own": "0.53%",
+  "Shs Outstand": "117.10M",
+  "Perf Week": "-0.78%",
+  "Market Cap": "27.18B",
+  "Forward P/E": "22.83",
+  "EPS next Y": "9.07%",
+  "Insider Trans": "-22.40%",
+  "Shs Float": "116.10M",
+  "Perf Month": "-8.62%",
+  "Enterprise Value": "30.08B",
+  "PEG": "3.47",
+  "EPS next Q": "1.24",
+  "Inst Own": "92.10%",
+  "Short Float": "1.48%",
+  "Perf Quarter": "-1.34%",
+  "Income": "839.50M",
+  "P/S": "3.95",
+  "EPS this Y": "9.39%",
+  "Inst Trans": "0.14%",
+  "Short Ratio": "2.33",
+  "Perf Half Y": "1.96%",
+  "Sales": "6.89B",
+  "P/B": "10.27",
+  "ROA": "10.00%",
+  "Short Interest": "1.48%",
+  "Perf YTD": "2.99%",
+  "Book/sh": "22.67",
+  "P/C": "48.34",
+  "EPS next 5Y": "9.46%",
+  "ROE": "34.81%",
+  "52W High": "271.91 -14.37%",
+  "Perf Year": "7.40%",
+  "Cash/sh": "4.82",
+  "P/FCF": "24.10",
+  "EPS past 3/5Y": "15.97% 12.41%",
+  "ROIC": "15.05%",
+  "52W Low": "208.20 11.84%",
+  "Perf 3Y": "54.65%",
+  "Dividend Est.": "3.85 (1.65%)",
+  "EV/EBITDA": "17.64",
+  "Sales past 3/5Y": "6.29% 8.11%",
+  "Gross Margin": "31.02%",
+  "Volatility": "1.36% 1.46%",
+  "Perf 5Y": "70.82%",
+  "Dividend TTM": "3.61 (1.55%)",
+  "EV/Sales": "4.37",
+  "EPS Y/Y TTM": "20.69%",
+  "Oper. Margin": "17.52%",
+  "ATR (14)": "3.53",
+  "Perf 10Y": "309.73%",
+  "Dividend Ex-Date": "Sep 11, 2025",
+  "Quick Ratio": "0.96",
+  "Sales Y/Y TTM": "5.88%",
+  "Profit Margin": "12.19%",
+  "RSI (14)": "31.88",
+  "Recom": "2.33",
+  "Dividend Gr. 3/5Y": "11.20% 10.26%",
+  "Current Ratio": "0.98",
+  "EPS Q/Q": "16.17%",
+  "SMA20": "-2.29%",
+  "Beta": "0.98",
+  "Target Price": "277.57",
+  "Payout": "49.60%",
+  "Debt/Eq": "1.30",
+  "Sales Q/Q": "6.23%",
+  "SMA50": "-6.80%",
+  "Rel Volume": "0.67",
+  "Prev Close": "234.12",
+  "Employees": "15000",
+  "LT Debt/Eq": "1.10",
+  "Earnings": "Aug 05 BMO",
+  "SMA200": "-3.04%",
+  "Avg Volume": "736.44K",
+  "Price": "232.85",
+  "IPO": "Mar 22, 2007",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "1.49% 0.37%",
+  "Trades": "",
+  "Volume": "490,321",
+  "Change": "-0.54%",
+  "Insider Trading": [
+    {
+      "Owner": "Gokey Timothy C",
+      "Relationship": "CEO",
+      "Date": "Aug 25 '25",
+      "Transaction": "Sale",
+      "Cost": "258.37",
+      "Shares": "5,674",
+      "Value": "1,466,010"
+    },
+    {
+      "Owner": "Gokey Timothy C",
+      "Relationship": "CEO",
+      "Date": "Aug 18 '25",
+      "Transaction": "Sale",
+      "Cost": "260.87",
+      "Shares": "5,675",
+      "Value": "1,480,428"
+    },
+    {
+      "Owner": "Gokey Timothy C",
+      "Relationship": "CEO",
+      "Date": "Aug 14 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "98.31",
+      "Shares": "99,831",
+      "Value": "9,814,386"
+    },
+    {
+      "Owner": "Gokey Timothy C",
+      "Relationship": "CEO",
+      "Date": "Aug 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "93.88",
+      "Shares": "46,561",
+      "Value": "4,371,147"
+    },
+    {
+      "Owner": "Gokey Timothy C",
+      "Relationship": "CEO",
+      "Date": "Aug 14 '25",
+      "Transaction": "Sale",
+      "Cost": "259.53",
+      "Shares": "84,571",
+      "Value": "21,948,678"
+    },
+    {
+      "Owner": "Gokey Timothy C",
+      "Relationship": "CEO",
+      "Date": "Aug 13 '25",
+      "Transaction": "Sale",
+      "Cost": "262.46",
+      "Shares": "39,251",
+      "Value": "10,301,629"
+    },
+    {
+      "Owner": "Gokey Timothy C",
+      "Relationship": "CEO",
+      "Date": "Aug 15 '25",
+      "Transaction": "Sale",
+      "Cost": "259.29",
+      "Shares": "11,000",
+      "Value": "2,852,158"
+    },
+    {
+      "Owner": "Timothy Gokey",
+      "Relationship": "Officer",
+      "Date": "Aug 14 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "261.68",
+      "Shares": "106,920",
+      "Value": "27,978,826"
+    },
+    {
+      "Owner": "Timothy Gokey",
+      "Relationship": "Officer",
+      "Date": "Aug 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "262.50",
+      "Shares": "39,251",
+      "Value": "10,303,388"
+    },
+    {
+      "Owner": "CHRISTOPHER J PERRY",
+      "Relationship": "Officer",
+      "Date": "Aug 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "262.72",
+      "Shares": "7,036",
+      "Value": "1,848,494"
+    },
+    {
+      "Owner": "PERRY CHRISTOPHER JOHN",
+      "Relationship": "President",
+      "Date": "Aug 12 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "198.30",
+      "Shares": "7,480",
+      "Value": "1,483,284"
+    },
+    {
+      "Owner": "PERRY CHRISTOPHER JOHN",
+      "Relationship": "President",
+      "Date": "Aug 12 '25",
+      "Transaction": "Sale",
+      "Cost": "262.72",
+      "Shares": "7,036",
+      "Value": "1,848,494"
+    },
+    {
+      "Owner": "LAURA MATLIN",
+      "Relationship": "Officer",
+      "Date": "Aug 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "270.56",
+      "Shares": "998",
+      "Value": "270,019"
+    },
+    {
+      "Owner": "DOUGLAS DESCHUTTER",
+      "Relationship": "Officer",
+      "Date": "Jun 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "245.76",
+      "Shares": "4,903",
+      "Value": "1,204,966"
+    },
+    {
+      "Owner": "ROBERT N. DUELKS 2007 REVOCABL",
+      "Relationship": "Director",
+      "Date": "Jun 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "245.15",
+      "Shares": "500",
+      "Value": "122,575"
+    },
+    {
+      "Owner": "DESCHUTTER DOUGLAS RICHARD",
+      "Relationship": "Co-President ICS",
+      "Date": "Jun 06 '25",
+      "Transaction": "Sale",
+      "Cost": "245.76",
+      "Shares": "4,903",
+      "Value": "1,204,966"
+    },
+    {
+      "Owner": "Duelks Robert N",
+      "Relationship": "Director",
+      "Date": "Jun 06 '25",
+      "Transaction": "Sale",
+      "Cost": "245.15",
+      "Shares": "500",
+      "Value": "122,575"
+    },
+    {
+      "Owner": "Markus Maura A.",
+      "Relationship": "Director",
+      "Date": "Jun 04 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "56.37",
+      "Shares": "5,771",
+      "Value": "325,311"
+    },
+    {
+      "Owner": "Markus Maura A.",
+      "Relationship": "Director",
+      "Date": "Jun 04 '25",
+      "Transaction": "Sale",
+      "Cost": "243.08",
+      "Shares": "3,556",
+      "Value": "864,408"
+    },
+    {
+      "Owner": "MAURA A MARKUS",
+      "Relationship": "Director",
+      "Date": "Jun 04 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "243.08",
+      "Shares": "3,556",
+      "Value": "864,408"
+    },
+    {
+      "Owner": "DESCHUTTER DOUGLAS RICHARD",
+      "Relationship": "Co-President ICS",
+      "Date": "May 27 '25",
+      "Transaction": "Sale",
+      "Cost": "239.55",
+      "Shares": "5,056",
+      "Value": "1,211,161"
+    },
+    {
+      "Owner": "DOUGLAS DESCHUTTER",
+      "Relationship": "Officer",
+      "Date": "May 27 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "239.55",
+      "Shares": "5,056",
+      "Value": "1,211,161"
+    },
+    {
+      "Owner": "PAMELA L. CARTER",
+      "Relationship": "Director",
+      "Date": "May 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "242.23",
+      "Shares": "4,829",
+      "Value": "1,169,745"
+    },
+    {
+      "Owner": "Carter Pamela L",
+      "Relationship": "Director",
+      "Date": "May 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "96.31",
+      "Shares": "6,908",
+      "Value": "665,290"
+    },
+    {
+      "Owner": "Carter Pamela L",
+      "Relationship": "Director",
+      "Date": "May 20 '25",
+      "Transaction": "Sale",
+      "Cost": "242.23",
+      "Shares": "4,829",
+      "Value": "1,169,745"
+    },
+    {
+      "Owner": "Jarkowski Hope M.",
+      "Relationship": "Chief Legal Officer",
+      "Date": "May 15 '25",
+      "Transaction": "Sale",
+      "Cost": "240.99",
+      "Shares": "1,069",
+      "Value": "257,615"
+    },
+    {
+      "Owner": "HOPE M JARKOWSKI",
+      "Relationship": "Officer",
+      "Date": "May 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "240.99",
+      "Shares": "1,069",
+      "Value": "257,615"
+    },
+    {
+      "Owner": "Carey Thomas P",
+      "Relationship": "Corporate VP",
+      "Date": "May 13 '25",
+      "Transaction": "Sale",
+      "Cost": "237.26",
+      "Shares": "3,607",
+      "Value": "855,798"
+    },
+    {
+      "Owner": "THOMAS PATRICK CAREY",
+      "Relationship": "Officer",
+      "Date": "May 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "237.26",
+      "Shares": "3,607",
+      "Value": "855,798"
+    },
+    {
+      "Owner": "RICHARD J STINGI",
+      "Relationship": "Officer",
+      "Date": "May 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "234.81",
+      "Shares": "800",
+      "Value": "187,848"
+    },
+    {
+      "Owner": "Stingi Richard John",
+      "Relationship": "Corporate VP and CHRO",
+      "Date": "May 07 '25",
+      "Transaction": "Sale",
+      "Cost": "234.81",
+      "Shares": "800",
+      "Value": "187,848"
+    },
+    {
+      "Owner": "Jarkowski Hope M.",
+      "Relationship": "Chief Legal Officer",
+      "Date": "May 07 '25",
+      "Transaction": "Sale",
+      "Cost": "235.22",
+      "Shares": "1,068",
+      "Value": "251,220"
+    },
+    {
+      "Owner": "HOPE M JARKOWSKI",
+      "Relationship": "Officer",
+      "Date": "May 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "235.22",
+      "Shares": "1,068",
+      "Value": "251,220"
+    },
+    {
+      "Owner": "Stingi Richard John",
+      "Relationship": "Corporate VP and CHRO",
+      "Date": "Apr 01 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,511",
+      "Value": "0"
+    },
+    {
+      "Owner": "Jarkowski Hope M.",
+      "Relationship": "Chief Legal Officer",
+      "Date": "Apr 01 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "3,903",
+      "Value": "0"
+    },
+    {
+      "Owner": "Gokey Timothy C",
+      "Relationship": "CEO",
+      "Date": "Apr 02 '25",
+      "Transaction": "Sale",
+      "Cost": "245.07",
+      "Shares": "11,724",
+      "Value": "2,873,231"
+    },
+    {
+      "Owner": "Ghei Ashima",
+      "Relationship": "Interim CFO",
+      "Date": "Apr 01 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,304",
+      "Value": "0"
+    },
+    {
+      "Owner": "Timothy Gokey",
+      "Relationship": "Officer",
+      "Date": "Apr 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "244.72",
+      "Shares": "11,724",
+      "Value": "2,869,097"
+    },
+    {
+      "Owner": "Gokey Timothy C",
+      "Relationship": "CEO",
+      "Date": "Mar 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "67.32",
+      "Shares": "59,395",
+      "Value": "3,998,471"
+    },
+    {
+      "Owner": "Gokey Timothy C",
+      "Relationship": "CEO",
+      "Date": "Mar 10 '25",
+      "Transaction": "Sale",
+      "Cost": "235.43",
+      "Shares": "95,956",
+      "Value": "22,591,278"
+    },
+    {
+      "Owner": "TIM GOKEY",
+      "Relationship": "Officer",
+      "Date": "Mar 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "235.90",
+      "Shares": "34,101",
+      "Value": "8,044,262"
+    },
+    {
+      "Owner": "Timothy Gokey",
+      "Relationship": "Officer",
+      "Date": "Mar 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "240.92",
+      "Shares": "73,579",
+      "Value": "17,726,653"
+    },
+    {
+      "Owner": "PERRY CHRISTOPHER JOHN",
+      "Relationship": "President",
+      "Date": "Mar 07 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "145.79",
+      "Shares": "24,644",
+      "Value": "3,592,775"
+    },
+    {
+      "Owner": "PERRY CHRISTOPHER JOHN",
+      "Relationship": "President",
+      "Date": "Mar 07 '25",
+      "Transaction": "Sale",
+      "Cost": "235.23",
+      "Shares": "22,357",
+      "Value": "5,259,035"
+    },
+    {
+      "Owner": "CHRISTOPHER J PERRY",
+      "Relationship": "Officer",
+      "Date": "Mar 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "235.23",
+      "Shares": "22,357",
+      "Value": "5,259,035"
+    },
+    {
+      "Owner": "Duelks Robert N",
+      "Relationship": "Director",
+      "Date": "Feb 27 '25",
+      "Transaction": "Sale",
+      "Cost": "237.93",
+      "Shares": "485",
+      "Value": "115,395"
+    },
+    {
+      "Owner": "BOMAR II LLC",
+      "Relationship": "Director",
+      "Date": "Feb 27 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "237.93",
+      "Shares": "485",
+      "Value": "115,395"
+    },
+    {
+      "Owner": "ROBERT DUELKS",
+      "Relationship": "Director",
+      "Date": "Feb 26 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "237.15",
+      "Shares": "8,405",
+      "Value": "1,993,273"
+    },
+    {
+      "Owner": "Duelks Robert N",
+      "Relationship": "Director",
+      "Date": "Feb 26 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "68.20",
+      "Shares": "14,631",
+      "Value": "997,860"
+    },
+    {
+      "Owner": "Duelks Robert N",
+      "Relationship": "Director",
+      "Date": "Feb 26 '25",
+      "Transaction": "Sale",
+      "Cost": "237.15",
+      "Shares": "8,405",
+      "Value": "1,993,273"
+    },
+    {
+      "Owner": "BRETT A KELLER",
+      "Relationship": "Director",
+      "Date": "Feb 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "240.40",
+      "Shares": "5,442",
+      "Value": "1,308,257"
+    },
+    {
+      "Owner": "KELLER BRETT",
+      "Relationship": "Director",
+      "Date": "Feb 06 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "54.65",
+      "Shares": "8,858",
+      "Value": "484,076"
+    },
+    {
+      "Owner": "KELLER BRETT",
+      "Relationship": "Director",
+      "Date": "Feb 06 '25",
+      "Transaction": "Sale",
+      "Cost": "240.40",
+      "Shares": "5,442",
+      "Value": "1,308,257"
+    },
+    {
+      "Owner": "Matlin Laura",
+      "Relationship": "CVP, Deputy GC and CCO",
+      "Date": "Feb 04 '25",
+      "Transaction": "Sale",
+      "Cost": "241.60",
+      "Shares": "514",
+      "Value": "124,181"
+    },
+    {
+      "Owner": "LAURA MATLIN",
+      "Relationship": "Officer",
+      "Date": "Feb 04 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "241.60",
+      "Shares": "514",
+      "Value": "124,181"
+    },
+    {
+      "Owner": "Carey Thomas P",
+      "Relationship": "Corporate VP",
+      "Date": "Dec 03 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "117.34",
+      "Shares": "15,167",
+      "Value": "1,779,696"
+    },
+    {
+      "Owner": "Carey Thomas P",
+      "Relationship": "Corporate VP",
+      "Date": "Dec 03 '24",
+      "Transaction": "Sale",
+      "Cost": "230.32",
+      "Shares": "15,710",
+      "Value": "3,618,373"
+    },
+    {
+      "Owner": "THOMAS PATRICK CAREY",
+      "Relationship": "Officer",
+      "Date": "Dec 03 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "230.32",
+      "Shares": "15,710",
+      "Value": "3,618,373"
+    },
+    {
+      "Owner": "LAURA MATLIN",
+      "Relationship": "Officer",
+      "Date": "Nov 12 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "227.65",
+      "Shares": "6,810",
+      "Value": "1,550,326"
+    },
+    {
+      "Owner": "Matlin Laura",
+      "Relationship": "CVP, Deputy GC and CCO",
+      "Date": "Nov 12 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "107.86",
+      "Shares": "7,808",
+      "Value": "842,202"
+    },
+    {
+      "Owner": "Matlin Laura",
+      "Relationship": "CVP, Deputy GC and CCO",
+      "Date": "Nov 12 '24",
+      "Transaction": "Sale",
+      "Cost": "227.65",
+      "Shares": "6,810",
+      "Value": "1,550,326"
+    },
+    {
+      "Owner": "Nazareth Annette L.",
+      "Relationship": "Director",
+      "Date": "Nov 11 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "159.35",
+      "Shares": "3,665",
+      "Value": "584,017"
+    },
+    {
+      "Owner": "Markus Maura A.",
+      "Relationship": "Director",
+      "Date": "Nov 11 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "45.09",
+      "Shares": "6,469",
+      "Value": "291,687"
+    },
+    {
+      "Owner": "Markus Maura A.",
+      "Relationship": "Director",
+      "Date": "Nov 11 '24",
+      "Transaction": "Sale",
+      "Cost": "227.02",
+      "Shares": "3,880",
+      "Value": "880,836"
+    },
+    {
+      "Owner": "Carey Thomas P",
+      "Relationship": "Corporate VP",
+      "Date": "Nov 11 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "93.88",
+      "Shares": "8,969",
+      "Value": "842,010"
+    },
+    {
+      "Owner": "Carey Thomas P",
+      "Relationship": "Corporate VP",
+      "Date": "Nov 11 '24",
+      "Transaction": "Sale",
+      "Cost": "226.82",
+      "Shares": "10,757",
+      "Value": "2,439,860"
+    },
+    {
+      "Owner": "THOMAS PATRICK CAREY",
+      "Relationship": "Officer",
+      "Date": "Nov 11 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "225.82",
+      "Shares": "10,757",
+      "Value": "2,429,103"
+    },
+    {
+      "Owner": "DESCHUTTER DOUGLAS RICHARD",
+      "Relationship": "Co-President ICS",
+      "Date": "Nov 07 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "59.74",
+      "Shares": "17,763",
+      "Value": "1,061,102"
+    },
+    {
+      "Owner": "DESCHUTTER DOUGLAS RICHARD",
+      "Relationship": "Co-President ICS",
+      "Date": "Nov 07 '24",
+      "Transaction": "Sale",
+      "Cost": "220.21",
+      "Shares": "24,185",
+      "Value": "5,325,818"
+    },
+    {
+      "Owner": "DOUGLAS DESCHUTTER",
+      "Relationship": "Officer",
+      "Date": "Nov 07 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "220.21",
+      "Shares": "24,185",
+      "Value": "5,325,818"
+    }
+  ],
+  "Dividends": []
+}

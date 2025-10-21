@@ -1,128 +1,154 @@
-# Quick Start Script for Tariff Radar
-# Run this to start the system quickly
+# MarketPulse Dashboard - Startup Script# MarketPulse Dashboard - Startup Script
 
-Write-Host "🚀 Tariff Radar - Quick Start" -ForegroundColor Cyan
-Write-Host "================================" -ForegroundColor Cyan
-Write-Host ""
+# This script starts both Backend and Frontend servers# This script starts both Backend and Frontend servers
 
-# Check if Docker is running
-Write-Host "⏳ Checking Docker..." -ForegroundColor Yellow
-try {
-    docker --version | Out-Null
-    Write-Host "✅ Docker is installed" -ForegroundColor Green
-} catch {
-    Write-Host "❌ Docker is not running! Please start Docker Desktop first." -ForegroundColor Red
-    exit 1
-}
 
-# Navigate to project directory
-Set-Location -Path "D:\Projects\NewsFetcher\tariff-radar"
-Write-Host "📁 Working directory: $(Get-Location)" -ForegroundColor Cyan
-Write-Host ""
 
-# Check if .env exists
-if (-not (Test-Path ".env")) {
-    Write-Host "❌ .env file not found!" -ForegroundColor Red
-    Write-Host "   Please copy .env.example to .env and configure API keys" -ForegroundColor Yellow
-    exit 1
-}
+Write-Host "`n========================================" -ForegroundColor CyanWrite-Host "`n========================================" -ForegroundColor Cyan
 
-# Check Perplexity API key
-$perplexityKey = (Get-Content .env | Select-String "PERPLEXITY_API_KEY=").ToString().Split("=")[1].Trim()
-if ($perplexityKey -match "your-actual|here") {
-    Write-Host "⚠️  Warning: Perplexity API key looks invalid" -ForegroundColor Yellow
-    Write-Host "   LLM analysis may not work. Update PERPLEXITY_API_KEY in .env" -ForegroundColor Yellow
-} else {
-    Write-Host "✅ Perplexity API key found: $($perplexityKey.Substring(0,15))..." -ForegroundColor Green
-}
-Write-Host ""
+Write-Host "  MarketPulse Dashboard - Startup" -ForegroundColor CyanWrite-Host "  MarketPulse Dashboard - Startup" -ForegroundColor Cyan
 
-# Stop existing containers
-Write-Host "🛑 Stopping existing containers..." -ForegroundColor Yellow
-docker-compose down 2>&1 | Out-Null
-Write-Host "✅ Stopped" -ForegroundColor Green
-Write-Host ""
+Write-Host "========================================`n" -ForegroundColor CyanWrite-Host "========================================`n" -ForegroundColor Cyan
 
-# Build images
-Write-Host "🔨 Building Docker images (this may take 5-10 minutes)..." -ForegroundColor Yellow
-$buildResult = docker-compose build 2>&1
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "✅ Build successful!" -ForegroundColor Green
-} else {
-    Write-Host "❌ Build failed!" -ForegroundColor Red
-    Write-Host $buildResult
-    exit 1
-}
-Write-Host ""
 
-# Start services
-Write-Host "🚀 Starting services..." -ForegroundColor Yellow
-docker-compose up -d
-Start-Sleep -Seconds 5
-Write-Host ""
 
-# Check status
-Write-Host "📊 Service Status:" -ForegroundColor Cyan
-docker-compose ps
-Write-Host ""
+# Kill existing Python processes on ports 8000 and 5000# Kill existing Python processes on ports 8000 and 5000
 
-# Wait for API to be ready
-Write-Host "⏳ Waiting for API to be ready..." -ForegroundColor Yellow
-$maxAttempts = 30
-$attempt = 0
-$apiReady = $false
+Write-Host "Checking for existing processes..." -ForegroundColor YellowWrite-Host "🔍 Checking for existing processes..." -ForegroundColor Yellow
 
-while ($attempt -lt $maxAttempts -and -not $apiReady) {
-    try {
-        $response = Invoke-WebRequest -Uri "http://localhost:8000/health" -TimeoutSec 2 -ErrorAction SilentlyContinue
-        if ($response.StatusCode -eq 200) {
-            $apiReady = $true
-            Write-Host "✅ API is ready!" -ForegroundColor Green
-        }
-    } catch {
-        Write-Host "." -NoNewline -ForegroundColor Yellow
-        Start-Sleep -Seconds 2
-        $attempt++
-    }
-}
+$backend = Get-NetTCPConnection -LocalPort 8000 -ErrorAction SilentlyContinue | Select-Object -First 1$backend = Get-NetTCPConnection -LocalPort 8000 -ErrorAction SilentlyContinue | Select-Object -First 1
 
-Write-Host ""
+$frontend = Get-NetTCPConnection -LocalPort 5000 -ErrorAction SilentlyContinue | Select-Object -First 1$frontend = Get-NetTCPConnection -LocalPort 5000 -ErrorAction SilentlyContinue | Select-Object -First 1
 
-if (-not $apiReady) {
-    Write-Host "⚠️  API didn't respond in time. Check logs:" -ForegroundColor Yellow
-    Write-Host "   docker-compose logs api" -ForegroundColor Cyan
-    Write-Host ""
-}
 
-# Display access URLs
-Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Cyan
-Write-Host "✅ Tariff Radar is Running!" -ForegroundColor Green
-Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "🌐 Access URLs:" -ForegroundColor Cyan
-Write-Host "   Dashboard:  http://localhost:8000" -ForegroundColor White
-Write-Host "   API Docs:   http://localhost:8000/docs" -ForegroundColor White
-Write-Host "   Health:     http://localhost:8000/health" -ForegroundColor White
-Write-Host ""
-Write-Host "📊 Useful Commands:" -ForegroundColor Cyan
-Write-Host "   View worker logs:  docker-compose logs -f worker" -ForegroundColor White
-Write-Host "   View all logs:     docker-compose logs -f" -ForegroundColor White
-Write-Host "   Check DB:          docker-compose exec postgres psql -U postgres -d tariff_radar" -ForegroundColor White
-Write-Host "   Stop system:       docker-compose down" -ForegroundColor White
-Write-Host ""
-Write-Host "⏰ The system runs background tasks every 30 minutes" -ForegroundColor Yellow
-Write-Host "   Check 'docker-compose logs -f worker' to see article processing" -ForegroundColor Yellow
-Write-Host ""
-Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Cyan
 
-# Offer to open browser
-$openBrowser = Read-Host "Open dashboard in browser? (Y/N)"
-if ($openBrowser -eq "Y" -or $openBrowser -eq "y") {
-    Start-Process "http://localhost:8000/health"
-    Start-Process "http://localhost:8000/docs"
-    Write-Host "✅ Browser opened!" -ForegroundColor Green
-}
+if ($backend) {if ($backend) {
 
-Write-Host ""
-Write-Host "💡 Tip: Run 'docker-compose logs -f worker' to see live processing" -ForegroundColor Cyan
-Write-Host ""
+    Write-Host "Port 8000 in use - killing process $($backend.OwningProcess)" -ForegroundColor Red    Write-Host "⚠️  Port 8000 in use - killing process $($backend.OwningProcess)" -ForegroundColor Red
+
+    Stop-Process -Id $backend.OwningProcess -Force -ErrorAction SilentlyContinue    Stop-Process -Id $backend.OwningProcess -Force -ErrorAction SilentlyContinue
+
+    Start-Sleep -Seconds 2    Start-Sleep -Seconds 2
+
+}}
+
+
+
+if ($frontend) {if ($frontend) {
+
+    Write-Host "Port 5000 in use - killing process $($frontend.OwningProcess)" -ForegroundColor Red    Write-Host "⚠️  Port 5000 in use - killing process $($frontend.OwningProcess)" -ForegroundColor Red
+
+    Stop-Process -Id $frontend.OwningProcess -Force -ErrorAction SilentlyContinue    Stop-Process -Id $frontend.OwningProcess -Force -ErrorAction SilentlyContinue
+
+    Start-Sleep -Seconds 2    Start-Sleep -Seconds 2
+
+}}
+
+
+
+# Start Backend (FastAPI on port 8000)# Start Backend (FastAPI on port 8000)
+
+Write-Host "`nStarting Backend (Port 8000)..." -ForegroundColor GreenWrite-Host "`n� Starting Backend (Port 8000)..." -ForegroundColor Green
+
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd D:\Projects\NewsFetcher\MarketPulse; Write-Host '=== BACKEND SERVER (Port 8000) ===' -ForegroundColor Cyan; py app\main_production.py"Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd D:\Projects\NewsFetcher\MarketPulse; Write-Host '=== BACKEND SERVER (Port 8000) ===' -ForegroundColor Cyan; py app\main_production.py"
+
+Start-Sleep -Seconds 5Start-Sleep -Seconds 5
+
+
+
+# Verify Backend started# Verify Backend started
+
+Write-Host "Verifying Backend..." -ForegroundColor YellowWrite-Host "⏳ Verifying Backend..." -ForegroundColor Yellow
+
+try {try {
+
+    $response = Invoke-WebRequest -Uri "http://localhost:8000/health" -TimeoutSec 3 -ErrorAction Stop    $response = Invoke-WebRequest -Uri "http://localhost:8000/health" -TimeoutSec 3 -ErrorAction Stop
+
+    Write-Host "Backend running on http://localhost:8000" -ForegroundColor Green    Write-Host "✅ Backend running on http://localhost:8000" -ForegroundColor Green
+
+} catch {} catch {
+
+    Write-Host "Backend failed to start! Check the Backend window for errors." -ForegroundColor Red    Write-Host "❌ Backend failed to start! Check the Backend window for errors." -ForegroundColor Red
+
+    Write-Host "Press any key to exit..."    Write-Host "Press any key to exit..."
+
+    $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+
+    exit 1    exit 1
+
+}}
+
+
+
+# Start Frontend (Flask on port 5000)# Start Frontend (Flask on port 5000)
+
+Write-Host "`nStarting Frontend (Port 5000)..." -ForegroundColor GreenWrite-Host "`n🚀 Starting Frontend (Port 5000)..." -ForegroundColor Green
+
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd D:\Projects\NewsFetcher\MarketPulse; Write-Host '=== FRONTEND SERVER (Port 5000) ===' -ForegroundColor Green; py app\server.py"Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd D:\Projects\NewsFetcher\MarketPulse; Write-Host '=== FRONTEND SERVER (Port 5000) ===' -ForegroundColor Green; py app\server.py"
+
+Start-Sleep -Seconds 5Start-Sleep -Seconds 5
+
+
+
+# Verify Frontend started# Verify Frontend started
+
+Write-Host "Verifying Frontend..." -ForegroundColor YellowWrite-Host "⏳ Verifying Frontend..." -ForegroundColor Yellow
+
+try {try {
+
+    $response = Invoke-WebRequest -Uri "http://localhost:5000/health" -TimeoutSec 3 -ErrorAction Stop    $response = Invoke-WebRequest -Uri "http://localhost:5000/health" -TimeoutSec 3 -ErrorAction Stop
+
+    Write-Host "Frontend running on http://localhost:5000" -ForegroundColor Green    Write-Host "✅ Frontend running on http://localhost:5000" -ForegroundColor Green
+
+} catch {} catch {
+
+    Write-Host "Frontend failed to start! Check the Frontend window for errors." -ForegroundColor Red    Write-Host "❌ Frontend failed to start! Check the Frontend window for errors." -ForegroundColor Red
+
+    Write-Host "Press any key to exit..."    Write-Host "Press any key to exit..."
+
+    $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+
+    exit 1    exit 1
+
+}}
+
+
+
+# Success!# Success!
+
+Write-Host "`n========================================" -ForegroundColor CyanWrite-Host "`n========================================" -ForegroundColor Cyan
+
+Write-Host "  MarketPulse is ready!" -ForegroundColor GreenWrite-Host "  ✅ MarketPulse is ready!" -ForegroundColor Green
+
+Write-Host "========================================" -ForegroundColor CyanWrite-Host "========================================" -ForegroundColor Cyan
+
+Write-Host "`nDashboard: http://localhost:5000" -ForegroundColor YellowWrite-Host "`n📊 Dashboard: http://localhost:5000" -ForegroundColor Yellow
+
+Write-Host "Backend API: http://localhost:8000/docs" -ForegroundColor YellowWrite-Host "🔧 Backend API: http://localhost:8000/docs" -ForegroundColor Yellow
+
+Write-Host "`nIMPORTANT: Do NOT close the Backend/Frontend windows!" -ForegroundColor RedWrite-Host "`n⚠️  IMPORTANT: Do NOT close the Backend/Frontend windows!" -ForegroundColor Red
+
+Write-Host "Closing them will stop the servers.`n" -ForegroundColor RedWrite-Host "    Closing them will stop the servers.`n" -ForegroundColor Red
+
+
+
+# Open browser# Open browser
+
+$openBrowser = Read-Host "Open dashboard in browser? (Y/N)"$openBrowser = Read-Host "Open dashboard in browser? (Y/N)"
+
+if ($openBrowser -eq "Y" -or $openBrowser -eq "y") {if ($openBrowser -eq "Y" -or $openBrowser -eq "y") {
+
+    Start-Process "http://localhost:5000"    Start-Process "http://localhost:5000"
+
+    Write-Host "Browser opened!" -ForegroundColor Green    Write-Host "✅ Browser opened!" -ForegroundColor Green
+
+}}
+
+
+
+Write-Host "`nPress any key to exit this launcher..." -ForegroundColor GrayWrite-Host "`nPress any key to exit this launcher..." -ForegroundColor Gray
+
+Write-Host "(The servers will keep running in their windows)" -ForegroundColor GrayWrite-Host "(The servers will keep running in their windows)" -ForegroundColor Gray
+
+$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
+

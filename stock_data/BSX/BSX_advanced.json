@@ -1,0 +1,988 @@
+{
+  "Index": "S&P 500",
+  "P/E": "56.78",
+  "EPS (ttm)": "1.68",
+  "Insider Own": "0.41%",
+  "Shs Outstand": "1.48B",
+  "Perf Week": "-1.96%",
+  "Market Cap": "141.37B",
+  "Forward P/E": "27.99",
+  "EPS next Y": "14.29%",
+  "Insider Trans": "-9.60%",
+  "Shs Float": "1.48B",
+  "Perf Month": "-8.56%",
+  "Enterprise Value": "152.99B",
+  "PEG": "3.68",
+  "EPS next Q": "0.71",
+  "Inst Own": "92.39%",
+  "Short Float": "1.31%",
+  "Perf Quarter": "-8.55%",
+  "Income": "2.51B",
+  "P/S": "7.64",
+  "EPS this Y": "18.83%",
+  "Inst Trans": "0.07%",
+  "Short Ratio": "2.27",
+  "Perf Half Y": "2.99%",
+  "Sales": "18.49B",
+  "P/B": "6.30",
+  "ROA": "6.37%",
+  "Short Interest": "1.31%",
+  "Perf YTD": "6.82%",
+  "Book/sh": "15.14",
+  "P/C": "219.87",
+  "EPS next 5Y": "15.42%",
+  "ROE": "11.71%",
+  "52W High": "109.50 -12.87%",
+  "Perf Year": "11.15%",
+  "Cash/sh": "0.43",
+  "P/FCF": "40.57",
+  "EPS past 3/5Y": "21.99% -17.84%",
+  "ROIC": "7.38%",
+  "52W Low": "80.64 18.32%",
+  "Perf 3Y": "131.02%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "34.79",
+  "Sales past 3/5Y": "12.10% 9.30%",
+  "Gross Margin": "61.90%",
+  "Volatility": "1.58% 2.38%",
+  "Perf 5Y": "143.14%",
+  "Dividend TTM": "-",
+  "EV/Sales": "8.27",
+  "EPS Y/Y TTM": "36.19%",
+  "Oper. Margin": "16.66%",
+  "ATR (14)": "2.19",
+  "Perf 10Y": "463.89%",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "0.82",
+  "Sales Y/Y TTM": "21.45%",
+  "Profit Margin": "13.55%",
+  "RSI (14)": "34.19",
+  "Recom": "1.27",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "1.37",
+  "EPS Q/Q": "144.43%",
+  "SMA20": "-2.08%",
+  "Beta": "0.58",
+  "Target Price": "126.03",
+  "Payout": "0.00%",
+  "Debt/Eq": "0.54",
+  "Sales Q/Q": "22.84%",
+  "SMA50": "-6.46%",
+  "Rel Volume": "0.94",
+  "Prev Close": "97.28",
+  "Employees": "53000",
+  "LT Debt/Eq": "0.52",
+  "Earnings": "Oct 22 BMO",
+  "SMA200": "-5.80%",
+  "Avg Volume": "8.55M",
+  "Price": "95.41",
+  "IPO": "May 19, 1992",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "3.38% 3.43%",
+  "Trades": "",
+  "Volume": "8,050,603",
+  "Change": "-1.92%",
+  "Insider Trading": [
+    {
+      "Owner": "Fitzgerald Joseph Michael",
+      "Relationship": "EVP & Group Pres, Cardiology",
+      "Date": "Oct 01 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "26.15",
+      "Shares": "50,000",
+      "Value": "1,307,500"
+    },
+    {
+      "Owner": "Fitzgerald Joseph Michael",
+      "Relationship": "EVP & Group Pres, Cardiology",
+      "Date": "Oct 01 '25",
+      "Transaction": "Sale",
+      "Cost": "98.47",
+      "Shares": "50,000",
+      "Value": "4,923,327"
+    },
+    {
+      "Owner": "JOSEPH M FITZGERALD",
+      "Relationship": "Officer",
+      "Date": "Oct 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "98.47",
+      "Shares": "50,000",
+      "Value": "4,923,325"
+    },
+    {
+      "Owner": "Fitzgerald Joseph Michael",
+      "Relationship": "EVP & Group Pres, Cardiology",
+      "Date": "Sep 02 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "26.15",
+      "Shares": "50,000",
+      "Value": "1,307,500"
+    },
+    {
+      "Owner": "Fitzgerald Joseph Michael",
+      "Relationship": "EVP & Group Pres, Cardiology",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "105.43",
+      "Shares": "50,000",
+      "Value": "5,271,416"
+    },
+    {
+      "Owner": "JOSEPH M FITZGERALD",
+      "Relationship": "Officer",
+      "Date": "Sep 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "105.43",
+      "Shares": "50,000",
+      "Value": "5,271,415"
+    },
+    {
+      "Owner": "Monson Jonathan",
+      "Relationship": "EVP and CFO",
+      "Date": "Aug 02 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,090",
+      "Value": "0"
+    },
+    {
+      "Owner": "Fitzgerald Joseph Michael",
+      "Relationship": "EVP & Group Pres, Cardiology",
+      "Date": "Aug 01 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "26.15",
+      "Shares": "50,000",
+      "Value": "1,307,500"
+    },
+    {
+      "Owner": "Fitzgerald Joseph Michael",
+      "Relationship": "EVP & Group Pres, Cardiology",
+      "Date": "Aug 01 '25",
+      "Transaction": "Sale",
+      "Cost": "104.63",
+      "Shares": "50,000",
+      "Value": "5,231,670"
+    },
+    {
+      "Owner": "Butcher Arthur C",
+      "Relationship": "EVP& Grp Pres, MedSurg & APAC",
+      "Date": "Aug 01 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "24.81",
+      "Shares": "17,313",
+      "Value": "429,493"
+    },
+    {
+      "Owner": "Butcher Arthur C",
+      "Relationship": "EVP& Grp Pres, MedSurg & APAC",
+      "Date": "Aug 01 '25",
+      "Transaction": "Sale",
+      "Cost": "104.63",
+      "Shares": "17,313",
+      "Value": "1,811,520"
+    },
+    {
+      "Owner": "ARTHUR C BUTCHER",
+      "Relationship": "Officer",
+      "Date": "Aug 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "104.63",
+      "Shares": "17,313",
+      "Value": "1,811,519"
+    },
+    {
+      "Owner": "JOSEPH M FITZGERALD",
+      "Relationship": "Officer",
+      "Date": "Aug 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "104.63",
+      "Shares": "50,000",
+      "Value": "5,231,665"
+    },
+    {
+      "Owner": "FUJIMORI YOSHIAKI",
+      "Relationship": "Director",
+      "Date": "Jul 29 '25",
+      "Transaction": "Sale",
+      "Cost": "106.99",
+      "Shares": "2,901",
+      "Value": "310,378"
+    },
+    {
+      "Owner": "YOSHIAKI FUJIMORI",
+      "Relationship": "Director",
+      "Date": "Jul 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "106.99",
+      "Shares": "2,901",
+      "Value": "310,378"
+    },
+    {
+      "Owner": "LUDWIG EDWARD J",
+      "Relationship": "Director",
+      "Date": "Jul 25 '25",
+      "Transaction": "Sale",
+      "Cost": "106.03",
+      "Shares": "4,000",
+      "Value": "424,120"
+    },
+    {
+      "Owner": "LUDWIG EDWARD J",
+      "Relationship": "Director",
+      "Date": "Jul 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "107.46",
+      "Shares": "4,000",
+      "Value": "429,840"
+    },
+    {
+      "Owner": "Fitzgerald Joseph Michael",
+      "Relationship": "EVP & Group Pres, Cardiology",
+      "Date": "Jul 01 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "26.15",
+      "Shares": "50,000",
+      "Value": "1,307,500"
+    },
+    {
+      "Owner": "Fitzgerald Joseph Michael",
+      "Relationship": "EVP & Group Pres, Cardiology",
+      "Date": "Jul 01 '25",
+      "Transaction": "Sale",
+      "Cost": "106.97",
+      "Shares": "50,000",
+      "Value": "5,348,315"
+    },
+    {
+      "Owner": "Brown Vance R",
+      "Relationship": "SVP, GC and Corp. Secretary",
+      "Date": "Jul 01 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "4,036",
+      "Value": "0"
+    },
+    {
+      "Owner": "JOSEPH M FITZGERALD",
+      "Relationship": "Officer",
+      "Date": "Jul 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "106.97",
+      "Shares": "50,000",
+      "Value": "5,348,310"
+    },
+    {
+      "Owner": "Fitzgerald Joseph Michael",
+      "Relationship": "EVP & Group Pres, Cardiology",
+      "Date": "Jun 04 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "26.15",
+      "Shares": "56,372",
+      "Value": "1,474,128"
+    },
+    {
+      "Owner": "Fitzgerald Joseph Michael",
+      "Relationship": "EVP & Group Pres, Cardiology",
+      "Date": "Jun 04 '25",
+      "Transaction": "Sale",
+      "Cost": "102.88",
+      "Shares": "56,372",
+      "Value": "5,799,630"
+    },
+    {
+      "Owner": "JOSEPH M FITZGERALD",
+      "Relationship": "Officer",
+      "Date": "Jun 04 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "102.88",
+      "Shares": "56,372",
+      "Value": "5,799,625"
+    },
+    {
+      "Owner": "Mahoney Michael F",
+      "Relationship": "Chairman, President & CEO",
+      "Date": "Jun 02 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "20.67",
+      "Shares": "105,619",
+      "Value": "2,183,161"
+    },
+    {
+      "Owner": "Mahoney Michael F",
+      "Relationship": "Chairman, President & CEO",
+      "Date": "Jun 02 '25",
+      "Transaction": "Sale",
+      "Cost": "103.69",
+      "Shares": "164,443",
+      "Value": "17,051,136"
+    },
+    {
+      "Owner": "MICHAEL F MAHONEY",
+      "Relationship": "Officer",
+      "Date": "Jun 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "103.69",
+      "Shares": "164,443",
+      "Value": "17,051,132"
+    },
+    {
+      "Owner": "LUDWIG EDWARD J",
+      "Relationship": "Director",
+      "Date": "May 29 '25",
+      "Transaction": "Sale",
+      "Cost": "104.59",
+      "Shares": "4,000",
+      "Value": "418,368"
+    },
+    {
+      "Owner": "LUDWIG EDWARD J",
+      "Relationship": "Director",
+      "Date": "May 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "104.54",
+      "Shares": "4,000",
+      "Value": "418,160"
+    },
+    {
+      "Owner": "Brown Vance R",
+      "Relationship": "SVP, GC and Corp. Secretary",
+      "Date": "May 21 '25",
+      "Transaction": "Sale",
+      "Cost": "106.42",
+      "Shares": "4,826",
+      "Value": "513,583"
+    },
+    {
+      "Owner": "VANCE BROWN",
+      "Relationship": "Officer",
+      "Date": "May 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "106.42",
+      "Shares": "4,826",
+      "Value": "513,583"
+    },
+    {
+      "Owner": "Sorenson John Bradley",
+      "Relationship": "EVP, Global Operations",
+      "Date": "May 02 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "4,204",
+      "Value": "0"
+    },
+    {
+      "Owner": "Sorenson John Bradley",
+      "Relationship": "EVP, Global Operations",
+      "Date": "May 05 '25",
+      "Transaction": "Sale",
+      "Cost": "104.54",
+      "Shares": "4,572",
+      "Value": "477,957"
+    },
+    {
+      "Owner": "Butcher Arthur C",
+      "Relationship": "EVP& Grp Pres, MedSurg & APAC",
+      "Date": "May 02 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,102",
+      "Value": "0"
+    },
+    {
+      "Owner": "Mahoney Michael F",
+      "Relationship": "Chairman, President & CEO",
+      "Date": "May 01 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "20.67",
+      "Shares": "105,619",
+      "Value": "2,183,161"
+    },
+    {
+      "Owner": "Mahoney Michael F",
+      "Relationship": "Chairman, President & CEO",
+      "Date": "May 01 '25",
+      "Transaction": "Sale",
+      "Cost": "102.48",
+      "Shares": "164,443",
+      "Value": "16,851,974"
+    },
+    {
+      "Owner": "Butcher Arthur C",
+      "Relationship": "EVP& Grp Pres, MedSurg & APAC",
+      "Date": "May 01 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "24.81",
+      "Shares": "17,314",
+      "Value": "429,515"
+    },
+    {
+      "Owner": "Butcher Arthur C",
+      "Relationship": "EVP& Grp Pres, MedSurg & APAC",
+      "Date": "May 01 '25",
+      "Transaction": "Sale",
+      "Cost": "102.06",
+      "Shares": "17,314",
+      "Value": "1,766,982"
+    },
+    {
+      "Owner": "JOHN B SORENSON",
+      "Relationship": "Officer",
+      "Date": "May 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "104.54",
+      "Shares": "4,572",
+      "Value": "477,957"
+    },
+    {
+      "Owner": "MICHAEL F MAHONEY",
+      "Relationship": "Officer",
+      "Date": "May 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "102.48",
+      "Shares": "164,443",
+      "Value": "16,851,966"
+    },
+    {
+      "Owner": "ARTHUR C BUTCHER",
+      "Relationship": "Officer",
+      "Date": "May 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "102.06",
+      "Shares": "17,314",
+      "Value": "1,766,981"
+    },
+    {
+      "Owner": "Brown Vance R",
+      "Relationship": "SVP, GC and Corp. Secretary",
+      "Date": "Apr 21 '25",
+      "Transaction": "Sale",
+      "Cost": "95.09",
+      "Shares": "4,826",
+      "Value": "458,904"
+    },
+    {
+      "Owner": "VANCE BROWN",
+      "Relationship": "Officer",
+      "Date": "Apr 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "95.09",
+      "Shares": "4,826",
+      "Value": "458,904"
+    },
+    {
+      "Owner": "Mahoney Michael F",
+      "Relationship": "Chairman, President & CEO",
+      "Date": "Apr 01 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "20.67",
+      "Shares": "105,618",
+      "Value": "2,183,144"
+    },
+    {
+      "Owner": "Mahoney Michael F",
+      "Relationship": "Chairman, President & CEO",
+      "Date": "Apr 01 '25",
+      "Transaction": "Sale",
+      "Cost": "100.01",
+      "Shares": "164,442",
+      "Value": "16,445,072"
+    },
+    {
+      "Owner": "MICHAEL F MAHONEY",
+      "Relationship": "Officer",
+      "Date": "Apr 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "100.01",
+      "Shares": "164,442",
+      "Value": "16,445,068"
+    },
+    {
+      "Owner": "Brown Vance R",
+      "Relationship": "SVP, GC and Corp. Secretary",
+      "Date": "Mar 21 '25",
+      "Transaction": "Sale",
+      "Cost": "100.85",
+      "Shares": "4,826",
+      "Value": "486,702"
+    },
+    {
+      "Owner": "VANCE BROWN",
+      "Relationship": "Officer",
+      "Date": "Mar 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "100.85",
+      "Shares": "4,826",
+      "Value": "486,702"
+    },
+    {
+      "Owner": "Woodworth Emily",
+      "Relationship": "SVP, Global Controller and CAO",
+      "Date": "Mar 03 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "37.50",
+      "Shares": "5,949",
+      "Value": "223,088"
+    },
+    {
+      "Owner": "Woodworth Emily",
+      "Relationship": "SVP, Global Controller and CAO",
+      "Date": "Mar 03 '25",
+      "Transaction": "Sale",
+      "Cost": "104.97",
+      "Shares": "7,149",
+      "Value": "750,465"
+    },
+    {
+      "Owner": "Woodworth Emily",
+      "Relationship": "SVP, Global Controller and CAO",
+      "Date": "Mar 04 '25",
+      "Transaction": "Sale",
+      "Cost": "104.63",
+      "Shares": "482",
+      "Value": "50,432"
+    },
+    {
+      "Owner": "Woodworth Emily",
+      "Relationship": "SVP, Global Controller and CAO",
+      "Date": "Feb 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "42.16",
+      "Shares": "7,218",
+      "Value": "304,311"
+    },
+    {
+      "Owner": "Woodworth Emily",
+      "Relationship": "SVP, Global Controller and CAO",
+      "Date": "Mar 01 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "837",
+      "Value": "0"
+    },
+    {
+      "Owner": "Woodworth Emily",
+      "Relationship": "SVP, Global Controller and CAO",
+      "Date": "Feb 28 '25",
+      "Transaction": "Sale",
+      "Cost": "101.13",
+      "Shares": "9,887",
+      "Value": "999,872"
+    },
+    {
+      "Owner": "Mirviss Jeffrey B.",
+      "Relationship": "EVP&Pres, Periph Intervent",
+      "Date": "Feb 24 '25",
+      "Transaction": "Sale",
+      "Cost": "104.25",
+      "Shares": "4,675",
+      "Value": "487,369"
+    },
+    {
+      "Owner": "Mirviss Jeffrey B.",
+      "Relationship": "EVP&Pres, Periph Intervent",
+      "Date": "Feb 25 '25",
+      "Transaction": "Sale",
+      "Cost": "104.00",
+      "Shares": "2,688",
+      "Value": "279,552"
+    },
+    {
+      "Owner": "JEFFREY B MIRVISS",
+      "Relationship": "Officer",
+      "Date": "Feb 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "104.00",
+      "Shares": "2,688",
+      "Value": "279,552"
+    },
+    {
+      "Owner": "Zane Ellen M",
+      "Relationship": "Director",
+      "Date": "Feb 24 '25",
+      "Transaction": "Sale",
+      "Cost": "104.23",
+      "Shares": "13,586",
+      "Value": "1,416,134"
+    },
+    {
+      "Owner": "JEFFREY B MIRVISS",
+      "Relationship": "Officer",
+      "Date": "Feb 24 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "104.25",
+      "Shares": "4,675",
+      "Value": "487,369"
+    },
+    {
+      "Owner": "Zane Ellen M",
+      "Relationship": "Director",
+      "Date": "Feb 24 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "104.23",
+      "Shares": "13,586",
+      "Value": "1,416,088"
+    },
+    {
+      "Owner": "Brown Vance R",
+      "Relationship": "SVP, GC and Corp. Secretary",
+      "Date": "Feb 21 '25",
+      "Transaction": "Sale",
+      "Cost": "104.64",
+      "Shares": "4,826",
+      "Value": "504,993"
+    },
+    {
+      "Owner": "VANCE BROWN",
+      "Relationship": "Officer",
+      "Date": "Feb 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "104.64",
+      "Shares": "4,826",
+      "Value": "504,993"
+    },
+    {
+      "Owner": "Sorenson John Bradley",
+      "Relationship": "EVP, Global Operations",
+      "Date": "Feb 19 '25",
+      "Transaction": "Sale",
+      "Cost": "105.19",
+      "Shares": "3,303",
+      "Value": "347,443"
+    },
+    {
+      "Owner": "Sorenson John Bradley",
+      "Relationship": "EVP, Global Operations",
+      "Date": "Feb 18 '25",
+      "Transaction": "Sale",
+      "Cost": "104.41",
+      "Shares": "2,657",
+      "Value": "277,417"
+    },
+    {
+      "Owner": "Mirviss Jeffrey B.",
+      "Relationship": "EVP&Pres, Periph Intervent",
+      "Date": "Feb 19 '25",
+      "Transaction": "Sale",
+      "Cost": "105.35",
+      "Shares": "1,510",
+      "Value": "159,078"
+    },
+    {
+      "Owner": "Brennan Daniel J.",
+      "Relationship": "EVP and CFO",
+      "Date": "Feb 19 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "25.61",
+      "Shares": "60,523",
+      "Value": "1,550,275"
+    },
+    {
+      "Owner": "Brennan Daniel J.",
+      "Relationship": "EVP and CFO",
+      "Date": "Feb 19 '25",
+      "Transaction": "Sale",
+      "Cost": "105.24",
+      "Shares": "67,333",
+      "Value": "7,086,111"
+    },
+    {
+      "Owner": "Brennan Daniel J.",
+      "Relationship": "EVP and CFO",
+      "Date": "Feb 18 '25",
+      "Transaction": "Sale",
+      "Cost": "104.57",
+      "Shares": "17,530",
+      "Value": "1,833,184"
+    },
+    {
+      "Owner": "DANIEL BRENNAN",
+      "Relationship": "Officer",
+      "Date": "Feb 19 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "105.24",
+      "Shares": "67,333",
+      "Value": "7,086,109"
+    },
+    {
+      "Owner": "JEFFREY B MIRVISS",
+      "Relationship": "Officer",
+      "Date": "Feb 19 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "105.35",
+      "Shares": "1,510",
+      "Value": "159,078"
+    },
+    {
+      "Owner": "JOHN B SORENSON",
+      "Relationship": "Officer",
+      "Date": "Feb 19 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "105.19",
+      "Shares": "3,303",
+      "Value": "347,443"
+    },
+    {
+      "Owner": "Woodworth Emily",
+      "Relationship": "SVP, Global Controller and CAO",
+      "Date": "Feb 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "667",
+      "Value": "0"
+    },
+    {
+      "Owner": "Woodworth Emily",
+      "Relationship": "SVP, Global Controller and CAO",
+      "Date": "Feb 16 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "636",
+      "Value": "0"
+    },
+    {
+      "Owner": "Woodworth Emily",
+      "Relationship": "SVP, Global Controller and CAO",
+      "Date": "Feb 14 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "661",
+      "Value": "0"
+    },
+    {
+      "Owner": "Sorenson John Bradley",
+      "Relationship": "EVP, Global Operations",
+      "Date": "Feb 14 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,115",
+      "Value": "0"
+    },
+    {
+      "Owner": "Sorenson John Bradley",
+      "Relationship": "EVP, Global Operations",
+      "Date": "Feb 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,500",
+      "Value": "0"
+    },
+    {
+      "Owner": "Sorenson John Bradley",
+      "Relationship": "EVP, Global Operations",
+      "Date": "Feb 16 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,273",
+      "Value": "0"
+    },
+    {
+      "Owner": "Sorenson John Bradley",
+      "Relationship": "EVP, Global Operations",
+      "Date": "Feb 14 '25",
+      "Transaction": "Sale",
+      "Cost": "106.31",
+      "Shares": "1,201",
+      "Value": "127,678"
+    },
+    {
+      "Owner": "O'Sullivan Miriam",
+      "Relationship": "SVP, Chief HR Officer",
+      "Date": "Feb 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "100",
+      "Value": "0"
+    },
+    {
+      "Owner": "O'Sullivan Miriam",
+      "Relationship": "SVP, Chief HR Officer",
+      "Date": "Feb 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,000",
+      "Value": "0"
+    },
+    {
+      "Owner": "O'Sullivan Miriam",
+      "Relationship": "SVP, Chief HR Officer",
+      "Date": "Feb 16 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "85",
+      "Value": "0"
+    },
+    {
+      "Owner": "O'Sullivan Miriam",
+      "Relationship": "SVP, Chief HR Officer",
+      "Date": "Feb 16 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "990",
+      "Value": "0"
+    },
+    {
+      "Owner": "O'Sullivan Miriam",
+      "Relationship": "SVP, Chief HR Officer",
+      "Date": "Feb 14 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "106",
+      "Value": "0"
+    },
+    {
+      "Owner": "O'Sullivan Miriam",
+      "Relationship": "SVP, Chief HR Officer",
+      "Date": "Feb 14 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,123",
+      "Value": "0"
+    },
+    {
+      "Owner": "Mirviss Jeffrey B.",
+      "Relationship": "EVP&Pres, Periph Intervent",
+      "Date": "Feb 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "3,334",
+      "Value": "0"
+    },
+    {
+      "Owner": "Mirviss Jeffrey B.",
+      "Relationship": "EVP&Pres, Periph Intervent",
+      "Date": "Feb 16 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,970",
+      "Value": "0"
+    },
+    {
+      "Owner": "Mirviss Jeffrey B.",
+      "Relationship": "EVP&Pres, Periph Intervent",
+      "Date": "Feb 14 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,776",
+      "Value": "0"
+    },
+    {
+      "Owner": "Mahoney Michael F",
+      "Relationship": "Chairman, President & CEO",
+      "Date": "Feb 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "18,334",
+      "Value": "0"
+    },
+    {
+      "Owner": "Mahoney Michael F",
+      "Relationship": "Chairman, President & CEO",
+      "Date": "Feb 16 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "16,265",
+      "Value": "0"
+    },
+    {
+      "Owner": "Mahoney Michael F",
+      "Relationship": "Chairman, President & CEO",
+      "Date": "Feb 14 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "16,524",
+      "Value": "0"
+    },
+    {
+      "Owner": "Fitzgerald Joseph Michael",
+      "Relationship": "EVP & Group Pres, Cardiology",
+      "Date": "Feb 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "4,167",
+      "Value": "0"
+    },
+    {
+      "Owner": "Fitzgerald Joseph Michael",
+      "Relationship": "EVP & Group Pres, Cardiology",
+      "Date": "Feb 16 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "3,960",
+      "Value": "0"
+    },
+    {
+      "Owner": "Fitzgerald Joseph Michael",
+      "Relationship": "EVP & Group Pres, Cardiology",
+      "Date": "Feb 14 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "4,362",
+      "Value": "0"
+    },
+    {
+      "Owner": "Butcher Arthur C",
+      "Relationship": "EVP& Grp Pres, MedSurg & APAC",
+      "Date": "Feb 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,834",
+      "Value": "0"
+    },
+    {
+      "Owner": "Butcher Arthur C",
+      "Relationship": "EVP& Grp Pres, MedSurg & APAC",
+      "Date": "Feb 16 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,546",
+      "Value": "0"
+    },
+    {
+      "Owner": "Butcher Arthur C",
+      "Relationship": "EVP& Grp Pres, MedSurg & APAC",
+      "Date": "Feb 14 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "3,172",
+      "Value": "0"
+    },
+    {
+      "Owner": "Brown Vance R",
+      "Relationship": "SVP, GC and Corp. Secretary",
+      "Date": "Feb 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,000",
+      "Value": "0"
+    },
+    {
+      "Owner": "Brown Vance R",
+      "Relationship": "SVP, GC and Corp. Secretary",
+      "Date": "Feb 16 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,839",
+      "Value": "0"
+    },
+    {
+      "Owner": "Brown Vance R",
+      "Relationship": "SVP, GC and Corp. Secretary",
+      "Date": "Feb 14 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,850",
+      "Value": "0"
+    },
+    {
+      "Owner": "Brennan Daniel J.",
+      "Relationship": "EVP and CFO",
+      "Date": "Feb 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "4,584",
+      "Value": "0"
+    }
+  ],
+  "Dividends": []
+}

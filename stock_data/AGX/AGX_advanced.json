@@ -1,0 +1,988 @@
+{
+  "Index": "RUT",
+  "P/E": "30.83",
+  "EPS (ttm)": "8.31",
+  "Insider Own": "4.25%",
+  "Shs Outstand": "13.81M",
+  "Perf Week": "-2.33%",
+  "Market Cap": "3.54B",
+  "Forward P/E": "30.19",
+  "EPS next Y": "7.84%",
+  "Insider Trans": "-28.07%",
+  "Shs Float": "13.24M",
+  "Perf Month": "10.13%",
+  "Enterprise Value": "2.97B",
+  "PEG": "1.75",
+  "EPS next Q": "1.77",
+  "Inst Own": "88.10%",
+  "Short Float": "5.25%",
+  "Perf Quarter": "16.05%",
+  "Income": "117.20M",
+  "P/S": "3.84",
+  "EPS this Y": "27.91%",
+  "Inst Trans": "2.88%",
+  "Short Ratio": "1.76",
+  "Perf Half Y": "85.62%",
+  "Sales": "920.88M",
+  "P/B": "9.00",
+  "ROA": "14.57%",
+  "Short Interest": "5.25%",
+  "Perf YTD": "86.92%",
+  "Book/sh": "28.47",
+  "P/C": "6.18",
+  "EPS next 5Y": "17.61%",
+  "ROE": "33.43%",
+  "52W High": "283.35 -9.60%",
+  "Perf Year": "137.59%",
+  "Cash/sh": "41.43",
+  "P/FCF": "25.22",
+  "EPS past 3/5Y": "36.75% -",
+  "ROIC": "29.81%",
+  "52W Low": "101.02 153.56%",
+  "Perf 3Y": "677.63%",
+  "Dividend Est.": "1.50 (0.59%)",
+  "EV/EBITDA": "24.25",
+  "Sales past 3/5Y": "19.73% 29.61%",
+  "Gross Margin": "18.66%",
+  "Volatility": "5.42% 4.94%",
+  "Perf 5Y": "492.38%",
+  "Dividend TTM": "1.50 (0.59%)",
+  "EV/Sales": "3.22",
+  "EPS Y/Y TTM": "163.46%",
+  "Oper. Margin": "12.81%",
+  "ATR (14)": "13.62",
+  "Perf 10Y": "666.97%",
+  "Dividend Ex-Date": "Oct 23, 2025",
+  "Quick Ratio": "1.71",
+  "Sales Y/Y TTM": "29.16%",
+  "Profit Margin": "12.73%",
+  "RSI (14)": "50.05",
+  "Recom": "2.50",
+  "Dividend Gr. 3/5Y": "10.52% 6.19%",
+  "Current Ratio": "1.71",
+  "EPS Q/Q": "90.40%",
+  "SMA20": "-2.44%",
+  "Beta": "0.63",
+  "Target Price": "241.50",
+  "Payout": "21.97%",
+  "Debt/Eq": "0.01",
+  "Sales Q/Q": "4.73%",
+  "SMA50": "6.36%",
+  "Rel Volume": "0.88",
+  "Prev Close": "270.09",
+  "Employees": "1595",
+  "LT Debt/Eq": "0.00",
+  "Earnings": "Sep 04 AMC",
+  "SMA200": "37.66%",
+  "Avg Volume": "394.67K",
+  "Price": "256.15",
+  "IPO": "Oct 13, 1995",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "52.52% -2.52%",
+  "Trades": "",
+  "Volume": "349,268",
+  "Change": "-5.16%",
+  "Insider Trading": [
+    {
+      "Owner": "Watson David Hibbert",
+      "Relationship": "PRESIDENT AND CEO",
+      "Date": "Oct 09 '25",
+      "Transaction": "Sale",
+      "Cost": "277.01",
+      "Shares": "4,441",
+      "Value": "1,230,201"
+    },
+    {
+      "Owner": "Watson David Hibbert",
+      "Relationship": "PRESIDENT AND CEO",
+      "Date": "Oct 09 '25",
+      "Transaction": "Sale",
+      "Cost": "272.27",
+      "Shares": "559",
+      "Value": "152,199"
+    },
+    {
+      "Owner": "David Hibbert Watson",
+      "Relationship": "Officer",
+      "Date": "Oct 09 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "280.49",
+      "Shares": "4,441",
+      "Value": "1,245,656"
+    },
+    {
+      "Owner": "Flanders Cynthia",
+      "Relationship": "Director",
+      "Date": "Oct 08 '25",
+      "Transaction": "Sale",
+      "Cost": "271.96",
+      "Shares": "15,000",
+      "Value": "4,079,400"
+    },
+    {
+      "Owner": "Collins Charles Edwin IV",
+      "Relationship": "CHIEF EXECUTIVE OFFICER, GEMMA",
+      "Date": "Oct 01 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "43.10",
+      "Shares": "5,000",
+      "Value": "215,500"
+    },
+    {
+      "Owner": "Collins Charles Edwin IV",
+      "Relationship": "CHIEF EXECUTIVE OFFICER, GEMMA",
+      "Date": "Oct 01 '25",
+      "Transaction": "Sale",
+      "Cost": "275.00",
+      "Shares": "5,000",
+      "Value": "1,375,000"
+    },
+    {
+      "Owner": "Cynthia A Flanders",
+      "Relationship": "Officer",
+      "Date": "Oct 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "279.09",
+      "Shares": "15,000",
+      "Value": "4,186,350"
+    },
+    {
+      "Owner": "QUINN JAMES W",
+      "Relationship": "Director",
+      "Date": "Sep 30 '25",
+      "Transaction": "Sale",
+      "Cost": "269.12",
+      "Shares": "13,444",
+      "Value": "3,618,049"
+    },
+    {
+      "Owner": "Leimkuhler William F.",
+      "Relationship": "Director",
+      "Date": "Oct 01 '25",
+      "Transaction": "Sale",
+      "Cost": "274.73",
+      "Shares": "11,802",
+      "Value": "3,242,363"
+    },
+    {
+      "Owner": "Jeffrey John Ronald Jr.",
+      "Relationship": "Director",
+      "Date": "Sep 29 '25",
+      "Transaction": "Sale",
+      "Cost": "268.60",
+      "Shares": "4,698",
+      "Value": "1,261,883"
+    },
+    {
+      "Owner": "James W Quinn",
+      "Relationship": "Director",
+      "Date": "Sep 30 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "272.82",
+      "Shares": "13,444",
+      "Value": "3,667,792"
+    },
+    {
+      "Owner": "Leimkuhler William F.",
+      "Relationship": "Director",
+      "Date": "Sep 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "273.59",
+      "Shares": "11,802",
+      "Value": "3,228,909"
+    },
+    {
+      "Owner": "John Ronald Jeffrey Jr.",
+      "Relationship": "Director",
+      "Date": "Sep 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "272.82",
+      "Shares": "4,698",
+      "Value": "1,281,708"
+    },
+    {
+      "Owner": "Collins Charles Edwin IV",
+      "Relationship": "CHIEF EXECUTIVE OFFICER, GEMMA",
+      "Date": "Sep 24 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "43.10",
+      "Shares": "5,000",
+      "Value": "215,500"
+    },
+    {
+      "Owner": "Collins Charles Edwin IV",
+      "Relationship": "CHIEF EXECUTIVE OFFICER, GEMMA",
+      "Date": "Sep 24 '25",
+      "Transaction": "Sale",
+      "Cost": "267.00",
+      "Shares": "5,000",
+      "Value": "1,335,000"
+    },
+    {
+      "Owner": "Getsinger Peter W",
+      "Relationship": "Director",
+      "Date": "Sep 19 '25",
+      "Transaction": "Sale",
+      "Cost": "264.54",
+      "Shares": "1,000",
+      "Value": "264,540"
+    },
+    {
+      "Owner": "Sweeney Karen",
+      "Relationship": "Director",
+      "Date": "Sep 19 '25",
+      "Transaction": "Sale",
+      "Cost": "264.25",
+      "Shares": "390",
+      "Value": "103,058"
+    },
+    {
+      "Owner": "QUINN JAMES W",
+      "Relationship": "Director",
+      "Date": "Sep 19 '25",
+      "Transaction": "Sale",
+      "Cost": "260.73",
+      "Shares": "11,897",
+      "Value": "3,101,905"
+    },
+    {
+      "Owner": "QUINN JAMES W",
+      "Relationship": "Director",
+      "Date": "Sep 22 '25",
+      "Transaction": "Sale",
+      "Cost": "259.35",
+      "Shares": "4,660",
+      "Value": "1,208,571"
+    },
+    {
+      "Owner": "Collins Charles Edwin IV",
+      "Relationship": "CHIEF EXECUTIVE OFFICER, GEMMA",
+      "Date": "Sep 18 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "43.10",
+      "Shares": "7,500",
+      "Value": "323,250"
+    },
+    {
+      "Owner": "Collins Charles Edwin IV",
+      "Relationship": "CHIEF EXECUTIVE OFFICER, GEMMA",
+      "Date": "Sep 18 '25",
+      "Transaction": "Sale",
+      "Cost": "257.39",
+      "Shares": "7,500",
+      "Value": "1,930,425"
+    },
+    {
+      "Owner": "PETER W. GETSINGER",
+      "Relationship": "Director",
+      "Date": "Sep 19 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "264.54",
+      "Shares": "1,000",
+      "Value": "264,535"
+    },
+    {
+      "Owner": "James W Quinn",
+      "Relationship": "Director",
+      "Date": "Sep 19 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "259.58",
+      "Shares": "16,557",
+      "Value": "4,297,866"
+    },
+    {
+      "Owner": "KAREN   SWEENEY",
+      "Relationship": "Director",
+      "Date": "Sep 19 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "264.14",
+      "Shares": "390",
+      "Value": "103,015"
+    },
+    {
+      "Owner": "Charles Edwin Collins IV",
+      "Relationship": "Officer",
+      "Date": "Sep 18 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "242.00",
+      "Shares": "49,401",
+      "Value": "11,955,042"
+    },
+    {
+      "Owner": "Getsinger Peter W",
+      "Relationship": "Director",
+      "Date": "Sep 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "30.44",
+      "Shares": "2,609",
+      "Value": "79,418"
+    },
+    {
+      "Owner": "Getsinger Peter W",
+      "Relationship": "Director",
+      "Date": "Sep 17 '25",
+      "Transaction": "Sale",
+      "Cost": "239.68",
+      "Shares": "2,609",
+      "Value": "625,325"
+    },
+    {
+      "Owner": "PETER W. GETSINGER",
+      "Relationship": "Director",
+      "Date": "Sep 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "239.68",
+      "Shares": "2,609",
+      "Value": "625,325"
+    },
+    {
+      "Owner": "Collins Charles Edwin IV",
+      "Relationship": "CHIEF EXECUTIVE OFFICER, GEMMA",
+      "Date": "Jul 31 '25",
+      "Transaction": "Sale",
+      "Cost": "245.00",
+      "Shares": "5,000",
+      "Value": "1,225,000"
+    },
+    {
+      "Owner": "Collins Charles Edwin IV",
+      "Relationship": "CHIEF EXECUTIVE OFFICER, GEMMA",
+      "Date": "Jul 29 '25",
+      "Transaction": "Sale",
+      "Cost": "241.50",
+      "Shares": "1,500",
+      "Value": "362,250"
+    },
+    {
+      "Owner": "Deily Richard H",
+      "Relationship": "Compliance Officer, Former CFO",
+      "Date": "Jul 30 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "36.78",
+      "Shares": "1,604",
+      "Value": "58,995"
+    },
+    {
+      "Owner": "Deily Richard H",
+      "Relationship": "Compliance Officer, Former CFO",
+      "Date": "Jul 31 '25",
+      "Transaction": "Sale",
+      "Cost": "242.77",
+      "Shares": "1,604",
+      "Value": "389,403"
+    },
+    {
+      "Owner": "Jeffrey John Ronald Jr.",
+      "Relationship": "Director",
+      "Date": "Jul 29 '25",
+      "Transaction": "Sale",
+      "Cost": "235.63",
+      "Shares": "2,621",
+      "Value": "617,586"
+    },
+    {
+      "Owner": "Richard H Deily",
+      "Relationship": "Officer",
+      "Date": "Jul 31 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "240.00",
+      "Shares": "1,604",
+      "Value": "384,960"
+    },
+    {
+      "Owner": "Flanders Cynthia",
+      "Relationship": "Director",
+      "Date": "Jul 30 '25",
+      "Transaction": "Sale",
+      "Cost": "234.56",
+      "Shares": "2,000",
+      "Value": "469,120"
+    },
+    {
+      "Owner": "John Ronald Jeffrey Jr.",
+      "Relationship": "Director",
+      "Date": "Jul 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "238.00",
+      "Shares": "2,621",
+      "Value": "623,798"
+    },
+    {
+      "Owner": "Getsinger Peter W",
+      "Relationship": "Director",
+      "Date": "Jun 26 '25",
+      "Transaction": "Sale",
+      "Cost": "212.01",
+      "Shares": "3,456",
+      "Value": "732,707"
+    },
+    {
+      "Owner": "Leimkuhler William F.",
+      "Relationship": "Director",
+      "Date": "Jun 30 '25",
+      "Transaction": "Sale",
+      "Cost": "222.03",
+      "Shares": "7,604",
+      "Value": "1,688,316"
+    },
+    {
+      "Owner": "Leimkuhler William F.",
+      "Relationship": "Director",
+      "Date": "Jun 27 '25",
+      "Transaction": "Sale",
+      "Cost": "221.25",
+      "Shares": "4,051",
+      "Value": "896,284"
+    },
+    {
+      "Owner": "PETER W. GETSINGER",
+      "Relationship": "Director",
+      "Date": "Jun 26 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "212.01",
+      "Shares": "3,465",
+      "Value": "734,631"
+    },
+    {
+      "Owner": "Getsinger Peter W",
+      "Relationship": "Director",
+      "Date": "Jun 23 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "71.75",
+      "Shares": "6,465",
+      "Value": "463,864"
+    },
+    {
+      "Owner": "Sweeney Karen",
+      "Relationship": "Director",
+      "Date": "Jun 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,315",
+      "Value": "0"
+    },
+    {
+      "Owner": "Flanders Cynthia",
+      "Relationship": "Director",
+      "Date": "Jun 12 '25",
+      "Transaction": "Sale",
+      "Cost": "220.47",
+      "Shares": "15,000",
+      "Value": "3,307,050"
+    },
+    {
+      "Owner": "Getsinger Peter W",
+      "Relationship": "Director",
+      "Date": "Jun 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "390",
+      "Value": "0"
+    },
+    {
+      "Owner": "Sweeney Karen",
+      "Relationship": "Director",
+      "Date": "Jun 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "390",
+      "Value": "0"
+    },
+    {
+      "Owner": "Flanders Cynthia",
+      "Relationship": "Officer",
+      "Date": "Jun 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "200.00",
+      "Shares": "15,000",
+      "Value": "3,000,000"
+    },
+    {
+      "Owner": "BOSSELMANN RAINER H",
+      "Relationship": "Director",
+      "Date": "Jun 09 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "36.78",
+      "Shares": "1,844",
+      "Value": "67,822"
+    },
+    {
+      "Owner": "BOSSELMANN RAINER H",
+      "Relationship": "Director",
+      "Date": "Jun 11 '25",
+      "Transaction": "Sale",
+      "Cost": "221.58",
+      "Shares": "13,728",
+      "Value": "3,041,850"
+    },
+    {
+      "Owner": "QUINN JAMES W",
+      "Relationship": "Director",
+      "Date": "Jun 09 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "44.04",
+      "Shares": "56,167",
+      "Value": "2,473,395"
+    },
+    {
+      "Owner": "QUINN JAMES W",
+      "Relationship": "Director",
+      "Date": "Jun 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "390",
+      "Value": "0"
+    },
+    {
+      "Owner": "QUINN JAMES W",
+      "Relationship": "Director",
+      "Date": "Jun 10 '25",
+      "Transaction": "Sale",
+      "Cost": "207.92",
+      "Shares": "40,000",
+      "Value": "8,316,800"
+    },
+    {
+      "Owner": "Watson David Hibbert",
+      "Relationship": "PRESIDENT AND CEO",
+      "Date": "Jun 09 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "40.83",
+      "Shares": "3,496",
+      "Value": "142,727"
+    },
+    {
+      "Owner": "Watson David Hibbert",
+      "Relationship": "PRESIDENT AND CEO",
+      "Date": "Jun 11 '25",
+      "Transaction": "Sale",
+      "Cost": "211.02",
+      "Shares": "17,969",
+      "Value": "3,791,818"
+    },
+    {
+      "Owner": "Watson David Hibbert",
+      "Relationship": "PRESIDENT AND CEO",
+      "Date": "Jun 09 '25",
+      "Transaction": "Sale",
+      "Cost": "230.38",
+      "Shares": "2,031",
+      "Value": "467,902"
+    },
+    {
+      "Owner": "Flanders Cynthia",
+      "Relationship": "Director",
+      "Date": "Jun 09 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "46.26",
+      "Shares": "32,206",
+      "Value": "1,489,828"
+    },
+    {
+      "Owner": "Flanders Cynthia",
+      "Relationship": "Director",
+      "Date": "Jun 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "390",
+      "Value": "0"
+    },
+    {
+      "Owner": "Collins Charles Edwin IV",
+      "Relationship": "CHIEF EXECUTIVE OFFICER, GEMMA",
+      "Date": "Jun 09 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "52.23",
+      "Shares": "1,265",
+      "Value": "66,068"
+    },
+    {
+      "Owner": "Collins Charles Edwin IV",
+      "Relationship": "CHIEF EXECUTIVE OFFICER, GEMMA",
+      "Date": "Jun 09 '25",
+      "Transaction": "Sale",
+      "Cost": "241.29",
+      "Shares": "1,265",
+      "Value": "305,232"
+    },
+    {
+      "Owner": "Jeffrey John Ronald Jr.",
+      "Relationship": "Director",
+      "Date": "Jun 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "390",
+      "Value": "0"
+    },
+    {
+      "Owner": "Jeffrey John Ronald Jr.",
+      "Relationship": "Director",
+      "Date": "Jun 09 '25",
+      "Transaction": "Sale",
+      "Cost": "217.79",
+      "Shares": "5,500",
+      "Value": "1,197,845"
+    },
+    {
+      "Owner": "Leimkuhler William F.",
+      "Relationship": "Director",
+      "Date": "Jun 09 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "52.16",
+      "Shares": "23,457",
+      "Value": "1,223,509"
+    },
+    {
+      "Owner": "Leimkuhler William F.",
+      "Relationship": "Director",
+      "Date": "Jun 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "390",
+      "Value": "0"
+    },
+    {
+      "Owner": "Leimkuhler William F.",
+      "Relationship": "Director",
+      "Date": "Jun 11 '25",
+      "Transaction": "Sale",
+      "Cost": "219.31",
+      "Shares": "8,345",
+      "Value": "1,830,142"
+    },
+    {
+      "Owner": "Leimkuhler William F.",
+      "Relationship": "Director",
+      "Date": "Jun 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "209.45",
+      "Shares": "20,000",
+      "Value": "4,189,000"
+    },
+    {
+      "Owner": "Charles Edwin Collins IV",
+      "Relationship": "Officer",
+      "Date": "Jun 09 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "243.48",
+      "Shares": "57,166",
+      "Value": "13,918,778"
+    },
+    {
+      "Owner": "James W Quinn",
+      "Relationship": "Director",
+      "Date": "Jun 09 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "243.11",
+      "Shares": "40,000",
+      "Value": "9,724,400"
+    },
+    {
+      "Owner": "David Hibbert Watson",
+      "Relationship": "Officer",
+      "Date": "Jun 09 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "243.11",
+      "Shares": "20,000",
+      "Value": "4,862,200"
+    },
+    {
+      "Owner": "John Ronald Jeffrey Jr.",
+      "Relationship": "Director",
+      "Date": "Jun 09 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "243.11",
+      "Shares": "5,500",
+      "Value": "1,337,105"
+    },
+    {
+      "Owner": "Rainer H Bosselmann",
+      "Relationship": "Director",
+      "Date": "Jun 09 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "243.11",
+      "Shares": "16,228",
+      "Value": "3,945,189"
+    },
+    {
+      "Owner": "Griffin William F Jr",
+      "Relationship": "GEMMA, NON-EXECUTIVE CHAIRMAN",
+      "Date": "Apr 18 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "3,371",
+      "Value": "0"
+    },
+    {
+      "Owner": "Baugher Joshua Scott",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Apr 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "322",
+      "Value": "0"
+    },
+    {
+      "Owner": "Baugher Joshua Scott",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Apr 16 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "538",
+      "Value": "0"
+    },
+    {
+      "Owner": "Deily Richard H",
+      "Relationship": "Compliance Officer, Former CFO",
+      "Date": "Apr 30 '25",
+      "Transaction": "Sale",
+      "Cost": "152.32",
+      "Shares": "1,565",
+      "Value": "238,381"
+    },
+    {
+      "Owner": "Richard H Deily",
+      "Relationship": "Former Officer",
+      "Date": "Apr 30 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "151.00",
+      "Shares": "1,565",
+      "Value": "236,315"
+    },
+    {
+      "Owner": "Collins Charles Edwin IV",
+      "Relationship": "CHIEF EXECUTIVE OFFICER, GEMMA",
+      "Date": "Apr 18 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "5,644",
+      "Value": "0"
+    },
+    {
+      "Owner": "Collins Charles Edwin IV",
+      "Relationship": "CHIEF EXECUTIVE OFFICER, GEMMA",
+      "Date": "Apr 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,769",
+      "Value": "0"
+    },
+    {
+      "Owner": "Collins Charles Edwin IV",
+      "Relationship": "CHIEF EXECUTIVE OFFICER, GEMMA",
+      "Date": "Apr 16 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,269",
+      "Value": "0"
+    },
+    {
+      "Owner": "BOSSELMANN RAINER H",
+      "Relationship": "Director",
+      "Date": "Apr 18 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "16,228",
+      "Value": "0"
+    },
+    {
+      "Owner": "Watson David Hibbert",
+      "Relationship": "PRESIDENT AND CEO",
+      "Date": "Apr 18 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "13,703",
+      "Value": "0"
+    },
+    {
+      "Owner": "Watson David Hibbert",
+      "Relationship": "PRESIDENT AND CEO",
+      "Date": "Apr 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,286",
+      "Value": "0"
+    },
+    {
+      "Owner": "Watson David Hibbert",
+      "Relationship": "PRESIDENT AND CEO",
+      "Date": "Apr 16 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,856",
+      "Value": "0"
+    },
+    {
+      "Owner": "Watson David Hibbert",
+      "Relationship": "PRESIDENT AND CEO",
+      "Date": "Dec 23 '24",
+      "Transaction": "Sale",
+      "Cost": "139.89",
+      "Shares": "500",
+      "Value": "69,945"
+    },
+    {
+      "Owner": "Getsinger Peter W",
+      "Relationship": "Director",
+      "Date": "Apr 14 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "45.75",
+      "Shares": "6,996",
+      "Value": "320,067"
+    },
+    {
+      "Owner": "Getsinger Peter W",
+      "Relationship": "Director",
+      "Date": "Apr 16 '25",
+      "Transaction": "Sale",
+      "Cost": "145.03",
+      "Shares": "5,000",
+      "Value": "725,150"
+    },
+    {
+      "Owner": "Getsinger Peter W",
+      "Relationship": "Director",
+      "Date": "Apr 14 '25",
+      "Transaction": "Sale",
+      "Cost": "150.35",
+      "Shares": "2,292",
+      "Value": "344,602"
+    },
+    {
+      "Owner": "PETER W. GETSINGER",
+      "Relationship": "Director",
+      "Date": "Apr 16 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "145.03",
+      "Shares": "5,000",
+      "Value": "725,169"
+    },
+    {
+      "Owner": "PETER W. GETSINGER",
+      "Relationship": "Director",
+      "Date": "Apr 14 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "150.35",
+      "Shares": "2,292",
+      "Value": "344,593"
+    },
+    {
+      "Owner": "Flanders Cynthia",
+      "Relationship": "Director",
+      "Date": "Apr 02 '25",
+      "Transaction": "Sale",
+      "Cost": "133.64",
+      "Shares": "4,092",
+      "Value": "546,855"
+    },
+    {
+      "Owner": "BOSSELMANN RAINER H",
+      "Relationship": "Director",
+      "Date": "Apr 01 '25",
+      "Transaction": "Sale",
+      "Cost": "129.35",
+      "Shares": "25,000",
+      "Value": "3,233,750"
+    },
+    {
+      "Owner": "Leimkuhler William F.",
+      "Relationship": "Director",
+      "Date": "Jan 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "30.44",
+      "Shares": "8,345",
+      "Value": "254,022"
+    },
+    {
+      "Owner": "Jeffrey John Ronald Jr.",
+      "Relationship": "Director",
+      "Date": "Jan 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "40.15",
+      "Shares": "7,731",
+      "Value": "310,400"
+    },
+    {
+      "Owner": "Rainer H Bosselmann",
+      "Relationship": "Director",
+      "Date": "Jan 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "184.00",
+      "Shares": "25,000",
+      "Value": "4,600,000"
+    },
+    {
+      "Owner": "Leimkuhler William F.",
+      "Relationship": "Director",
+      "Date": "Jan 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "180.11",
+      "Shares": "4,500",
+      "Value": "810,510"
+    },
+    {
+      "Owner": "Getsinger Peter W",
+      "Relationship": "Director",
+      "Date": "Jan 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "41.19",
+      "Shares": "7,385",
+      "Value": "304,188"
+    },
+    {
+      "Owner": "Getsinger Peter W",
+      "Relationship": "Director",
+      "Date": "Jan 14 '25",
+      "Transaction": "Sale",
+      "Cost": "165.29",
+      "Shares": "7,385",
+      "Value": "1,220,667"
+    },
+    {
+      "Owner": "Getsinger Peter W",
+      "Relationship": "Director",
+      "Date": "Jan 10 '25",
+      "Transaction": "Sale",
+      "Cost": "155.24",
+      "Shares": "800",
+      "Value": "124,192"
+    },
+    {
+      "Owner": "PETER W. GETSINGER",
+      "Relationship": "Director",
+      "Date": "Jan 14 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "165.30",
+      "Shares": "7,385",
+      "Value": "1,220,732"
+    },
+    {
+      "Owner": "Deily Richard H",
+      "Relationship": "Compliance Officer, Former CFO",
+      "Date": "Jan 08 '25",
+      "Transaction": "Sale",
+      "Cost": "150.00",
+      "Shares": "2,000",
+      "Value": "300,000"
+    },
+    {
+      "Owner": "PETER W. GETSINGER",
+      "Relationship": "Director",
+      "Date": "Jan 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "155.24",
+      "Shares": "800",
+      "Value": "124,192"
+    },
+    {
+      "Owner": "Richard H Deily",
+      "Relationship": "Officer",
+      "Date": "Jan 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "158.74",
+      "Shares": "2,000",
+      "Value": "317,480"
+    }
+  ],
+  "Dividends": []
+}

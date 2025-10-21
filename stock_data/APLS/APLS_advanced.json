@@ -1,0 +1,988 @@
+{
+  "Index": "-",
+  "P/E": "-",
+  "EPS (ttm)": "-1.82",
+  "Insider Own": "17.37%",
+  "Shs Outstand": "126.19M",
+  "Perf Week": "5.55%",
+  "Market Cap": "3.17B",
+  "Forward P/E": "-",
+  "EPS next Y": "-390.73%",
+  "Insider Trans": "-2.36%",
+  "Shs Float": "104.36M",
+  "Perf Month": "-1.10%",
+  "Enterprise Value": "3.27B",
+  "PEG": "-",
+  "EPS next Q": "1.55",
+  "Inst Own": "101.13%",
+  "Short Float": "20.17%",
+  "Perf Quarter": "26.17%",
+  "Income": "-228.17M",
+  "P/S": "4.20",
+  "EPS this Y": "119.51%",
+  "Inst Trans": "1.54%",
+  "Short Ratio": "8.56",
+  "Perf Half Y": "33.69%",
+  "Sales": "754.65M",
+  "P/B": "20.28",
+  "ROA": "-26.44%",
+  "Short Interest": "20.17%",
+  "Perf YTD": "-21.28%",
+  "Book/sh": "1.24",
+  "P/C": "8.54",
+  "EPS next 5Y": "-",
+  "ROE": "-108.49%",
+  "52W High": "35.72 -29.68%",
+  "Perf Year": "-8.32%",
+  "Cash/sh": "2.94",
+  "P/FCF": "719.37",
+  "EPS past 3/5Y": "43.47% 20.08%",
+  "ROIC": "-36.88%",
+  "52W Low": "16.10 56.02%",
+  "Perf 3Y": "-56.46%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "-",
+  "Sales past 3/5Y": "127.27% -",
+  "Gross Margin": "83.60%",
+  "Volatility": "4.96% 3.97%",
+  "Perf 5Y": "-23.90%",
+  "Dividend TTM": "-",
+  "EV/Sales": "4.33",
+  "EPS Y/Y TTM": "33.45%",
+  "Oper. Margin": "-25.18%",
+  "ATR (14)": "1.00",
+  "Perf 10Y": "-",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "3.16",
+  "Sales Y/Y TTM": "20.02%",
+  "Profit Margin": "-30.24%",
+  "RSI (14)": "55.94",
+  "Recom": "2.05",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "3.77",
+  "EPS Q/Q": "-10.07%",
+  "SMA20": "6.35%",
+  "Beta": "0.69",
+  "Target Price": "37.44",
+  "Payout": "-",
+  "Debt/Eq": "3.01",
+  "Sales Q/Q": "-10.61%",
+  "SMA50": "-0.65%",
+  "Rel Volume": "0.54",
+  "Prev Close": "25.73",
+  "Employees": "710",
+  "LT Debt/Eq": "2.96",
+  "Earnings": "Jul 31 BMO",
+  "SMA200": "7.14%",
+  "Avg Volume": "2.46M",
+  "Price": "25.12",
+  "IPO": "Nov 09, 2017",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "29.11% -7.59%",
+  "Trades": "",
+  "Volume": "1,330,545",
+  "Change": "-2.37%",
+  "Insider Trading": [
+    {
+      "Owner": "Dunlop A. Sinclair",
+      "Relationship": "Director",
+      "Date": "Sep 30 '25",
+      "Transaction": "Sale",
+      "Cost": "22.58",
+      "Shares": "31,092",
+      "Value": "702,057"
+    },
+    {
+      "Owner": "Dunlop A. Sinclair",
+      "Relationship": "Director",
+      "Date": "Sep 19 '25",
+      "Transaction": "Sale",
+      "Cost": "22.95",
+      "Shares": "31,092",
+      "Value": "713,561"
+    },
+    {
+      "Owner": "Dunlop A. Sinclair",
+      "Relationship": "Director",
+      "Date": "Sep 19 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "22.95",
+      "Shares": "93,276",
+      "Value": "2,140,917"
+    },
+    {
+      "Owner": "Watson David O.",
+      "Relationship": "General Counsel",
+      "Date": "Sep 16 '25",
+      "Transaction": "Sale",
+      "Cost": "24.34",
+      "Shares": "5,000",
+      "Value": "121,700"
+    },
+    {
+      "Owner": "Chopas James George",
+      "Relationship": "VP/Chief Accounting Officer",
+      "Date": "Sep 15 '25",
+      "Transaction": "Sale",
+      "Cost": "24.19",
+      "Shares": "189",
+      "Value": "4,572"
+    },
+    {
+      "Owner": "Watson David O.",
+      "Relationship": "Officer",
+      "Date": "Sep 16 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "24.34",
+      "Shares": "5,000",
+      "Value": "121,700"
+    },
+    {
+      "Owner": "Chopas James George",
+      "Relationship": "Officer",
+      "Date": "Sep 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "24.19",
+      "Shares": "189",
+      "Value": "4,572"
+    },
+    {
+      "Owner": "Watson David O.",
+      "Relationship": "General Counsel",
+      "Date": "Sep 10 '25",
+      "Transaction": "Sale",
+      "Cost": "26.17",
+      "Shares": "20,000",
+      "Value": "523,400"
+    },
+    {
+      "Owner": "THE DAVID O WATSON IRREV TR OF",
+      "Relationship": "Officer",
+      "Date": "Sep 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "26.17",
+      "Shares": "20,000",
+      "Value": "523,436"
+    },
+    {
+      "Owner": "Sullivan Timothy Eugene",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Sep 08 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "10.03",
+      "Shares": "15,000",
+      "Value": "150,450"
+    },
+    {
+      "Owner": "Sullivan Timothy Eugene",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Sep 08 '25",
+      "Transaction": "Sale",
+      "Cost": "27.86",
+      "Shares": "32,729",
+      "Value": "911,830"
+    },
+    {
+      "Owner": "Sullivan Timothy Eugene",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Sep 08 '25",
+      "Transaction": "Sale",
+      "Cost": "27.83",
+      "Shares": "10,000",
+      "Value": "278,300"
+    },
+    {
+      "Owner": "Timothy E Sullivan Irrevocable",
+      "Relationship": "Officer",
+      "Date": "Sep 08 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "28.00",
+      "Shares": "10,000",
+      "Value": "280,000"
+    },
+    {
+      "Owner": "Sullivan Timothy Eugene",
+      "Relationship": "Officer",
+      "Date": "Sep 08 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "27.86",
+      "Shares": "32,729",
+      "Value": "911,830"
+    },
+    {
+      "Owner": "Chopas James George",
+      "Relationship": "VP/Chief Accounting Officer",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "28.08",
+      "Shares": "548",
+      "Value": "15,386"
+    },
+    {
+      "Owner": "Chopas James George",
+      "Relationship": "Officer",
+      "Date": "Sep 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "28.08",
+      "Shares": "548",
+      "Value": "15,386"
+    },
+    {
+      "Owner": "Francois Cedric",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Aug 27 '25",
+      "Transaction": "Sale",
+      "Cost": "28.19",
+      "Shares": "175,037",
+      "Value": "4,934,293"
+    },
+    {
+      "Owner": "Francois Cedric",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Aug 28 '25",
+      "Transaction": "Sale",
+      "Cost": "28.39",
+      "Shares": "49,963",
+      "Value": "1,418,450"
+    },
+    {
+      "Owner": "The Cedric Francois Irrevocabl",
+      "Relationship": "Officer",
+      "Date": "Aug 27 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "28.72",
+      "Shares": "225,000",
+      "Value": "6,462,500"
+    },
+    {
+      "Owner": "Watson David O.",
+      "Relationship": "General Counsel",
+      "Date": "Aug 18 '25",
+      "Transaction": "Sale",
+      "Cost": "27.80",
+      "Shares": "5,000",
+      "Value": "139,000"
+    },
+    {
+      "Owner": "Watson David O.",
+      "Relationship": "Officer",
+      "Date": "Aug 18 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "27.80",
+      "Shares": "5,000",
+      "Value": "139,000"
+    },
+    {
+      "Owner": "Francois Cedric",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Jul 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "4.31",
+      "Shares": "8,997",
+      "Value": "38,777"
+    },
+    {
+      "Owner": "Francois Cedric",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Jul 17 '25",
+      "Transaction": "Sale",
+      "Cost": "20.21",
+      "Shares": "19,725",
+      "Value": "398,735"
+    },
+    {
+      "Owner": "Watson David O.",
+      "Relationship": "General Counsel",
+      "Date": "Jul 16 '25",
+      "Transaction": "Sale",
+      "Cost": "19.55",
+      "Shares": "5,000",
+      "Value": "97,750"
+    },
+    {
+      "Owner": "Francois Cedric",
+      "Relationship": "Officer",
+      "Date": "Jul 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "20.15",
+      "Shares": "19,725",
+      "Value": "397,552"
+    },
+    {
+      "Owner": "Francois Cedric",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Jul 14 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "4.31",
+      "Shares": "65,203",
+      "Value": "281,025"
+    },
+    {
+      "Owner": "Francois Cedric",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Jul 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "4.31",
+      "Shares": "800",
+      "Value": "3,448"
+    },
+    {
+      "Owner": "Francois Cedric",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Jul 14 '25",
+      "Transaction": "Sale",
+      "Cost": "20.19",
+      "Shares": "137,465",
+      "Value": "2,774,923"
+    },
+    {
+      "Owner": "Francois Cedric",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Jul 15 '25",
+      "Transaction": "Sale",
+      "Cost": "20.09",
+      "Shares": "1,900",
+      "Value": "38,168"
+    },
+    {
+      "Owner": "Watson David O.",
+      "Relationship": "Officer",
+      "Date": "Jul 16 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "19.55",
+      "Shares": "5,000",
+      "Value": "97,750"
+    },
+    {
+      "Owner": "Francois Cedric",
+      "Relationship": "Officer",
+      "Date": "Jul 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "20.09",
+      "Shares": "1,900",
+      "Value": "38,168"
+    },
+    {
+      "Owner": "Francois Cedric",
+      "Relationship": "Officer",
+      "Date": "Jul 14 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "20.19",
+      "Shares": "137,465",
+      "Value": "2,774,922"
+    },
+    {
+      "Owner": "Watson David O.",
+      "Relationship": "General Counsel",
+      "Date": "Jun 16 '25",
+      "Transaction": "Sale",
+      "Cost": "18.77",
+      "Shares": "5,000",
+      "Value": "93,850"
+    },
+    {
+      "Owner": "Watson David O.",
+      "Relationship": "Officer",
+      "Date": "Jun 16 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "18.77",
+      "Shares": "5,000",
+      "Value": "93,850"
+    },
+    {
+      "Owner": "Deschatelets Pascal",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "May 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "3.76",
+      "Shares": "12,780",
+      "Value": "48,053"
+    },
+    {
+      "Owner": "Townsend Adam J.",
+      "Relationship": "Former Officer",
+      "Date": "May 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "17.76",
+      "Shares": "220,961",
+      "Value": "3,924,267"
+    },
+    {
+      "Owner": "Chopas James George",
+      "Relationship": "VP/Chief Accounting Officer",
+      "Date": "Mar 17 '25",
+      "Transaction": "Sale",
+      "Cost": "24.82",
+      "Shares": "183",
+      "Value": "4,543"
+    },
+    {
+      "Owner": "Chopas James George",
+      "Relationship": "Officer",
+      "Date": "Mar 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "24.82",
+      "Shares": "183",
+      "Value": "4,543"
+    },
+    {
+      "Owner": "Watson David O.",
+      "Relationship": "General Counsel",
+      "Date": "Mar 05 '25",
+      "Transaction": "Sale",
+      "Cost": "25.10",
+      "Shares": "5,569",
+      "Value": "139,789"
+    },
+    {
+      "Owner": "DAVID OSBORNE WATSON",
+      "Relationship": "Officer",
+      "Date": "Mar 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "25.10",
+      "Shares": "5,569",
+      "Value": "139,789"
+    },
+    {
+      "Owner": "DeLong Mark Jeffrey",
+      "Relationship": "Chief Business & Strat Officer",
+      "Date": "Feb 11 '25",
+      "Transaction": "Sale",
+      "Cost": "28.54",
+      "Shares": "363",
+      "Value": "10,360"
+    },
+    {
+      "Owner": "DeLong Mark Jeffrey",
+      "Relationship": "Officer",
+      "Date": "Feb 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "28.54",
+      "Shares": "363",
+      "Value": "10,360"
+    },
+    {
+      "Owner": "Watson David O.",
+      "Relationship": "General Counsel",
+      "Date": "Jan 29 '25",
+      "Transaction": "Sale",
+      "Cost": "29.52",
+      "Shares": "695",
+      "Value": "20,519"
+    },
+    {
+      "Owner": "Townsend Adam J.",
+      "Relationship": "Chief Commercial Officer",
+      "Date": "Jan 29 '25",
+      "Transaction": "Sale",
+      "Cost": "29.52",
+      "Shares": "695",
+      "Value": "20,519"
+    },
+    {
+      "Owner": "Sullivan Timothy Eugene",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Jan 29 '25",
+      "Transaction": "Sale",
+      "Cost": "29.52",
+      "Shares": "546",
+      "Value": "16,120"
+    },
+    {
+      "Owner": "Nicholson Nur",
+      "Relationship": "Chief Technical Officer",
+      "Date": "Jan 29 '25",
+      "Transaction": "Sale",
+      "Cost": "29.52",
+      "Shares": "825",
+      "Value": "24,357"
+    },
+    {
+      "Owner": "Lewis Karen",
+      "Relationship": "Chief People Officer",
+      "Date": "Jan 29 '25",
+      "Transaction": "Sale",
+      "Cost": "29.52",
+      "Shares": "364",
+      "Value": "10,747"
+    },
+    {
+      "Owner": "Eisele Jeffrey",
+      "Relationship": "Chief Development Officer",
+      "Date": "Jan 29 '25",
+      "Transaction": "Sale",
+      "Cost": "29.52",
+      "Shares": "278",
+      "Value": "8,208"
+    },
+    {
+      "Owner": "Deschatelets Pascal",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Jan 29 '25",
+      "Transaction": "Sale",
+      "Cost": "29.52",
+      "Shares": "826",
+      "Value": "24,386"
+    },
+    {
+      "Owner": "Francois Cedric",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Jan 29 '25",
+      "Transaction": "Sale",
+      "Cost": "29.52",
+      "Shares": "2,824",
+      "Value": "83,375"
+    },
+    {
+      "Owner": "DeLong Mark Jeffrey",
+      "Relationship": "Chief Business & Strat Officer",
+      "Date": "Jan 29 '25",
+      "Transaction": "Sale",
+      "Cost": "29.52",
+      "Shares": "365",
+      "Value": "10,776"
+    },
+    {
+      "Owner": "Townsend Adam J.",
+      "Relationship": "Officer",
+      "Date": "Jan 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.52",
+      "Shares": "695",
+      "Value": "20,519"
+    },
+    {
+      "Owner": "Sullivan Timothy Eugene",
+      "Relationship": "Officer",
+      "Date": "Jan 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.52",
+      "Shares": "546",
+      "Value": "16,120"
+    },
+    {
+      "Owner": "Lewis Karen",
+      "Relationship": "Officer",
+      "Date": "Jan 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.52",
+      "Shares": "364",
+      "Value": "10,747"
+    },
+    {
+      "Owner": "Nicholson Nur",
+      "Relationship": "Officer",
+      "Date": "Jan 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.52",
+      "Shares": "825",
+      "Value": "24,357"
+    },
+    {
+      "Owner": "DeLong Mark Jeffrey",
+      "Relationship": "Officer",
+      "Date": "Jan 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.52",
+      "Shares": "365",
+      "Value": "10,776"
+    },
+    {
+      "Owner": "Watson David O.",
+      "Relationship": "Officer",
+      "Date": "Jan 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.52",
+      "Shares": "695",
+      "Value": "20,519"
+    },
+    {
+      "Owner": "Francois Cedric",
+      "Relationship": "Officer",
+      "Date": "Jan 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.52",
+      "Shares": "2,824",
+      "Value": "83,375"
+    },
+    {
+      "Owner": "Eisele Jeffrey",
+      "Relationship": "Officer",
+      "Date": "Jan 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.52",
+      "Shares": "278",
+      "Value": "8,208"
+    },
+    {
+      "Owner": "Deschatelets Pascal",
+      "Relationship": "Officer",
+      "Date": "Jan 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.52",
+      "Shares": "826",
+      "Value": "24,386"
+    },
+    {
+      "Owner": "Watson David O.",
+      "Relationship": "General Counsel",
+      "Date": "Jan 22 '25",
+      "Transaction": "Sale",
+      "Cost": "30.43",
+      "Shares": "3,323",
+      "Value": "101,104"
+    },
+    {
+      "Owner": "Townsend Adam J.",
+      "Relationship": "Chief Commercial Officer",
+      "Date": "Jan 22 '25",
+      "Transaction": "Sale",
+      "Cost": "30.43",
+      "Shares": "3,323",
+      "Value": "101,104"
+    },
+    {
+      "Owner": "Sullivan Timothy Eugene",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Jan 22 '25",
+      "Transaction": "Sale",
+      "Cost": "30.43",
+      "Shares": "3,088",
+      "Value": "93,954"
+    },
+    {
+      "Owner": "Nicholson Nur",
+      "Relationship": "Chief Technical Officer",
+      "Date": "Jan 22 '25",
+      "Transaction": "Sale",
+      "Cost": "30.43",
+      "Shares": "3,948",
+      "Value": "120,120"
+    },
+    {
+      "Owner": "Lewis Karen",
+      "Relationship": "Chief People Officer",
+      "Date": "Jan 22 '25",
+      "Transaction": "Sale",
+      "Cost": "30.43",
+      "Shares": "1,751",
+      "Value": "53,275"
+    },
+    {
+      "Owner": "Francois Cedric",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Jan 22 '25",
+      "Transaction": "Sale",
+      "Cost": "30.43",
+      "Shares": "13,551",
+      "Value": "412,296"
+    },
+    {
+      "Owner": "Eisele Jeffrey",
+      "Relationship": "Chief Development Officer",
+      "Date": "Jan 22 '25",
+      "Transaction": "Sale",
+      "Cost": "30.43",
+      "Shares": "1,291",
+      "Value": "39,279"
+    },
+    {
+      "Owner": "Deschatelets Pascal",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Jan 22 '25",
+      "Transaction": "Sale",
+      "Cost": "30.43",
+      "Shares": "3,948",
+      "Value": "120,120"
+    },
+    {
+      "Owner": "DeLong Mark Jeffrey",
+      "Relationship": "Chief Business & Strat Officer",
+      "Date": "Jan 22 '25",
+      "Transaction": "Sale",
+      "Cost": "30.43",
+      "Shares": "1,396",
+      "Value": "42,474"
+    },
+    {
+      "Owner": "Chopas James George",
+      "Relationship": "VP/Chief Accounting Officer",
+      "Date": "Jan 22 '25",
+      "Transaction": "Sale",
+      "Cost": "30.43",
+      "Shares": "1,096",
+      "Value": "33,346"
+    },
+    {
+      "Owner": "Francois Cedric",
+      "Relationship": "Officer",
+      "Date": "Jan 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "30.43",
+      "Shares": "13,551",
+      "Value": "412,296"
+    },
+    {
+      "Owner": "Watson David O.",
+      "Relationship": "Officer",
+      "Date": "Jan 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "30.43",
+      "Shares": "3,323",
+      "Value": "101,104"
+    },
+    {
+      "Owner": "Lewis Karen",
+      "Relationship": "Officer",
+      "Date": "Jan 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "30.43",
+      "Shares": "1,751",
+      "Value": "53,275"
+    },
+    {
+      "Owner": "Sullivan Timothy Eugene",
+      "Relationship": "Officer",
+      "Date": "Jan 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "30.43",
+      "Shares": "3,088",
+      "Value": "93,954"
+    },
+    {
+      "Owner": "Deschatelets Pascal",
+      "Relationship": "Officer",
+      "Date": "Jan 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "30.43",
+      "Shares": "3,948",
+      "Value": "120,120"
+    },
+    {
+      "Owner": "Townsend Adam J.",
+      "Relationship": "Officer",
+      "Date": "Jan 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "30.43",
+      "Shares": "3,323",
+      "Value": "101,104"
+    },
+    {
+      "Owner": "DeLong Mark Jeffrey",
+      "Relationship": "Officer",
+      "Date": "Jan 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "30.43",
+      "Shares": "1,396",
+      "Value": "42,474"
+    },
+    {
+      "Owner": "Eisele Jeffrey",
+      "Relationship": "Officer",
+      "Date": "Jan 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "30.43",
+      "Shares": "1,291",
+      "Value": "39,279"
+    },
+    {
+      "Owner": "Chopas James George",
+      "Relationship": "Officer",
+      "Date": "Jan 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "30.43",
+      "Shares": "1,096",
+      "Value": "33,346"
+    },
+    {
+      "Owner": "Nicholson Nur",
+      "Relationship": "Officer",
+      "Date": "Jan 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "30.43",
+      "Shares": "3,948",
+      "Value": "120,120"
+    },
+    {
+      "Owner": "Watson David O.",
+      "Relationship": "General Counsel",
+      "Date": "Jan 17 '25",
+      "Transaction": "Sale",
+      "Cost": "29.96",
+      "Shares": "2,201",
+      "Value": "65,938"
+    },
+    {
+      "Owner": "Townsend Adam J.",
+      "Relationship": "Chief Commercial Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Sale",
+      "Cost": "29.96",
+      "Shares": "2,201",
+      "Value": "65,938"
+    },
+    {
+      "Owner": "Sullivan Timothy Eugene",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Sale",
+      "Cost": "29.96",
+      "Shares": "1,730",
+      "Value": "51,828"
+    },
+    {
+      "Owner": "Nicholson Nur",
+      "Relationship": "Chief Technical Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Sale",
+      "Cost": "29.96",
+      "Shares": "2,145",
+      "Value": "64,260"
+    },
+    {
+      "Owner": "Lewis Karen",
+      "Relationship": "Chief People Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Sale",
+      "Cost": "29.96",
+      "Shares": "1,241",
+      "Value": "37,178"
+    },
+    {
+      "Owner": "Francois Cedric",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Sale",
+      "Cost": "29.96",
+      "Shares": "6,007",
+      "Value": "179,959"
+    },
+    {
+      "Owner": "Deschatelets Pascal",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Sale",
+      "Cost": "29.96",
+      "Shares": "750",
+      "Value": "22,469"
+    },
+    {
+      "Owner": "DeLong Mark Jeffrey",
+      "Relationship": "Chief Business & Strat Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Sale",
+      "Cost": "29.96",
+      "Shares": "1,235",
+      "Value": "36,998"
+    },
+    {
+      "Owner": "Chopas James George",
+      "Relationship": "VP/Chief Accounting Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Sale",
+      "Cost": "29.96",
+      "Shares": "715",
+      "Value": "21,420"
+    },
+    {
+      "Owner": "Baumal Caroline",
+      "Relationship": "Chief Medical Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Sale",
+      "Cost": "29.96",
+      "Shares": "1,853",
+      "Value": "55,513"
+    },
+    {
+      "Owner": "Townsend Adam J.",
+      "Relationship": "Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.96",
+      "Shares": "2,201",
+      "Value": "65,938"
+    },
+    {
+      "Owner": "Deschatelets Pascal",
+      "Relationship": "Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.96",
+      "Shares": "750",
+      "Value": "22,469"
+    },
+    {
+      "Owner": "Nicholson Nur",
+      "Relationship": "Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.96",
+      "Shares": "2,145",
+      "Value": "64,260"
+    },
+    {
+      "Owner": "Chopas James George",
+      "Relationship": "Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.96",
+      "Shares": "715",
+      "Value": "21,420"
+    },
+    {
+      "Owner": "Francois Cedric",
+      "Relationship": "Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.96",
+      "Shares": "6,007",
+      "Value": "179,959"
+    },
+    {
+      "Owner": "Watson David O.",
+      "Relationship": "Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.96",
+      "Shares": "2,201",
+      "Value": "65,938"
+    },
+    {
+      "Owner": "Baumal Caroline",
+      "Relationship": "Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.96",
+      "Shares": "1,853",
+      "Value": "55,513"
+    },
+    {
+      "Owner": "Lewis Karen",
+      "Relationship": "Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.96",
+      "Shares": "1,241",
+      "Value": "37,178"
+    },
+    {
+      "Owner": "Sullivan Timothy Eugene",
+      "Relationship": "Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.96",
+      "Shares": "1,730",
+      "Value": "51,828"
+    },
+    {
+      "Owner": "DeLong Mark Jeffrey",
+      "Relationship": "Officer",
+      "Date": "Jan 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.96",
+      "Shares": "1,235",
+      "Value": "36,998"
+    }
+  ],
+  "Dividends": []
+}

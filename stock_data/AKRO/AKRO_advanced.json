@@ -1,0 +1,988 @@
+{
+  "Index": "RUT",
+  "P/E": "-",
+  "EPS (ttm)": "-3.80",
+  "Insider Own": "11.59%",
+  "Shs Outstand": "79.92M",
+  "Perf Week": "16.88%",
+  "Market Cap": "4.32B",
+  "Forward P/E": "-",
+  "EPS next Y": "-14.16%",
+  "Insider Trans": "-4.06%",
+  "Shs Float": "70.88M",
+  "Perf Month": "19.92%",
+  "Enterprise Value": "3.61B",
+  "PEG": "-",
+  "EPS next Q": "-0.93",
+  "Inst Own": "108.94%",
+  "Short Float": "14.05%",
+  "Perf Quarter": "2.18%",
+  "Income": "-283.96M",
+  "P/S": "-",
+  "EPS this Y": "0.81%",
+  "Inst Trans": "10.26%",
+  "Short Ratio": "6.18",
+  "Perf Half Y": "54.74%",
+  "Sales": "0.00M",
+  "P/B": "4.20",
+  "ROA": "-28.77%",
+  "Short Interest": "14.05%",
+  "Perf YTD": "93.67%",
+  "Book/sh": "12.84",
+  "P/C": "5.82",
+  "EPS next 5Y": "-7.62%",
+  "ROE": "-31.14%",
+  "52W High": "58.40 -7.74%",
+  "Perf Year": "91.40%",
+  "Cash/sh": "9.26",
+  "P/FCF": "-",
+  "EPS past 3/5Y": "-9.07% -5.28%",
+  "ROIC": "-27.09%",
+  "52W Low": "21.34 152.48%",
+  "Perf 3Y": "40.64%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "-",
+  "Sales past 3/5Y": "- -",
+  "Gross Margin": "-",
+  "Volatility": "2.33% 3.57%",
+  "Perf 5Y": "80.26%",
+  "Dividend TTM": "-",
+  "EV/Sales": "-",
+  "EPS Y/Y TTM": "-11.39%",
+  "Oper. Margin": "-",
+  "ATR (14)": "2.02",
+  "Perf 10Y": "-",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "12.66",
+  "Sales Y/Y TTM": "-",
+  "Profit Margin": "-",
+  "RSI (14)": "71.68",
+  "Recom": "2.33",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "12.66",
+  "EPS Q/Q": "-6.58%",
+  "SMA20": "15.21%",
+  "Beta": "-0.36",
+  "Target Price": "65.12",
+  "Payout": "-",
+  "Debt/Eq": "0.04",
+  "Sales Q/Q": "-",
+  "SMA50": "14.20%",
+  "Rel Volume": "6.64",
+  "Prev Close": "54.08",
+  "Employees": "63",
+  "LT Debt/Eq": "0.02",
+  "Earnings": "Aug 08 BMO",
+  "SMA200": "19.53%",
+  "Avg Volume": "1.61M",
+  "Price": "53.88",
+  "IPO": "Jun 20, 2019",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "6.23% -",
+  "Trades": "",
+  "Volume": "10,704,848",
+  "Change": "-0.37%",
+  "Insider Trading": [
+    {
+      "Owner": "Graham G. Walmsley",
+      "Relationship": "Director",
+      "Date": "Oct 08 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "20.55",
+      "Shares": "90,832",
+      "Value": "1,866,155"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Oct 07 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "28.35",
+      "Shares": "12,500",
+      "Value": "354,375"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Oct 07 '25",
+      "Transaction": "Sale",
+      "Cost": "46.08",
+      "Shares": "12,500",
+      "Value": "576,001"
+    },
+    {
+      "Owner": "Cheng Andrew",
+      "Relationship": "President and CEO",
+      "Date": "Oct 08 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.61",
+      "Shares": "52,212",
+      "Value": "32,110"
+    },
+    {
+      "Owner": "Timothy Rolph",
+      "Relationship": "Officer",
+      "Date": "Oct 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "46.04",
+      "Shares": "56,369",
+      "Value": "2,595,229"
+    },
+    {
+      "Owner": "Young Jonathan",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Oct 01 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "21.10",
+      "Shares": "12,500",
+      "Value": "263,750"
+    },
+    {
+      "Owner": "Young Jonathan",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Oct 01 '25",
+      "Transaction": "Sale",
+      "Cost": "47.76",
+      "Shares": "12,500",
+      "Value": "596,978"
+    },
+    {
+      "Owner": "Young Jonathan",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Sep 11 '25",
+      "Transaction": "Sale",
+      "Cost": "43.02",
+      "Shares": "586",
+      "Value": "25,210"
+    },
+    {
+      "Owner": "Yale Catriona",
+      "Relationship": "Chief Development Officer",
+      "Date": "Sep 11 '25",
+      "Transaction": "Sale",
+      "Cost": "43.02",
+      "Shares": "659",
+      "Value": "28,350"
+    },
+    {
+      "Owner": "White William Richard",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Sep 11 '25",
+      "Transaction": "Sale",
+      "Cost": "43.02",
+      "Shares": "659",
+      "Value": "28,350"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Sep 11 '25",
+      "Transaction": "Sale",
+      "Cost": "43.02",
+      "Shares": "553",
+      "Value": "23,790"
+    },
+    {
+      "Owner": "Cheng Andrew",
+      "Relationship": "President and CEO",
+      "Date": "Sep 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "8.10",
+      "Shares": "14,941",
+      "Value": "121,003"
+    },
+    {
+      "Owner": "Cheng Andrew",
+      "Relationship": "President and CEO",
+      "Date": "Sep 10 '25",
+      "Transaction": "Sale",
+      "Cost": "43.25",
+      "Shares": "30,000",
+      "Value": "1,297,401"
+    },
+    {
+      "Owner": "Cheng Andrew",
+      "Relationship": "President and CEO",
+      "Date": "Sep 11 '25",
+      "Transaction": "Sale",
+      "Cost": "43.02",
+      "Shares": "1,796",
+      "Value": "77,264"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Sep 08 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "15.18",
+      "Shares": "12,500",
+      "Value": "189,766"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Sep 08 '25",
+      "Transaction": "Sale",
+      "Cost": "44.17",
+      "Shares": "12,500",
+      "Value": "552,137"
+    },
+    {
+      "Owner": "Andrew Cheng",
+      "Relationship": "President, CEO and Director",
+      "Date": "Sep 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "44.62",
+      "Shares": "90,000",
+      "Value": "4,015,800"
+    },
+    {
+      "Owner": "Young Jonathan",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Sep 02 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "21.10",
+      "Shares": "12,500",
+      "Value": "263,750"
+    },
+    {
+      "Owner": "Young Jonathan",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "46.08",
+      "Shares": "12,500",
+      "Value": "576,035"
+    },
+    {
+      "Owner": "Gangloff Scott A.",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Aug 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "19.62",
+      "Shares": "2,600",
+      "Value": "51,012"
+    },
+    {
+      "Owner": "Young Jonathan",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Aug 12 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "21.10",
+      "Shares": "12,500",
+      "Value": "263,750"
+    },
+    {
+      "Owner": "Young Jonathan",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Aug 12 '25",
+      "Transaction": "Sale",
+      "Cost": "47.79",
+      "Shares": "12,500",
+      "Value": "597,326"
+    },
+    {
+      "Owner": "Cheng Andrew",
+      "Relationship": "President and CEO",
+      "Date": "Aug 11 '25",
+      "Transaction": "Sale",
+      "Cost": "48.59",
+      "Shares": "30,000",
+      "Value": "1,457,596"
+    },
+    {
+      "Owner": "Henderson Jane",
+      "Relationship": "Director",
+      "Date": "Aug 12 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "7.01",
+      "Shares": "3,000",
+      "Value": "21,027"
+    },
+    {
+      "Owner": "Henderson Jane",
+      "Relationship": "Director",
+      "Date": "Aug 12 '25",
+      "Transaction": "Sale",
+      "Cost": "47.46",
+      "Shares": "3,000",
+      "Value": "142,371"
+    },
+    {
+      "Owner": "Jonathan Young",
+      "Relationship": "Officer",
+      "Date": "Aug 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "48.28",
+      "Shares": "50,000",
+      "Value": "2,414,000"
+    },
+    {
+      "Owner": "JANE HENDERSON",
+      "Relationship": "Director",
+      "Date": "Aug 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "47.46",
+      "Shares": "3,000",
+      "Value": "142,372"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Aug 05 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "21.09",
+      "Shares": "12,500",
+      "Value": "263,625"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Aug 05 '25",
+      "Transaction": "Sale",
+      "Cost": "49.30",
+      "Shares": "12,500",
+      "Value": "616,299"
+    },
+    {
+      "Owner": "Yale Catriona",
+      "Relationship": "Chief Development Officer",
+      "Date": "Jul 16 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "19.87",
+      "Shares": "10,000",
+      "Value": "198,700"
+    },
+    {
+      "Owner": "Yale Catriona",
+      "Relationship": "Chief Development Officer",
+      "Date": "Jul 16 '25",
+      "Transaction": "Sale",
+      "Cost": "52.95",
+      "Shares": "10,000",
+      "Value": "529,467"
+    },
+    {
+      "Owner": "Cheng Andrew",
+      "Relationship": "President and CEO",
+      "Date": "Jul 10 '25",
+      "Transaction": "Sale",
+      "Cost": "51.16",
+      "Shares": "30,000",
+      "Value": "1,534,895"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Jul 07 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "21.09",
+      "Shares": "12,500",
+      "Value": "263,625"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Jul 07 '25",
+      "Transaction": "Sale",
+      "Cost": "51.09",
+      "Shares": "12,500",
+      "Value": "638,661"
+    },
+    {
+      "Owner": "Timothy Rolph",
+      "Relationship": "Officer",
+      "Date": "Jul 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "51.85",
+      "Shares": "56,250",
+      "Value": "2,916,563"
+    },
+    {
+      "Owner": "Lamy Patrick",
+      "Relationship": "Senior VP, Commercial Strategy",
+      "Date": "Jul 01 '25",
+      "Transaction": "Sale",
+      "Cost": "52.88",
+      "Shares": "2,000",
+      "Value": "105,760"
+    },
+    {
+      "Owner": "PATRICK D LAMY",
+      "Relationship": "Officer",
+      "Date": "Jul 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "53.36",
+      "Shares": "2,000",
+      "Value": "106,720"
+    },
+    {
+      "Owner": "Cheng Andrew",
+      "Relationship": "President and CEO",
+      "Date": "Jun 18 '25",
+      "Transaction": "Sale",
+      "Cost": "54.84",
+      "Shares": "6,620",
+      "Value": "363,041"
+    },
+    {
+      "Owner": "Gangloff Scott A.",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Jun 18 '25",
+      "Transaction": "Sale",
+      "Cost": "54.84",
+      "Shares": "848",
+      "Value": "46,504"
+    },
+    {
+      "Owner": "Lamy Patrick",
+      "Relationship": "Senior VP, Commercial Strategy",
+      "Date": "Jun 20 '25",
+      "Transaction": "Sale",
+      "Cost": "54.59",
+      "Shares": "875",
+      "Value": "47,766"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Jun 18 '25",
+      "Transaction": "Sale",
+      "Cost": "54.84",
+      "Shares": "1,129",
+      "Value": "61,914"
+    },
+    {
+      "Owner": "White William Richard",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Jun 18 '25",
+      "Transaction": "Sale",
+      "Cost": "54.84",
+      "Shares": "1,634",
+      "Value": "89,609"
+    },
+    {
+      "Owner": "Yale Catriona",
+      "Relationship": "Chief Development Officer",
+      "Date": "Jun 18 '25",
+      "Transaction": "Sale",
+      "Cost": "54.84",
+      "Shares": "1,633",
+      "Value": "89,554"
+    },
+    {
+      "Owner": "Young Jonathan",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Jun 18 '25",
+      "Transaction": "Sale",
+      "Cost": "54.84",
+      "Shares": "1,453",
+      "Value": "79,683"
+    },
+    {
+      "Owner": "Yale Catriona",
+      "Relationship": "Chief Development Officer",
+      "Date": "Jun 16 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "21.10",
+      "Shares": "10,000",
+      "Value": "211,000"
+    },
+    {
+      "Owner": "Yale Catriona",
+      "Relationship": "Chief Development Officer",
+      "Date": "Jun 16 '25",
+      "Transaction": "Sale",
+      "Cost": "54.23",
+      "Shares": "10,000",
+      "Value": "542,306"
+    },
+    {
+      "Owner": "Lamy Patrick",
+      "Relationship": "Senior VP, Commercial Strategy",
+      "Date": "Jun 16 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "19.87",
+      "Shares": "2,000",
+      "Value": "39,740"
+    },
+    {
+      "Owner": "Lamy Patrick",
+      "Relationship": "Senior VP, Commercial Strategy",
+      "Date": "Jun 16 '25",
+      "Transaction": "Sale",
+      "Cost": "54.14",
+      "Shares": "2,000",
+      "Value": "108,272"
+    },
+    {
+      "Owner": "Cheng Andrew",
+      "Relationship": "President and CEO",
+      "Date": "Jun 10 '25",
+      "Transaction": "Sale",
+      "Cost": "54.05",
+      "Shares": "37,837",
+      "Value": "2,044,940"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Jun 10 '25",
+      "Transaction": "Sale",
+      "Cost": "54.00",
+      "Shares": "2,358",
+      "Value": "127,323"
+    },
+    {
+      "Owner": "White William Richard",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Jun 10 '25",
+      "Transaction": "Sale",
+      "Cost": "53.99",
+      "Shares": "2,804",
+      "Value": "151,402"
+    },
+    {
+      "Owner": "Yale Catriona",
+      "Relationship": "Chief Development Officer",
+      "Date": "Jun 10 '25",
+      "Transaction": "Sale",
+      "Cost": "54.00",
+      "Shares": "2,803",
+      "Value": "151,351"
+    },
+    {
+      "Owner": "Lamy Patrick",
+      "Relationship": "Senior VP, Commercial Strategy",
+      "Date": "Jun 10 '25",
+      "Transaction": "Sale",
+      "Cost": "54.00",
+      "Shares": "919",
+      "Value": "49,625"
+    },
+    {
+      "Owner": "Young Jonathan",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Jun 10 '25",
+      "Transaction": "Sale",
+      "Cost": "53.99",
+      "Shares": "2,493",
+      "Value": "134,605"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Jun 06 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "21.09",
+      "Shares": "25,000",
+      "Value": "527,254"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Jun 05 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "21.10",
+      "Shares": "12,500",
+      "Value": "263,750"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Jun 06 '25",
+      "Transaction": "Sale",
+      "Cost": "55.04",
+      "Shares": "25,000",
+      "Value": "1,376,000"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Jun 05 '25",
+      "Transaction": "Sale",
+      "Cost": "53.49",
+      "Shares": "12,500",
+      "Value": "668,634"
+    },
+    {
+      "Owner": "Lamy Patrick",
+      "Relationship": "Senior VP, Commercial Strategy",
+      "Date": "Jun 02 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "19.87",
+      "Shares": "4,000",
+      "Value": "79,480"
+    },
+    {
+      "Owner": "Lamy Patrick",
+      "Relationship": "Senior VP, Commercial Strategy",
+      "Date": "Jun 02 '25",
+      "Transaction": "Sale",
+      "Cost": "50.31",
+      "Shares": "4,000",
+      "Value": "201,258"
+    },
+    {
+      "Owner": "Lamy Patrick",
+      "Relationship": "Senior VP, Commercial Strategy",
+      "Date": "May 22 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "44.37",
+      "Shares": "4,000",
+      "Value": "177,480"
+    },
+    {
+      "Owner": "Lamy Patrick",
+      "Relationship": "Senior VP, Commercial Strategy",
+      "Date": "May 22 '25",
+      "Transaction": "Sale",
+      "Cost": "50.00",
+      "Shares": "4,000",
+      "Value": "200,000"
+    },
+    {
+      "Owner": "PATRICK D LAMY",
+      "Relationship": "Officer",
+      "Date": "May 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "48.35",
+      "Shares": "10,000",
+      "Value": "483,500"
+    },
+    {
+      "Owner": "Yale Catriona",
+      "Relationship": "Chief Development Officer",
+      "Date": "May 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "21.10",
+      "Shares": "10,000",
+      "Value": "211,000"
+    },
+    {
+      "Owner": "Yale Catriona",
+      "Relationship": "Chief Development Officer",
+      "Date": "May 15 '25",
+      "Transaction": "Sale",
+      "Cost": "39.30",
+      "Shares": "10,000",
+      "Value": "392,978"
+    },
+    {
+      "Owner": "CATRIONA YALE",
+      "Relationship": "Officer",
+      "Date": "May 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "37.88",
+      "Shares": "30,000",
+      "Value": "1,136,400"
+    },
+    {
+      "Owner": "Cheng Andrew",
+      "Relationship": "President and CEO",
+      "Date": "May 12 '25",
+      "Transaction": "Sale",
+      "Cost": "41.48",
+      "Shares": "30,000",
+      "Value": "1,244,455"
+    },
+    {
+      "Owner": "Andrew Cheng",
+      "Relationship": "Officer",
+      "Date": "May 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "39.85",
+      "Shares": "120,000",
+      "Value": "4,782,000"
+    },
+    {
+      "Owner": "Lamy Patrick",
+      "Relationship": "Senior VP, Commercial Strategy",
+      "Date": "May 07 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "19.87",
+      "Shares": "8,000",
+      "Value": "158,960"
+    },
+    {
+      "Owner": "Lamy Patrick",
+      "Relationship": "Senior VP, Commercial Strategy",
+      "Date": "May 07 '25",
+      "Transaction": "Sale",
+      "Cost": "42.49",
+      "Shares": "8,000",
+      "Value": "339,950"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "May 06 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "21.10",
+      "Shares": "12,500",
+      "Value": "263,750"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "May 06 '25",
+      "Transaction": "Sale",
+      "Cost": "43.43",
+      "Shares": "12,500",
+      "Value": "542,864"
+    },
+    {
+      "Owner": "Timothy Rolph",
+      "Relationship": "Officer",
+      "Date": "May 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "40.00",
+      "Shares": "50,000",
+      "Value": "2,000,000"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Apr 24 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "21.10",
+      "Shares": "6,250",
+      "Value": "131,875"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Apr 24 '25",
+      "Transaction": "Sale",
+      "Cost": "41.03",
+      "Shares": "6,250",
+      "Value": "256,438"
+    },
+    {
+      "Owner": "Yale Catriona",
+      "Relationship": "Chief Development Officer",
+      "Date": "Apr 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "21.10",
+      "Shares": "9,073",
+      "Value": "191,440"
+    },
+    {
+      "Owner": "Yale Catriona",
+      "Relationship": "Chief Development Officer",
+      "Date": "Apr 15 '25",
+      "Transaction": "Sale",
+      "Cost": "37.91",
+      "Shares": "9,073",
+      "Value": "343,962"
+    },
+    {
+      "Owner": "Cheng Andrew",
+      "Relationship": "President and CEO",
+      "Date": "Apr 10 '25",
+      "Transaction": "Sale",
+      "Cost": "35.23",
+      "Shares": "30,000",
+      "Value": "1,056,780"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Apr 07 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "21.10",
+      "Shares": "6,250",
+      "Value": "131,875"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Apr 07 '25",
+      "Transaction": "Sale",
+      "Cost": "35.88",
+      "Shares": "6,250",
+      "Value": "224,262"
+    },
+    {
+      "Owner": "PATRICK D LAMY",
+      "Relationship": "Officer",
+      "Date": "Apr 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "36.73",
+      "Shares": "8,000",
+      "Value": "293,840"
+    },
+    {
+      "Owner": "Graham G. Walmsley",
+      "Relationship": "Director",
+      "Date": "Mar 25 '25",
+      "Transaction": "Buy",
+      "Cost": "44.75",
+      "Shares": "91,309",
+      "Value": "4,085,804"
+    },
+    {
+      "Owner": "Graham G. Walmsley",
+      "Relationship": "Director",
+      "Date": "Mar 26 '25",
+      "Transaction": "Buy",
+      "Cost": "43.01",
+      "Shares": "58,691",
+      "Value": "2,524,417"
+    },
+    {
+      "Owner": "Graham G. Walmsley",
+      "Relationship": "Director",
+      "Date": "Mar 27 '25",
+      "Transaction": "Buy",
+      "Cost": "43.55",
+      "Shares": "50,000",
+      "Value": "2,177,700"
+    },
+    {
+      "Owner": "Yale Catriona",
+      "Relationship": "Chief Development Officer",
+      "Date": "Mar 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "21.10",
+      "Shares": "10,000",
+      "Value": "211,000"
+    },
+    {
+      "Owner": "Yale Catriona",
+      "Relationship": "Chief Development Officer",
+      "Date": "Mar 17 '25",
+      "Transaction": "Sale",
+      "Cost": "44.76",
+      "Shares": "10,000",
+      "Value": "447,605"
+    },
+    {
+      "Owner": "Cheng Andrew",
+      "Relationship": "President and CEO",
+      "Date": "Mar 12 '25",
+      "Transaction": "Sale",
+      "Cost": "44.88",
+      "Shares": "1,738",
+      "Value": "78,001"
+    },
+    {
+      "Owner": "Young Jonathan",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Mar 12 '25",
+      "Transaction": "Sale",
+      "Cost": "44.88",
+      "Shares": "607",
+      "Value": "27,242"
+    },
+    {
+      "Owner": "Yale Catriona",
+      "Relationship": "Chief Development Officer",
+      "Date": "Mar 12 '25",
+      "Transaction": "Sale",
+      "Cost": "44.88",
+      "Shares": "614",
+      "Value": "27,556"
+    },
+    {
+      "Owner": "White William Richard",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Mar 12 '25",
+      "Transaction": "Sale",
+      "Cost": "44.88",
+      "Shares": "676",
+      "Value": "30,339"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Mar 12 '25",
+      "Transaction": "Sale",
+      "Cost": "44.88",
+      "Shares": "516",
+      "Value": "23,158"
+    },
+    {
+      "Owner": "Cheng Andrew",
+      "Relationship": "President and CEO",
+      "Date": "Mar 10 '25",
+      "Transaction": "Sale",
+      "Cost": "41.77",
+      "Shares": "30,000",
+      "Value": "1,253,069"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Mar 05 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "21.10",
+      "Shares": "12,500",
+      "Value": "263,750"
+    },
+    {
+      "Owner": "Rolph Timothy",
+      "Relationship": "Chief Scientific Officer",
+      "Date": "Mar 05 '25",
+      "Transaction": "Sale",
+      "Cost": "44.53",
+      "Shares": "12,500",
+      "Value": "556,590"
+    },
+    {
+      "Owner": "Young Jonathan",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Mar 04 '25",
+      "Transaction": "Sale",
+      "Cost": "44.86",
+      "Shares": "50,000",
+      "Value": "2,243,213"
+    },
+    {
+      "Owner": "Lamy Patrick",
+      "Relationship": "Senior VP, Commercial Strategy",
+      "Date": "Mar 03 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "19.87",
+      "Shares": "1,000",
+      "Value": "19,870"
+    },
+    {
+      "Owner": "Lamy Patrick",
+      "Relationship": "Senior VP, Commercial Strategy",
+      "Date": "Mar 03 '25",
+      "Transaction": "Sale",
+      "Cost": "48.09",
+      "Shares": "1,000",
+      "Value": "48,090"
+    },
+    {
+      "Owner": "Yale Catriona",
+      "Relationship": "Chief Development Officer",
+      "Date": "Feb 18 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "21.10",
+      "Shares": "10,000",
+      "Value": "211,000"
+    },
+    {
+      "Owner": "Yale Catriona",
+      "Relationship": "Chief Development Officer",
+      "Date": "Feb 18 '25",
+      "Transaction": "Sale",
+      "Cost": "49.87",
+      "Shares": "10,000",
+      "Value": "498,660"
+    },
+    {
+      "Owner": "Cheng Andrew",
+      "Relationship": "President and CEO",
+      "Date": "Feb 10 '25",
+      "Transaction": "Sale",
+      "Cost": "52.73",
+      "Shares": "30,000",
+      "Value": "1,581,994"
+    }
+  ],
+  "Dividends": []
+}

@@ -1,0 +1,628 @@
+{
+  "Index": "RUT",
+  "P/E": "-",
+  "EPS (ttm)": "-0.43",
+  "Insider Own": "4.89%",
+  "Shs Outstand": "47.10M",
+  "Perf Week": "-2.07%",
+  "Market Cap": "1.90B",
+  "Forward P/E": "101.22",
+  "EPS next Y": "261.04%",
+  "Insider Trans": "-6.33%",
+  "Shs Float": "44.88M",
+  "Perf Month": "-4.99%",
+  "Enterprise Value": "2.11B",
+  "PEG": "-",
+  "EPS next Q": "0.02",
+  "Inst Own": "88.13%",
+  "Short Float": "3.00%",
+  "Perf Quarter": "26.89%",
+  "Income": "-17.90M",
+  "P/S": "4.68",
+  "EPS this Y": "134.38%",
+  "Inst Trans": "1.07%",
+  "Short Ratio": "2.99",
+  "Perf Half Y": "70.85%",
+  "Sales": "405.04M",
+  "P/B": "4.51",
+  "ROA": "-2.20%",
+  "Short Interest": "3.00%",
+  "Perf YTD": "40.61%",
+  "Book/sh": "8.91",
+  "P/C": "35.47",
+  "EPS next 5Y": "-",
+  "ROE": "-5.01%",
+  "52W High": "45.07 -10.81%",
+  "Perf Year": "56.42%",
+  "Cash/sh": "1.13",
+  "P/FCF": "247.62",
+  "EPS past 3/5Y": "5.41% -",
+  "ROIC": "-2.64%",
+  "52W Low": "21.97 82.98%",
+  "Perf 3Y": "212.35%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "41.36",
+  "Sales past 3/5Y": "9.14% 7.06%",
+  "Gross Margin": "60.25%",
+  "Volatility": "2.95% 2.76%",
+  "Perf 5Y": "119.07%",
+  "Dividend TTM": "-",
+  "EV/Sales": "5.20",
+  "EPS Y/Y TTM": "-109.83%",
+  "Oper. Margin": "6.81%",
+  "ATR (14)": "1.21",
+  "Perf 10Y": "300.40%",
+  "Dividend Ex-Date": "Dec 09, 2015",
+  "Quick Ratio": "2.69",
+  "Sales Y/Y TTM": "7.44%",
+  "Profit Margin": "-4.42%",
+  "RSI (14)": "45.51",
+  "Recom": "1.29",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "3.99",
+  "EPS Q/Q": "158.27%",
+  "SMA20": "-1.44%",
+  "Beta": "1.65",
+  "Target Price": "45.26",
+  "Payout": "-",
+  "Debt/Eq": "0.63",
+  "Sales Q/Q": "15.26%",
+  "SMA50": "-2.07%",
+  "Rel Volume": "0.68",
+  "Prev Close": "40.35",
+  "Employees": "1600",
+  "LT Debt/Eq": "0.61",
+  "Earnings": "Aug 07 AMC",
+  "SMA200": "28.55%",
+  "Avg Volume": "450.60K",
+  "Price": "40.20",
+  "IPO": "Feb 12, 1993",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "797.67% 4.57%",
+  "Trades": "",
+  "Volume": "306,167",
+  "Change": "-0.37%",
+  "Insider Trading": [
+    {
+      "Owner": "Stanton Marshall S.",
+      "Relationship": "SVP, Clinical & MD Affair",
+      "Date": "Aug 27 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "11.03",
+      "Shares": "18,200",
+      "Value": "200,746"
+    },
+    {
+      "Owner": "Stanton Marshall S.",
+      "Relationship": "SVP, Clinical & MD Affair",
+      "Date": "Aug 27 '25",
+      "Transaction": "Sale",
+      "Cost": "44.02",
+      "Shares": "18,200",
+      "Value": "801,219"
+    },
+    {
+      "Owner": "MARSHALL STANTON",
+      "Relationship": "Officer",
+      "Date": "Aug 27 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "44.02",
+      "Shares": "18,200",
+      "Value": "801,211"
+    },
+    {
+      "Owner": "Holloway Jean F",
+      "Relationship": "SVP, General Counsel",
+      "Date": "Aug 25 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "11.03",
+      "Shares": "10,000",
+      "Value": "110,300"
+    },
+    {
+      "Owner": "Holloway Jean F",
+      "Relationship": "SVP, General Counsel",
+      "Date": "Aug 25 '25",
+      "Transaction": "Sale",
+      "Cost": "44.37",
+      "Shares": "10,000",
+      "Value": "443,700"
+    },
+    {
+      "Owner": "JEAN F HOLLOWAY",
+      "Relationship": "Officer",
+      "Date": "Aug 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "44.37",
+      "Shares": "10,000",
+      "Value": "443,700"
+    },
+    {
+      "Owner": "Mackin James P",
+      "Relationship": "President & CEO",
+      "Date": "Aug 15 '25",
+      "Transaction": "Sale",
+      "Cost": "42.32",
+      "Shares": "12,500",
+      "Value": "528,988"
+    },
+    {
+      "Owner": "Mackin James P",
+      "Relationship": "Officer",
+      "Date": "Aug 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "42.32",
+      "Shares": "12,500",
+      "Value": "528,991"
+    },
+    {
+      "Owner": "Holloway Jean F",
+      "Relationship": "SVP, General Counsel",
+      "Date": "Aug 12 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "26.24",
+      "Shares": "16,975",
+      "Value": "445,424"
+    },
+    {
+      "Owner": "Holloway Jean F",
+      "Relationship": "SVP, General Counsel",
+      "Date": "Aug 12 '25",
+      "Transaction": "Sale",
+      "Cost": "43.01",
+      "Shares": "23,356",
+      "Value": "1,004,610"
+    },
+    {
+      "Owner": "Davis John E",
+      "Relationship": "Chief Commercial Officer",
+      "Date": "Aug 12 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "26.24",
+      "Shares": "10,802",
+      "Value": "283,444"
+    },
+    {
+      "Owner": "Davis John E",
+      "Relationship": "Chief Commercial Officer",
+      "Date": "Aug 12 '25",
+      "Transaction": "Sale",
+      "Cost": "43.67",
+      "Shares": "10,802",
+      "Value": "471,756"
+    },
+    {
+      "Owner": "JOHN E DAVIS",
+      "Relationship": "Officer",
+      "Date": "Aug 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "43.67",
+      "Shares": "10,802",
+      "Value": "471,753"
+    },
+    {
+      "Owner": "JEAN F HOLLOWAY",
+      "Relationship": "Officer",
+      "Date": "Aug 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "43.01",
+      "Shares": "23,356",
+      "Value": "1,004,606"
+    },
+    {
+      "Owner": "Horton Amy",
+      "Relationship": "VP, Chief Accounting Officer",
+      "Date": "Aug 08 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "29.62",
+      "Shares": "7,992",
+      "Value": "236,723"
+    },
+    {
+      "Owner": "Horton Amy",
+      "Relationship": "VP, Chief Accounting Officer",
+      "Date": "Aug 08 '25",
+      "Transaction": "Sale",
+      "Cost": "38.49",
+      "Shares": "7,992",
+      "Value": "307,612"
+    },
+    {
+      "Owner": "AMY HORTON",
+      "Relationship": "Officer",
+      "Date": "Aug 08 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "38.49",
+      "Shares": "7,992",
+      "Value": "307,612"
+    },
+    {
+      "Owner": "Stanton Marshall S.",
+      "Relationship": "SVP, Clinical & MD Affair",
+      "Date": "Jun 17 '25",
+      "Transaction": "Sale",
+      "Cost": "29.50",
+      "Shares": "15,000",
+      "Value": "442,500"
+    },
+    {
+      "Owner": "MARSHALL STANTON",
+      "Relationship": "Officer",
+      "Date": "Jun 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.50",
+      "Shares": "15,000",
+      "Value": "442,500"
+    },
+    {
+      "Owner": "Stanton Marshall S.",
+      "Relationship": "SVP, Clinical & MD Affair",
+      "Date": "Jun 13 '25",
+      "Transaction": "Sale",
+      "Cost": "28.44",
+      "Shares": "26,132",
+      "Value": "743,131"
+    },
+    {
+      "Owner": "MARSHALL STANTON",
+      "Relationship": "Officer",
+      "Date": "Jun 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "28.44",
+      "Shares": "26,132",
+      "Value": "743,130"
+    },
+    {
+      "Owner": "Holloway Jean F",
+      "Relationship": "SVP, General Counsel",
+      "Date": "May 27 '25",
+      "Transaction": "Sale",
+      "Cost": "29.00",
+      "Shares": "8,748",
+      "Value": "253,692"
+    },
+    {
+      "Owner": "JEAN F HOLLOWAY",
+      "Relationship": "Officer",
+      "Date": "May 27 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.00",
+      "Shares": "8,748",
+      "Value": "253,692"
+    },
+    {
+      "Owner": "SEMEDO ANTHONY B.",
+      "Relationship": "Director",
+      "Date": "May 23 '25",
+      "Transaction": "Sale",
+      "Cost": "28.47",
+      "Shares": "2,600",
+      "Value": "74,027"
+    },
+    {
+      "Owner": "Anthony Semedo",
+      "Relationship": "Director",
+      "Date": "May 23 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "28.00",
+      "Shares": "2,600",
+      "Value": "72,800"
+    },
+    {
+      "Owner": "Holloway Jean F",
+      "Relationship": "Officer",
+      "Date": "May 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.00",
+      "Shares": "9,926",
+      "Value": "287,854"
+    },
+    {
+      "Owner": "Holloway Jean F",
+      "Relationship": "Officer",
+      "Date": "May 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.00",
+      "Shares": "9,926",
+      "Value": "287,854"
+    },
+    {
+      "Owner": "Holloway Jean F",
+      "Relationship": "SVP, General Counsel",
+      "Date": "May 21 '25",
+      "Transaction": "Sale",
+      "Cost": "29.00",
+      "Shares": "9,926",
+      "Value": "287,854"
+    },
+    {
+      "Owner": "Stanton Marshall S.",
+      "Relationship": "SVP, Clinical & MD Affair",
+      "Date": "May 09 '25",
+      "Transaction": "Sale",
+      "Cost": "29.13",
+      "Shares": "10,548",
+      "Value": "307,265"
+    },
+    {
+      "Owner": "Stanton Marshall S.",
+      "Relationship": "Officer",
+      "Date": "May 09 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "23.73",
+      "Shares": "10,548",
+      "Value": "250,304"
+    },
+    {
+      "Owner": "Holloway Jean F",
+      "Relationship": "SVP, General Counsel",
+      "Date": "Mar 11 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "21.55",
+      "Shares": "19,092",
+      "Value": "411,433"
+    },
+    {
+      "Owner": "Holloway Jean F",
+      "Relationship": "SVP, General Counsel",
+      "Date": "Mar 11 '25",
+      "Transaction": "Sale",
+      "Cost": "23.61",
+      "Shares": "18,020",
+      "Value": "425,510"
+    },
+    {
+      "Owner": "Davis John E",
+      "Relationship": "Chief Commercial Officer",
+      "Date": "Mar 11 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "21.55",
+      "Shares": "15,910",
+      "Value": "342,860"
+    },
+    {
+      "Owner": "Davis John E",
+      "Relationship": "Chief Commercial Officer",
+      "Date": "Mar 11 '25",
+      "Transaction": "Sale",
+      "Cost": "23.61",
+      "Shares": "15,100",
+      "Value": "356,549"
+    },
+    {
+      "Owner": "JOHN E DAVIS",
+      "Relationship": "Officer",
+      "Date": "Mar 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "23.61",
+      "Shares": "15,100",
+      "Value": "356,549"
+    },
+    {
+      "Owner": "JEAN F HOLLOWAY",
+      "Relationship": "Officer",
+      "Date": "Mar 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "23.61",
+      "Shares": "18,020",
+      "Value": "425,510"
+    },
+    {
+      "Owner": "Mackin James P",
+      "Relationship": "President & CEO",
+      "Date": "Mar 06 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "21.55",
+      "Shares": "75,615",
+      "Value": "1,629,503"
+    },
+    {
+      "Owner": "Mackin James P",
+      "Relationship": "President & CEO",
+      "Date": "Mar 06 '25",
+      "Transaction": "Sale",
+      "Cost": "24.77",
+      "Shares": "88,439",
+      "Value": "2,190,848"
+    },
+    {
+      "Owner": "Horton Amy",
+      "Relationship": "VP, Chief Accounting Officer",
+      "Date": "Mar 06 '25",
+      "Transaction": "Sale",
+      "Cost": "24.80",
+      "Shares": "1,048",
+      "Value": "25,995"
+    },
+    {
+      "Owner": "Berry Lance A",
+      "Relationship": "Executive VP, CFO",
+      "Date": "Mar 06 '25",
+      "Transaction": "Sale",
+      "Cost": "24.80",
+      "Shares": "4,909",
+      "Value": "121,764"
+    },
+    {
+      "Owner": "Davis John E",
+      "Relationship": "Chief Commercial Officer",
+      "Date": "Mar 06 '25",
+      "Transaction": "Sale",
+      "Cost": "24.80",
+      "Shares": "2,618",
+      "Value": "64,939"
+    },
+    {
+      "Owner": "Stanton Marshall S.",
+      "Relationship": "SVP, Clinical & MD Affair",
+      "Date": "Mar 06 '25",
+      "Transaction": "Sale",
+      "Cost": "24.80",
+      "Shares": "1,603",
+      "Value": "39,761"
+    },
+    {
+      "Owner": "Holloway Jean F",
+      "Relationship": "SVP, General Counsel",
+      "Date": "Mar 06 '25",
+      "Transaction": "Sale",
+      "Cost": "24.80",
+      "Shares": "2,124",
+      "Value": "52,685"
+    },
+    {
+      "Owner": "JAMES P MACKIN",
+      "Relationship": "Officer",
+      "Date": "Mar 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "24.76",
+      "Shares": "70,700",
+      "Value": "1,750,843"
+    },
+    {
+      "Owner": "Holloway Jean F",
+      "Relationship": "SVP, General Counsel",
+      "Date": "Mar 05 '25",
+      "Transaction": "Sale",
+      "Cost": "25.29",
+      "Shares": "472",
+      "Value": "11,935"
+    },
+    {
+      "Owner": "Holloway Jean F",
+      "Relationship": "Officer",
+      "Date": "Mar 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "25.29",
+      "Shares": "472",
+      "Value": "11,935"
+    },
+    {
+      "Owner": "SEMEDO ANTHONY B.",
+      "Relationship": "Director",
+      "Date": "Mar 05 '25",
+      "Transaction": "Buy",
+      "Cost": "25.33",
+      "Shares": "1,500",
+      "Value": "37,990"
+    },
+    {
+      "Owner": "SEMEDO ANTHONY B.",
+      "Relationship": "Director",
+      "Date": "Mar 05 '25",
+      "Transaction": "Buy",
+      "Cost": "25.25",
+      "Shares": "600",
+      "Value": "15,150"
+    },
+    {
+      "Owner": "Horton Amy",
+      "Relationship": "VP, Chief Accounting Officer",
+      "Date": "Feb 24 '25",
+      "Transaction": "Sale",
+      "Cost": "27.31",
+      "Shares": "3,323",
+      "Value": "90,738"
+    },
+    {
+      "Owner": "Mackin James P",
+      "Relationship": "President & CEO",
+      "Date": "Feb 24 '25",
+      "Transaction": "Sale",
+      "Cost": "27.31",
+      "Shares": "42,156",
+      "Value": "1,151,112"
+    },
+    {
+      "Owner": "Holloway Jean F",
+      "Relationship": "SVP, General Counsel",
+      "Date": "Feb 24 '25",
+      "Transaction": "Sale",
+      "Cost": "27.31",
+      "Shares": "5,335",
+      "Value": "145,678"
+    },
+    {
+      "Owner": "Davis John E",
+      "Relationship": "Chief Commercial Officer",
+      "Date": "Feb 24 '25",
+      "Transaction": "Sale",
+      "Cost": "27.31",
+      "Shares": "6,457",
+      "Value": "176,315"
+    },
+    {
+      "Owner": "Berry Lance A",
+      "Relationship": "Executive VP, CFO",
+      "Date": "Feb 24 '25",
+      "Transaction": "Sale",
+      "Cost": "27.31",
+      "Shares": "3,259",
+      "Value": "88,990"
+    },
+    {
+      "Owner": "Stanton Marshall S.",
+      "Relationship": "SVP, Clinical & MD Affair",
+      "Date": "Feb 24 '25",
+      "Transaction": "Sale",
+      "Cost": "27.31",
+      "Shares": "4,687",
+      "Value": "127,983"
+    },
+    {
+      "Owner": "Holloway Jean F",
+      "Relationship": "Officer",
+      "Date": "Dec 12 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "30.25",
+      "Shares": "4,011",
+      "Value": "121,333"
+    },
+    {
+      "Owner": "Holloway Jean F",
+      "Relationship": "SVP, General Counsel",
+      "Date": "Dec 11 '24",
+      "Transaction": "Sale",
+      "Cost": "30.12",
+      "Shares": "8,070",
+      "Value": "243,109"
+    },
+    {
+      "Owner": "Holloway Jean F",
+      "Relationship": "Officer",
+      "Date": "Dec 11 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "30.12",
+      "Shares": "8,070",
+      "Value": "243,109"
+    },
+    {
+      "Owner": "Horton Amy",
+      "Relationship": "VP, Chief Accounting Officer",
+      "Date": "Dec 06 '24",
+      "Transaction": "Sale",
+      "Cost": "29.66",
+      "Shares": "4,329",
+      "Value": "128,398"
+    },
+    {
+      "Owner": "GREEN ANDREW M",
+      "Relationship": "VP Regulatory",
+      "Date": "Dec 04 '24",
+      "Transaction": "Sale",
+      "Cost": "30.00",
+      "Shares": "7,618",
+      "Value": "228,540"
+    },
+    {
+      "Owner": "ANDREW GREEN",
+      "Relationship": "Officer",
+      "Date": "Dec 04 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "30.00",
+      "Shares": "7,618",
+      "Value": "228,540"
+    }
+  ],
+  "Dividends": []
+}

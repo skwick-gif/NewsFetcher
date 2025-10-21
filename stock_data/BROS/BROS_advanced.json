@@ -1,0 +1,961 @@
+{
+  "Index": "-",
+  "P/E": "103.80",
+  "EPS (ttm)": "0.47",
+  "Insider Own": "3.57%",
+  "Shs Outstand": "126.93M",
+  "Perf Week": "-3.30%",
+  "Market Cap": "8.04B",
+  "Forward P/E": "55.14",
+  "EPS next Y": "29.59%",
+  "Insider Trans": "-63.00%",
+  "Shs Float": "122.43M",
+  "Perf Month": "-26.50%",
+  "Enterprise Value": "8.97B",
+  "PEG": "3.23",
+  "EPS next Q": "0.17",
+  "Inst Own": "81.53%",
+  "Short Float": "10.36%",
+  "Perf Quarter": "-22.95%",
+  "Income": "57.23M",
+  "P/S": "5.54",
+  "EPS this Y": "39.59%",
+  "Inst Trans": "2.88%",
+  "Short Ratio": "3.43",
+  "Perf Half Y": "-14.23%",
+  "Sales": "1.45B",
+  "P/B": "9.75",
+  "ROA": "2.21%",
+  "Short Interest": "10.36%",
+  "Perf YTD": "-6.68%",
+  "Book/sh": "5.01",
+  "P/C": "31.61",
+  "EPS next 5Y": "32.13%",
+  "ROE": "9.99%",
+  "52W High": "86.88 -43.74%",
+  "Perf Year": "53.86%",
+  "Cash/sh": "1.55",
+  "P/FCF": "110.33",
+  "EPS past 3/5Y": "- -9.87%",
+  "ROIC": "3.61%",
+  "52W Low": "30.49 60.31%",
+  "Perf 3Y": "55.42%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "41.13",
+  "Sales past 3/5Y": "37.03% 39.98%",
+  "Gross Margin": "26.59%",
+  "Volatility": "4.45% 3.83%",
+  "Perf 5Y": "-",
+  "Dividend TTM": "-",
+  "EV/Sales": "6.18",
+  "EPS Y/Y TTM": "85.84%",
+  "Oper. Margin": "9.23%",
+  "ATR (14)": "2.21",
+  "Perf 10Y": "-",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "1.42",
+  "Sales Y/Y TTM": "29.80%",
+  "Profit Margin": "3.94%",
+  "RSI (14)": "30.03",
+  "Recom": "1.32",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "1.64",
+  "EPS Q/Q": "73.50%",
+  "SMA20": "-8.61%",
+  "Beta": "2.57",
+  "Target Price": "81.59",
+  "Payout": "0.00%",
+  "Debt/Eq": "1.54",
+  "Sales Q/Q": "27.97%",
+  "SMA50": "-20.05%",
+  "Rel Volume": "1.19",
+  "Prev Close": "49.64",
+  "Employees": "26000",
+  "LT Debt/Eq": "1.49",
+  "Earnings": "Aug 06 AMC",
+  "SMA200": "-23.40%",
+  "Avg Volume": "3.70M",
+  "Price": "48.88",
+  "IPO": "Sep 15, 2021",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "47.48% 2.99%",
+  "Trades": "",
+  "Volume": "4,390,353",
+  "Change": "-1.53%",
+  "Insider Trading": [
+    {
+      "Owner": "Boersma Travis",
+      "Relationship": "Executive Chairman of Board",
+      "Date": "Aug 25 '25",
+      "Transaction": "Sale",
+      "Cost": "68.94",
+      "Shares": "787,681",
+      "Value": "54,305,208"
+    },
+    {
+      "Owner": "DM Individual Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Aug 25 '25",
+      "Transaction": "Sale",
+      "Cost": "68.94",
+      "Shares": "304,113",
+      "Value": "20,966,507"
+    },
+    {
+      "Owner": "DM Trust Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Aug 25 '25",
+      "Transaction": "Sale",
+      "Cost": "68.94",
+      "Shares": "483,568",
+      "Value": "33,338,701"
+    },
+    {
+      "Owner": "DM INDIVIDUAL AGGREGATOR, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Aug 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "65.52",
+      "Shares": "304,113",
+      "Value": "19,925,484"
+    },
+    {
+      "Owner": "DM TRUST AGGREGATOR LLC",
+      "Relationship": "10% Owner",
+      "Date": "Aug 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "65.52",
+      "Shares": "483,568",
+      "Value": "31,683,375"
+    },
+    {
+      "Owner": "DM Individual Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Aug 22 '25",
+      "Transaction": "Sale",
+      "Cost": "65.17",
+      "Shares": "482,750",
+      "Value": "31,461,589"
+    },
+    {
+      "Owner": "DM Individual Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "63.07",
+      "Shares": "178,351",
+      "Value": "11,248,404"
+    },
+    {
+      "Owner": "DM Trust Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Aug 22 '25",
+      "Transaction": "Sale",
+      "Cost": "65.17",
+      "Shares": "767,621",
+      "Value": "50,027,087"
+    },
+    {
+      "Owner": "DM Trust Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "63.07",
+      "Shares": "283,597",
+      "Value": "17,886,155"
+    },
+    {
+      "Owner": "Boersma Travis",
+      "Relationship": "Executive Chairman of Board",
+      "Date": "Aug 22 '25",
+      "Transaction": "Sale",
+      "Cost": "65.17",
+      "Shares": "1,250,371",
+      "Value": "81,488,675"
+    },
+    {
+      "Owner": "Boersma Travis",
+      "Relationship": "Executive Chairman of Board",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "63.07",
+      "Shares": "461,948",
+      "Value": "29,134,559"
+    },
+    {
+      "Owner": "DM TRUST AGGREGATOR LLC",
+      "Relationship": "10% Owner",
+      "Date": "Aug 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "63.13",
+      "Shares": "767,621",
+      "Value": "48,459,914"
+    },
+    {
+      "Owner": "DM INDIVIDUAL AGGREGATOR, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Aug 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "63.13",
+      "Shares": "482,750",
+      "Value": "30,476,008"
+    },
+    {
+      "Owner": "Cone C. David",
+      "Relationship": "Director",
+      "Date": "Aug 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "445",
+      "Value": "0"
+    },
+    {
+      "Owner": "Penegor Todd Allan",
+      "Relationship": "Director",
+      "Date": "Aug 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "445",
+      "Value": "0"
+    },
+    {
+      "Owner": "Miller Ann M",
+      "Relationship": "Director",
+      "Date": "Aug 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "445",
+      "Value": "0"
+    },
+    {
+      "Owner": "MARCHISOTTO KORY",
+      "Relationship": "Director",
+      "Date": "Aug 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "445",
+      "Value": "0"
+    },
+    {
+      "Owner": "DM INDIVIDUAL AGGREGATOR, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "62.94",
+      "Shares": "178,351",
+      "Value": "11,225,412"
+    },
+    {
+      "Owner": "DM TRUST AGGREGATOR LLC",
+      "Relationship": "10% Owner",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "62.94",
+      "Shares": "283,597",
+      "Value": "17,849,595"
+    },
+    {
+      "Owner": "Davis Thomas James",
+      "Relationship": "Director",
+      "Date": "Aug 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "445",
+      "Value": "0"
+    },
+    {
+      "Owner": "George Kathryn",
+      "Relationship": "Director",
+      "Date": "Aug 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "445",
+      "Value": "0"
+    },
+    {
+      "Owner": "Hart Gerard Johan",
+      "Relationship": "Director",
+      "Date": "Aug 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "445",
+      "Value": "0"
+    },
+    {
+      "Owner": "Gillett Stephen",
+      "Relationship": "Director",
+      "Date": "Aug 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "445",
+      "Value": "0"
+    },
+    {
+      "Owner": "Boersma Travis",
+      "Relationship": "Executive Chairman of Board",
+      "Date": "May 22 '25",
+      "Transaction": "Sale",
+      "Cost": "66.82",
+      "Shares": "722,841",
+      "Value": "48,302,435"
+    },
+    {
+      "Owner": "Boersma Travis",
+      "Relationship": "Executive Chairman of Board",
+      "Date": "May 21 '25",
+      "Transaction": "Sale",
+      "Cost": "65.95",
+      "Shares": "540,638",
+      "Value": "35,652,786"
+    },
+    {
+      "Owner": "DM Individual Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "May 22 '25",
+      "Transaction": "Sale",
+      "Cost": "66.82",
+      "Shares": "159,254",
+      "Value": "10,641,836"
+    },
+    {
+      "Owner": "DM Individual Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "May 21 '25",
+      "Transaction": "Sale",
+      "Cost": "65.95",
+      "Shares": "119,112",
+      "Value": "7,854,932"
+    },
+    {
+      "Owner": "DM Trust Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "May 22 '25",
+      "Transaction": "Sale",
+      "Cost": "66.82",
+      "Shares": "563,587",
+      "Value": "37,660,599"
+    },
+    {
+      "Owner": "DM Trust Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "May 21 '25",
+      "Transaction": "Sale",
+      "Cost": "65.95",
+      "Shares": "421,526",
+      "Value": "27,797,854"
+    },
+    {
+      "Owner": "DM TRUST AGGREGATOR LLC",
+      "Relationship": "10% Owner",
+      "Date": "May 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "64.90",
+      "Shares": "563,587",
+      "Value": "36,576,796"
+    },
+    {
+      "Owner": "DM INDIVIDUAL AGGREGATOR, LLC",
+      "Relationship": "10% Owner",
+      "Date": "May 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "64.90",
+      "Shares": "159,254",
+      "Value": "10,335,585"
+    },
+    {
+      "Owner": "DM TRUST AGGREGATOR LLC",
+      "Relationship": "10% Owner",
+      "Date": "May 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "67.46",
+      "Shares": "421,526",
+      "Value": "28,436,144"
+    },
+    {
+      "Owner": "DM INDIVIDUAL AGGREGATOR, LLC",
+      "Relationship": "10% Owner",
+      "Date": "May 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "67.46",
+      "Shares": "119,112",
+      "Value": "8,035,296"
+    },
+    {
+      "Owner": "Boersma Travis",
+      "Relationship": "Executive Chairman of Board",
+      "Date": "May 20 '25",
+      "Transaction": "Sale",
+      "Cost": "68.24",
+      "Shares": "704,995",
+      "Value": "48,109,455"
+    },
+    {
+      "Owner": "Boersma Travis",
+      "Relationship": "Executive Chairman of Board",
+      "Date": "May 19 '25",
+      "Transaction": "Sale",
+      "Cost": "72.02",
+      "Shares": "531,526",
+      "Value": "38,279,618"
+    },
+    {
+      "Owner": "DM Individual Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "May 19 '25",
+      "Transaction": "Sale",
+      "Cost": "72.02",
+      "Shares": "531,526",
+      "Value": "38,279,618"
+    },
+    {
+      "Owner": "DM Individual Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "May 20 '25",
+      "Transaction": "Sale",
+      "Cost": "68.24",
+      "Shares": "155,322",
+      "Value": "10,599,303"
+    },
+    {
+      "Owner": "DM Trust Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "May 20 '25",
+      "Transaction": "Sale",
+      "Cost": "68.24",
+      "Shares": "549,673",
+      "Value": "37,510,152"
+    },
+    {
+      "Owner": "DM TRUST AGGREGATOR LLC",
+      "Relationship": "10% Owner",
+      "Date": "May 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "71.91",
+      "Shares": "549,673",
+      "Value": "39,526,985"
+    },
+    {
+      "Owner": "DM INDIVIDUAL AGGREGATOR, LLC",
+      "Relationship": "10% Owner",
+      "Date": "May 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "71.91",
+      "Shares": "155,322",
+      "Value": "11,169,205"
+    },
+    {
+      "Owner": "DM INDIVIDUAL AGGREGATOR, LLC",
+      "Relationship": "10% Owner",
+      "Date": "May 19 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "73.72",
+      "Shares": "531,526",
+      "Value": "39,184,097"
+    },
+    {
+      "Owner": "Miller Ann M",
+      "Relationship": "Director",
+      "Date": "May 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "763",
+      "Value": "0"
+    },
+    {
+      "Owner": "Hart Gerard Johan",
+      "Relationship": "Director",
+      "Date": "May 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,682",
+      "Value": "0"
+    },
+    {
+      "Owner": "MARCHISOTTO KORY",
+      "Relationship": "Director",
+      "Date": "May 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "414",
+      "Value": "0"
+    },
+    {
+      "Owner": "Penegor Todd Allan",
+      "Relationship": "Director",
+      "Date": "May 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,579",
+      "Value": "0"
+    },
+    {
+      "Owner": "George Kathryn",
+      "Relationship": "Director",
+      "Date": "May 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "763",
+      "Value": "0"
+    },
+    {
+      "Owner": "Gillett Stephen",
+      "Relationship": "Director",
+      "Date": "May 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "763",
+      "Value": "0"
+    },
+    {
+      "Owner": "Cone C. David",
+      "Relationship": "Director",
+      "Date": "May 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "763",
+      "Value": "0"
+    },
+    {
+      "Owner": "Davis Thomas James",
+      "Relationship": "Director",
+      "Date": "May 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "763",
+      "Value": "0"
+    },
+    {
+      "Owner": "Miller Ann M",
+      "Relationship": "Director",
+      "Date": "Mar 31 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "762",
+      "Value": "0"
+    },
+    {
+      "Owner": "Gillett Stephen",
+      "Relationship": "Director",
+      "Date": "Mar 31 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "762",
+      "Value": "0"
+    },
+    {
+      "Owner": "George Kathryn",
+      "Relationship": "Director",
+      "Date": "Mar 31 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "762",
+      "Value": "0"
+    },
+    {
+      "Owner": "Davis Thomas James",
+      "Relationship": "Director",
+      "Date": "Mar 31 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "762",
+      "Value": "0"
+    },
+    {
+      "Owner": "Cone C. David",
+      "Relationship": "Director",
+      "Date": "Mar 31 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "762",
+      "Value": "0"
+    },
+    {
+      "Owner": "Boersma Travis",
+      "Relationship": "Executive Chairman of Board",
+      "Date": "Feb 27 '25",
+      "Transaction": "Sale",
+      "Cost": "77.36",
+      "Shares": "209,862",
+      "Value": "16,235,401"
+    },
+    {
+      "Owner": "DM Individual Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 27 '25",
+      "Transaction": "Sale",
+      "Cost": "77.36",
+      "Shares": "81,025",
+      "Value": "6,268,278"
+    },
+    {
+      "Owner": "DM Trust Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 27 '25",
+      "Transaction": "Sale",
+      "Cost": "77.36",
+      "Shares": "128,837",
+      "Value": "9,967,123"
+    },
+    {
+      "Owner": "DM INDIVIDUAL AGGREGATOR, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 27 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "75.40",
+      "Shares": "81,025",
+      "Value": "6,109,285"
+    },
+    {
+      "Owner": "DM TRUST AGGREGATOR LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 27 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "75.40",
+      "Shares": "128,837",
+      "Value": "9,714,310"
+    },
+    {
+      "Owner": "DM Trust Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 26 '25",
+      "Transaction": "Sale",
+      "Cost": "75.91",
+      "Shares": "289,595",
+      "Value": "21,984,499"
+    },
+    {
+      "Owner": "DM Trust Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 25 '25",
+      "Transaction": "Sale",
+      "Cost": "73.10",
+      "Shares": "235,051",
+      "Value": "17,182,969"
+    },
+    {
+      "Owner": "Boersma Travis",
+      "Relationship": "Executive Chairman of Board",
+      "Date": "Feb 26 '25",
+      "Transaction": "Sale",
+      "Cost": "75.91",
+      "Shares": "471,718",
+      "Value": "35,810,300"
+    },
+    {
+      "Owner": "Boersma Travis",
+      "Relationship": "Executive Chairman of Board",
+      "Date": "Feb 25 '25",
+      "Transaction": "Sale",
+      "Cost": "73.10",
+      "Shares": "382,873",
+      "Value": "27,989,223"
+    },
+    {
+      "Owner": "DM Individual Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 26 '25",
+      "Transaction": "Sale",
+      "Cost": "75.91",
+      "Shares": "182,123",
+      "Value": "13,825,801"
+    },
+    {
+      "Owner": "DM Individual Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 25 '25",
+      "Transaction": "Sale",
+      "Cost": "73.10",
+      "Shares": "147,822",
+      "Value": "10,806,254"
+    },
+    {
+      "Owner": "DM TRUST AGGREGATOR LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 26 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "73.14",
+      "Shares": "289,595",
+      "Value": "21,180,978"
+    },
+    {
+      "Owner": "DM INDIVIDUAL AGGREGATOR, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 26 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "73.14",
+      "Shares": "182,123",
+      "Value": "13,320,476"
+    },
+    {
+      "Owner": "DM INDIVIDUAL AGGREGATOR, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "75.31",
+      "Shares": "147,822",
+      "Value": "11,132,475"
+    },
+    {
+      "Owner": "DM TRUST AGGREGATOR LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "75.31",
+      "Shares": "235,051",
+      "Value": "17,701,691"
+    },
+    {
+      "Owner": "DM Trust Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 21 '25",
+      "Transaction": "Sale",
+      "Cost": "77.73",
+      "Shares": "463,844",
+      "Value": "36,055,832"
+    },
+    {
+      "Owner": "DM Trust Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 24 '25",
+      "Transaction": "Sale",
+      "Cost": "74.77",
+      "Shares": "417,459",
+      "Value": "31,214,622"
+    },
+    {
+      "Owner": "Boersma Travis",
+      "Relationship": "Executive Chairman of Board",
+      "Date": "Feb 21 '25",
+      "Transaction": "Sale",
+      "Cost": "77.73",
+      "Shares": "755,551",
+      "Value": "58,730,995"
+    },
+    {
+      "Owner": "Boersma Travis",
+      "Relationship": "Executive Chairman of Board",
+      "Date": "Feb 24 '25",
+      "Transaction": "Sale",
+      "Cost": "74.77",
+      "Shares": "679,996",
+      "Value": "50,845,277"
+    },
+    {
+      "Owner": "DM Individual Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 21 '25",
+      "Transaction": "Sale",
+      "Cost": "77.73",
+      "Shares": "291,707",
+      "Value": "22,675,163"
+    },
+    {
+      "Owner": "DM Individual Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 24 '25",
+      "Transaction": "Sale",
+      "Cost": "74.77",
+      "Shares": "262,537",
+      "Value": "19,630,655"
+    },
+    {
+      "Owner": "DM INDIVIDUAL AGGREGATOR, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 24 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "76.10",
+      "Shares": "262,537",
+      "Value": "19,979,066"
+    },
+    {
+      "Owner": "DM TRUST AGGREGATOR LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 24 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "76.10",
+      "Shares": "417,459",
+      "Value": "31,768,630"
+    },
+    {
+      "Owner": "DM INDIVIDUAL AGGREGATOR, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "82.03",
+      "Shares": "291,707",
+      "Value": "23,928,725"
+    },
+    {
+      "Owner": "DM TRUST AGGREGATOR LLC",
+      "Relationship": "10% Owner",
+      "Date": "Feb 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "82.03",
+      "Shares": "463,844",
+      "Value": "38,049,123"
+    },
+    {
+      "Owner": "Cone C. David",
+      "Relationship": "Director",
+      "Date": "Dec 31 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "762",
+      "Value": "0"
+    },
+    {
+      "Owner": "Davis Thomas James",
+      "Relationship": "Director",
+      "Date": "Dec 31 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "762",
+      "Value": "0"
+    },
+    {
+      "Owner": "George Kathryn",
+      "Relationship": "Director",
+      "Date": "Dec 31 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "762",
+      "Value": "0"
+    },
+    {
+      "Owner": "Gillett Stephen",
+      "Relationship": "Director",
+      "Date": "Dec 31 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "762",
+      "Value": "0"
+    },
+    {
+      "Owner": "Miller Ann M",
+      "Relationship": "Director",
+      "Date": "Dec 31 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "762",
+      "Value": "0"
+    },
+    {
+      "Owner": "DM Trust Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Nov 04 '24",
+      "Transaction": "Sale",
+      "Cost": "33.48",
+      "Shares": "38,339",
+      "Value": "1,283,753"
+    },
+    {
+      "Owner": "Boersma Travis",
+      "Relationship": "Executive Chairman of Board",
+      "Date": "Nov 04 '24",
+      "Transaction": "Sale",
+      "Cost": "33.48",
+      "Shares": "38,339",
+      "Value": "1,283,753"
+    },
+    {
+      "Owner": "DM Trust Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Nov 01 '24",
+      "Transaction": "Sale",
+      "Cost": "33.37",
+      "Shares": "169,608",
+      "Value": "5,660,192"
+    },
+    {
+      "Owner": "DM Individual Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Nov 01 '24",
+      "Transaction": "Sale",
+      "Cost": "33.38",
+      "Shares": "115,854",
+      "Value": "3,867,612"
+    },
+    {
+      "Owner": "Boersma Travis",
+      "Relationship": "Executive Chairman of Board",
+      "Date": "Nov 01 '24",
+      "Transaction": "Sale",
+      "Cost": "33.38",
+      "Shares": "285,462",
+      "Value": "9,527,804"
+    },
+    {
+      "Owner": "DM TRUST AGGREGATOR, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Nov 04 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "33.40",
+      "Shares": "38,339",
+      "Value": "1,280,523"
+    },
+    {
+      "Owner": "DM INDIVIDUAL AGGREGATOR, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Nov 01 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "33.12",
+      "Shares": "115,854",
+      "Value": "3,837,084"
+    },
+    {
+      "Owner": "DM TRUST AGGREGATOR, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Nov 01 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "33.12",
+      "Shares": "169,608",
+      "Value": "5,617,417"
+    },
+    {
+      "Owner": "DM Individual Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Oct 28 '24",
+      "Transaction": "Sale",
+      "Cost": "36.03",
+      "Shares": "40,323",
+      "Value": "1,452,789"
+    },
+    {
+      "Owner": "DM Trust Aggregator, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Oct 28 '24",
+      "Transaction": "Sale",
+      "Cost": "36.03",
+      "Shares": "40,397",
+      "Value": "1,455,500"
+    },
+    {
+      "Owner": "Boersma Travis",
+      "Relationship": "Executive Chairman of Board",
+      "Date": "Oct 28 '24",
+      "Transaction": "Sale",
+      "Cost": "36.03",
+      "Shares": "80,720",
+      "Value": "2,908,289"
+    },
+    {
+      "Owner": "DM INDIVIDUAL AGGREGATOR, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Oct 28 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "35.53",
+      "Shares": "40,323",
+      "Value": "1,432,676"
+    },
+    {
+      "Owner": "DM TRUST AGGREGATOR, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Oct 28 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "35.53",
+      "Shares": "40,397",
+      "Value": "1,435,305"
+    }
+  ],
+  "Dividends": []
+}

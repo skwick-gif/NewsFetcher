@@ -1,0 +1,637 @@
+{
+  "Index": "DJIA, S&P 500",
+  "P/E": "22.20",
+  "EPS (ttm)": "14.24",
+  "Insider Own": "0.11%",
+  "Shs Outstand": "696.00M",
+  "Perf Week": "-4.23%",
+  "Market Cap": "220.08B",
+  "Forward P/E": "18.28",
+  "EPS next Y": "12.74%",
+  "Insider Trans": "-28.40%",
+  "Shs Float": "695.12M",
+  "Perf Month": "-3.97%",
+  "Enterprise Value": "221.84B",
+  "PEG": "1.90",
+  "EPS next Q": "4.00",
+  "Inst Own": "86.75%",
+  "Short Float": "1.42%",
+  "Perf Quarter": "-1.45%",
+  "Income": "10.02B",
+  "P/S": "2.86",
+  "EPS this Y": "9.55%",
+  "Inst Trans": "-0.25%",
+  "Short Ratio": "3.86",
+  "Perf Half Y": "28.10%",
+  "Sales": "76.86B",
+  "P/B": "6.81",
+  "ROA": "3.55%",
+  "Short Interest": "1.42%",
+  "Perf YTD": "6.56%",
+  "Book/sh": "46.42",
+  "P/C": "3.80",
+  "EPS next 5Y": "11.71%",
+  "ROE": "32.58%",
+  "52W High": "349.19 -9.43%",
+  "Perf Year": "17.52%",
+  "Cash/sh": "83.26",
+  "P/FCF": "19.84",
+  "EPS past 3/5Y": "11.84% 11.90%",
+  "ROIC": "11.07%",
+  "52W Low": "220.43 43.47%",
+  "Perf 3Y": "119.06%",
+  "Dividend Est.": "3.28 (1.04%)",
+  "EV/EBITDA": "9.89",
+  "Sales past 3/5Y": "19.33% 9.55%",
+  "Gross Margin": "61.02%",
+  "Volatility": "2.42% 2.11%",
+  "Perf 5Y": "204.42%",
+  "Dividend TTM": "3.16 (1.00%)",
+  "EV/Sales": "2.89",
+  "EPS Y/Y TTM": "6.26%",
+  "Oper. Margin": "20.18%",
+  "ATR (14)": "7.04",
+  "Perf 10Y": "325.02%",
+  "Dividend Ex-Date": "Oct 10, 2025",
+  "Quick Ratio": "7.52",
+  "Sales Y/Y TTM": "8.03%",
+  "Profit Margin": "13.03%",
+  "RSI (14)": "35.10",
+  "Recom": "2.53",
+  "Dividend Gr. 3/5Y": "17.64% 11.29%",
+  "Current Ratio": "7.52",
+  "EPS Q/Q": "-1.73%",
+  "SMA20": "-5.11%",
+  "Beta": "1.28",
+  "Target Price": "339.00",
+  "Payout": "19.97%",
+  "Debt/Eq": "1.85",
+  "Sales Q/Q": "8.29%",
+  "SMA50": "-1.59%",
+  "Rel Volume": "1.05",
+  "Prev Close": "324.44",
+  "Employees": "75100",
+  "LT Debt/Eq": "1.80",
+  "Earnings": "Oct 17 BMO",
+  "SMA200": "5.50%",
+  "Avg Volume": "2.55M",
+  "Price": "316.26",
+  "IPO": "Apr 04, 1972",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "5.00% 0.80%",
+  "Trades": "",
+  "Volume": "2,678,903",
+  "Change": "-2.52%",
+  "Insider Trading": [
+    {
+      "Owner": "Squeri Stephen J",
+      "Relationship": "Chairman and CEO",
+      "Date": "Sep 04 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "131.68",
+      "Shares": "112,272",
+      "Value": "14,783,977"
+    },
+    {
+      "Owner": "Squeri Stephen J",
+      "Relationship": "Chairman and CEO",
+      "Date": "Sep 04 '25",
+      "Transaction": "Sale",
+      "Cost": "329.86",
+      "Shares": "112,272",
+      "Value": "37,033,681"
+    },
+    {
+      "Owner": "Herena Monique",
+      "Relationship": "Chief Colleague Experience Off",
+      "Date": "Sep 03 '25",
+      "Transaction": "Sale",
+      "Cost": "325.88",
+      "Shares": "8,695",
+      "Value": "2,833,527"
+    },
+    {
+      "Owner": "STEPHEN J SQUERI",
+      "Relationship": "Officer",
+      "Date": "Sep 04 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "329.86",
+      "Shares": "112,272",
+      "Value": "37,033,885"
+    },
+    {
+      "Owner": "Buckminster Douglas E.",
+      "Relationship": "Vice Chairman",
+      "Date": "Sep 02 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "55.09",
+      "Shares": "23,505",
+      "Value": "1,294,890"
+    },
+    {
+      "Owner": "Buckminster Douglas E.",
+      "Relationship": "Vice Chairman",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "326.37",
+      "Shares": "23,505",
+      "Value": "7,671,327"
+    },
+    {
+      "Owner": "MONIQUE R HERENA",
+      "Relationship": "Officer",
+      "Date": "Sep 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "325.88",
+      "Shares": "8,695",
+      "Value": "2,833,510"
+    },
+    {
+      "Owner": "DOUGLAS BUCKMINSTER",
+      "Relationship": "Officer",
+      "Date": "Sep 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "326.37",
+      "Shares": "23,505",
+      "Value": "7,671,426"
+    },
+    {
+      "Owner": "Seeger Laureen",
+      "Relationship": "Chief Legal Officer",
+      "Date": "Aug 06 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "177.06",
+      "Shares": "16,998",
+      "Value": "3,009,666"
+    },
+    {
+      "Owner": "Seeger Laureen",
+      "Relationship": "Chief Legal Officer",
+      "Date": "Aug 05 '25",
+      "Transaction": "Sale",
+      "Cost": "297.47",
+      "Shares": "61,721",
+      "Value": "18,360,246"
+    },
+    {
+      "Owner": "Seeger Laureen",
+      "Relationship": "Chief Legal Officer",
+      "Date": "Aug 06 '25",
+      "Transaction": "Sale",
+      "Cost": "294.83",
+      "Shares": "16,998",
+      "Value": "5,011,520"
+    },
+    {
+      "Owner": "LAUREEN E SEEGER",
+      "Relationship": "Officer",
+      "Date": "Aug 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "294.83",
+      "Shares": "16,998",
+      "Value": "5,011,548"
+    },
+    {
+      "Owner": "LAUREEN E SEEGER",
+      "Relationship": "Officer",
+      "Date": "Aug 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "297.47",
+      "Shares": "61,721",
+      "Value": "18,360,041"
+    },
+    {
+      "Owner": "McNeal Glenda G",
+      "Relationship": "Chief Partner Officer",
+      "Date": "Jul 29 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "65.43",
+      "Shares": "50,000",
+      "Value": "3,271,500"
+    },
+    {
+      "Owner": "McNeal Glenda G",
+      "Relationship": "Chief Partner Officer",
+      "Date": "Jul 29 '25",
+      "Transaction": "Sale",
+      "Cost": "309.50",
+      "Shares": "50,000",
+      "Value": "15,474,837"
+    },
+    {
+      "Owner": "Marrs Anna",
+      "Relationship": "Group Pres., GMNS",
+      "Date": "Jul 29 '25",
+      "Transaction": "Sale",
+      "Cost": "310.77",
+      "Shares": "5,500",
+      "Value": "1,709,235"
+    },
+    {
+      "Owner": "ANNA MARRS",
+      "Relationship": "Officer",
+      "Date": "Jul 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "310.77",
+      "Shares": "5,500",
+      "Value": "1,709,215"
+    },
+    {
+      "Owner": "GLENDA MCNEAL",
+      "Relationship": "Officer",
+      "Date": "Jul 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "309.50",
+      "Shares": "50,000",
+      "Value": "15,474,870"
+    },
+    {
+      "Owner": "Marquez Rafael",
+      "Relationship": "President, International Card",
+      "Date": "May 20 '25",
+      "Transaction": "Sale",
+      "Cost": "296.93",
+      "Shares": "12,000",
+      "Value": "3,563,160"
+    },
+    {
+      "Owner": "RAFAEL FRANCISCO MARQUEZ GARCI",
+      "Relationship": "Officer",
+      "Date": "May 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "296.93",
+      "Shares": "12,000",
+      "Value": "3,563,215"
+    },
+    {
+      "Owner": "Joabar Raymond",
+      "Relationship": "Grp. Pres., Global Comm. Serv.",
+      "Date": "May 13 '25",
+      "Transaction": "Sale",
+      "Cost": "302.44",
+      "Shares": "400",
+      "Value": "120,976"
+    },
+    {
+      "Owner": "DARIA REZNIKOVA",
+      "Relationship": "Affiliate",
+      "Date": "May 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "302.44",
+      "Shares": "400",
+      "Value": "120,976"
+    },
+    {
+      "Owner": "Grosfield Howard",
+      "Relationship": "Group Pres., U.S. Cons. Serv.",
+      "Date": "May 06 '25",
+      "Transaction": "Sale",
+      "Cost": "275.50",
+      "Shares": "9,450",
+      "Value": "2,603,475"
+    },
+    {
+      "Owner": "HOWARD M GROSFIELD",
+      "Relationship": "Officer",
+      "Date": "May 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "275.50",
+      "Shares": "9,450",
+      "Value": "2,603,514"
+    },
+    {
+      "Owner": "Williams Anre D",
+      "Relationship": "Officer",
+      "Date": "May 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "275.42",
+      "Shares": "29,369",
+      "Value": "8,088,810"
+    },
+    {
+      "Owner": "McNeal Glenda G",
+      "Relationship": "Chief Partner Officer",
+      "Date": "Apr 29 '25",
+      "Transaction": "Sale",
+      "Cost": "264.66",
+      "Shares": "3,019",
+      "Value": "799,009"
+    },
+    {
+      "Owner": "GLENDA MCNEAL",
+      "Relationship": "Officer",
+      "Date": "Apr 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "264.66",
+      "Shares": "3,019",
+      "Value": "799,005"
+    },
+    {
+      "Owner": "Angelakis Michael J",
+      "Relationship": "Director",
+      "Date": "Mar 07 '25",
+      "Transaction": "Buy",
+      "Cost": "269.89",
+      "Shares": "3,700",
+      "Value": "998,593"
+    },
+    {
+      "Owner": "Marrs Anna",
+      "Relationship": "Group Pres., GMNS",
+      "Date": "Mar 04 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "177.06",
+      "Shares": "16,274",
+      "Value": "2,881,474"
+    },
+    {
+      "Owner": "Marrs Anna",
+      "Relationship": "Group Pres., GMNS",
+      "Date": "Mar 04 '25",
+      "Transaction": "Sale",
+      "Cost": "287.88",
+      "Shares": "21,955",
+      "Value": "6,320,504"
+    },
+    {
+      "Owner": "ANNA MARRS",
+      "Relationship": "Officer",
+      "Date": "Mar 04 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "295.49",
+      "Shares": "21,955",
+      "Value": "6,487,483"
+    },
+    {
+      "Owner": "Lieberman Quinn Jessica",
+      "Relationship": "EVP - Controller",
+      "Date": "Feb 26 '25",
+      "Transaction": "Sale",
+      "Cost": "296.43",
+      "Shares": "3,028",
+      "Value": "897,590"
+    },
+    {
+      "Owner": "JESSICA LIEBERM QUINN",
+      "Relationship": "Officer",
+      "Date": "Feb 26 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "296.43",
+      "Shares": "3,028",
+      "Value": "897,605"
+    },
+    {
+      "Owner": "McNeal Glenda G",
+      "Relationship": "Chief Partner Officer",
+      "Date": "Feb 11 '25",
+      "Transaction": "Sale",
+      "Cost": "309.96",
+      "Shares": "7,391",
+      "Value": "2,290,914"
+    },
+    {
+      "Owner": "GLENDA MCNEAL",
+      "Relationship": "Officer",
+      "Date": "Feb 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "309.96",
+      "Shares": "7,391",
+      "Value": "2,290,880"
+    },
+    {
+      "Owner": "Squeri Stephen J",
+      "Relationship": "Chairman and CEO",
+      "Date": "Feb 06 '25",
+      "Transaction": "Sale",
+      "Cost": "319.45",
+      "Shares": "50,841",
+      "Value": "16,241,201"
+    },
+    {
+      "Owner": "Pickett Denise",
+      "Relationship": "Pres., GSG and TLS",
+      "Date": "Feb 05 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "177.06",
+      "Shares": "13,743",
+      "Value": "2,433,336"
+    },
+    {
+      "Owner": "Pickett Denise",
+      "Relationship": "Pres., GSG and TLS",
+      "Date": "Feb 05 '25",
+      "Transaction": "Sale",
+      "Cost": "318.69",
+      "Shares": "22,752",
+      "Value": "7,250,835"
+    },
+    {
+      "Owner": "Radhakrishnan Ravikumar",
+      "Relationship": "Chief Information Officer",
+      "Date": "Feb 05 '25",
+      "Transaction": "Sale",
+      "Cost": "319.17",
+      "Shares": "9,485",
+      "Value": "3,027,327"
+    },
+    {
+      "Owner": "Joabar Raymond",
+      "Relationship": "Grp. Pres., GMNS",
+      "Date": "Feb 05 '25",
+      "Transaction": "Sale",
+      "Cost": "317.01",
+      "Shares": "11,121",
+      "Value": "3,525,468"
+    },
+    {
+      "Owner": "STEPHEN J SQUERI",
+      "Relationship": "Officer",
+      "Date": "Feb 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "319.45",
+      "Shares": "50,841",
+      "Value": "16,241,239"
+    },
+    {
+      "Owner": "RAYMOND D JOABAR",
+      "Relationship": "Officer",
+      "Date": "Feb 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "317.01",
+      "Shares": "11,121",
+      "Value": "3,525,465"
+    },
+    {
+      "Owner": "RAVIKUMAR S RADHAKRISHNAN",
+      "Relationship": "Officer",
+      "Date": "Feb 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "319.17",
+      "Shares": "9,485",
+      "Value": "3,027,306"
+    },
+    {
+      "Owner": "DENISE PICKETT",
+      "Relationship": "Officer",
+      "Date": "Feb 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "318.69",
+      "Shares": "22,752",
+      "Value": "7,250,794"
+    },
+    {
+      "Owner": "Joabar Raymond",
+      "Relationship": "Grp. Pres., GMNS",
+      "Date": "Jan 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "116.26",
+      "Shares": "15,179",
+      "Value": "1,764,711"
+    },
+    {
+      "Owner": "Joabar Raymond",
+      "Relationship": "Grp. Pres., GMNS",
+      "Date": "Jan 28 '25",
+      "Transaction": "Sale",
+      "Cost": "313.94",
+      "Shares": "15,179",
+      "Value": "4,765,295"
+    },
+    {
+      "Owner": "RAYMOND D JOABAR",
+      "Relationship": "Officer",
+      "Date": "Jan 28 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "313.94",
+      "Shares": "15,179",
+      "Value": "4,765,262"
+    },
+    {
+      "Owner": "Le Caillec Christophe",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Nov 27 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "65.43",
+      "Shares": "8,000",
+      "Value": "523,440"
+    },
+    {
+      "Owner": "Le Caillec Christophe",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Nov 27 '24",
+      "Transaction": "Sale",
+      "Cost": "303.48",
+      "Shares": "6,000",
+      "Value": "1,820,880"
+    },
+    {
+      "Owner": "CHRISTOPHE LE CAILLEC",
+      "Relationship": "Officer",
+      "Date": "Nov 27 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "303.48",
+      "Shares": "6,600",
+      "Value": "2,002,976"
+    },
+    {
+      "Owner": "Squeri Stephen J",
+      "Relationship": "Chairman and CEO",
+      "Date": "Nov 07 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "99.80",
+      "Shares": "170,632",
+      "Value": "17,029,656"
+    },
+    {
+      "Owner": "Squeri Stephen J",
+      "Relationship": "Chairman and CEO",
+      "Date": "Nov 07 '24",
+      "Transaction": "Sale",
+      "Cost": "286.57",
+      "Shares": "170,632",
+      "Value": "48,897,715"
+    },
+    {
+      "Owner": "Herena Monique",
+      "Relationship": "Chief Colleague Experience Off",
+      "Date": "Nov 07 '24",
+      "Transaction": "Sale",
+      "Cost": "287.70",
+      "Shares": "1,300",
+      "Value": "374,010"
+    },
+    {
+      "Owner": "MONIQUE R HERENA",
+      "Relationship": "Officer",
+      "Date": "Nov 07 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "287.70",
+      "Shares": "1,300",
+      "Value": "374,011"
+    },
+    {
+      "Owner": "STEPHEN SQUERI",
+      "Relationship": "Officer",
+      "Date": "Nov 07 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "286.57",
+      "Shares": "170,632",
+      "Value": "48,897,842"
+    },
+    {
+      "Owner": "Buckminster Douglas E.",
+      "Relationship": "Vice Chairman",
+      "Date": "Oct 29 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "83.30",
+      "Shares": "13,111",
+      "Value": "1,092,146"
+    },
+    {
+      "Owner": "Buckminster Douglas E.",
+      "Relationship": "Vice Chairman",
+      "Date": "Oct 29 '24",
+      "Transaction": "Sale",
+      "Cost": "270.98",
+      "Shares": "13,111",
+      "Value": "3,552,819"
+    },
+    {
+      "Owner": "DOUGLAS BUCKMINSTER",
+      "Relationship": "Officer",
+      "Date": "Oct 29 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "270.98",
+      "Shares": "13,111",
+      "Value": "3,552,766"
+    },
+    {
+      "Owner": "Williams Anre D",
+      "Relationship": "Group Pres., Enterprise Serv.",
+      "Date": "Oct 22 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "118.13",
+      "Shares": "107,256",
+      "Value": "12,669,711"
+    },
+    {
+      "Owner": "Williams Anre D",
+      "Relationship": "Group Pres., Enterprise Serv.",
+      "Date": "Oct 22 '24",
+      "Transaction": "Sale",
+      "Cost": "270.26",
+      "Shares": "77,887",
+      "Value": "21,049,741"
+    },
+    {
+      "Owner": "ANRE WILLIAMS",
+      "Relationship": "Officer",
+      "Date": "Oct 22 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "270.26",
+      "Shares": "77,887",
+      "Value": "21,049,935"
+    }
+  ],
+  "Dividends": []
+}

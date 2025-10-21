@@ -1,0 +1,727 @@
+{
+  "Index": "RUT",
+  "P/E": "7.83",
+  "EPS (ttm)": "3.35",
+  "Insider Own": "39.54%",
+  "Shs Outstand": "30.41M",
+  "Perf Week": "-3.18%",
+  "Market Cap": "789.46M",
+  "Forward P/E": "6.40",
+  "EPS next Y": "17.00%",
+  "Insider Trans": "-0.12%",
+  "Shs Float": "18.20M",
+  "Perf Month": "-9.21%",
+  "Enterprise Value": "-",
+  "PEG": "0.80",
+  "EPS next Q": "0.88",
+  "Inst Own": "63.83%",
+  "Short Float": "8.26%",
+  "Perf Quarter": "-21.92%",
+  "Income": "103.45M",
+  "P/S": "1.79",
+  "EPS this Y": "0.57%",
+  "Inst Trans": "0.69%",
+  "Short Ratio": "8.83",
+  "Perf Half Y": "-0.08%",
+  "Sales": "442.16M",
+  "P/B": "1.06",
+  "ROA": "1.23%",
+  "Short Interest": "8.26%",
+  "Perf YTD": "-21.66%",
+  "Book/sh": "24.79",
+  "P/C": "-",
+  "EPS next 5Y": "9.75%",
+  "ROE": "14.78%",
+  "52W High": "38.19 -31.34%",
+  "Perf Year": "-15.31%",
+  "Cash/sh": "-",
+  "P/FCF": "6.44",
+  "EPS past 3/5Y": "27.01% 18.62%",
+  "ROIC": "12.50%",
+  "52W Low": "25.03 4.75%",
+  "Perf 3Y": "16.38%",
+  "Dividend Est.": "0.53 (2.02%)",
+  "EV/EBITDA": "-",
+  "Sales past 3/5Y": "27.65% 15.08%",
+  "Gross Margin": "-",
+  "Volatility": "2.48% 2.48%",
+  "Perf 5Y": "116.34%",
+  "Dividend TTM": "0.54 (2.06%)",
+  "EV/Sales": "-",
+  "EPS Y/Y TTM": "3.96%",
+  "Oper. Margin": "32.86%",
+  "ATR (14)": "0.68",
+  "Perf 10Y": "-",
+  "Dividend Ex-Date": "Aug 05, 2025",
+  "Quick Ratio": "-",
+  "Sales Y/Y TTM": "6.94%",
+  "Profit Margin": "23.40%",
+  "RSI (14)": "33.46",
+  "Recom": "3.00",
+  "Dividend Gr. 3/5Y": "12.86% 12.09%",
+  "Current Ratio": "0.04",
+  "EPS Q/Q": "-2.62%",
+  "SMA20": "-4.47%",
+  "Beta": "0.88",
+  "Target Price": "31.50",
+  "Payout": "13.37%",
+  "Debt/Eq": "0.12",
+  "Sales Q/Q": "2.10%",
+  "SMA50": "-7.14%",
+  "Rel Volume": "0.94",
+  "Prev Close": "26.83",
+  "Employees": "429",
+  "LT Debt/Eq": "0.10",
+  "Earnings": "Jul 24 BMO",
+  "SMA200": "-14.02%",
+  "Avg Volume": "170.22K",
+  "Price": "26.22",
+  "IPO": "Jun 13, 2018",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "1.15% -0.41%",
+  "Trades": "",
+  "Volume": "160,586",
+  "Change": "-2.27%",
+  "Insider Trading": [
+    {
+      "Owner": "Searby Sean",
+      "Relationship": "EVP Chief Info. & Ops. Officer",
+      "Date": "Aug 27 '25",
+      "Transaction": "Sale",
+      "Cost": "29.68",
+      "Shares": "3,512",
+      "Value": "104,232"
+    },
+    {
+      "Owner": "Darby Jason",
+      "Relationship": "Senior Executive VP and CFO",
+      "Date": "Jun 02 '25",
+      "Transaction": "Sale",
+      "Cost": "30.01",
+      "Shares": "426",
+      "Value": "12,784"
+    },
+    {
+      "Owner": "Darby Jason",
+      "Relationship": "Senior Executive VP and CFO",
+      "Date": "Jun 03 '25",
+      "Transaction": "Sale",
+      "Cost": "30.00",
+      "Shares": "426",
+      "Value": "12,780"
+    },
+    {
+      "Owner": "Searby Sean",
+      "Relationship": "EVP Chief Info. & Ops. Officer",
+      "Date": "Aug 25 '25",
+      "Transaction": "Sale",
+      "Cost": "29.77",
+      "Shares": "4,106",
+      "Value": "122,225"
+    },
+    {
+      "Owner": "Sean Searby",
+      "Relationship": "EVP & Chief Operations Officer",
+      "Date": "Aug 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.83",
+      "Shares": "9,217",
+      "Value": "274,956"
+    },
+    {
+      "Owner": "Tenner Mandy",
+      "Relationship": "EVP, Chief Legal Officer",
+      "Date": "Aug 07 '25",
+      "Transaction": "Sale",
+      "Cost": "27.46",
+      "Shares": "5,242",
+      "Value": "143,939"
+    },
+    {
+      "Owner": "Mandy Tenner",
+      "Relationship": "EVP & General Counsel",
+      "Date": "Aug 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "27.41",
+      "Shares": "5,242",
+      "Value": "143,683"
+    },
+    {
+      "Owner": "Graham Tyrone",
+      "Relationship": "EVP, Chief HR Officer",
+      "Date": "Apr 07 '25",
+      "Transaction": "Sale",
+      "Cost": "25.13",
+      "Shares": "740",
+      "Value": "18,596"
+    },
+    {
+      "Owner": "Tyrone Graham",
+      "Relationship": "EVP & Chief HR Director",
+      "Date": "Apr 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "26.41",
+      "Shares": "740",
+      "Value": "19,543"
+    },
+    {
+      "Owner": "Graham Tyrone",
+      "Relationship": "EVP, Chief HR Officer",
+      "Date": "Mar 05 '25",
+      "Transaction": "Sale",
+      "Cost": "30.50",
+      "Shares": "3,317",
+      "Value": "101,167"
+    },
+    {
+      "Owner": "Graham Tyrone",
+      "Relationship": "EVP, Chief HR Officer",
+      "Date": "Mar 07 '25",
+      "Transaction": "Sale",
+      "Cost": "29.73",
+      "Shares": "869",
+      "Value": "25,835"
+    },
+    {
+      "Owner": "Tyrone Graham",
+      "Relationship": "EVP & Chief HR Director",
+      "Date": "Mar 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "29.87",
+      "Shares": "869",
+      "Value": "25,957"
+    },
+    {
+      "Owner": "Searby Sean",
+      "Relationship": "EVP Chief Info. & Ops. Officer",
+      "Date": "Mar 03 '25",
+      "Transaction": "Sale",
+      "Cost": "32.49",
+      "Shares": "3,000",
+      "Value": "97,470"
+    },
+    {
+      "Owner": "Tyrone Graham",
+      "Relationship": "EVP & Chief HR Director",
+      "Date": "Mar 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "32.49",
+      "Shares": "3,317",
+      "Value": "107,769"
+    },
+    {
+      "Owner": "Sean Searby",
+      "Relationship": "EVP & Chief Operations Officer",
+      "Date": "Mar 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "32.45",
+      "Shares": "3,000",
+      "Value": "97,350"
+    },
+    {
+      "Owner": "Romney Edgar Jr",
+      "Relationship": "Chief Strategy & Admin Officer",
+      "Date": "Feb 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "14.65",
+      "Shares": "26,300",
+      "Value": "385,295"
+    },
+    {
+      "Owner": "Romney Edgar Jr",
+      "Relationship": "Chief Strategy & Admin Officer",
+      "Date": "Feb 13 '25",
+      "Transaction": "Sale",
+      "Cost": "36.14",
+      "Shares": "9,782",
+      "Value": "353,521"
+    },
+    {
+      "Owner": "Edgar Romney Jr.",
+      "Relationship": "Chief Strategy & Admin Officer",
+      "Date": "Feb 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "36.38",
+      "Shares": "9,800",
+      "Value": "356,524"
+    },
+    {
+      "Owner": "Western States Regional Joint",
+      "Relationship": "10% Owner",
+      "Date": "Feb 04 '25",
+      "Transaction": "Sale",
+      "Cost": "34.13",
+      "Shares": "44,983",
+      "Value": "1,535,058"
+    },
+    {
+      "Owner": "Western States Regional Joint",
+      "Relationship": "10% Owner",
+      "Date": "Feb 03 '25",
+      "Transaction": "Sale",
+      "Cost": "34.27",
+      "Shares": "18,000",
+      "Value": "616,943"
+    },
+    {
+      "Owner": "Western States Regional Joint",
+      "Relationship": "10% Owner",
+      "Date": "Feb 05 '25",
+      "Transaction": "Sale",
+      "Cost": "34.29",
+      "Shares": "1,327",
+      "Value": "45,502"
+    },
+    {
+      "Owner": "Workers United",
+      "Relationship": "10% Owner",
+      "Date": "Feb 04 '25",
+      "Transaction": "Sale",
+      "Cost": "34.13",
+      "Shares": "44,983",
+      "Value": "1,535,058"
+    },
+    {
+      "Owner": "Workers United",
+      "Relationship": "10% Owner",
+      "Date": "Feb 03 '25",
+      "Transaction": "Sale",
+      "Cost": "34.27",
+      "Shares": "18,000",
+      "Value": "616,943"
+    },
+    {
+      "Owner": "Workers United",
+      "Relationship": "10% Owner",
+      "Date": "Feb 05 '25",
+      "Transaction": "Sale",
+      "Cost": "34.29",
+      "Shares": "1,327",
+      "Value": "45,502"
+    },
+    {
+      "Owner": "Workers United",
+      "Relationship": "10% Owner",
+      "Date": "Feb 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "34.94",
+      "Shares": "64,310",
+      "Value": "2,246,991"
+    },
+    {
+      "Owner": "Bruce Maryann",
+      "Relationship": "Director",
+      "Date": "Jan 28 '25",
+      "Transaction": "Sale",
+      "Cost": "33.77",
+      "Shares": "4,403",
+      "Value": "148,701"
+    },
+    {
+      "Owner": "MaryAnne Bruce",
+      "Relationship": "Director",
+      "Date": "Jan 28 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "35.31",
+      "Shares": "4,403",
+      "Value": "155,469"
+    },
+    {
+      "Owner": "Brown Sam D.",
+      "Relationship": "SEVP,  Chief Banking Officer",
+      "Date": "Jan 02 '25",
+      "Transaction": "Sale",
+      "Cost": "33.41",
+      "Shares": "8,269",
+      "Value": "276,242"
+    },
+    {
+      "Owner": "Sam Brown",
+      "Relationship": "SEVP & Chief Banking Officer",
+      "Date": "Jan 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "32.00",
+      "Shares": "8,269",
+      "Value": "264,608"
+    },
+    {
+      "Owner": "Western States Regional Joint",
+      "Relationship": "10% Owner",
+      "Date": "Nov 19 '24",
+      "Transaction": "Sale",
+      "Cost": "35.08",
+      "Shares": "47,607",
+      "Value": "1,670,101"
+    },
+    {
+      "Owner": "Western States Regional Joint",
+      "Relationship": "10% Owner",
+      "Date": "Nov 20 '24",
+      "Transaction": "Sale",
+      "Cost": "35.21",
+      "Shares": "10,000",
+      "Value": "352,062"
+    },
+    {
+      "Owner": "Workers United",
+      "Relationship": "10% Owner",
+      "Date": "Nov 19 '24",
+      "Transaction": "Sale",
+      "Cost": "35.08",
+      "Shares": "47,607",
+      "Value": "1,670,101"
+    },
+    {
+      "Owner": "Workers United",
+      "Relationship": "10% Owner",
+      "Date": "Nov 20 '24",
+      "Transaction": "Sale",
+      "Cost": "35.21",
+      "Shares": "10,000",
+      "Value": "352,062"
+    },
+    {
+      "Owner": "Western States Regional Joint",
+      "Relationship": "10% Owner",
+      "Date": "Nov 15 '24",
+      "Transaction": "Sale",
+      "Cost": "35.72",
+      "Shares": "62,971",
+      "Value": "2,249,519"
+    },
+    {
+      "Owner": "Western States Regional Joint",
+      "Relationship": "10% Owner",
+      "Date": "Nov 18 '24",
+      "Transaction": "Sale",
+      "Cost": "35.30",
+      "Shares": "20,000",
+      "Value": "706,002"
+    },
+    {
+      "Owner": "Workers United",
+      "Relationship": "10% Owner",
+      "Date": "Nov 15 '24",
+      "Transaction": "Sale",
+      "Cost": "35.72",
+      "Shares": "62,971",
+      "Value": "2,249,519"
+    },
+    {
+      "Owner": "Workers United",
+      "Relationship": "10% Owner",
+      "Date": "Nov 14 '24",
+      "Transaction": "Sale",
+      "Cost": "36.53",
+      "Shares": "52,690",
+      "Value": "1,925,013"
+    },
+    {
+      "Owner": "Workers United",
+      "Relationship": "10% Owner",
+      "Date": "Nov 18 '24",
+      "Transaction": "Sale",
+      "Cost": "35.30",
+      "Shares": "20,000",
+      "Value": "706,002"
+    },
+    {
+      "Owner": "ROMASCO ROBERT G",
+      "Relationship": "Director",
+      "Date": "Nov 14 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "12.69",
+      "Shares": "30,360",
+      "Value": "385,229"
+    },
+    {
+      "Owner": "Workers United",
+      "Relationship": "10% Owner",
+      "Date": "Nov 13 '24",
+      "Transaction": "Sale",
+      "Cost": "37.23",
+      "Shares": "55,000",
+      "Value": "2,047,529"
+    },
+    {
+      "Owner": "Workers United",
+      "Relationship": "10% Owner",
+      "Date": "Nov 12 '24",
+      "Transaction": "Sale",
+      "Cost": "36.81",
+      "Shares": "45,000",
+      "Value": "1,656,621"
+    },
+    {
+      "Owner": "Workers United",
+      "Relationship": "10% Owner",
+      "Date": "Nov 11 '24",
+      "Transaction": "Sale",
+      "Cost": "36.90",
+      "Shares": "33,647",
+      "Value": "1,241,477"
+    },
+    {
+      "Owner": "Workers United",
+      "Relationship": "10% Owner",
+      "Date": "Nov 08 '24",
+      "Transaction": "Sale",
+      "Cost": "35.77",
+      "Shares": "31,844",
+      "Value": "1,139,044"
+    },
+    {
+      "Owner": "Western States Regional Joint",
+      "Relationship": "10% Owner",
+      "Date": "Nov 13 '24",
+      "Transaction": "Sale",
+      "Cost": "37.23",
+      "Shares": "55,000",
+      "Value": "2,047,529"
+    },
+    {
+      "Owner": "Western States Regional Joint",
+      "Relationship": "10% Owner",
+      "Date": "Nov 12 '24",
+      "Transaction": "Sale",
+      "Cost": "36.81",
+      "Shares": "45,000",
+      "Value": "1,656,621"
+    },
+    {
+      "Owner": "Western States Regional Joint",
+      "Relationship": "10% Owner",
+      "Date": "Nov 11 '24",
+      "Transaction": "Sale",
+      "Cost": "36.90",
+      "Shares": "33,647",
+      "Value": "1,241,477"
+    },
+    {
+      "Owner": "Western States Regional Joint",
+      "Relationship": "10% Owner",
+      "Date": "Nov 08 '24",
+      "Transaction": "Sale",
+      "Cost": "35.77",
+      "Shares": "31,844",
+      "Value": "1,139,044"
+    },
+    {
+      "Owner": "Darby Jason",
+      "Relationship": "Senior Executive VP and CFO",
+      "Date": "Nov 11 '24",
+      "Transaction": "Sale",
+      "Cost": "36.59",
+      "Shares": "4,000",
+      "Value": "146,355"
+    },
+    {
+      "Owner": "Jason Darby",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Nov 11 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "36.21",
+      "Shares": "4,000",
+      "Value": "144,840"
+    },
+    {
+      "Owner": "Western States Regional Joint",
+      "Relationship": "10% Owner",
+      "Date": "Nov 06 '24",
+      "Transaction": "Sale",
+      "Cost": "37.24",
+      "Shares": "175,000",
+      "Value": "6,516,438"
+    },
+    {
+      "Owner": "Western States Regional Joint",
+      "Relationship": "10% Owner",
+      "Date": "Nov 05 '24",
+      "Transaction": "Sale",
+      "Cost": "33.23",
+      "Shares": "47,253",
+      "Value": "1,570,364"
+    },
+    {
+      "Owner": "Western States Regional Joint",
+      "Relationship": "10% Owner",
+      "Date": "Nov 07 '24",
+      "Transaction": "Sale",
+      "Cost": "35.92",
+      "Shares": "14,000",
+      "Value": "502,869"
+    },
+    {
+      "Owner": "Rochester Regional Joint Board",
+      "Relationship": "10% Owner",
+      "Date": "Nov 06 '24",
+      "Transaction": "Sale",
+      "Cost": "37.24",
+      "Shares": "175,000",
+      "Value": "6,516,438"
+    },
+    {
+      "Owner": "Rochester Regional Joint Board",
+      "Relationship": "10% Owner",
+      "Date": "Nov 05 '24",
+      "Transaction": "Sale",
+      "Cost": "33.23",
+      "Shares": "47,253",
+      "Value": "1,570,364"
+    },
+    {
+      "Owner": "Rochester Regional Joint Board",
+      "Relationship": "10% Owner",
+      "Date": "Nov 07 '24",
+      "Transaction": "Sale",
+      "Cost": "35.92",
+      "Shares": "14,000",
+      "Value": "502,869"
+    },
+    {
+      "Owner": "Western States Regional Joint",
+      "Relationship": "10% Owner",
+      "Date": "Nov 04 '24",
+      "Transaction": "Sale",
+      "Cost": "32.81",
+      "Shares": "63,004",
+      "Value": "2,067,189"
+    },
+    {
+      "Owner": "Western States Regional Joint",
+      "Relationship": "10% Owner",
+      "Date": "Oct 31 '24",
+      "Transaction": "Sale",
+      "Cost": "33.41",
+      "Shares": "41,259",
+      "Value": "1,378,622"
+    },
+    {
+      "Owner": "Western States Regional Joint",
+      "Relationship": "10% Owner",
+      "Date": "Nov 01 '24",
+      "Transaction": "Sale",
+      "Cost": "33.08",
+      "Shares": "25,000",
+      "Value": "827,075"
+    },
+    {
+      "Owner": "Rochester Regional Joint Board",
+      "Relationship": "10% Owner",
+      "Date": "Nov 04 '24",
+      "Transaction": "Sale",
+      "Cost": "32.81",
+      "Shares": "63,004",
+      "Value": "2,067,189"
+    },
+    {
+      "Owner": "Rochester Regional Joint Board",
+      "Relationship": "10% Owner",
+      "Date": "Oct 31 '24",
+      "Transaction": "Sale",
+      "Cost": "33.41",
+      "Shares": "41,259",
+      "Value": "1,378,622"
+    },
+    {
+      "Owner": "Rochester Regional Joint Board",
+      "Relationship": "10% Owner",
+      "Date": "Nov 01 '24",
+      "Transaction": "Sale",
+      "Cost": "33.08",
+      "Shares": "25,000",
+      "Value": "827,075"
+    },
+    {
+      "Owner": "Rochester Regional Joint Board",
+      "Relationship": "10% Owner",
+      "Date": "Oct 28 '24",
+      "Transaction": "Sale",
+      "Cost": "34.32",
+      "Shares": "55,875",
+      "Value": "1,917,418"
+    },
+    {
+      "Owner": "Rochester Regional Joint Board",
+      "Relationship": "10% Owner",
+      "Date": "Oct 30 '24",
+      "Transaction": "Sale",
+      "Cost": "34.00",
+      "Shares": "47,508",
+      "Value": "1,615,387"
+    },
+    {
+      "Owner": "Rochester Regional Joint Board",
+      "Relationship": "10% Owner",
+      "Date": "Oct 29 '24",
+      "Transaction": "Sale",
+      "Cost": "34.14",
+      "Shares": "24,201",
+      "Value": "826,300"
+    },
+    {
+      "Owner": "Rochester Regional Joint Board",
+      "Relationship": "10% Owner",
+      "Date": "Oct 28 '24",
+      "Transaction": "Sale",
+      "Cost": "34.32",
+      "Shares": "55,875",
+      "Value": "1,917,418"
+    },
+    {
+      "Owner": "Rochester Regional Joint Board",
+      "Relationship": "10% Owner",
+      "Date": "Oct 30 '24",
+      "Transaction": "Sale",
+      "Cost": "34.00",
+      "Shares": "47,508",
+      "Value": "1,615,387"
+    },
+    {
+      "Owner": "Rochester Regional Joint Board",
+      "Relationship": "10% Owner",
+      "Date": "Oct 29 '24",
+      "Transaction": "Sale",
+      "Cost": "34.14",
+      "Shares": "24,201",
+      "Value": "826,300"
+    },
+    {
+      "Owner": "Searby Sean",
+      "Relationship": "EVP, Chief Operations Officer",
+      "Date": "Oct 30 '24",
+      "Transaction": "Sale",
+      "Cost": "34.14",
+      "Shares": "8,000",
+      "Value": "273,142"
+    },
+    {
+      "Owner": "Pennsylvania Joint Board Worke",
+      "Relationship": "10% Owner",
+      "Date": "Oct 28 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "34.55",
+      "Shares": "36,000",
+      "Value": "1,243,800"
+    },
+    {
+      "Owner": "Philadelphia Joint Board, Work",
+      "Relationship": "10% Owner",
+      "Date": "Oct 28 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "34.55",
+      "Shares": "100,000",
+      "Value": "3,455,000"
+    },
+    {
+      "Owner": "Sean Searby",
+      "Relationship": "EVP & Chief Operations Officer",
+      "Date": "Oct 30 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "34.26",
+      "Shares": "8,000",
+      "Value": "274,080"
+    }
+  ],
+  "Dividends": []
+}

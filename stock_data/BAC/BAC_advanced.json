@@ -1,0 +1,745 @@
+{
+  "Index": "S&P 500",
+  "P/E": "14.25",
+  "EPS (ttm)": "3.41",
+  "Insider Own": "0.18%",
+  "Shs Outstand": "7.44B",
+  "Perf Week": "-3.93%",
+  "Market Cap": "360.35B",
+  "Forward P/E": "11.39",
+  "EPS next Y": "15.55%",
+  "Insider Trans": "-1.10%",
+  "Shs Float": "7.39B",
+  "Perf Month": "-4.14%",
+  "Enterprise Value": "-",
+  "PEG": "0.95",
+  "EPS next Q": "0.95",
+  "Inst Own": "75.24%",
+  "Short Float": "1.53%",
+  "Perf Quarter": "3.36%",
+  "Income": "26.59B",
+  "P/S": "1.82",
+  "EPS this Y": "15.20%",
+  "Inst Trans": "-0.57%",
+  "Short Ratio": "3.24",
+  "Perf Half Y": "35.70%",
+  "Sales": "198.53B",
+  "P/B": "1.31",
+  "ROA": "0.84%",
+  "Short Interest": "1.53%",
+  "Perf YTD": "10.69%",
+  "Book/sh": "37.13",
+  "P/C": "-",
+  "EPS next 5Y": "14.95%",
+  "ROE": "9.46%",
+  "52W High": "52.88 -8.00%",
+  "Perf Year": "21.84%",
+  "Cash/sh": "-",
+  "P/FCF": "16.10",
+  "EPS past 3/5Y": "-3.45% 3.14%",
+  "ROIC": "4.36%",
+  "52W Low": "33.06 47.13%",
+  "Perf 3Y": "52.41%",
+  "Dividend Est.": "1.08 (2.21%)",
+  "EV/EBITDA": "-",
+  "Sales past 3/5Y": "26.94% 11.46%",
+  "Gross Margin": "-",
+  "Volatility": "2.08% 1.72%",
+  "Perf 5Y": "97.60%",
+  "Dividend TTM": "1.06 (2.18%)",
+  "EV/Sales": "-",
+  "EPS Y/Y TTM": "20.49%",
+  "Oper. Margin": "15.41%",
+  "ATR (14)": "0.92",
+  "Perf 10Y": "216.32%",
+  "Dividend Ex-Date": "Sep 05, 2025",
+  "Quick Ratio": "-",
+  "Sales Y/Y TTM": "4.95%",
+  "Profit Margin": "13.40%",
+  "RSI (14)": "32.99",
+  "Recom": "1.64",
+  "Dividend Gr. 3/5Y": "8.63% 8.67%",
+  "Current Ratio": "0.98",
+  "EPS Q/Q": "7.89%",
+  "SMA20": "-4.72%",
+  "Beta": "1.34",
+  "Target Price": "56.56",
+  "Payout": "31.12%",
+  "Debt/Eq": "2.57",
+  "Sales Q/Q": "0.34%",
+  "SMA50": "-1.74%",
+  "Rel Volume": "0.88",
+  "Prev Close": "49.79",
+  "Employees": "213000",
+  "LT Debt/Eq": "1.04",
+  "Earnings": "Oct 15 BMO",
+  "SMA200": "7.28%",
+  "Avg Volume": "34.94M",
+  "Price": "48.65",
+  "IPO": "Jun 05, 1979",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "3.45% -0.97%",
+  "Trades": "",
+  "Volume": "30,868,718",
+  "Change": "-2.29%",
+  "Insider Trading": [
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Oct 09 '25",
+      "Transaction": "Buy",
+      "Cost": "10.62",
+      "Shares": "190",
+      "Value": "2,018"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Oct 09 '25",
+      "Transaction": "Sale",
+      "Cost": "10.62",
+      "Shares": "190",
+      "Value": "2,018"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Oct 03 '25",
+      "Transaction": "Buy",
+      "Cost": "12.53",
+      "Shares": "2,250",
+      "Value": "28,187"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Oct 03 '25",
+      "Transaction": "Sale",
+      "Cost": "12.57",
+      "Shares": "2,250",
+      "Value": "28,292"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Sep 26 '25",
+      "Transaction": "Buy",
+      "Cost": "12.40",
+      "Shares": "197",
+      "Value": "2,443"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Sep 26 '25",
+      "Transaction": "Sale",
+      "Cost": "12.39",
+      "Shares": "197",
+      "Value": "2,442"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Sep 25 '25",
+      "Transaction": "Buy",
+      "Cost": "12.64",
+      "Shares": "4,780",
+      "Value": "60,419"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Sep 25 '25",
+      "Transaction": "Sale",
+      "Cost": "12.68",
+      "Shares": "4,780",
+      "Value": "60,610"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Sep 17 '25",
+      "Transaction": "Buy",
+      "Cost": "10.64",
+      "Shares": "10,784",
+      "Value": "114,796"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Sep 17 '25",
+      "Transaction": "Sale",
+      "Cost": "10.56",
+      "Shares": "10,784",
+      "Value": "113,879"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Aug 19 '25",
+      "Transaction": "Buy",
+      "Cost": "11.81",
+      "Shares": "2,100",
+      "Value": "24,795"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Aug 19 '25",
+      "Transaction": "Sale",
+      "Cost": "11.86",
+      "Shares": "2,100",
+      "Value": "24,906"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Aug 11 '25",
+      "Transaction": "Buy",
+      "Cost": "6.52",
+      "Shares": "105",
+      "Value": "684"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Aug 11 '25",
+      "Transaction": "Sale",
+      "Cost": "6.52",
+      "Shares": "105",
+      "Value": "684"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Aug 11 '25",
+      "Transaction": "Buy",
+      "Cost": "8.22",
+      "Shares": "349",
+      "Value": "2,871"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Aug 11 '25",
+      "Transaction": "Sale",
+      "Cost": "8.22",
+      "Shares": "349",
+      "Value": "2,871"
+    },
+    {
+      "Owner": "DeMare James P",
+      "Relationship": "President, Global Markets",
+      "Date": "Aug 01 '25",
+      "Transaction": "Sale",
+      "Cost": "45.57",
+      "Shares": "148,391",
+      "Value": "6,761,733"
+    },
+    {
+      "Owner": "DeMare James P",
+      "Relationship": "Officer",
+      "Date": "Aug 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "47.32",
+      "Shares": "148,391",
+      "Value": "7,021,862"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Jul 02 '25",
+      "Transaction": "Buy",
+      "Cost": "7.34",
+      "Shares": "111",
+      "Value": "815"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Jul 02 '25",
+      "Transaction": "Sale",
+      "Cost": "7.46",
+      "Shares": "111",
+      "Value": "828"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Jun 11 '25",
+      "Transaction": "Buy",
+      "Cost": "7.95",
+      "Shares": "38,169",
+      "Value": "303,633"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Jun 11 '25",
+      "Transaction": "Sale",
+      "Cost": "7.90",
+      "Shares": "8,126",
+      "Value": "64,193"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Jun 11 '25",
+      "Transaction": "Buy",
+      "Cost": "7.45",
+      "Shares": "30,448",
+      "Value": "226,798"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Jun 11 '25",
+      "Transaction": "Sale",
+      "Cost": "7.42",
+      "Shares": "18,208",
+      "Value": "135,097"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Jun 11 '25",
+      "Transaction": "Buy",
+      "Cost": "5.30",
+      "Shares": "75",
+      "Value": "398"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Jun 11 '25",
+      "Transaction": "Sale",
+      "Cost": "5.30",
+      "Shares": "75",
+      "Value": "398"
+    },
+    {
+      "Owner": "Boland Darrin Steve",
+      "Relationship": "Officer",
+      "Date": "May 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "40.84",
+      "Shares": "42,207",
+      "Value": "1,723,733"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Apr 16 '25",
+      "Transaction": "Buy",
+      "Cost": "11.09",
+      "Shares": "2,103",
+      "Value": "23,322"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Apr 09 '25",
+      "Transaction": "Buy",
+      "Cost": "10.85",
+      "Shares": "13",
+      "Value": "141"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Apr 09 '25",
+      "Transaction": "Sale",
+      "Cost": "10.89",
+      "Shares": "13",
+      "Value": "142"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Mar 14 '25",
+      "Transaction": "Buy",
+      "Cost": "12.45",
+      "Shares": "8,100",
+      "Value": "100,813"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Mar 14 '25",
+      "Transaction": "Sale",
+      "Cost": "12.30",
+      "Shares": "8,100",
+      "Value": "99,670"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Mar 11 '25",
+      "Transaction": "Buy",
+      "Cost": "12.43",
+      "Shares": "1",
+      "Value": "12"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Mar 11 '25",
+      "Transaction": "Sale",
+      "Cost": "12.48",
+      "Shares": "1",
+      "Value": "12"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Feb 26 '25",
+      "Transaction": "Buy",
+      "Cost": "9.19",
+      "Shares": "8",
+      "Value": "73"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Feb 26 '25",
+      "Transaction": "Sale",
+      "Cost": "9.06",
+      "Shares": "8",
+      "Value": "72"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Feb 24 '25",
+      "Transaction": "Buy",
+      "Cost": "9.08",
+      "Shares": "1,387",
+      "Value": "12,594"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Feb 24 '25",
+      "Transaction": "Sale",
+      "Cost": "9.10",
+      "Shares": "1,387",
+      "Value": "12,622"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Feb 21 '25",
+      "Transaction": "Buy",
+      "Cost": "9.02",
+      "Shares": "24,110",
+      "Value": "217,472"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Feb 21 '25",
+      "Transaction": "Sale",
+      "Cost": "9.13",
+      "Shares": "24,110",
+      "Value": "220,179"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Feb 18 '25",
+      "Transaction": "Buy",
+      "Cost": "12.65",
+      "Shares": "6,773",
+      "Value": "85,678"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Feb 18 '25",
+      "Transaction": "Sale",
+      "Cost": "12.51",
+      "Shares": "6,773",
+      "Value": "84,730"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Feb 04 '25",
+      "Transaction": "Buy",
+      "Cost": "11.47",
+      "Shares": "1,900",
+      "Value": "21,793"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Feb 04 '25",
+      "Transaction": "Sale",
+      "Cost": "11.46",
+      "Shares": "1,900",
+      "Value": "21,774"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Jan 17 '25",
+      "Transaction": "Buy",
+      "Cost": "11.37",
+      "Shares": "1,611",
+      "Value": "18,317"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Jan 17 '25",
+      "Transaction": "Sale",
+      "Cost": "11.24",
+      "Shares": "1,611",
+      "Value": "18,108"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Jan 15 '25",
+      "Transaction": "Buy",
+      "Cost": "10.79",
+      "Shares": "6",
+      "Value": "65"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Jan 15 '25",
+      "Transaction": "Sale",
+      "Cost": "10.94",
+      "Shares": "6",
+      "Value": "66"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Jan 15 '25",
+      "Transaction": "Buy",
+      "Cost": "11.71",
+      "Shares": "800",
+      "Value": "9,368"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Jan 15 '25",
+      "Transaction": "Sale",
+      "Cost": "11.66",
+      "Shares": "800",
+      "Value": "9,328"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Jan 10 '25",
+      "Transaction": "Buy",
+      "Cost": "6.02",
+      "Shares": "16,585",
+      "Value": "99,842"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Jan 10 '25",
+      "Transaction": "Sale",
+      "Cost": "6.00",
+      "Shares": "16,585",
+      "Value": "99,510"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Oct 30 '24",
+      "Transaction": "Buy",
+      "Cost": "8.84",
+      "Shares": "200",
+      "Value": "1,768"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Oct 16 '24",
+      "Transaction": "Buy",
+      "Cost": "9.14",
+      "Shares": "1",
+      "Value": "9"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Oct 31 '24",
+      "Transaction": "Sale",
+      "Cost": "8.88",
+      "Shares": "200",
+      "Value": "1,776"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Nov 05 '24",
+      "Transaction": "Buy",
+      "Cost": "5.04",
+      "Shares": "5",
+      "Value": "25"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Nov 06 '24",
+      "Transaction": "Sale",
+      "Cost": "5.04",
+      "Shares": "5",
+      "Value": "25"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Oct 15 '24",
+      "Transaction": "Buy",
+      "Cost": "12.71",
+      "Shares": "1,800",
+      "Value": "22,869"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Dec 03 '24",
+      "Transaction": "Buy",
+      "Cost": "13.02",
+      "Shares": "75",
+      "Value": "976"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Dec 03 '24",
+      "Transaction": "Sale",
+      "Cost": "13.03",
+      "Shares": "75",
+      "Value": "977"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Dec 03 '24",
+      "Transaction": "Buy",
+      "Cost": "11.54",
+      "Shares": "75",
+      "Value": "866"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Dec 03 '24",
+      "Transaction": "Sale",
+      "Cost": "11.54",
+      "Shares": "75",
+      "Value": "866"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Dec 03 '24",
+      "Transaction": "Buy",
+      "Cost": "12.32",
+      "Shares": "75",
+      "Value": "924"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Dec 03 '24",
+      "Transaction": "Sale",
+      "Cost": "12.34",
+      "Shares": "75",
+      "Value": "926"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Nov 22 '24",
+      "Transaction": "Sale",
+      "Cost": "99.92",
+      "Shares": "20,249,064",
+      "Value": "2,023,286,475"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Nov 18 '24",
+      "Transaction": "Buy",
+      "Cost": "9.46",
+      "Shares": "800",
+      "Value": "7,565"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Nov 18 '24",
+      "Transaction": "Sale",
+      "Cost": "9.36",
+      "Shares": "800",
+      "Value": "7,484"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Nov 18 '24",
+      "Transaction": "Buy",
+      "Cost": "9.81",
+      "Shares": "1,700",
+      "Value": "16,677"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Nov 18 '24",
+      "Transaction": "Sale",
+      "Cost": "9.92",
+      "Shares": "1,700",
+      "Value": "16,867"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Nov 18 '24",
+      "Transaction": "Buy",
+      "Cost": "10.66",
+      "Shares": "800",
+      "Value": "8,528"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Nov 18 '24",
+      "Transaction": "Sale",
+      "Cost": "10.65",
+      "Shares": "800",
+      "Value": "8,520"
+    },
+    {
+      "Owner": "BANK OF AMERICA CORP /DE/",
+      "Relationship": "10% Owner",
+      "Date": "Oct 28 '24",
+      "Transaction": "Sale",
+      "Cost": "2.51",
+      "Shares": "102,185",
+      "Value": "256,484"
+    },
+    {
+      "Owner": "BERKSHIRE HATHAWAY INC",
+      "Relationship": "10% Owner",
+      "Date": "Oct 15 '24",
+      "Transaction": "Sale",
+      "Cost": "42.55",
+      "Shares": "8,694,538",
+      "Value": "369,928,036"
+    }
+  ],
+  "Dividends": []
+}

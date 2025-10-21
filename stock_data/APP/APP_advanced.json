@@ -1,0 +1,988 @@
+{
+  "Index": "NDX, S&P 500",
+  "P/E": "84.66",
+  "EPS (ttm)": "6.73",
+  "Insider Own": "33.95%",
+  "Shs Outstand": "308.17M",
+  "Perf Week": "-16.53%",
+  "Market Cap": "192.77B",
+  "Forward P/E": "40.03",
+  "EPS next Y": "53.26%",
+  "Insider Trans": "-2.02%",
+  "Shs Float": "223.40M",
+  "Perf Month": "-0.25%",
+  "Enterprise Value": "195.08B",
+  "PEG": "1.42",
+  "EPS next Q": "2.37",
+  "Inst Own": "60.01%",
+  "Short Float": "9.78%",
+  "Perf Quarter": "60.13%",
+  "Income": "2.32B",
+  "P/S": "36.28",
+  "EPS this Y": "105.07%",
+  "Inst Trans": "-3.78%",
+  "Short Ratio": "2.92",
+  "Perf Half Y": "116.01%",
+  "Sales": "5.31B",
+  "P/B": "165.42",
+  "ROA": "42.41%",
+  "Short Interest": "9.78%",
+  "Perf YTD": "75.98%",
+  "Book/sh": "3.45",
+  "P/C": "161.63",
+  "EPS next 5Y": "59.63%",
+  "ROE": "240.30%",
+  "52W High": "745.61 -23.57%",
+  "Perf Year": "297.11%",
+  "Cash/sh": "3.53",
+  "P/FCF": "67.62",
+  "EPS past 3/5Y": "277.19% 84.28%",
+  "ROIC": "49.65%",
+  "52W Low": "139.40 308.82%",
+  "Perf 3Y": "2645.13%",
+  "Dividend Est.": "0.07 (0.01%)",
+  "EV/EBITDA": "58.31",
+  "Sales past 3/5Y": "19.02% 36.49%",
+  "Gross Margin": "79.52%",
+  "Volatility": "10.39% 5.69%",
+  "Perf 5Y": "-",
+  "Dividend TTM": "-",
+  "EV/Sales": "36.71",
+  "EPS Y/Y TTM": "180.24%",
+  "Oper. Margin": "56.29%",
+  "ATR (14)": "37.94",
+  "Perf 10Y": "-",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "2.74",
+  "Sales Y/Y TTM": "34.33%",
+  "Profit Margin": "43.71%",
+  "RSI (14)": "43.85",
+  "Recom": "1.67",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "2.74",
+  "EPS Q/Q": "133.99%",
+  "SMA20": "-11.24%",
+  "Beta": "2.53",
+  "Target Price": "634.27",
+  "Payout": "0.00%",
+  "Debt/Eq": "3.01",
+  "Sales Q/Q": "16.54%",
+  "SMA50": "6.39%",
+  "Rel Volume": "0.85",
+  "Prev Close": "600.32",
+  "Employees": "1563",
+  "LT Debt/Eq": "3.01",
+  "Earnings": "Nov 05 AMC",
+  "SMA200": "47.24%",
+  "Avg Volume": "7.49M",
+  "Price": "569.89",
+  "IPO": "Apr 15, 2021",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "21.94% 2.81%",
+  "Trades": "",
+  "Volume": "6,370,274",
+  "Change": "-5.07%",
+  "Insider Trading": [
+    {
+      "Owner": "Valenzuela Victoria",
+      "Relationship": "CALO & Corp. Secretary",
+      "Date": "Sep 04 '25",
+      "Transaction": "Sale",
+      "Cost": "502.23",
+      "Shares": "35,000",
+      "Value": "17,578,120"
+    },
+    {
+      "Owner": "Harvey Dawson Alyssa",
+      "Relationship": "Director",
+      "Date": "Sep 05 '25",
+      "Transaction": "Sale",
+      "Cost": "487.97",
+      "Shares": "350",
+      "Value": "170,790"
+    },
+    {
+      "Owner": "ALYSSA HARVEY DAWSON",
+      "Relationship": "Director",
+      "Date": "Sep 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "487.97",
+      "Shares": "350",
+      "Value": "170,790"
+    },
+    {
+      "Owner": "VICTORIA VALENZUELA",
+      "Relationship": "Officer",
+      "Date": "Sep 04 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "487.35",
+      "Shares": "35,000",
+      "Value": "17,057,250"
+    },
+    {
+      "Owner": "Valenzuela Victoria",
+      "Relationship": "CALO & Corp. Secretary",
+      "Date": "Aug 25 '25",
+      "Transaction": "Sale",
+      "Cost": "450.00",
+      "Shares": "15,000",
+      "Value": "6,750,000"
+    },
+    {
+      "Owner": "VICTORIA VALENZUELA",
+      "Relationship": "Officer",
+      "Date": "Aug 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "441.68",
+      "Shares": "15,000",
+      "Value": "6,625,200"
+    },
+    {
+      "Owner": "Valenzuela Victoria",
+      "Relationship": "CALO & Corp. Secretary",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "416.71",
+      "Shares": "16,599",
+      "Value": "6,917,026"
+    },
+    {
+      "Owner": "Stumpf Matthew",
+      "Relationship": "Chief Financial Officer (CFO)",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "416.18",
+      "Shares": "4,874",
+      "Value": "2,028,453"
+    },
+    {
+      "Owner": "Shikin Vasily",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Aug 22 '25",
+      "Transaction": "Sale",
+      "Cost": "438.22",
+      "Shares": "17,012",
+      "Value": "7,455,073"
+    },
+    {
+      "Owner": "Shikin Vasily",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Aug 22 '25",
+      "Transaction": "Sale",
+      "Cost": "437.03",
+      "Shares": "17,924",
+      "Value": "7,833,356"
+    },
+    {
+      "Owner": "Shikin Vasily",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Aug 22 '25",
+      "Transaction": "Sale",
+      "Cost": "437.48",
+      "Shares": "17,564",
+      "Value": "7,683,886"
+    },
+    {
+      "Owner": "Shikin Vasily",
+      "Relationship": "Chief Technology Officer",
+      "Date": "Aug 22 '25",
+      "Transaction": "Sale",
+      "Cost": "437.57",
+      "Shares": "30,000",
+      "Value": "13,127,047"
+    },
+    {
+      "Owner": "Foroughi Arash Adam",
+      "Relationship": "CEO & Chairperson",
+      "Date": "Aug 22 '25",
+      "Transaction": "Sale",
+      "Cost": "440.23",
+      "Shares": "26,200",
+      "Value": "11,534,004"
+    },
+    {
+      "Owner": "Foroughi Arash Adam",
+      "Relationship": "CEO & Chairperson",
+      "Date": "Aug 22 '25",
+      "Transaction": "Sale",
+      "Cost": "418.09",
+      "Shares": "3,800",
+      "Value": "1,588,756"
+    },
+    {
+      "Owner": "Foroughi Arash Adam",
+      "Relationship": "CEO & Chairperson",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "421.94",
+      "Shares": "3,601",
+      "Value": "1,519,414"
+    },
+    {
+      "Owner": "Foroughi Arash Adam",
+      "Relationship": "CEO & Chairperson",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "421.04",
+      "Shares": "90,000",
+      "Value": "37,893,588"
+    },
+    {
+      "Owner": "Foroughi Arash Adam",
+      "Relationship": "CEO & Chairperson",
+      "Date": "Aug 20 '25",
+      "Transaction": "Sale",
+      "Cost": "407.57",
+      "Shares": "557",
+      "Value": "227,016"
+    },
+    {
+      "Owner": "Foroughi Arash Adam",
+      "Relationship": "CEO & Chairperson",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "420.18",
+      "Shares": "370",
+      "Value": "155,467"
+    },
+    {
+      "Owner": "Foroughi Arash Adam",
+      "Relationship": "CEO & Chairperson",
+      "Date": "Aug 20 '25",
+      "Transaction": "Sale",
+      "Cost": "406.57",
+      "Shares": "9,706",
+      "Value": "3,946,196"
+    },
+    {
+      "Owner": "Foroughi Arash Adam",
+      "Relationship": "CEO & Chairperson",
+      "Date": "Aug 20 '25",
+      "Transaction": "Sale",
+      "Cost": "404.28",
+      "Shares": "15,042",
+      "Value": "6,081,153"
+    },
+    {
+      "Owner": "Foroughi Arash Adam",
+      "Relationship": "CEO & Chairperson",
+      "Date": "Aug 20 '25",
+      "Transaction": "Sale",
+      "Cost": "404.59",
+      "Shares": "15,660",
+      "Value": "6,335,891"
+    },
+    {
+      "Owner": "Foroughi Arash Adam",
+      "Relationship": "CEO & Chairperson",
+      "Date": "Aug 20 '25",
+      "Transaction": "Sale",
+      "Cost": "402.11",
+      "Shares": "12,529",
+      "Value": "5,038,087"
+    },
+    {
+      "Owner": "ARASH ADAM FOROUGHI",
+      "Relationship": "Officer",
+      "Date": "Aug 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "437.42",
+      "Shares": "30,000",
+      "Value": "13,122,747"
+    },
+    {
+      "Owner": "IS37 HOLDINGS TRUST",
+      "Relationship": "Officer",
+      "Date": "Aug 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "418.76",
+      "Shares": "17,500",
+      "Value": "7,328,300"
+    },
+    {
+      "Owner": "ES48 HOLDINGS TRUST",
+      "Relationship": "Officer",
+      "Date": "Aug 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "418.76",
+      "Shares": "17,500",
+      "Value": "7,328,300"
+    },
+    {
+      "Owner": "VASILY SHIKIN",
+      "Relationship": "Officer",
+      "Date": "Aug 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "418.76",
+      "Shares": "30,000",
+      "Value": "12,562,800"
+    },
+    {
+      "Owner": "IK50 HOLDINGS TRUST",
+      "Relationship": "Officer",
+      "Date": "Aug 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "418.76",
+      "Shares": "17,500",
+      "Value": "7,328,300"
+    },
+    {
+      "Owner": "MATTHEW STUMPF",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "412.38",
+      "Shares": "4,874",
+      "Value": "2,009,940"
+    },
+    {
+      "Owner": "VICTORIA VALENZUELA",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "412.38",
+      "Shares": "16,599",
+      "Value": "6,845,096"
+    },
+    {
+      "Owner": "THE OD TRUST",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "420.81",
+      "Shares": "31",
+      "Value": "13,045"
+    },
+    {
+      "Owner": "THE JAF CHILDRENS TRUST",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "420.70",
+      "Shares": "32",
+      "Value": "13,463"
+    },
+    {
+      "Owner": "THE WHK TRUST",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "421.02",
+      "Shares": "32",
+      "Value": "13,472"
+    },
+    {
+      "Owner": "OHF 2020 LLC",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "422.13",
+      "Shares": "774",
+      "Value": "326,725"
+    },
+    {
+      "Owner": "ARASH ADAM FOROUGHI",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "421.04",
+      "Shares": "90,000",
+      "Value": "37,893,654"
+    },
+    {
+      "Owner": "DLF 2020 LLC",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "421.43",
+      "Shares": "775",
+      "Value": "326,606"
+    },
+    {
+      "Owner": "KMF 2020 LLC",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "421.96",
+      "Shares": "775",
+      "Value": "327,017"
+    },
+    {
+      "Owner": "HDF 2020 LLC",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "421.58",
+      "Shares": "776",
+      "Value": "327,146"
+    },
+    {
+      "Owner": "WNF 2020 LLC",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "421.92",
+      "Shares": "776",
+      "Value": "327,411"
+    },
+    {
+      "Owner": "THE WHK TRUST",
+      "Relationship": "Officer",
+      "Date": "Aug 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "406.49",
+      "Shares": "449",
+      "Value": "182,513"
+    },
+    {
+      "Owner": "HDF 2020 LLC",
+      "Relationship": "Officer",
+      "Date": "Aug 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "404.21",
+      "Shares": "10,429",
+      "Value": "4,215,520"
+    },
+    {
+      "Owner": "DLF 2020 LLC",
+      "Relationship": "Officer",
+      "Date": "Aug 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "404.29",
+      "Shares": "10,429",
+      "Value": "4,216,347"
+    },
+    {
+      "Owner": "KMF 2020 LLC",
+      "Relationship": "Officer",
+      "Date": "Aug 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "404.27",
+      "Shares": "10,428",
+      "Value": "4,215,681"
+    },
+    {
+      "Owner": "WNF 2020 LLC",
+      "Relationship": "Officer",
+      "Date": "Aug 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "404.25",
+      "Shares": "10,429",
+      "Value": "4,215,933"
+    },
+    {
+      "Owner": "THE OD TRUST",
+      "Relationship": "Officer",
+      "Date": "Aug 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "406.55",
+      "Shares": "450",
+      "Value": "182,946"
+    },
+    {
+      "Owner": "OHF 2020 LLC",
+      "Relationship": "Officer",
+      "Date": "Aug 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "404.27",
+      "Shares": "10,429",
+      "Value": "4,216,104"
+    },
+    {
+      "Owner": "THE JAF CHILDRENS TRUST",
+      "Relationship": "Officer",
+      "Date": "Aug 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "406.36",
+      "Shares": "451",
+      "Value": "183,267"
+    },
+    {
+      "Owner": "Chen Herald Y",
+      "Relationship": "Director",
+      "Date": "Aug 15 '25",
+      "Transaction": "Sale",
+      "Cost": "436.08",
+      "Shares": "49,800",
+      "Value": "21,716,634"
+    },
+    {
+      "Owner": "Chen Herald Y",
+      "Relationship": "Director",
+      "Date": "Aug 14 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "5.05",
+      "Shares": "200,000",
+      "Value": "1,010,000"
+    },
+    {
+      "Owner": "Chen Herald Y",
+      "Relationship": "Director",
+      "Date": "Aug 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "5.05",
+      "Shares": "50,000",
+      "Value": "252,500"
+    },
+    {
+      "Owner": "Chen Herald Y",
+      "Relationship": "Director",
+      "Date": "Aug 14 '25",
+      "Transaction": "Sale",
+      "Cost": "432.49",
+      "Shares": "200,000",
+      "Value": "86,497,959"
+    },
+    {
+      "Owner": "Chen Herald Y",
+      "Relationship": "Director",
+      "Date": "Aug 15 '25",
+      "Transaction": "Sale",
+      "Cost": "436.61",
+      "Shares": "50,000",
+      "Value": "21,830,330"
+    },
+    {
+      "Owner": "Chen Herald Y",
+      "Relationship": "Director",
+      "Date": "Aug 15 '25",
+      "Transaction": "Sale",
+      "Cost": "424.19",
+      "Shares": "200",
+      "Value": "84,837"
+    },
+    {
+      "Owner": "CHEN FAMILY 2012 IRREVOCABLE T",
+      "Relationship": "Director",
+      "Date": "Aug 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "436.03",
+      "Shares": "50,000",
+      "Value": "21,801,520"
+    },
+    {
+      "Owner": "HERALD Y CHEN",
+      "Relationship": "Director",
+      "Date": "Aug 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "436.60",
+      "Shares": "50,000",
+      "Value": "21,830,210"
+    },
+    {
+      "Owner": "Chen Herald Y",
+      "Relationship": "Director",
+      "Date": "Aug 13 '25",
+      "Transaction": "Sale",
+      "Cost": "457.93",
+      "Shares": "32,991",
+      "Value": "15,107,577"
+    },
+    {
+      "Owner": "Chen Herald Y",
+      "Relationship": "Director",
+      "Date": "Aug 12 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "5.05",
+      "Shares": "200,000",
+      "Value": "1,010,000"
+    },
+    {
+      "Owner": "Chen Herald Y",
+      "Relationship": "Director",
+      "Date": "Aug 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "5.05",
+      "Shares": "200,000",
+      "Value": "1,010,000"
+    },
+    {
+      "Owner": "Chen Herald Y",
+      "Relationship": "Director",
+      "Date": "Aug 12 '25",
+      "Transaction": "Sale",
+      "Cost": "464.69",
+      "Shares": "200,000",
+      "Value": "92,938,609"
+    },
+    {
+      "Owner": "Chen Herald Y",
+      "Relationship": "Director",
+      "Date": "Aug 13 '25",
+      "Transaction": "Sale",
+      "Cost": "446.53",
+      "Shares": "167,009",
+      "Value": "74,575,231"
+    },
+    {
+      "Owner": "Vivas Eduardo",
+      "Relationship": "Director",
+      "Date": "Aug 12 '25",
+      "Transaction": "Sale",
+      "Cost": "466.00",
+      "Shares": "125,000",
+      "Value": "58,249,976"
+    },
+    {
+      "Owner": "HERALD Y CHEN",
+      "Relationship": "Director",
+      "Date": "Aug 14 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "432.49",
+      "Shares": "200,000",
+      "Value": "86,497,940"
+    },
+    {
+      "Owner": "HERALD Y CHEN",
+      "Relationship": "Director",
+      "Date": "Aug 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "448.42",
+      "Shares": "200,000",
+      "Value": "89,683,000"
+    },
+    {
+      "Owner": "Eduardo Vivas",
+      "Relationship": "Director",
+      "Date": "Aug 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "467.00",
+      "Shares": "250,000",
+      "Value": "116,750,000"
+    },
+    {
+      "Owner": "HERALD Y CHEN",
+      "Relationship": "Director",
+      "Date": "Aug 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "464.69",
+      "Shares": "200,000",
+      "Value": "92,938,480"
+    },
+    {
+      "Owner": "Messing Barbara",
+      "Relationship": "Director",
+      "Date": "Jun 11 '25",
+      "Transaction": "Sale",
+      "Cost": "382.46",
+      "Shares": "1,500",
+      "Value": "573,692"
+    },
+    {
+      "Owner": "BARBARA MESSING",
+      "Relationship": "Director",
+      "Date": "Jun 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "382.46",
+      "Shares": "1,500",
+      "Value": "573,692"
+    },
+    {
+      "Owner": "Stumpf Matthew",
+      "Relationship": "Chief Financial Officer (CFO)",
+      "Date": "Jun 06 '25",
+      "Transaction": "Sale",
+      "Cost": "423.00",
+      "Shares": "9,714",
+      "Value": "4,108,994"
+    },
+    {
+      "Owner": "Chen Herald Y",
+      "Relationship": "Director",
+      "Date": "Jun 06 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "5.05",
+      "Shares": "100,000",
+      "Value": "505,000"
+    },
+    {
+      "Owner": "Chen Herald Y",
+      "Relationship": "Director",
+      "Date": "Jun 06 '25",
+      "Transaction": "Sale",
+      "Cost": "419.91",
+      "Shares": "100,000",
+      "Value": "41,990,543"
+    },
+    {
+      "Owner": "Harvey Dawson Alyssa",
+      "Relationship": "Director",
+      "Date": "Jun 05 '25",
+      "Transaction": "Sale",
+      "Cost": "413.98",
+      "Shares": "2,987",
+      "Value": "1,236,548"
+    },
+    {
+      "Owner": "Harvey Dawson Alyssa",
+      "Relationship": "Director",
+      "Date": "Jun 06 '25",
+      "Transaction": "Sale",
+      "Cost": "420.30",
+      "Shares": "513",
+      "Value": "215,615"
+    },
+    {
+      "Owner": "ALYSSA HARVEY DAWSON",
+      "Relationship": "Director",
+      "Date": "Jun 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "420.30",
+      "Shares": "513",
+      "Value": "215,615"
+    },
+    {
+      "Owner": "MATTHEW STUMPF",
+      "Relationship": "Officer",
+      "Date": "Jun 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "414.14",
+      "Shares": "9,714",
+      "Value": "4,022,956"
+    },
+    {
+      "Owner": "HERALD Y CHEN",
+      "Relationship": "Director",
+      "Date": "Jun 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "419.90",
+      "Shares": "100,000",
+      "Value": "41,990,390"
+    },
+    {
+      "Owner": "ALYSSA HARVEY DAWSON",
+      "Relationship": "Director",
+      "Date": "Jun 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "413.98",
+      "Shares": "2,987",
+      "Value": "1,236,550"
+    },
+    {
+      "Owner": "Shikin Vasily",
+      "Relationship": "Chief Technology Officer",
+      "Date": "May 23 '25",
+      "Transaction": "Sale",
+      "Cost": "353.64",
+      "Shares": "34,766",
+      "Value": "12,294,665"
+    },
+    {
+      "Owner": "Shikin Vasily",
+      "Relationship": "Chief Technology Officer",
+      "Date": "May 23 '25",
+      "Transaction": "Sale",
+      "Cost": "353.56",
+      "Shares": "30,000",
+      "Value": "10,606,831"
+    },
+    {
+      "Owner": "Shikin Vasily",
+      "Relationship": "Chief Technology Officer",
+      "Date": "May 23 '25",
+      "Transaction": "Sale",
+      "Cost": "353.41",
+      "Shares": "17,734",
+      "Value": "6,267,286"
+    },
+    {
+      "Owner": "BASIL SHIKIN",
+      "Relationship": "Officer",
+      "Date": "May 23 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "351.47",
+      "Shares": "30,000",
+      "Value": "10,544,100"
+    },
+    {
+      "Owner": "ES48 HOLDINGS TRUST",
+      "Relationship": "Officer",
+      "Date": "May 23 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "351.47",
+      "Shares": "17,500",
+      "Value": "6,150,725"
+    },
+    {
+      "Owner": "IK50 HOLDINGS TRUST",
+      "Relationship": "Officer",
+      "Date": "May 23 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "351.47",
+      "Shares": "17,500",
+      "Value": "6,150,725"
+    },
+    {
+      "Owner": "IS37 HOLDINGS TRUST",
+      "Relationship": "Officer",
+      "Date": "May 23 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "351.47",
+      "Shares": "17,500",
+      "Value": "6,150,725"
+    },
+    {
+      "Owner": "Foroughi Arash Adam",
+      "Relationship": "CEO & Chairperson",
+      "Date": "May 21 '25",
+      "Transaction": "Sale",
+      "Cost": "367.51",
+      "Shares": "100,000",
+      "Value": "36,751,494"
+    },
+    {
+      "Owner": "Foroughi Arash Adam",
+      "Relationship": "CEO & Chairperson",
+      "Date": "May 20 '25",
+      "Transaction": "Sale",
+      "Cost": "365.54",
+      "Shares": "33,700",
+      "Value": "12,318,858"
+    },
+    {
+      "Owner": "Foroughi Arash Adam",
+      "Relationship": "CEO & Chairperson",
+      "Date": "May 20 '25",
+      "Transaction": "Sale",
+      "Cost": "363.64",
+      "Shares": "56,300",
+      "Value": "20,473,041"
+    },
+    {
+      "Owner": "Valenzuela Victoria",
+      "Relationship": "CLO & Corp. Secretary",
+      "Date": "May 19 '25",
+      "Transaction": "Sale",
+      "Cost": "370.23",
+      "Shares": "6,585",
+      "Value": "2,437,965"
+    },
+    {
+      "Owner": "Valenzuela Victoria",
+      "Relationship": "CLO & Corp. Secretary",
+      "Date": "May 21 '25",
+      "Transaction": "Sale",
+      "Cost": "369.35",
+      "Shares": "6,599",
+      "Value": "2,437,370"
+    },
+    {
+      "Owner": "VICTORIA VALENZUELA",
+      "Relationship": "Officer",
+      "Date": "May 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "369.35",
+      "Shares": "6,599",
+      "Value": "2,437,364"
+    },
+    {
+      "Owner": "ARASH ADAM FOROUGHI",
+      "Relationship": "Officer",
+      "Date": "May 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "367.52",
+      "Shares": "100,000",
+      "Value": "36,751,590"
+    },
+    {
+      "Owner": "HDF 2020 LLC",
+      "Relationship": "Officer",
+      "Date": "May 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "363.85",
+      "Shares": "15,000",
+      "Value": "5,457,786"
+    },
+    {
+      "Owner": "THE WHK TRUST",
+      "Relationship": "Officer",
+      "Date": "May 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "366.96",
+      "Shares": "5,000",
+      "Value": "1,834,787"
+    },
+    {
+      "Owner": "KMF 2020 LLC",
+      "Relationship": "Officer",
+      "Date": "May 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "363.87",
+      "Shares": "15,000",
+      "Value": "5,458,028"
+    },
+    {
+      "Owner": "OHF 2020 LLC",
+      "Relationship": "Officer",
+      "Date": "May 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "363.85",
+      "Shares": "15,000",
+      "Value": "5,457,765"
+    },
+    {
+      "Owner": "WNF 2020 LLC",
+      "Relationship": "Officer",
+      "Date": "May 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "363.83",
+      "Shares": "15,000",
+      "Value": "5,457,381"
+    },
+    {
+      "Owner": "THE OD TRUST",
+      "Relationship": "Officer",
+      "Date": "May 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "366.91",
+      "Shares": "5,000",
+      "Value": "1,834,570"
+    },
+    {
+      "Owner": "DLF 2020 LLC",
+      "Relationship": "Officer",
+      "Date": "May 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "363.84",
+      "Shares": "15,000",
+      "Value": "5,457,663"
+    },
+    {
+      "Owner": "THE JAF CHILDRENS TRUST",
+      "Relationship": "Officer",
+      "Date": "May 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "366.78",
+      "Shares": "5,000",
+      "Value": "1,833,878"
+    },
+    {
+      "Owner": "VICTORIA VALENZUELA",
+      "Relationship": "Officer",
+      "Date": "May 19 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "370.23",
+      "Shares": "6,585",
+      "Value": "2,437,956"
+    },
+    {
+      "Owner": "Chen Herald Y",
+      "Relationship": "Director",
+      "Date": "May 14 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "5.05",
+      "Shares": "400,000",
+      "Value": "2,020,000"
+    },
+    {
+      "Owner": "Chen Herald Y",
+      "Relationship": "Director",
+      "Date": "May 14 '25",
+      "Transaction": "Sale",
+      "Cost": "374.61",
+      "Shares": "400,000",
+      "Value": "149,842,864"
+    }
+  ],
+  "Dividends": []
+}

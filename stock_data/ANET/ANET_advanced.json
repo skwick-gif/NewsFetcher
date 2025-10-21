@@ -1,0 +1,988 @@
+{
+  "Index": "S&P 500",
+  "P/E": "60.60",
+  "EPS (ttm)": "2.54",
+  "Insider Own": "17.34%",
+  "Shs Outstand": "1.26B",
+  "Perf Week": "5.91%",
+  "Market Cap": "193.68B",
+  "Forward P/E": "46.82",
+  "EPS next Y": "16.93%",
+  "Insider Trans": "-3.49%",
+  "Shs Float": "1.04B",
+  "Perf Month": "0.69%",
+  "Enterprise Value": "184.84B",
+  "PEG": "2.96",
+  "EPS next Q": "0.71",
+  "Inst Own": "68.65%",
+  "Short Float": "1.12%",
+  "Perf Quarter": "42.20%",
+  "Income": "3.25B",
+  "P/S": "24.36",
+  "EPS this Y": "23.99%",
+  "Inst Trans": "-0.71%",
+  "Short Ratio": "1.28",
+  "Perf Half Y": "112.11%",
+  "Sales": "7.95B",
+  "P/B": "17.77",
+  "ROA": "23.10%",
+  "Short Interest": "1.12%",
+  "Perf YTD": "39.42%",
+  "Book/sh": "8.67",
+  "P/C": "21.90",
+  "EPS next 5Y": "20.47%",
+  "ROE": "33.64%",
+  "52W High": "159.80 -3.57%",
+  "Perf Year": "54.02%",
+  "Cash/sh": "7.04",
+  "P/FCF": "48.72",
+  "EPS past 3/5Y": "50.09% 27.37%",
+  "ROIC": "29.83%",
+  "52W Low": "59.43 159.30%",
+  "Perf 3Y": "407.95%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "53.00",
+  "Sales past 3/5Y": "33.43% 23.77%",
+  "Gross Margin": "64.24%",
+  "Volatility": "5.06% 4.08%",
+  "Perf 5Y": "1096.89%",
+  "Dividend TTM": "-",
+  "EV/Sales": "23.25",
+  "EPS Y/Y TTM": "31.05%",
+  "Oper. Margin": "43.14%",
+  "ATR (14)": "6.35",
+  "Perf 10Y": "3826.12%",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "2.82",
+  "Sales Y/Y TTM": "25.97%",
+  "Profit Margin": "40.89%",
+  "RSI (14)": "59.78",
+  "Recom": "1.46",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "3.33",
+  "EPS Q/Q": "34.46%",
+  "SMA20": "4.93%",
+  "Beta": "1.48",
+  "Target Price": "165.38",
+  "Payout": "0.00%",
+  "Debt/Eq": "0.00",
+  "Sales Q/Q": "30.43%",
+  "SMA50": "9.69%",
+  "Rel Volume": "1.15",
+  "Prev Close": "158.23",
+  "Employees": "4412",
+  "LT Debt/Eq": "0.00",
+  "Earnings": "Nov 04 AMC",
+  "SMA200": "42.88%",
+  "Avg Volume": "9.05M",
+  "Price": "154.10",
+  "IPO": "Jun 06, 2014",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "12.45% 4.63%",
+  "Trades": "",
+  "Volume": "10,384,073",
+  "Change": "-2.61%",
+  "Insider Trading": [
+    {
+      "Owner": "Giancarlo Charles H",
+      "Relationship": "Director",
+      "Date": "Oct 01 '25",
+      "Transaction": "Sale",
+      "Cost": "147.49",
+      "Shares": "8,000",
+      "Value": "1,179,890"
+    },
+    {
+      "Owner": "Giancarlo Charles H",
+      "Relationship": "Director",
+      "Date": "Sep 19 '25",
+      "Transaction": "Sale",
+      "Cost": "148.42",
+      "Shares": "58,000",
+      "Value": "8,608,365"
+    },
+    {
+      "Owner": "Duda Kenneth",
+      "Relationship": "President and CTO",
+      "Date": "Sep 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "3.52",
+      "Shares": "30,000",
+      "Value": "105,450"
+    },
+    {
+      "Owner": "Duda Kenneth",
+      "Relationship": "President and CTO",
+      "Date": "Sep 17 '25",
+      "Transaction": "Sale",
+      "Cost": "141.79",
+      "Shares": "30,000",
+      "Value": "4,253,849"
+    },
+    {
+      "Owner": "Duda Kenneth",
+      "Relationship": "President and CTO",
+      "Date": "Sep 17 '25",
+      "Transaction": "Sale",
+      "Cost": "141.80",
+      "Shares": "26,000",
+      "Value": "3,686,675"
+    },
+    {
+      "Owner": "Charles Giancarlo",
+      "Relationship": "Director",
+      "Date": "Sep 19 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "146.66",
+      "Shares": "82,000",
+      "Value": "12,026,120"
+    },
+    {
+      "Owner": "Kenneth Duda",
+      "Relationship": "Officer",
+      "Date": "Sep 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "142.16",
+      "Shares": "30,000",
+      "Value": "4,264,800"
+    },
+    {
+      "Owner": "Kenneth Duda",
+      "Relationship": "Officer",
+      "Date": "Sep 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "142.16",
+      "Shares": "24,000",
+      "Value": "3,411,840"
+    },
+    {
+      "Owner": "Kenneth Duda",
+      "Relationship": "Officer",
+      "Date": "Sep 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "142.16",
+      "Shares": "24,000",
+      "Value": "3,411,840"
+    },
+    {
+      "Owner": "Kenneth Duda",
+      "Relationship": "Officer",
+      "Date": "Sep 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "142.16",
+      "Shares": "90,000",
+      "Value": "12,794,400"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "CEO and Chairperson",
+      "Date": "Sep 10 '25",
+      "Transaction": "Sale",
+      "Cost": "148.53",
+      "Shares": "1,247,688",
+      "Value": "185,323,061"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "CEO and Chairperson",
+      "Date": "Sep 08 '25",
+      "Transaction": "Sale",
+      "Cost": "143.56",
+      "Shares": "56,548",
+      "Value": "8,117,895"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "CEO and Chairperson",
+      "Date": "Sep 05 '25",
+      "Transaction": "Sale",
+      "Cost": "143.84",
+      "Shares": "438,764",
+      "Value": "63,113,566"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Sep 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "144.13",
+      "Shares": "240,521",
+      "Value": "34,666,292"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Sep 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "144.13",
+      "Shares": "240,521",
+      "Value": "34,666,292"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Sep 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "144.13",
+      "Shares": "1,261,958",
+      "Value": "181,886,007"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "CEO and Chairperson",
+      "Date": "Aug 25 '25",
+      "Transaction": "Sale",
+      "Cost": "132.77",
+      "Shares": "24,040",
+      "Value": "3,191,740"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Aug 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "49.57",
+      "Shares": "24,040",
+      "Value": "1,191,637"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "CEO and Chairperson",
+      "Date": "Aug 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "48,256",
+      "Value": "0"
+    },
+    {
+      "Owner": "Duda Kenneth",
+      "Relationship": "CTO and SVP Software Eng.",
+      "Date": "Aug 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "15,576",
+      "Value": "0"
+    },
+    {
+      "Owner": "Breithaupt Chantelle Yvette",
+      "Relationship": "Senior Vice President, CFO",
+      "Date": "Aug 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "10,920",
+      "Value": "0"
+    },
+    {
+      "Owner": "Wassenaar Yvonne",
+      "Relationship": "Director",
+      "Date": "Aug 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "971",
+      "Value": "0"
+    },
+    {
+      "Owner": "TEMPLETON MARK B",
+      "Relationship": "Director",
+      "Date": "Aug 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "971",
+      "Value": "0"
+    },
+    {
+      "Owner": "Scheinman Daniel",
+      "Relationship": "Director",
+      "Date": "Aug 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "971",
+      "Value": "0"
+    },
+    {
+      "Owner": "Lavender Robert G",
+      "Relationship": "Director",
+      "Date": "Aug 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "808",
+      "Value": "0"
+    },
+    {
+      "Owner": "Giancarlo Charles H",
+      "Relationship": "Director",
+      "Date": "Aug 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "971",
+      "Value": "0"
+    },
+    {
+      "Owner": "CHEW LEWIS",
+      "Relationship": "Director",
+      "Date": "Aug 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "971",
+      "Value": "0"
+    },
+    {
+      "Owner": "Battles Kelly Bodnar",
+      "Relationship": "Director",
+      "Date": "Aug 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "971",
+      "Value": "0"
+    },
+    {
+      "Owner": "Duda Kenneth",
+      "Relationship": "CTO and SVP Software Eng.",
+      "Date": "Aug 18 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "3.52",
+      "Shares": "30,000",
+      "Value": "105,450"
+    },
+    {
+      "Owner": "Duda Kenneth",
+      "Relationship": "CTO and SVP Software Eng.",
+      "Date": "Aug 18 '25",
+      "Transaction": "Sale",
+      "Cost": "136.51",
+      "Shares": "30,000",
+      "Value": "4,095,196"
+    },
+    {
+      "Owner": "Duda Kenneth",
+      "Relationship": "CTO and SVP Software Eng.",
+      "Date": "Aug 18 '25",
+      "Transaction": "Sale",
+      "Cost": "136.51",
+      "Shares": "26,000",
+      "Value": "3,549,170"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "CEO and Chairperson",
+      "Date": "Aug 08 '25",
+      "Transaction": "Sale",
+      "Cost": "139.67",
+      "Shares": "192,979",
+      "Value": "26,953,512"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "CEO and Chairperson",
+      "Date": "Aug 07 '25",
+      "Transaction": "Sale",
+      "Cost": "139.93",
+      "Shares": "345,856",
+      "Value": "48,395,902"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "CEO and Chairperson",
+      "Date": "Aug 06 '25",
+      "Transaction": "Sale",
+      "Cost": "136.22",
+      "Shares": "1,785,165",
+      "Value": "243,176,281"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Aug 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "133.79",
+      "Shares": "1,682,632",
+      "Value": "225,119,335"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Aug 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "133.79",
+      "Shares": "320,684",
+      "Value": "42,904,312"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Aug 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "133.79",
+      "Shares": "320,684",
+      "Value": "42,904,312"
+    },
+    {
+      "Owner": "Giancarlo Charles H",
+      "Relationship": "Director",
+      "Date": "Aug 01 '25",
+      "Transaction": "Sale",
+      "Cost": "117.01",
+      "Shares": "8,000",
+      "Value": "936,044"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "CEO and Chairperson",
+      "Date": "Jul 31 '25",
+      "Transaction": "Sale",
+      "Cost": "124.79",
+      "Shares": "880,180",
+      "Value": "109,841,571"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "CEO and Chairperson",
+      "Date": "Jul 30 '25",
+      "Transaction": "Sale",
+      "Cost": "122.19",
+      "Shares": "288,820",
+      "Value": "35,290,438"
+    },
+    {
+      "Owner": "Charles Giancarlo",
+      "Relationship": "Director",
+      "Date": "Aug 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "123.22",
+      "Shares": "8,000",
+      "Value": "985,760"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "CEO and Chairperson",
+      "Date": "Jul 29 '25",
+      "Transaction": "Sale",
+      "Cost": "119.15",
+      "Shares": "588,000",
+      "Value": "70,061,858"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "CEO and Chairperson",
+      "Date": "Jul 28 '25",
+      "Transaction": "Sale",
+      "Cost": "115.59",
+      "Shares": "527,302",
+      "Value": "60,949,419"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Jul 30 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "122.00",
+      "Shares": "161,308",
+      "Value": "19,679,576"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Jul 30 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "122.00",
+      "Shares": "161,308",
+      "Value": "19,679,576"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Jul 30 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "122.00",
+      "Shares": "846,384",
+      "Value": "103,258,848"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "CEO and Chairperson",
+      "Date": "Jul 25 '25",
+      "Transaction": "Sale",
+      "Cost": "115.02",
+      "Shares": "60,698",
+      "Value": "6,981,539"
+    },
+    {
+      "Owner": "Battles Kelly Bodnar",
+      "Relationship": "Director",
+      "Date": "Jul 25 '25",
+      "Transaction": "Sale",
+      "Cost": "114.68",
+      "Shares": "864",
+      "Value": "99,081"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Jul 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "115.00",
+      "Shares": "162,274",
+      "Value": "18,661,510"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Jul 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "115.00",
+      "Shares": "162,274",
+      "Value": "18,661,510"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Jul 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "115.00",
+      "Shares": "851,452",
+      "Value": "97,916,980"
+    },
+    {
+      "Owner": "Kelly Battles",
+      "Relationship": "Director",
+      "Date": "Jul 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "114.04",
+      "Shares": "864",
+      "Value": "98,531"
+    },
+    {
+      "Owner": "Duda Kenneth",
+      "Relationship": "CTO and SVP Software Eng.",
+      "Date": "Jul 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "3.52",
+      "Shares": "30,000",
+      "Value": "105,450"
+    },
+    {
+      "Owner": "Duda Kenneth",
+      "Relationship": "CTO and SVP Software Eng.",
+      "Date": "Jul 17 '25",
+      "Transaction": "Sale",
+      "Cost": "111.19",
+      "Shares": "30,000",
+      "Value": "3,335,759"
+    },
+    {
+      "Owner": "Duda Kenneth",
+      "Relationship": "CTO and SVP Software Eng.",
+      "Date": "Jul 17 '25",
+      "Transaction": "Sale",
+      "Cost": "111.19",
+      "Shares": "26,000",
+      "Value": "2,890,990"
+    },
+    {
+      "Owner": "Giancarlo Charles H",
+      "Relationship": "Director",
+      "Date": "Jul 01 '25",
+      "Transaction": "Sale",
+      "Cost": "99.36",
+      "Shares": "8,000",
+      "Value": "794,906"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "President and CEO",
+      "Date": "Jun 30 '25",
+      "Transaction": "Sale",
+      "Cost": "102.43",
+      "Shares": "748,444",
+      "Value": "76,662,572"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "President and CEO",
+      "Date": "Jun 30 '25",
+      "Transaction": "Sale",
+      "Cost": "102.43",
+      "Shares": "93,468",
+      "Value": "9,573,859"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "President and CEO",
+      "Date": "Jun 27 '25",
+      "Transaction": "Sale",
+      "Cost": "101.99",
+      "Shares": "1,793",
+      "Value": "182,872"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "President and CEO",
+      "Date": "Jun 27 '25",
+      "Transaction": "Sale",
+      "Cost": "101.99",
+      "Shares": "223",
+      "Value": "22,744"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "President and CEO",
+      "Date": "Jun 26 '25",
+      "Transaction": "Sale",
+      "Cost": "102.03",
+      "Shares": "104,707",
+      "Value": "10,683,507"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "President and CEO",
+      "Date": "Jun 26 '25",
+      "Transaction": "Sale",
+      "Cost": "102.03",
+      "Shares": "13,075",
+      "Value": "1,334,074"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Jun 27 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "101.59",
+      "Shares": "8,724",
+      "Value": "886,295"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Jun 27 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "101.59",
+      "Shares": "8,724",
+      "Value": "886,295"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Jun 26 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "97.33",
+      "Shares": "1,276",
+      "Value": "124,193"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Jun 26 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "97.33",
+      "Shares": "106,766",
+      "Value": "10,391,534"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Jun 26 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "97.33",
+      "Shares": "669,403",
+      "Value": "65,152,993"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Jun 26 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "97.33",
+      "Shares": "127,580",
+      "Value": "12,417,361"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Jun 26 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "97.33",
+      "Shares": "127,580",
+      "Value": "12,417,361"
+    },
+    {
+      "Owner": "Jayshree Ullal",
+      "Relationship": "Officer and Director",
+      "Date": "Jun 26 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "97.33",
+      "Shares": "1,276",
+      "Value": "124,193"
+    },
+    {
+      "Owner": "Duda Kenneth",
+      "Relationship": "CTO and SVP Software Eng.",
+      "Date": "Jun 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "3.52",
+      "Shares": "30,000",
+      "Value": "105,450"
+    },
+    {
+      "Owner": "Duda Kenneth",
+      "Relationship": "CTO and SVP Software Eng.",
+      "Date": "Jun 17 '25",
+      "Transaction": "Sale",
+      "Cost": "92.23",
+      "Shares": "30,000",
+      "Value": "2,766,893"
+    },
+    {
+      "Owner": "Duda Kenneth",
+      "Relationship": "CTO and SVP Software Eng.",
+      "Date": "Jun 17 '25",
+      "Transaction": "Sale",
+      "Cost": "92.23",
+      "Shares": "26,000",
+      "Value": "2,397,975"
+    },
+    {
+      "Owner": "Kenneth Duda",
+      "Relationship": "Officer",
+      "Date": "Jun 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "95.09",
+      "Shares": "30,000",
+      "Value": "2,852,700"
+    },
+    {
+      "Owner": "Kenneth Duda",
+      "Relationship": "Officer",
+      "Date": "Jun 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "95.09",
+      "Shares": "24,000",
+      "Value": "2,282,160"
+    },
+    {
+      "Owner": "Kenneth Duda",
+      "Relationship": "Officer",
+      "Date": "Jun 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "95.09",
+      "Shares": "24,000",
+      "Value": "2,282,160"
+    },
+    {
+      "Owner": "Kenneth Duda",
+      "Relationship": "Officer",
+      "Date": "Jun 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "95.09",
+      "Shares": "90,000",
+      "Value": "8,558,100"
+    },
+    {
+      "Owner": "Giancarlo Charles H",
+      "Relationship": "Director",
+      "Date": "Jun 02 '25",
+      "Transaction": "Sale",
+      "Cost": "88.18",
+      "Shares": "8,000",
+      "Value": "705,440"
+    },
+    {
+      "Owner": "Wassenaar Yvonne",
+      "Relationship": "Director",
+      "Date": "May 21 '25",
+      "Transaction": "Sale",
+      "Cost": "94.20",
+      "Shares": "168",
+      "Value": "15,826"
+    },
+    {
+      "Owner": "1999 MCCOOL FAMILY TRUST",
+      "Relationship": "Officer",
+      "Date": "May 23 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "92.56",
+      "Shares": "1,335",
+      "Value": "123,568"
+    },
+    {
+      "Owner": "Scheinman Daniel",
+      "Relationship": "Director",
+      "Date": "May 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "844",
+      "Value": "0"
+    },
+    {
+      "Owner": "Wassenaar Yvonne",
+      "Relationship": "Director",
+      "Date": "May 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "844",
+      "Value": "0"
+    },
+    {
+      "Owner": "Ullal Jayshree",
+      "Relationship": "President and CEO",
+      "Date": "May 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "48,260",
+      "Value": "0"
+    },
+    {
+      "Owner": "TEMPLETON MARK B",
+      "Relationship": "Director",
+      "Date": "May 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "844",
+      "Value": "0"
+    },
+    {
+      "Owner": "Lavender Robert G",
+      "Relationship": "Director",
+      "Date": "May 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "810",
+      "Value": "0"
+    },
+    {
+      "Owner": "Duda Kenneth",
+      "Relationship": "CTO and SVP Software Eng.",
+      "Date": "May 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "15,576",
+      "Value": "0"
+    },
+    {
+      "Owner": "Breithaupt Chantelle Yvette",
+      "Relationship": "Senior Vice President, CFO",
+      "Date": "May 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "10,916",
+      "Value": "0"
+    },
+    {
+      "Owner": "Battles Kelly Bodnar",
+      "Relationship": "Director",
+      "Date": "May 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "844",
+      "Value": "0"
+    },
+    {
+      "Owner": "1999 MCCOOL FAMILY TRUST",
+      "Relationship": "Officer",
+      "Date": "May 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "95.67",
+      "Shares": "1,334",
+      "Value": "127,624"
+    },
+    {
+      "Owner": "Yvonne Wassenaar",
+      "Relationship": "Director",
+      "Date": "May 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "95.67",
+      "Shares": "168",
+      "Value": "16,073"
+    },
+    {
+      "Owner": "Duda Kenneth",
+      "Relationship": "CTO and SVP Software Eng.",
+      "Date": "May 06 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "3.52",
+      "Shares": "80,000",
+      "Value": "281,200"
+    },
+    {
+      "Owner": "Duda Kenneth",
+      "Relationship": "CTO and SVP Software Eng.",
+      "Date": "May 06 '25",
+      "Transaction": "Sale",
+      "Cost": "90.07",
+      "Shares": "80,000",
+      "Value": "7,205,794"
+    },
+    {
+      "Owner": "Duda Kenneth",
+      "Relationship": "CTO and SVP Software Eng.",
+      "Date": "May 06 '25",
+      "Transaction": "Sale",
+      "Cost": "90.07",
+      "Shares": "80,000",
+      "Value": "7,205,790"
+    },
+    {
+      "Owner": "Kenneth Duda",
+      "Relationship": "Officer",
+      "Date": "May 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "90.38",
+      "Shares": "16,000",
+      "Value": "1,446,080"
+    },
+    {
+      "Owner": "Kenneth Duda",
+      "Relationship": "Officer",
+      "Date": "May 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "90.38",
+      "Shares": "80,000",
+      "Value": "7,230,400"
+    },
+    {
+      "Owner": "Kenneth Duda",
+      "Relationship": "Officer",
+      "Date": "May 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "90.38",
+      "Shares": "32,000",
+      "Value": "2,892,160"
+    },
+    {
+      "Owner": "Kenneth Duda",
+      "Relationship": "Officer",
+      "Date": "May 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "90.38",
+      "Shares": "32,000",
+      "Value": "2,892,160"
+    },
+    {
+      "Owner": "Giancarlo Charles H",
+      "Relationship": "Director",
+      "Date": "May 01 '25",
+      "Transaction": "Sale",
+      "Cost": "88.58",
+      "Shares": "8,000",
+      "Value": "708,675"
+    },
+    {
+      "Owner": "Charles Giancarlo",
+      "Relationship": "Director",
+      "Date": "May 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "80.00",
+      "Shares": "24,000",
+      "Value": "1,920,000"
+    },
+    {
+      "Owner": "Battles Kelly Bodnar",
+      "Relationship": "Director",
+      "Date": "Apr 22 '25",
+      "Transaction": "Sale",
+      "Cost": "68.49",
+      "Shares": "1,492",
+      "Value": "102,180"
+    }
+  ],
+  "Dividends": []
+}

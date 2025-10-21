@@ -116,7 +116,7 @@ vector_store:
 # LLM Configuration
 llm:
   provider: "perplexity"  # openai, anthropic, or perplexity
-  model: "llama-3.1-sonar-small-128k-online"  # Perplexity model with online search
+  model: "sonar"  # Updated 2025 Perplexity model (was: llama-3.1-sonar-small-128k-online)
   temperature: 0.1        # Low for consistency
   max_tokens: 300
   timeout: 30

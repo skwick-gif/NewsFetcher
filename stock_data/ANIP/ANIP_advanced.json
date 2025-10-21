@@ -1,0 +1,655 @@
+{
+  "Index": "RUT",
+  "P/E": "-",
+  "EPS (ttm)": "-0.77",
+  "Insider Own": "14.22%",
+  "Shs Outstand": "21.72M",
+  "Perf Week": "0.17%",
+  "Market Cap": "1.95B",
+  "Forward P/E": "11.27",
+  "EPS next Y": "9.67%",
+  "Insider Trans": "-12.00%",
+  "Shs Float": "18.61M",
+  "Perf Month": "-9.06%",
+  "Enterprise Value": "2.37B",
+  "PEG": "-",
+  "EPS next Q": "1.73",
+  "Inst Own": "92.25%",
+  "Short Float": "12.54%",
+  "Perf Quarter": "37.74%",
+  "Income": "-14.22M",
+  "P/S": "2.61",
+  "EPS this Y": "39.74%",
+  "Inst Trans": "-1.30%",
+  "Short Ratio": "4.96",
+  "Perf Half Y": "37.88%",
+  "Sales": "747.40M",
+  "P/B": "4.47",
+  "ROA": "-1.11%",
+  "Short Interest": "12.54%",
+  "Perf YTD": "62.43%",
+  "Book/sh": "20.10",
+  "P/C": "8.72",
+  "EPS next 5Y": "20.90%",
+  "ROE": "-2.82%",
+  "52W High": "99.50 -9.76%",
+  "Perf Year": "58.11%",
+  "Cash/sh": "10.30",
+  "P/FCF": "15.53",
+  "EPS past 3/5Y": "32.54% -",
+  "ROIC": "-1.33%",
+  "52W Low": "52.50 71.03%",
+  "Perf 3Y": "173.42%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "24.85",
+  "Sales past 3/5Y": "41.66% 24.36%",
+  "Gross Margin": "49.76%",
+  "Volatility": "2.68% 2.82%",
+  "Perf 5Y": "208.24%",
+  "Dividend TTM": "-",
+  "EV/Sales": "3.17",
+  "EPS Y/Y TTM": "-160.14%",
+  "Oper. Margin": "1.46%",
+  "ATR (14)": "2.57",
+  "Perf 10Y": "105.85%",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "1.96",
+  "Sales Y/Y TTM": "38.68%",
+  "Profit Margin": "-1.90%",
+  "RSI (14)": "42.64",
+  "Recom": "1.38",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "2.54",
+  "EPS Q/Q": "359.25%",
+  "SMA20": "-3.82%",
+  "Beta": "0.55",
+  "Target Price": "106.62",
+  "Payout": "-",
+  "Debt/Eq": "1.48",
+  "Sales Q/Q": "53.12%",
+  "SMA50": "-0.28%",
+  "Rel Volume": "0.37",
+  "Prev Close": "90.78",
+  "Employees": "897",
+  "LT Debt/Eq": "1.45",
+  "Earnings": "Aug 08 BMO",
+  "SMA200": "29.27%",
+  "Avg Volume": "470.65K",
+  "Price": "89.79",
+  "IPO": "May 12, 2000",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "28.05% 11.18%",
+  "Trades": "",
+  "Volume": "173,712",
+  "Change": "-1.09%",
+  "Insider Trading": [
+    {
+      "Owner": "Davis Krista",
+      "Relationship": "SVP, CHIEF HR OFFICER",
+      "Date": "Sep 19 '25",
+      "Transaction": "Sale",
+      "Cost": "98.04",
+      "Shares": "1,000",
+      "Value": "98,040"
+    },
+    {
+      "Owner": "Cook Meredith",
+      "Relationship": "SR. VP, GENERAL COUNSEL & SEC.",
+      "Date": "Sep 12 '25",
+      "Transaction": "Sale",
+      "Cost": "98.42",
+      "Shares": "400",
+      "Value": "39,368"
+    },
+    {
+      "Owner": "Pera Antonio R",
+      "Relationship": "Director",
+      "Date": "Sep 03 '25",
+      "Transaction": "Sale",
+      "Cost": "94.94",
+      "Shares": "7,292",
+      "Value": "692,302"
+    },
+    {
+      "Owner": "ANTONIO R PERA",
+      "Relationship": "Director",
+      "Date": "Sep 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "94.94",
+      "Shares": "7,292",
+      "Value": "692,270"
+    },
+    {
+      "Owner": "Leonard Matthew J",
+      "Relationship": "Director",
+      "Date": "Aug 25 '25",
+      "Transaction": "Sale",
+      "Cost": "90.62",
+      "Shares": "2,528",
+      "Value": "229,087"
+    },
+    {
+      "Owner": "MATTHEW LEONARD",
+      "Relationship": "Director",
+      "Date": "Aug 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "90.62",
+      "Shares": "2,528",
+      "Value": "229,076"
+    },
+    {
+      "Owner": "Davis Krista",
+      "Relationship": "SVP, CHIEF HR OFFICER",
+      "Date": "Aug 22 '25",
+      "Transaction": "Sale",
+      "Cost": "91.10",
+      "Shares": "1,763",
+      "Value": "160,609"
+    },
+    {
+      "Owner": "Shanmugam Muthusamy",
+      "Relationship": "HEAD OF R&D, COO-NOVITIUM OPS",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "90.44",
+      "Shares": "52,988",
+      "Value": "4,792,235"
+    },
+    {
+      "Owner": "Shanmugam Muthusamy",
+      "Relationship": "HEAD OF R&D, COO-NOVITIUM OPS",
+      "Date": "Aug 20 '25",
+      "Transaction": "Sale",
+      "Cost": "90.27",
+      "Shares": "47,012",
+      "Value": "4,243,773"
+    },
+    {
+      "Owner": "Shanmugam Muthusamy",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "90.44",
+      "Shares": "52,988",
+      "Value": "4,792,058"
+    },
+    {
+      "Owner": "Shanmugam Muthusamy",
+      "Relationship": "Officer",
+      "Date": "Aug 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "90.27",
+      "Shares": "47,012",
+      "Value": "4,243,703"
+    },
+    {
+      "Owner": "Thoma Jeanne",
+      "Relationship": "Director",
+      "Date": "Aug 18 '25",
+      "Transaction": "Sale",
+      "Cost": "89.15",
+      "Shares": "21,540",
+      "Value": "1,920,370"
+    },
+    {
+      "Owner": "Pera Antonio R",
+      "Relationship": "Director",
+      "Date": "Aug 20 '25",
+      "Transaction": "Sale",
+      "Cost": "89.73",
+      "Shares": "5,421",
+      "Value": "486,426"
+    },
+    {
+      "Owner": "ANTONIO R PERA",
+      "Relationship": "Director",
+      "Date": "Aug 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "89.73",
+      "Shares": "5,421",
+      "Value": "486,407"
+    },
+    {
+      "Owner": "JEANNE THOMA",
+      "Relationship": "Director",
+      "Date": "Aug 18 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "88.87",
+      "Shares": "14,675",
+      "Value": "1,304,170"
+    },
+    {
+      "Owner": "Leonard Matthew J",
+      "Relationship": "Director",
+      "Date": "Aug 18 '25",
+      "Transaction": "Sale",
+      "Cost": "88.17",
+      "Shares": "6,937",
+      "Value": "611,635"
+    },
+    {
+      "Owner": "Walsh Patrick D",
+      "Relationship": "Director",
+      "Date": "Aug 15 '25",
+      "Transaction": "Sale",
+      "Cost": "89.05",
+      "Shares": "9,000",
+      "Value": "801,450"
+    },
+    {
+      "Owner": "Shanmugam Muthusamy",
+      "Relationship": "HEAD OF R&D, COO-NOVITIUM OPS",
+      "Date": "Aug 15 '25",
+      "Transaction": "Sale",
+      "Cost": "87.15",
+      "Shares": "52,990",
+      "Value": "4,618,078"
+    },
+    {
+      "Owner": "Shanmugam Muthusamy",
+      "Relationship": "HEAD OF R&D, COO-NOVITIUM OPS",
+      "Date": "Aug 14 '25",
+      "Transaction": "Sale",
+      "Cost": "89.48",
+      "Shares": "47,010",
+      "Value": "4,206,455"
+    },
+    {
+      "Owner": "Gassert Chad",
+      "Relationship": "SVP - CORP. DEV. & STRATEGY",
+      "Date": "Aug 15 '25",
+      "Transaction": "Sale",
+      "Cost": "86.97",
+      "Shares": "20,000",
+      "Value": "1,739,400"
+    },
+    {
+      "Owner": "JEANNE A THOMA",
+      "Relationship": "Director",
+      "Date": "Aug 18 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "89.76",
+      "Shares": "6,865",
+      "Value": "616,224"
+    },
+    {
+      "Owner": "MATTHEW LEONARD",
+      "Relationship": "Director",
+      "Date": "Aug 18 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "88.17",
+      "Shares": "6,937",
+      "Value": "611,644"
+    },
+    {
+      "Owner": "AMPERSAND 2020 LIMITED PARTNER",
+      "Relationship": "Director",
+      "Date": "Aug 18 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "88.32",
+      "Shares": "29,580",
+      "Value": "2,612,420"
+    },
+    {
+      "Owner": "PATRICK WALSH",
+      "Relationship": "Director",
+      "Date": "Aug 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "89.05",
+      "Shares": "9,000",
+      "Value": "801,450"
+    },
+    {
+      "Owner": "AMPERSAND 2020 LIMITED PARTNER",
+      "Relationship": "Director",
+      "Date": "Aug 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "86.44",
+      "Shares": "91,000",
+      "Value": "7,866,268"
+    },
+    {
+      "Owner": "Shanmugam Muthusamy",
+      "Relationship": "Officer",
+      "Date": "Aug 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "87.15",
+      "Shares": "52,990",
+      "Value": "4,618,064"
+    },
+    {
+      "Owner": "Rowland Thomas Andrew",
+      "Relationship": "SVP, HEAD - ESTABLISHED BRANDS",
+      "Date": "Aug 12 '25",
+      "Transaction": "Sale",
+      "Cost": "85.71",
+      "Shares": "4,975",
+      "Value": "426,407"
+    },
+    {
+      "Owner": "Lalwani Nikhil",
+      "Relationship": "PRESIDENT & CEO",
+      "Date": "Aug 12 '25",
+      "Transaction": "Sale",
+      "Cost": "85.93",
+      "Shares": "56,960",
+      "Value": "4,894,573"
+    },
+    {
+      "Owner": "Gutwerg Ori",
+      "Relationship": "SVP, GENERICS",
+      "Date": "Aug 12 '25",
+      "Transaction": "Sale",
+      "Cost": "86.53",
+      "Shares": "5,873",
+      "Value": "508,191"
+    },
+    {
+      "Owner": "Cook Meredith",
+      "Relationship": "SR. VP, GENERAL COUNSEL & SEC.",
+      "Date": "Aug 13 '25",
+      "Transaction": "Sale",
+      "Cost": "88.87",
+      "Shares": "400",
+      "Value": "35,548"
+    },
+    {
+      "Owner": "CAREY STEPHEN P.",
+      "Relationship": "SVP & CFO",
+      "Date": "Aug 12 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "46.49",
+      "Shares": "50,000",
+      "Value": "2,324,500"
+    },
+    {
+      "Owner": "CAREY STEPHEN P.",
+      "Relationship": "SVP & CFO",
+      "Date": "Aug 12 '25",
+      "Transaction": "Sale",
+      "Cost": "86.07",
+      "Shares": "50,000",
+      "Value": "4,303,500"
+    },
+    {
+      "Owner": "HAUGHEY THOMAS",
+      "Relationship": "Director",
+      "Date": "Aug 12 '25",
+      "Transaction": "Sale",
+      "Cost": "85.93",
+      "Shares": "19,341",
+      "Value": "1,661,972"
+    },
+    {
+      "Owner": "Shanmugam Muthusamy",
+      "Relationship": "Officer",
+      "Date": "Aug 14 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "89.48",
+      "Shares": "47,010",
+      "Value": "4,206,604"
+    },
+    {
+      "Owner": "NIKHIL S LALWANI",
+      "Relationship": "Officer",
+      "Date": "Aug 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "85.93",
+      "Shares": "56,960",
+      "Value": "4,894,823"
+    },
+    {
+      "Owner": "THOMAS HAUGHEY",
+      "Relationship": "Director",
+      "Date": "Aug 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "85.93",
+      "Shares": "19,341",
+      "Value": "1,662,048"
+    },
+    {
+      "Owner": "STEPHEN P CAREY",
+      "Relationship": "Officer",
+      "Date": "Aug 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "86.07",
+      "Shares": "50,000",
+      "Value": "4,303,590"
+    },
+    {
+      "Owner": "Cook Meredith",
+      "Relationship": "SR. VP, GENERAL COUNSEL & SEC.",
+      "Date": "Jul 14 '25",
+      "Transaction": "Sale",
+      "Cost": "64.88",
+      "Shares": "400",
+      "Value": "25,952"
+    },
+    {
+      "Owner": "Cook Meredith",
+      "Relationship": "SR. VP, GENERAL COUNSEL & SEC.",
+      "Date": "Jun 13 '25",
+      "Transaction": "Sale",
+      "Cost": "61.37",
+      "Shares": "400",
+      "Value": "24,548"
+    },
+    {
+      "Owner": "Gutwerg Ori",
+      "Relationship": "SVP, GENERICS",
+      "Date": "May 15 '25",
+      "Transaction": "Sale",
+      "Cost": "60.07",
+      "Shares": "881",
+      "Value": "52,922"
+    },
+    {
+      "Owner": "Mutz Christopher",
+      "Relationship": "HEAD OF RARE DISEASE",
+      "Date": "May 14 '25",
+      "Transaction": "Sale",
+      "Cost": "60.45",
+      "Shares": "4,000",
+      "Value": "241,800"
+    },
+    {
+      "Owner": "Cook Meredith",
+      "Relationship": "SR. VP, GENERAL COUNSEL & SEC.",
+      "Date": "May 13 '25",
+      "Transaction": "Sale",
+      "Cost": "62.20",
+      "Shares": "400",
+      "Value": "24,880"
+    },
+    {
+      "Owner": "Shanmugam Muthusamy",
+      "Relationship": "HEAD OF R&D, COO-NOVITIUM OPS",
+      "Date": "May 09 '25",
+      "Transaction": "Sale",
+      "Cost": "76.83",
+      "Shares": "700",
+      "Value": "53,781"
+    },
+    {
+      "Owner": "Shanmugam Muthusamy",
+      "Relationship": "Officer",
+      "Date": "May 09 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "76.77",
+      "Shares": "700",
+      "Value": "53,740"
+    },
+    {
+      "Owner": "Cook Meredith",
+      "Relationship": "SR. VP, GENERAL COUNSEL & SEC.",
+      "Date": "Apr 14 '25",
+      "Transaction": "Sale",
+      "Cost": "68.96",
+      "Shares": "400",
+      "Value": "27,584"
+    },
+    {
+      "Owner": "Davis Krista",
+      "Relationship": "SVP, CHIEF HR OFFICER",
+      "Date": "Mar 19 '25",
+      "Transaction": "Sale",
+      "Cost": "65.00",
+      "Shares": "1,866",
+      "Value": "121,290"
+    },
+    {
+      "Owner": "Cook Meredith",
+      "Relationship": "SR. VP, GENERAL COUNSEL & SEC.",
+      "Date": "Mar 13 '25",
+      "Transaction": "Sale",
+      "Cost": "63.33",
+      "Shares": "400",
+      "Value": "25,332"
+    },
+    {
+      "Owner": "Davis Krista",
+      "Relationship": "SVP, CHIEF HR OFFICER",
+      "Date": "Mar 07 '25",
+      "Transaction": "Sale",
+      "Cost": "60.86",
+      "Shares": "1,000",
+      "Value": "60,860"
+    },
+    {
+      "Owner": "Gutwerg Ori",
+      "Relationship": "SVP, GENERICS",
+      "Date": "Mar 05 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "31.49",
+      "Shares": "300",
+      "Value": "9,447"
+    },
+    {
+      "Owner": "Gutwerg Ori",
+      "Relationship": "SVP, GENERICS",
+      "Date": "Mar 05 '25",
+      "Transaction": "Sale",
+      "Cost": "60.00",
+      "Shares": "5,384",
+      "Value": "323,049"
+    },
+    {
+      "Owner": "Davis Krista",
+      "Relationship": "SVP, CHIEF HR OFFICER",
+      "Date": "Feb 21 '25",
+      "Transaction": "Sale",
+      "Cost": "60.20",
+      "Shares": "1,000",
+      "Value": "60,200"
+    },
+    {
+      "Owner": "Cook Meredith",
+      "Relationship": "SR. VP, GENERAL COUNSEL & SEC.",
+      "Date": "Feb 13 '25",
+      "Transaction": "Sale",
+      "Cost": "59.54",
+      "Shares": "400",
+      "Value": "23,816"
+    },
+    {
+      "Owner": "Cook Meredith",
+      "Relationship": "SR. VP, GENERAL COUNSEL & SEC.",
+      "Date": "Jan 13 '25",
+      "Transaction": "Sale",
+      "Cost": "53.92",
+      "Shares": "400",
+      "Value": "21,568"
+    },
+    {
+      "Owner": "CAREY STEPHEN P.",
+      "Relationship": "SVP & CFO",
+      "Date": "Dec 17 '24",
+      "Transaction": "Sale",
+      "Cost": "55.79",
+      "Shares": "7,500",
+      "Value": "418,425"
+    },
+    {
+      "Owner": "CAREY STEPHEN P.",
+      "Relationship": "Officer",
+      "Date": "Dec 17 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "55.25",
+      "Shares": "7,500",
+      "Value": "414,375"
+    },
+    {
+      "Owner": "Cook Meredith",
+      "Relationship": "SR. VP, GENERAL COUNSEL & SEC.",
+      "Date": "Dec 13 '24",
+      "Transaction": "Sale",
+      "Cost": "56.24",
+      "Shares": "250",
+      "Value": "14,060"
+    },
+    {
+      "Owner": "Davis Krista",
+      "Relationship": "SVP, CHIEF HR OFFICER",
+      "Date": "Dec 11 '24",
+      "Transaction": "Sale",
+      "Cost": "60.00",
+      "Shares": "1,000",
+      "Value": "60,000"
+    },
+    {
+      "Owner": "Lalwani Nikhil",
+      "Relationship": "PRESIDENT & CEO",
+      "Date": "Nov 26 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "29.00",
+      "Shares": "30,000",
+      "Value": "870,000"
+    },
+    {
+      "Owner": "Lalwani Nikhil",
+      "Relationship": "PRESIDENT & CEO",
+      "Date": "Nov 26 '24",
+      "Transaction": "Sale",
+      "Cost": "57.99",
+      "Shares": "33,481",
+      "Value": "1,941,442"
+    },
+    {
+      "Owner": "Lalwani Nikhil",
+      "Relationship": "Officer",
+      "Date": "Nov 26 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "57.99",
+      "Shares": "33,481",
+      "Value": "1,941,484"
+    },
+    {
+      "Owner": "Mutz Christopher",
+      "Relationship": "HEAD OF RARE DISEASE",
+      "Date": "Nov 15 '24",
+      "Transaction": "Sale",
+      "Cost": "57.70",
+      "Shares": "6,500",
+      "Value": "375,050"
+    },
+    {
+      "Owner": "Cook Meredith",
+      "Relationship": "SR. VP, GENERAL COUNSEL & SEC.",
+      "Date": "Nov 13 '24",
+      "Transaction": "Sale",
+      "Cost": "61.36",
+      "Shares": "250",
+      "Value": "15,340"
+    },
+    {
+      "Owner": "Cook Meredith",
+      "Relationship": "SR. VP, GENERAL COUNSEL & SEC.",
+      "Date": "Oct 14 '24",
+      "Transaction": "Sale",
+      "Cost": "57.19",
+      "Shares": "250",
+      "Value": "14,298"
+    }
+  ],
+  "Dividends": []
+}

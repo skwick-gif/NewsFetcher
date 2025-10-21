@@ -1,0 +1,844 @@
+{
+  "Index": "RUT",
+  "P/E": "-",
+  "EPS (ttm)": "-4.09",
+  "Insider Own": "15.13%",
+  "Shs Outstand": "191.16M",
+  "Perf Week": "4.98%",
+  "Market Cap": "10.61B",
+  "Forward P/E": "-",
+  "EPS next Y": "47.41%",
+  "Insider Trans": "-26.99%",
+  "Shs Float": "162.24M",
+  "Perf Month": "5.49%",
+  "Enterprise Value": "12.54B",
+  "PEG": "-",
+  "EPS next Q": "-0.88",
+  "Inst Own": "89.25%",
+  "Short Float": "10.78%",
+  "Perf Quarter": "16.36%",
+  "Income": "-776.41M",
+  "P/S": "44.99",
+  "EPS this Y": "-22.37%",
+  "Inst Trans": "7.32%",
+  "Short Ratio": "7.14",
+  "Perf Half Y": "71.74%",
+  "Sales": "235.81M",
+  "P/B": "-",
+  "ROA": "-82.84%",
+  "Short Interest": "10.78%",
+  "Perf YTD": "102.22%",
+  "Book/sh": "-9.35",
+  "P/C": "14.01",
+  "EPS next 5Y": "83.74%",
+  "ROE": "-",
+  "52W High": "55.33 0.29%",
+  "Perf Year": "124.38%",
+  "Cash/sh": "3.96",
+  "P/FCF": "-",
+  "EPS past 3/5Y": "9.60% -3.04%",
+  "ROIC": "-88.26%",
+  "52W Low": "21.72 155.48%",
+  "Perf 3Y": "391.06%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "-",
+  "Sales past 3/5Y": "47.10% 40.48%",
+  "Gross Margin": "94.79%",
+  "Volatility": "2.77% 3.23%",
+  "Perf 5Y": "39.53%",
+  "Dividend TTM": "-",
+  "EV/Sales": "53.17",
+  "EPS Y/Y TTM": "-55.29%",
+  "Oper. Margin": "-273.84%",
+  "ATR (14)": "1.73",
+  "Perf 10Y": "-",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "5.08",
+  "Sales Y/Y TTM": "7.62%",
+  "Profit Margin": "-329.25%",
+  "RSI (14)": "63.07",
+  "Recom": "1.20",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "5.19",
+  "EPS Q/Q": "-143.82%",
+  "SMA20": "5.64%",
+  "Beta": "1.38",
+  "Target Price": "67.72",
+  "Payout": "-",
+  "Debt/Eq": "-",
+  "Sales Q/Q": "4999.86%",
+  "SMA50": "8.80%",
+  "Rel Volume": "1.33",
+  "Prev Close": "54.79",
+  "Employees": "730",
+  "LT Debt/Eq": "-",
+  "Earnings": "Aug 05 AMC",
+  "SMA200": "38.71%",
+  "Avg Volume": "2.45M",
+  "Price": "55.49",
+  "IPO": "Jun 27, 2019",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "-19.74% 25.66%",
+  "Trades": "",
+  "Volume": "3,262,869",
+  "Change": "1.28%",
+  "Insider Trading": [
+    {
+      "Owner": "Kumar Neil",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Oct 09 '25",
+      "Transaction": "Sale",
+      "Cost": "54.80",
+      "Shares": "40,000",
+      "Value": "2,192,092"
+    },
+    {
+      "Owner": "Kumar Neil",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Oct 08 '25",
+      "Transaction": "Sale",
+      "Cost": "54.78",
+      "Shares": "40,000",
+      "Value": "2,191,350"
+    },
+    {
+      "Owner": "KUMAR HALDEA FAMILY IRREVOCABL",
+      "Relationship": "Director",
+      "Date": "Oct 08 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "54.22",
+      "Shares": "120,000",
+      "Value": "6,506,400"
+    },
+    {
+      "Owner": "KUMAR HALDEA REVOCABLE TRUST U",
+      "Relationship": "Director",
+      "Date": "Oct 08 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "54.22",
+      "Shares": "120,000",
+      "Value": "6,506,400"
+    },
+    {
+      "Owner": "MCCORMICK FRANK",
+      "Relationship": "Director",
+      "Date": "Sep 05 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "11.92",
+      "Shares": "74,000",
+      "Value": "882,080"
+    },
+    {
+      "Owner": "MCCORMICK FRANK",
+      "Relationship": "Director",
+      "Date": "Sep 05 '25",
+      "Transaction": "Sale",
+      "Cost": "53.16",
+      "Shares": "74,000",
+      "Value": "3,933,544"
+    },
+    {
+      "Owner": "Kumar Neil",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Sep 05 '25",
+      "Transaction": "Sale",
+      "Cost": "53.05",
+      "Shares": "40,000",
+      "Value": "2,122,047"
+    },
+    {
+      "Owner": "Kumar Neil",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Sep 04 '25",
+      "Transaction": "Sale",
+      "Cost": "51.34",
+      "Shares": "40,000",
+      "Value": "2,053,788"
+    },
+    {
+      "Owner": "FRANK P. MCCORMICK",
+      "Relationship": "Director",
+      "Date": "Sep 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "53.14",
+      "Shares": "74,000",
+      "Value": "3,932,057"
+    },
+    {
+      "Owner": "Trimarchi Thomas",
+      "Relationship": "President and CFO",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "49.48",
+      "Shares": "42,237",
+      "Value": "2,090,081"
+    },
+    {
+      "Owner": "Kumar Neil",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Aug 20 '25",
+      "Transaction": "Sale",
+      "Cost": "48.82",
+      "Shares": "26,156",
+      "Value": "1,276,927"
+    },
+    {
+      "Owner": "THOMAS TRIMARCHI",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "49.48",
+      "Shares": "42,237",
+      "Value": "2,090,077"
+    },
+    {
+      "Owner": "NEIL KUMAR",
+      "Relationship": "Director",
+      "Date": "Aug 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "48.91",
+      "Shares": "26,156",
+      "Value": "1,279,290"
+    },
+    {
+      "Owner": "Trimarchi Thomas",
+      "Relationship": "President and CFO",
+      "Date": "Aug 18 '25",
+      "Transaction": "Sale",
+      "Cost": "50.23",
+      "Shares": "17,353",
+      "Value": "871,722"
+    },
+    {
+      "Owner": "THOMAS TRIMARCHI",
+      "Relationship": "Officer",
+      "Date": "Aug 18 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "50.23",
+      "Shares": "17,353",
+      "Value": "871,723"
+    },
+    {
+      "Owner": "HOMCY CHARLES J",
+      "Relationship": "Director",
+      "Date": "Aug 08 '25",
+      "Transaction": "Sale",
+      "Cost": "46.05",
+      "Shares": "250,000",
+      "Value": "11,512,443"
+    },
+    {
+      "Owner": "HOMCY CHARLES J",
+      "Relationship": "Director",
+      "Date": "Aug 11 '25",
+      "Transaction": "Sale",
+      "Cost": "48.00",
+      "Shares": "50,000",
+      "Value": "2,400,000"
+    },
+    {
+      "Owner": "Apuli Maricel",
+      "Relationship": "Chief Accounting Officer",
+      "Date": "Aug 07 '25",
+      "Transaction": "Sale",
+      "Cost": "45.44",
+      "Shares": "1,000",
+      "Value": "45,440"
+    },
+    {
+      "Owner": "Kumar Neil",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Aug 08 '25",
+      "Transaction": "Sale",
+      "Cost": "46.22",
+      "Shares": "40,000",
+      "Value": "1,848,828"
+    },
+    {
+      "Owner": "Kumar Neil",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Aug 07 '25",
+      "Transaction": "Sale",
+      "Cost": "45.45",
+      "Shares": "40,000",
+      "Value": "1,818,121"
+    },
+    {
+      "Owner": "CHARLES J HOMCY",
+      "Relationship": "Director",
+      "Date": "Aug 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "48.00",
+      "Shares": "50,000",
+      "Value": "2,400,000"
+    },
+    {
+      "Owner": "CHARLES J HOMCY",
+      "Relationship": "Director",
+      "Date": "Aug 08 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "46.05",
+      "Shares": "250,000",
+      "Value": "11,512,420"
+    },
+    {
+      "Owner": "Ellis Andrea",
+      "Relationship": "Director",
+      "Date": "Aug 05 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "16.75",
+      "Shares": "17,167",
+      "Value": "287,547"
+    },
+    {
+      "Owner": "Ellis Andrea",
+      "Relationship": "Director",
+      "Date": "Aug 05 '25",
+      "Transaction": "Sale",
+      "Cost": "49.00",
+      "Shares": "17,167",
+      "Value": "841,183"
+    },
+    {
+      "Owner": "ANDREA ELLIS",
+      "Relationship": "Director",
+      "Date": "Aug 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "49.00",
+      "Shares": "17,167",
+      "Value": "841,183"
+    },
+    {
+      "Owner": "Kumar Neil",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Jul 02 '25",
+      "Transaction": "Sale",
+      "Cost": "42.73",
+      "Shares": "40,000",
+      "Value": "1,709,050"
+    },
+    {
+      "Owner": "Kumar Neil",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Jul 01 '25",
+      "Transaction": "Sale",
+      "Cost": "42.54",
+      "Shares": "40,000",
+      "Value": "1,701,400"
+    },
+    {
+      "Owner": "VIKING GLOBAL INVESTORS LP",
+      "Relationship": "10% Owner",
+      "Date": "Jun 27 '25",
+      "Transaction": "Sale",
+      "Cost": "44.00",
+      "Shares": "3,500,000",
+      "Value": "154,000,000"
+    },
+    {
+      "Owner": "KUMAR HALDEA REVOCABLETRUST U/",
+      "Relationship": "Director",
+      "Date": "Jul 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "43.18",
+      "Shares": "120,000",
+      "Value": "5,181,600"
+    },
+    {
+      "Owner": "KUMAR HALDEA FAMILY IRREVOCABL",
+      "Relationship": "Director",
+      "Date": "Jul 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "43.18",
+      "Shares": "120,000",
+      "Value": "5,181,600"
+    },
+    {
+      "Owner": "Valantine Hannah",
+      "Relationship": "Director",
+      "Date": "Jun 26 '25",
+      "Transaction": "Sale",
+      "Cost": "44.05",
+      "Shares": "2,418",
+      "Value": "106,504"
+    },
+    {
+      "Owner": "Valantine Hannah",
+      "Relationship": "Director",
+      "Date": "Jun 26 '25",
+      "Transaction": "Sale",
+      "Cost": "44.05",
+      "Shares": "2,289",
+      "Value": "100,824"
+    },
+    {
+      "Owner": "MCCORMICK FRANK",
+      "Relationship": "Director",
+      "Date": "Jun 24 '25",
+      "Transaction": "Sale",
+      "Cost": "44.23",
+      "Shares": "100,000",
+      "Value": "4,422,800"
+    },
+    {
+      "Owner": "DENIS VON KAEPPLER IRA ROLLOVE",
+      "Relationship": "client's wife is a BoD",
+      "Date": "Jun 26 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "44.03",
+      "Shares": "1,891",
+      "Value": "83,261"
+    },
+    {
+      "Owner": "HANNAH VALANTINE & DENIS VON K",
+      "Relationship": "spouse of bod / bod is joint o",
+      "Date": "Jun 26 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "44.01",
+      "Shares": "1,542",
+      "Value": "67,863"
+    },
+    {
+      "Owner": "HANNAH A VALANTINE & DENIS VON",
+      "Relationship": "Officer",
+      "Date": "Jun 26 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "44.11",
+      "Shares": "876",
+      "Value": "38,640"
+    },
+    {
+      "Owner": "ERICKA VON KAEPPLER & DENIS VO",
+      "Relationship": "account owners are spouse and",
+      "Date": "Jun 26 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "44.13",
+      "Shares": "398",
+      "Value": "17,562"
+    },
+    {
+      "Owner": "MCCORMICK FRANK",
+      "Relationship": "Officer",
+      "Date": "Jun 24 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "44.23",
+      "Shares": "100,000",
+      "Value": "4,422,803"
+    },
+    {
+      "Owner": "Valantine Hannah",
+      "Relationship": "Director",
+      "Date": "Jun 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "16.75",
+      "Shares": "4,292",
+      "Value": "71,891"
+    },
+    {
+      "Owner": "Valantine Hannah",
+      "Relationship": "Director",
+      "Date": "Jun 10 '25",
+      "Transaction": "Sale",
+      "Cost": "40.00",
+      "Shares": "4,292",
+      "Value": "171,680"
+    },
+    {
+      "Owner": "HANNAH A VALANTINE",
+      "Relationship": "Director",
+      "Date": "Jun 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "40.00",
+      "Shares": "4,292",
+      "Value": "171,680"
+    },
+    {
+      "Owner": "Kumar Neil",
+      "Relationship": "Chief Executive Officer",
+      "Date": "May 20 '25",
+      "Transaction": "Sale",
+      "Cost": "33.40",
+      "Shares": "75,000",
+      "Value": "2,504,978"
+    },
+    {
+      "Owner": "Kumar Neil",
+      "Relationship": "Chief Executive Officer",
+      "Date": "May 19 '25",
+      "Transaction": "Sale",
+      "Cost": "33.33",
+      "Shares": "26,156",
+      "Value": "871,764"
+    },
+    {
+      "Owner": "NEIL KUMAR",
+      "Relationship": "Director",
+      "Date": "May 19 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "33.84",
+      "Shares": "26,156",
+      "Value": "885,119"
+    },
+    {
+      "Owner": "KKR Genetic Disorder L.P.",
+      "Relationship": "10% Owner",
+      "Date": "May 12 '25",
+      "Transaction": "Sale",
+      "Cost": "34.20",
+      "Shares": "6,000,000",
+      "Value": "205,200,000"
+    },
+    {
+      "Owner": "KKR Genetic Disorder L.P.",
+      "Relationship": "Affiliate",
+      "Date": "May 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "35.68",
+      "Shares": "6,000,000",
+      "Value": "214,080,000"
+    },
+    {
+      "Owner": "Apuli Maricel",
+      "Relationship": "Chief Accounting Officer",
+      "Date": "May 02 '25",
+      "Transaction": "Sale",
+      "Cost": "38.51",
+      "Shares": "1,026",
+      "Value": "39,509"
+    },
+    {
+      "Owner": "Lo Andrew",
+      "Relationship": "Director",
+      "Date": "May 02 '25",
+      "Transaction": "Sale",
+      "Cost": "38.50",
+      "Shares": "100,000",
+      "Value": "3,849,900"
+    },
+    {
+      "Owner": "Lo Andrew",
+      "Relationship": "Director",
+      "Date": "May 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "35.23",
+      "Shares": "100,000",
+      "Value": "3,523,000"
+    },
+    {
+      "Owner": "Kumar Neil",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Apr 22 '25",
+      "Transaction": "Sale",
+      "Cost": "34.11",
+      "Shares": "75,000",
+      "Value": "2,558,025"
+    },
+    {
+      "Owner": "Ellis Andrea",
+      "Relationship": "Director",
+      "Date": "Apr 14 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "8.45",
+      "Shares": "10,000",
+      "Value": "84,500"
+    },
+    {
+      "Owner": "Ellis Andrea",
+      "Relationship": "Director",
+      "Date": "Apr 14 '25",
+      "Transaction": "Sale",
+      "Cost": "35.00",
+      "Shares": "10,000",
+      "Value": "350,000"
+    },
+    {
+      "Owner": "ANDREA ELLIS",
+      "Relationship": "Director",
+      "Date": "Apr 14 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "35.00",
+      "Shares": "10,000",
+      "Value": "350,000"
+    },
+    {
+      "Owner": "Ellis Andrea",
+      "Relationship": "Director",
+      "Date": "Apr 01 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "8.45",
+      "Shares": "30,000",
+      "Value": "253,500"
+    },
+    {
+      "Owner": "Ellis Andrea",
+      "Relationship": "Director",
+      "Date": "Apr 01 '25",
+      "Transaction": "Sale",
+      "Cost": "34.05",
+      "Shares": "30,000",
+      "Value": "1,021,500"
+    },
+    {
+      "Owner": "ANDREA ELLIS",
+      "Relationship": "Director",
+      "Date": "Apr 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "34.05",
+      "Shares": "30,000",
+      "Value": "1,021,500"
+    },
+    {
+      "Owner": "Kumar Neil",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Mar 25 '25",
+      "Transaction": "Sale",
+      "Cost": "36.87",
+      "Shares": "75,000",
+      "Value": "2,764,943"
+    },
+    {
+      "Owner": "Valantine Hannah",
+      "Relationship": "Director",
+      "Date": "Mar 06 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "16.75",
+      "Shares": "12,875",
+      "Value": "215,656"
+    },
+    {
+      "Owner": "Valantine Hannah",
+      "Relationship": "Director",
+      "Date": "Mar 06 '25",
+      "Transaction": "Sale",
+      "Cost": "32.58",
+      "Shares": "12,875",
+      "Value": "419,500"
+    },
+    {
+      "Owner": "KKR Genetic Disorder L.P.",
+      "Relationship": "10% Owner",
+      "Date": "Mar 05 '25",
+      "Transaction": "Sale",
+      "Cost": "32.96",
+      "Shares": "6,000,000",
+      "Value": "197,760,000"
+    },
+    {
+      "Owner": "HANNAH A VALANTINE",
+      "Relationship": "Director",
+      "Date": "Mar 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "32.58",
+      "Shares": "12,875",
+      "Value": "419,500"
+    },
+    {
+      "Owner": "KKR Genetic Disorder L.P.",
+      "Relationship": "Affiliate",
+      "Date": "Mar 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "34.97",
+      "Shares": "6,000,000",
+      "Value": "209,820,000"
+    },
+    {
+      "Owner": "STEPHENSON BRIAN C",
+      "Relationship": "CFO and Treasurer",
+      "Date": "Feb 25 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "17.00",
+      "Shares": "8,500",
+      "Value": "144,500"
+    },
+    {
+      "Owner": "STEPHENSON BRIAN C",
+      "Relationship": "CFO and Treasurer",
+      "Date": "Feb 25 '25",
+      "Transaction": "Sale",
+      "Cost": "33.19",
+      "Shares": "8,500",
+      "Value": "282,115"
+    },
+    {
+      "Owner": "Kumar Neil",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Feb 25 '25",
+      "Transaction": "Sale",
+      "Cost": "33.57",
+      "Shares": "75,000",
+      "Value": "2,517,971"
+    },
+    {
+      "Owner": "KUMAR HALDEA REVOCABLE TRUST U",
+      "Relationship": "Director",
+      "Date": "Feb 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "36.25",
+      "Shares": "300,000",
+      "Value": "10,875,000"
+    },
+    {
+      "Owner": "BRIAN STEPHENSON",
+      "Relationship": "Officer",
+      "Date": "Feb 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "36.25",
+      "Shares": "34,000",
+      "Value": "1,232,500"
+    },
+    {
+      "Owner": "STEPHENSON BRIAN C",
+      "Relationship": "Secretary, Treasurer & CFO",
+      "Date": "Feb 19 '25",
+      "Transaction": "Sale",
+      "Cost": "36.16",
+      "Shares": "4,148",
+      "Value": "149,973"
+    },
+    {
+      "Owner": "Kumar Neil",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Feb 19 '25",
+      "Transaction": "Sale",
+      "Cost": "36.14",
+      "Shares": "31,543",
+      "Value": "1,140,024"
+    },
+    {
+      "Owner": "NEIL KUMAR",
+      "Relationship": "Director",
+      "Date": "Feb 19 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "35.49",
+      "Shares": "31,543",
+      "Value": "1,119,461"
+    },
+    {
+      "Owner": "BRIAN STEPHENSON",
+      "Relationship": "Officer",
+      "Date": "Feb 19 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "35.49",
+      "Shares": "4,148",
+      "Value": "147,213"
+    },
+    {
+      "Owner": "VIKING GLOBAL INVESTORS LP",
+      "Relationship": "10% Owner",
+      "Date": "Jan 31 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "34.90",
+      "Shares": "3,065,616",
+      "Value": "106,989,998"
+    },
+    {
+      "Owner": "VIKING GLOBAL INVESTORS LP",
+      "Relationship": "10% Owner",
+      "Date": "Jan 31 '25",
+      "Transaction": "Sale",
+      "Cost": "34.90",
+      "Shares": "3,065,616",
+      "Value": "106,989,998"
+    },
+    {
+      "Owner": "STEPHENSON BRIAN C",
+      "Relationship": "Secretary, Treasurer & CFO",
+      "Date": "Jan 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "17.00",
+      "Shares": "68,000",
+      "Value": "1,156,000"
+    },
+    {
+      "Owner": "STEPHENSON BRIAN C",
+      "Relationship": "Secretary, Treasurer & CFO",
+      "Date": "Jan 28 '25",
+      "Transaction": "Sale",
+      "Cost": "36.29",
+      "Shares": "68,000",
+      "Value": "2,467,761"
+    },
+    {
+      "Owner": "Kumar Neil",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Jan 28 '25",
+      "Transaction": "Sale",
+      "Cost": "36.29",
+      "Shares": "326,932",
+      "Value": "11,863,381"
+    },
+    {
+      "Owner": "Kumar Neil",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Jan 29 '25",
+      "Transaction": "Sale",
+      "Cost": "36.35",
+      "Shares": "273,068",
+      "Value": "9,925,269"
+    },
+    {
+      "Owner": "KUMAR HALDEA REVOCABLE TRUST U",
+      "Relationship": "Director",
+      "Date": "Jan 28 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "36.67",
+      "Shares": "600,000",
+      "Value": "22,002,000"
+    },
+    {
+      "Owner": "BRIAN STEPHENSON",
+      "Relationship": "Officer",
+      "Date": "Jan 28 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "36.67",
+      "Shares": "68,000",
+      "Value": "2,493,560"
+    },
+    {
+      "Owner": "Satvat Ali J.",
+      "Relationship": "Director",
+      "Date": "Dec 30 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "16.22",
+      "Shares": "159,404",
+      "Value": "2,585,134"
+    },
+    {
+      "Owner": "Kumar Neil",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Nov 19 '24",
+      "Transaction": "Sale",
+      "Cost": "22.41",
+      "Shares": "27,389",
+      "Value": "613,826"
+    },
+    {
+      "Owner": "STEPHENSON BRIAN C",
+      "Relationship": "Secretary, Treasurer & CFO",
+      "Date": "Nov 19 '24",
+      "Transaction": "Sale",
+      "Cost": "22.41",
+      "Shares": "4,156",
+      "Value": "93,137"
+    },
+    {
+      "Owner": "BRIAN STEPHENSON",
+      "Relationship": "Officer",
+      "Date": "Nov 19 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "22.35",
+      "Shares": "4,156",
+      "Value": "92,887"
+    },
+    {
+      "Owner": "NEIL KUMAR",
+      "Relationship": "Director",
+      "Date": "Nov 19 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "22.35",
+      "Shares": "27,389",
+      "Value": "612,144"
+    }
+  ],
+  "Dividends": []
+}
