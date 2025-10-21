@@ -5,21 +5,16 @@ Real-time financial intelligence platform with automated monitoring
 import logging
 import os
 import sys
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from typing import Dict, Any, List, Set
 import asyncio
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, BackgroundTasks, Query, Depends, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
+from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 from contextlib import asynccontextmanager
 import json
-import requests
-import numpy as np
-from pathlib import Path
-import yaml
 
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -29,84 +24,12 @@ from scheduler_bg.scheduler import get_scheduler, MarketPulseScheduler
 from smart.keywords_engine import FinancialKeywordsEngine
 from ingest.rss_loader import FinancialDataLoader
 
-# Financial modules imports
-try:
-    from financial.market_data import FinancialDataProvider
-    from financial.market_data_clean import FinancialDataProvider as CleanFinancialDataProvider
-    from financial.news_impact import NewsImpactAnalyzer
-    from financial.social_sentiment import SocialMediaAnalyzer
-    from financial.social_sentiment_enhanced import RealSocialMediaAnalyzer
-    from financial.ai_models import AdvancedAIModels, TimeSeriesAnalyzer
-    from financial.neural_networks import EnsembleNeuralNetwork
-    from financial.ml_trainer import MLModelTrainer
-    from financial.websocket_manager import WebSocketManager, MarketDataStreamer
-    
-    FINANCIAL_MODULES_AVAILABLE = True
-    logger.info("✅ Financial modules loaded successfully")
-except ImportError as e:
-    FINANCIAL_MODULES_AVAILABLE = False
-    logger.warning(f"⚠️ Financial modules not available: {e}")
-    logger.info("📊 Running in demo mode with limited functionality")
-
-# Initialize templates
-try:
-    templates = Jinja2Templates(directory="templates")
-    TEMPLATES_AVAILABLE = True
-except Exception as e:
-    logger.warning(f"Templates not available: {e}")
-    TEMPLATES_AVAILABLE = False
-
 # Set up logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
-
-# Global components initialization
-financial_provider = None
-news_impact_analyzer = None
-social_analyzer = None
-ai_models = None
-ml_trainer = None
-websocket_manager = None
-market_streamer = None
-keyword_analyzer = None
-real_data_loader = None
-
-# Initialize financial components if available
-if FINANCIAL_MODULES_AVAILABLE:
-    try:
-        # Initialize providers
-        financial_provider = FinancialDataProvider()
-        news_impact_analyzer = NewsImpactAnalyzer()
-        social_analyzer = RealSocialMediaAnalyzer()
-        ai_models = AdvancedAIModels()
-        ml_trainer = MLModelTrainer()
-        websocket_manager = WebSocketManager()
-        market_streamer = MarketDataStreamer(websocket_manager)
-        
-        logger.info("✅ Financial components initialized successfully")
-    except Exception as e:
-        logger.error(f"Failed to initialize financial components: {e}")
-
-# Initialize RSS and keyword systems
-try:
-    # Use correct config path
-    config_path = os.path.join(os.path.dirname(__file__), "config", "data_sources.yaml")
-    if os.path.exists(config_path):
-        real_data_loader = FinancialDataLoader(config_path)
-        
-        # Load config for keyword analyzer
-        with open(config_path, "r", encoding="utf-8") as f:
-            config = yaml.safe_load(f)
-        keyword_analyzer = FinancialKeywordsEngine()
-        
-        logger.info("✅ RSS and keyword systems initialized successfully")
-    else:
-        logger.warning(f"Config file not found: {config_path}")
-except Exception as e:
-    logger.error(f"Failed to initialize RSS/keyword systems: {e}")
 
 # ============================================================
 # WebSocket Connection Manager
@@ -169,15 +92,6 @@ async def lifespan(app: FastAPI):
     
     # Set WebSocket broadcast callback
     scheduler.websocket_broadcast_callback = manager.broadcast
-    
-    # Initialize financial streaming if available
-    if FINANCIAL_MODULES_AVAILABLE and market_streamer:
-        try:
-            # Start market data streaming
-            asyncio.create_task(market_streamer.start_streaming())
-            logger.info("✅ Market data streaming started")
-        except Exception as e:
-            logger.error(f"Failed to start market streaming: {e}")
     
     # Start background scheduler
     scheduler.start()
@@ -493,9 +407,48 @@ async def get_top_stocks_endpoint():
         logger.error(f"❌ Error fetching top stocks: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/api/stats")
+async def get_stats():
+    """
+    Get system statistics
+    Shows REAL scheduler activity and article counts
+    """
+    try:
+        scheduler = get_scheduler()
+        stats = scheduler.get_statistics()
+        
+        return {
+            "status": "success",
+            "data": stats,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"❌ Error fetching stats: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
-
-
+@app.get("/api/alerts/active")
+async def get_active_alerts():
+    """
+    Get active alerts from recent scheduler runs
+    Shows REAL alerts from RSS articles
+    """
+    try:
+        scheduler = get_scheduler()
+        
+        # Get recent alerts from scheduler's alert history
+        # For now, return empty array - will store in database later
+        return {
+            "status": "success",
+            "data": {
+                "alerts": [],
+                "total": 0,
+                "last_updated": datetime.now().isoformat()
+            },
+            "note": "Alert history will be implemented with database storage"
+        }
+    except Exception as e:
+        logger.error(f"❌ Error fetching active alerts: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 # ============================================================
 # ML/Neural Network Endpoints (REAL AI PREDICTIONS)
@@ -834,6 +787,16 @@ async def get_sector_analysis(sector_id: str):
         logger.error(f"❌ Error getting sector analysis: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/api/articles/recent")
+async def get_recent_articles(limit: int = 50):
+    """Get recent articles - placeholder for future RSS article database"""
+    # This is a placeholder - you could integrate with your RSS article database here
+    return {
+        "status": "success",
+        "articles": [],
+        "total": 0,
+        "message": "Article database integration coming soon"
+    }
 
 @app.get("/api/financial/historical/{symbol}")
 async def get_historical_data(symbol: str, timeframe: str = "1D"):
@@ -1143,540 +1106,6 @@ async def list_predictions(
     except Exception as e:
         logger.error(f"❌ Failed to list predictions: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-
-# ============================================================
-# Additional Financial Endpoints from Production
-# ============================================================
-
-@app.get("/api/system/info", tags=["System"])
-async def system_info():
-    """Enhanced system information with all components status"""
-    from datetime import datetime, timezone
-    
-    return {
-        "status": "operational",
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "version": "2.1.0-integrated",
-        "environment": "production",
-        "uptime": "running",
-        "database": {
-            "status": "connected",
-            "type": "SQLite"
-        },
-        "features": {
-            "realtime_alerts": True,
-            "websocket_support": True,
-            "scheduler": True,
-            "financial_data": FINANCIAL_MODULES_AVAILABLE,
-            "ml_models": ml_trainer is not None,
-            "templates": TEMPLATES_AVAILABLE,
-            "api": "FastAPI with async support",
-            "monitoring": True,
-            "alerts": True,
-            "workers": "Background processing",
-            "web_dashboard": True,
-            "ai_analysis": FINANCIAL_MODULES_AVAILABLE,
-            "market_streaming": market_streamer is not None
-        },
-        "components": {
-            "scheduler": "active",
-            "websocket_manager": websocket_manager is not None,
-            "ml_trainer": ml_trainer is not None,
-            "financial_provider": financial_provider is not None,
-            "news_analyzer": news_impact_analyzer is not None,
-            "social_analyzer": social_analyzer is not None
-        }
-    }
-
-@app.get("/api/articles/recent", tags=["Articles"])
-async def get_recent_articles(limit: int = Query(20, ge=1, le=100)):
-    """Get recent financial articles"""
-    try:
-        if not real_data_loader:
-            # Return demo data if real loader not available
-            return {
-                "status": "success",
-                "count": 3,
-                "articles": [
-                    {
-                        "id": "demo_1",
-                        "title": "Market Analysis: Tech Stocks Show Strong Performance",
-                        "summary": "Technology sector continues outperforming broader market indices",
-                        "source": "demo_source",
-                        "published_at": datetime.now(timezone.utc).isoformat(),
-                        "sentiment": "positive",
-                        "relevance_score": 0.85,
-                        "url": "#",
-                        "keywords": ["technology", "stocks", "performance"]
-                    },
-                    {
-                        "id": "demo_2", 
-                        "title": "Federal Reserve Policy Update",
-                        "summary": "Central bank signals potential rate adjustments",
-                        "source": "demo_source",
-                        "published_at": datetime.now(timezone.utc).isoformat(),
-                        "sentiment": "neutral",
-                        "relevance_score": 0.92,
-                        "url": "#",
-                        "keywords": ["federal reserve", "policy", "rates"]
-                    },
-                    {
-                        "id": "demo_3",
-                        "title": "Global Trade Developments",
-                        "summary": "International trade agreements show positive momentum",
-                        "source": "demo_source", 
-                        "published_at": datetime.now(timezone.utc).isoformat(),
-                        "sentiment": "positive",
-                        "relevance_score": 0.78,
-                        "url": "#",
-                        "keywords": ["trade", "global", "agreements"]
-                    }
-                ]
-            }
-        
-        # TODO: Implement real article fetching
-        articles = []  # real_data_loader.get_recent_articles(limit)
-        
-        return {
-            "status": "success",
-            "count": len(articles),
-            "articles": articles
-        }
-        
-    except Exception as e:
-        logger.error(f"Failed to fetch articles: {e}")
-        raise HTTPException(status_code=500, detail="Failed to fetch articles")
-
-@app.get("/api/alerts/active", tags=["Alerts"])
-async def get_active_alerts():
-    """Get active market alerts"""
-    try:
-        current_time = datetime.now(timezone.utc)
-        
-        # Demo active alerts
-        alerts = [
-            {
-                "id": "alert_1",
-                "type": "price_movement",
-                "severity": "high",
-                "title": "Significant Price Movement Detected",
-                "message": "AAPL showing unusual trading volume (+35%)",
-                "symbol": "AAPL",
-                "created_at": current_time.isoformat(),
-                "is_active": True,
-                "confidence": 0.89
-            },
-            {
-                "id": "alert_2",
-                "type": "news_impact",
-                "severity": "medium", 
-                "title": "News Impact Alert",
-                "message": "Breaking news may affect tech sector",
-                "symbol": "QQQ",
-                "created_at": current_time.isoformat(),
-                "is_active": True,
-                "confidence": 0.76
-            }
-        ]
-        
-        return {
-            "status": "success",
-            "count": len(alerts),
-            "alerts": alerts,
-            "last_updated": current_time.isoformat()
-        }
-        
-    except Exception as e:
-        logger.error(f"Failed to fetch active alerts: {e}")
-        raise HTTPException(status_code=500, detail="Failed to fetch active alerts")
-
-@app.get("/api/stats", tags=["Analytics"])
-async def get_stats():
-    """Get comprehensive system analytics"""
-    try:
-        current_time = datetime.now(timezone.utc)
-        
-        return {
-            "status": "success",
-            "data": {
-                "articles": {
-                    "total_processed": 1247,
-                    "today": 89,
-                    "last_hour": 12,
-                    "sources_active": 8
-                },
-                "alerts": {
-                    "total_generated": 234,
-                    "active": 3,
-                    "resolved": 231,
-                    "accuracy": 0.87
-                },
-                "predictions": {
-                    "total": 156,
-                    "accurate": 128,
-                    "accuracy_rate": 0.82,
-                    "avg_confidence": 0.76
-                },
-                "monitoring": {
-                    "stocks_tracked": 500,
-                    "feeds_monitored": 12,
-                    "update_frequency": "real-time",
-                    "last_update": current_time.isoformat()
-                },
-                "performance": {
-                    "uptime": "99.8%",
-                    "avg_response_time": "145ms",
-                    "websocket_connections": len(manager.active_connections),
-                    "system_load": "normal"
-                }
-            },
-            "timestamp": current_time.isoformat()
-        }
-        
-    except Exception as e:
-        logger.error(f"Failed to generate stats: {e}")
-        raise HTTPException(status_code=500, detail="Failed to generate statistics")
-
-@app.get("/api/financial/sector-performance", tags=["Financial"])
-async def get_sector_performance():
-    """Get sector performance analysis"""
-    try:
-        if financial_provider:
-            return await financial_provider.get_sector_performance()
-        
-        # Demo data
-        return {
-            "status": "success",
-            "data": {
-                "Technology": {"change": "+2.34%", "value": 234.56, "trend": "up"},
-                "Healthcare": {"change": "+1.87%", "value": 189.23, "trend": "up"},
-                "Finance": {"change": "-0.45%", "value": 145.78, "trend": "down"},
-                "Energy": {"change": "+3.21%", "value": 98.45, "trend": "up"},
-                "Consumer": {"change": "+0.67%", "value": 167.89, "trend": "up"}
-            },
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        }
-        
-    except Exception as e:
-        logger.error(f"Failed to get sector performance: {e}")
-        raise HTTPException(status_code=500, detail="Failed to get sector performance")
-
-@app.get("/api/financial/geopolitical-risks", tags=["Financial"])
-async def get_geopolitical_risks():
-    """Get geopolitical risk assessment"""
-    try:
-        current_time = datetime.now(timezone.utc)
-        
-        return {
-            "status": "success",
-            "data": {
-                "overall_risk_level": "moderate",
-                "risk_score": 0.65,
-                "factors": [
-                    {
-                        "region": "US-China",
-                        "risk_type": "trade_tensions",
-                        "level": "moderate",
-                        "impact": "technology sector",
-                        "probability": 0.7,
-                        "description": "Ongoing trade discussions affecting tech imports"
-                    },
-                    {
-                        "region": "Europe",
-                        "risk_type": "regulatory",
-                        "level": "low",
-                        "impact": "financial services",
-                        "probability": 0.3,
-                        "description": "New financial regulations under consideration"
-                    },
-                    {
-                        "region": "Middle East",
-                        "risk_type": "energy_supply",
-                        "level": "moderate",
-                        "impact": "energy sector",
-                        "probability": 0.6,
-                        "description": "Regional tensions affecting oil supply chains"
-                    }
-                ],
-                "recommendations": [
-                    "Monitor technology sector exposure",
-                    "Consider energy hedging strategies",
-                    "Watch for regulatory updates"
-                ]
-            },
-            "timestamp": current_time.isoformat(),
-            "next_update": (current_time + timedelta(hours=6)).isoformat()
-        }
-        
-    except Exception as e:
-        logger.error(f"Failed to get geopolitical risks: {e}")
-        raise HTTPException(status_code=500, detail="Failed to get geopolitical risks")
-
-@app.get("/api/ai/status", tags=["AI"])
-async def get_ai_status():
-    """Get AI systems status"""
-    try:
-        return {
-            "status": "operational",
-            "components": {
-                "ml_trainer": {
-                    "available": ml_trainer is not None,
-                    "status": "ready" if ml_trainer else "unavailable",
-                    "models_loaded": 3 if ml_trainer else 0
-                },
-                "news_analyzer": {
-                    "available": news_impact_analyzer is not None,
-                    "status": "ready" if news_impact_analyzer else "unavailable"
-                },
-                "social_analyzer": {
-                    "available": social_analyzer is not None,
-                    "status": "ready" if social_analyzer else "unavailable"
-                },
-                "ai_models": {
-                    "available": ai_models is not None,
-                    "status": "ready" if ai_models else "unavailable"
-                }
-            },
-            "performance": {
-                "avg_prediction_time": "1.2s",
-                "accuracy": "87%",
-                "models_active": 3 if FINANCIAL_MODULES_AVAILABLE else 0
-            },
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        }
-        
-    except Exception as e:
-        logger.error(f"Failed to get AI status: {e}")
-        raise HTTPException(status_code=500, detail="Failed to get AI status")
-
-@app.get("/api/ai/comprehensive-analysis/{symbol}", tags=["AI"])
-async def get_comprehensive_analysis(symbol: str):
-    """Get comprehensive AI analysis for a symbol"""
-    try:
-        if not ai_models:
-            return {
-                "status": "unavailable",
-                "message": "AI models not available",
-                "symbol": symbol
-            }
-        
-        # Demo comprehensive analysis
-        return {
-            "status": "success",
-            "symbol": symbol,
-            "analysis": {
-                "technical": {
-                    "trend": "bullish",
-                    "support_level": 150.00,
-                    "resistance_level": 165.00,
-                    "rsi": 58.3,
-                    "macd_signal": "buy"
-                },
-                "fundamental": {
-                    "pe_ratio": 18.5,
-                    "debt_to_equity": 0.45,
-                    "revenue_growth": "+12.5%",
-                    "profit_margin": "15.2%"
-                },
-                "sentiment": {
-                    "news_sentiment": 0.72,
-                    "social_sentiment": 0.68,
-                    "analyst_rating": "buy",
-                    "price_target": 170.00
-                },
-                "risk_assessment": {
-                    "volatility": "moderate",
-                    "liquidity": "high",
-                    "beta": 1.15,
-                    "risk_score": 0.35
-                }
-            },
-            "prediction": {
-                "direction": "up",
-                "confidence": 0.78,
-                "target_price": 168.50,
-                "time_horizon": "1_month"
-            },
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        }
-        
-    except Exception as e:
-        logger.error(f"Failed to get comprehensive analysis for {symbol}: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to analyze {symbol}")
-
-# ============================================================
-# Enhanced ML Endpoints from Production Enhanced
-# ============================================================
-
-@app.get("/api/ml/predictions/{symbol}", tags=["ML"])
-async def get_ml_predictions(symbol: str):
-    """Get ML model predictions for a symbol"""
-    try:
-        if not ml_trainer:
-            return {
-                "status": "unavailable",
-                "message": "ML trainer not available",
-                "symbol": symbol
-            }
-        
-        predictions = await ml_trainer.get_predictions(symbol)
-        return {
-            "status": "success",
-            "symbol": symbol,
-            "predictions": predictions,
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        }
-        
-    except Exception as e:
-        logger.error(f"Failed to get ML predictions for {symbol}: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to get predictions for {symbol}")
-
-@app.post("/api/ml/train/{symbol}", tags=["ML"])
-async def train_ml_model(symbol: str, days_back: int = 365):
-    """Train ML models for a specific symbol"""
-    try:
-        if not ml_trainer:
-            raise HTTPException(status_code=503, detail="ML trainer not available")
-        
-        training_result = await ml_trainer.train_models_for_symbol(symbol, days_back)
-        return {
-            "status": "success",
-            "symbol": symbol,
-            "training_result": training_result,
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        }
-        
-    except Exception as e:
-        logger.error(f"Failed to train models for {symbol}: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to train models for {symbol}")
-
-@app.get("/api/market/{symbol}", tags=["Market"])
-async def get_market_data(symbol: str):
-    """Get real-time market data for symbol"""
-    try:
-        if financial_provider:
-            market_data = await financial_provider.get_stock_data(symbol)
-            return {
-                "status": "success",
-                "symbol": symbol,
-                "data": market_data,
-                "timestamp": datetime.now(timezone.utc).isoformat()
-            }
-        
-        # Demo market data
-        return {
-            "status": "success",
-            "symbol": symbol,
-            "data": {
-                "price": 158.50,
-                "change": "+2.35",
-                "change_percent": "+1.50%",
-                "volume": 1250000,
-                "high": 159.00,
-                "low": 156.20,
-                "open": 157.00
-            },
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        }
-        
-    except Exception as e:
-        logger.error(f"Failed to get market data for {symbol}: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to get market data for {symbol}")
-
-@app.get("/api/sentiment/{symbol}", tags=["Sentiment"])
-async def get_social_sentiment(symbol: str):
-    """Get social media sentiment for symbol"""
-    try:
-        if social_analyzer:
-            sentiment = await social_analyzer.get_sentiment(symbol)
-            return {
-                "status": "success",
-                "symbol": symbol,
-                "sentiment": sentiment,
-                "timestamp": datetime.now(timezone.utc).isoformat()
-            }
-        
-        # Demo sentiment data  
-        return {
-            "status": "success",
-            "symbol": symbol,
-            "sentiment": {
-                "overall_score": 0.72,
-                "positive": 0.65,
-                "neutral": 0.25,
-                "negative": 0.10,
-                "volume": 1500,
-                "trending": True
-            },
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        }
-        
-    except Exception as e:
-        logger.error(f"Failed to get sentiment for {symbol}: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to get sentiment for {symbol}")
-
-@app.get("/api/watchlist", tags=["Portfolio"])
-async def get_watchlist():
-    """Get user watchlist with live data"""
-    try:
-        # Demo watchlist
-        watchlist = [
-            {"symbol": "AAPL", "name": "Apple Inc.", "price": 158.50, "change": "+1.50%"},
-            {"symbol": "GOOGL", "name": "Alphabet Inc.", "price": 2750.00, "change": "+0.85%"},
-            {"symbol": "TSLA", "name": "Tesla Inc.", "price": 245.30, "change": "-2.10%"},
-            {"symbol": "MSFT", "name": "Microsoft Corp.", "price": 342.75, "change": "+1.25%"},
-            {"symbol": "NVDA", "name": "NVIDIA Corp.", "price": 475.20, "change": "+3.45%"}
-        ]
-        
-        return {
-            "status": "success",
-            "watchlist": watchlist,
-            "count": len(watchlist),
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        }
-        
-    except Exception as e:
-        logger.error(f"Failed to get watchlist: {e}")
-        raise HTTPException(status_code=500, detail="Failed to get watchlist")
-
-# ============================================================
-# Enhanced WebSocket Endpoints
-# ============================================================
-
-@app.websocket("/ws/market/{symbol}")
-async def websocket_market_data(websocket: WebSocket, symbol: str):
-    """WebSocket endpoint for real-time market data streaming"""
-    await websocket.accept()
-    logger.info(f"🔌 Market WebSocket connected for {symbol}")
-    
-    try:
-        if market_streamer:
-            # Add this WebSocket to market streaming
-            await market_streamer.add_subscription(websocket, symbol)
-        
-        # Keep connection alive and handle messages
-        while True:
-            try:
-                # Wait for client messages (ping/pong, etc.)
-                message = await websocket.receive_text()
-                
-                # Echo back or handle specific commands
-                if message == "ping":
-                    await websocket.send_text("pong")
-                    
-            except WebSocketDisconnect:
-                break
-            except Exception as e:
-                logger.error(f"WebSocket error for {symbol}: {e}")
-                break
-                
-    except WebSocketDisconnect:
-        logger.info(f"🔌 Market WebSocket disconnected for {symbol}")
-    except Exception as e:
-        logger.error(f"Market WebSocket error for {symbol}: {e}")
-    finally:
-        if market_streamer:
-            await market_streamer.remove_subscription(websocket, symbol)
 
 # ============================================================
 # Dashboard Endpoint  
