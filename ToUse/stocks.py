@@ -32,7 +32,12 @@ warnings.filterwarnings("ignore", message="Unknown datetime string format", cate
 # Auto-installation removed to avoid repeated installations.
 
 import yfinance as yf
-import streamlit as st
+
+# Streamlit is optional - only needed for UI
+try:
+    import streamlit as st
+except ImportError:
+    st = None
 
 # Configuration
 class Config:

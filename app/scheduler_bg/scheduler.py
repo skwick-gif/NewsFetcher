@@ -492,7 +492,7 @@ Source: {source}
     async def _run_daily_stock_scan(self):
         """Run daily stock data download (17:10 daily)"""
         try:
-            logger.info("📈 Starting daily stock data scan...")
+            logger.info("📈 Starting daily stock data download...")
             
             import subprocess
             import sys
@@ -501,17 +501,20 @@ Source: {source}
             # Get project root directory
             project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
             
-            # Run daily_scan.py
+            # Run download_prices.py (correct script for price downloads)
+            script_path = os.path.join(project_root, "ToUse", "download_prices.py")
+            
             result = subprocess.run([
-                sys.executable, "daily_scan.py"
+                sys.executable, script_path
             ], capture_output=True, text=True, cwd=project_root)
             
             if result.returncode == 0:
-                logger.info("✅ Daily stock scan completed successfully")
+                logger.info("✅ Daily price download completed successfully")
+                logger.info(f"   Output: {result.stdout[-500:]}")  # Last 500 chars
                 self.stats["total_stock_scans"] = self.stats.get("total_stock_scans", 0) + 1
             else:
-                logger.error(f"❌ Daily stock scan failed: {result.stderr}")
-                raise Exception(f"Stock scan failed: {result.stderr}")
+                logger.error(f"❌ Daily price download failed: {result.stderr}")
+                raise Exception(f"Price download failed: {result.stderr}")
             
         except Exception as e:
             logger.error(f"❌ Daily stock scan task failed: {e}")
@@ -529,12 +532,15 @@ Source: {source}
             project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
             
             # Run weekly fundamentals script
+            script_path = os.path.join(project_root, "ToUse", "download_fundamentals.py")
+            
             result = subprocess.run([
-                sys.executable, "ToUse/run_weekly_fundamentals.py"
+                sys.executable, script_path
             ], capture_output=True, text=True, cwd=project_root)
             
             if result.returncode == 0:
                 logger.info("✅ Weekly fundamentals update completed successfully")
+                logger.info(f"   Output: {result.stdout[-500:]}")  # Last 500 chars
                 self.stats["total_fundamental_updates"] = self.stats.get("total_fundamental_updates", 0) + 1
             else:
                 logger.error(f"❌ Weekly fundamentals update failed: {result.stderr}")
