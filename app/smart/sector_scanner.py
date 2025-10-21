@@ -429,11 +429,14 @@ class SectorScanner:
             # Calculate expected return
             expected_return = ((predicted_price - current_price) / current_price) * 100
             
-            # Determine if it has potential
+            # Log for debugging
+            logger.info(f"📊 {ticker}: Return={expected_return:.2f}%, Confidence={confidence:.2f}, Price=${current_price:.2f}→${predicted_price:.2f}")
+            
+            # Determine if it has potential (relaxed criteria)
             has_potential = (
-                expected_return > 2.0 and  # At least 2% expected gain
-                confidence > 0.65 and  # High confidence
-                prediction.get('model_agreement', {}).get('agreement_score', 0) > 0.7  # Models agree
+                expected_return > 1.0 and  # At least 1% expected gain (was 2%)
+                confidence > 0.55  # Moderate confidence (was 0.65)
+                # Removed model_agreement check for now
             )
             
             # Generate recommendation
