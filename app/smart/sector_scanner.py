@@ -350,18 +350,73 @@ class SectorScanner:
         try:
             from financial.neural_networks import EnsembleNeuralNetwork
             from financial.market_data import financial_provider
+            import pandas as pd
+            import numpy as np
+            from pathlib import Path
             
             # Get stock data
             stock_data = await financial_provider.get_stock_data(ticker)
             if not stock_data:
                 return {'ticker': ticker, 'has_potential': False, 'error': 'No data available'}
             
-            # Create mock data for ML prediction (in production, use real historical data)
-            import numpy as np
             current_price = stock_data.get('price', 100.0)
-            sequence_length = 60
-            data = np.random.randn(sequence_length, 14) * 10 + current_price
-            data[-1, 0] = current_price
+            
+            # Load REAL historical data from CSV files
+            try:
+                project_root = Path(__file__).parent.parent.parent
+                stock_file = project_root / "stock_data" / ticker / f"{ticker}_price.csv"
+                
+                if not stock_file.exists():
+                    logger.warning(f"No CSV data for {ticker}, skipping ML scan")
+                    return {'ticker': ticker, 'has_potential': False, 'error': 'No historical data'}
+                
+                # Read CSV
+                df = pd.read_csv(stock_file)
+                if 'Close' not in df.columns or len(df) < 60:
+                    logger.warning(f"Insufficient data for {ticker} (need 60+ days)")
+                    return {'ticker': ticker, 'has_potential': False, 'error': 'Insufficient data'}
+                
+                # Get last 60 days of data
+                sequence_length = 60
+                df = df.tail(sequence_length)
+                
+                # Prepare features: [Close, Open, High, Low, Volume, ...calculated features]
+                features = []
+                for _, row in df.iterrows():
+                    close = row['Close']
+                    open_price = row.get('Open', close)
+                    high = row.get('High', close)
+                    low = row.get('Low', close)
+                    volume = row.get('Volume', 0)
+                    
+                    # Calculate technical indicators
+                    price_change = ((close - open_price) / open_price * 100) if open_price > 0 else 0
+                    volatility = ((high - low) / close * 100) if close > 0 else 0
+                    
+                    # Create feature vector (14 features to match model expectations)
+                    feature_row = [
+                        close,           # 0: Close price
+                        open_price,      # 1: Open
+                        high,            # 2: High
+                        low,             # 3: Low
+                        volume,          # 4: Volume
+                        price_change,    # 5: Daily % change
+                        volatility,      # 6: Daily volatility
+                        (high + low) / 2,  # 7: Typical price
+                        close - open_price,  # 8: Body size
+                        high - max(open_price, close),  # 9: Upper wick
+                        min(open_price, close) - low,   # 10: Lower wick
+                        (close + high + low) / 3,  # 11: Average price
+                        volume / 1000000,  # 12: Volume in millions
+                        1 if close > open_price else -1  # 13: Direction indicator
+                    ]
+                    features.append(feature_row)
+                
+                data = np.array(features, dtype=np.float32)
+                
+            except Exception as e:
+                logger.error(f"Error loading real data for {ticker}: {e}")
+                return {'ticker': ticker, 'has_potential': False, 'error': f'Data load error: {str(e)}'}
             
             # Get ML prediction
             ensemble = EnsembleNeuralNetwork()

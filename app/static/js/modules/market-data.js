@@ -16,6 +16,7 @@ class MarketDataManager {
         await this.updateMarketIndices();
         await this.updateMarketSentiment();
         await this.updateTradingInsights();
+        await this.updateHotStocks();
 
         console.log('✅ Market Data Manager initialized');
     }
@@ -251,6 +252,64 @@ class MarketDataManager {
     }
 
     /**
+     * Update AI Hot Stocks
+     */
+    async updateHotStocks() {
+        try {
+            const response = await fetch('/api/scanner/hot-stocks?limit=5');
+            const data = await response.json();
+
+            if (data.status === 'success' && data.data) {
+                const hotAlertsDiv = document.getElementById('hot-alerts');
+                
+                if (hotAlertsDiv) {
+                    const stocks = data.data.hot_stocks || [];
+                    
+                    if (stocks.length === 0) {
+                        hotAlertsDiv.innerHTML = `
+                            <p style="text-align: center; opacity: 0.6;">
+                                No hot opportunities found.<br>
+                                <small style="font-size: 0.8em;">Scanned ${data.data.total_scanned} stocks</small>
+                            </p>
+                        `;
+                    } else {
+                        hotAlertsDiv.innerHTML = stocks.map(stock => `
+                            <div style="padding: 8px; background: rgba(16, 185, 129, 0.1); border-radius: 6px; margin-bottom: 8px; border-left: 3px solid #10b981;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <strong style="color: #10b981; font-size: 1.1em;">${stock.symbol}</strong>
+                                    <span style="font-size: 0.9em; color: ${stock.change_percent >= 0 ? '#10b981' : '#ef4444'};">
+                                        ${stock.change_percent >= 0 ? '+' : ''}${stock.change_percent.toFixed(2)}%
+                                    </span>
+                                </div>
+                                <div style="font-size: 0.85em; margin-top: 4px;">
+                                    <div style="opacity: 0.9;">
+                                        💰 $${stock.current_price?.toFixed(2)} → $${stock.predicted_price?.toFixed(2)}
+                                    </div>
+                                    <div style="opacity: 0.8; margin-top: 2px;">
+                                        📈 Expected: <strong style="color: #10b981;">${stock.expected_return?.toFixed(2)}%</strong>
+                                        | ML Score: ${stock.ml_score?.toFixed(0)}
+                                    </div>
+                                    <div style="opacity: 0.7; margin-top: 2px;">
+                                        ${stock.recommendation || 'HOLD'} • Confidence: ${(stock.confidence * 100)?.toFixed(0)}%
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                }
+
+                console.log(`✅ Hot stocks updated (${stocks.length} found)`);
+            }
+        } catch (error) {
+            console.error('❌ Error updating hot stocks:', error);
+            const hotAlertsDiv = document.getElementById('hot-alerts');
+            if (hotAlertsDiv) {
+                hotAlertsDiv.innerHTML = '<p style="text-align: center; opacity: 0.6; color: #ef4444;">Failed to load hot stocks</p>';
+            }
+        }
+    }
+
+    /**
      * Fetch real geopolitical risks from backend and render
      */
     async updateGeopoliticalRisks() {
@@ -309,6 +368,72 @@ class MarketDataManager {
     }
 
     /**
+     * Update AI Hot Stocks
+     */
+    async updateHotStocks() {
+        try {
+            const response = await fetch('/api/scanner/hot-stocks?limit=5');
+            const data = await response.json();
+
+            if (data.status === 'success' && data.data && data.data.hot_stocks) {
+                const hotStocks = data.data.hot_stocks;
+                const container = document.getElementById('hot-alerts');
+
+                if (container) {
+                    if (hotStocks.length === 0) {
+                        container.innerHTML = '<p style="text-align: center; opacity: 0.6;">No hot opportunities found at this time.</p>';
+                    } else {
+                        container.innerHTML = hotStocks.map(stock => {
+                            const changeColor = stock.change_percent >= 0 ? '#10b981' : '#ef4444';
+                            const recColor = stock.recommendation === 'BUY' ? '#10b981' : 
+                                           stock.recommendation === 'SELL' ? '#ef4444' : '#f59e0b';
+                            
+                            return `
+                                <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid ${recColor};">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <strong style="font-size: 1.1em;">${stock.symbol}</strong>
+                                        <span style="color: ${recColor}; font-weight: bold; font-size: 0.85em;">${stock.recommendation}</span>
+                                    </div>
+                                    <div style="font-size: 0.85em; opacity: 0.8; margin-bottom: 4px;">${stock.name}</div>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.8em;">
+                                        <div>
+                                            <div style="opacity: 0.7;">Price:</div>
+                                            <div style="font-weight: bold;">$${stock.current_price.toFixed(2)}</div>
+                                        </div>
+                                        <div>
+                                            <div style="opacity: 0.7;">Change:</div>
+                                            <div style="color: ${changeColor}; font-weight: bold;">${stock.change_percent > 0 ? '+' : ''}${stock.change_percent.toFixed(2)}%</div>
+                                        </div>
+                                        <div>
+                                            <div style="opacity: 0.7;">ML Score:</div>
+                                            <div style="font-weight: bold;">${stock.ml_score}/100</div>
+                                        </div>
+                                        <div>
+                                            <div style="opacity: 0.7;">Expected Return:</div>
+                                            <div style="color: #10b981; font-weight: bold;">+${stock.expected_return.toFixed(2)}%</div>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.75em; opacity: 0.6;">
+                                        Predicted: $${stock.predicted_price.toFixed(2)} | Confidence: ${(stock.confidence * 100).toFixed(0)}%
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                        
+                        console.log(`✅ Hot stocks updated (${hotStocks.length} found, ${data.data.total_scanned} scanned)`);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('❌ Error updating hot stocks:', error);
+            const container = document.getElementById('hot-alerts');
+            if (container) {
+                container.innerHTML = '<p style="text-align: center; opacity: 0.6; color: #ef4444;">Error loading hot stocks</p>';
+            }
+        }
+    }
+
+    /**
      * Start periodic updates
      * @param {number} intervalMs - Update interval in milliseconds
      */
@@ -322,6 +447,7 @@ class MarketDataManager {
             await this.updateMarketSentiment();
             await this.updateTradingInsights();
             await this.updateGeopoliticalRisks();
+            await this.updateHotStocks();
         }, intervalMs);
 
         console.log(`✅ Periodic updates started (every ${intervalMs/1000}s)`);
@@ -346,6 +472,7 @@ class MarketDataManager {
         await this.updateMarketSentiment();
         await this.updateTradingInsights();
         await this.updateMarketIntelligence();
+        await this.updateHotStocks();
         console.log('🔄 Market data refreshed');
     }
 }
