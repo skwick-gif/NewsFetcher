@@ -114,6 +114,59 @@ def api_comprehensive_analysis_path(symbol):
     return proxy_to_backend(f'/api/ai/comprehensive-analysis/{symbol}')
 
 # ===========================
+# ML API Proxies (NEW)
+# ===========================
+
+@app.route('/api/ml/predictions/<symbol>')
+def api_ml_predictions(symbol):
+    """Proxy to FastAPI: ML predictions for symbol"""
+    return proxy_to_backend(f'/api/ml/predictions/{symbol}')
+
+@app.route('/api/ml/train/<symbol>', methods=['POST'])
+def api_ml_train(symbol):
+    """Proxy to FastAPI: Train ML models for symbol"""
+    days_back = request.args.get('days_back', 365)
+    return proxy_to_backend(f'/api/ml/train/{symbol}?days_back={days_back}', method='POST')
+
+@app.route('/api/ml/status')
+def api_ml_status():
+    """Proxy to FastAPI: ML system status"""
+    return proxy_to_backend('/api/ml/status')
+
+# ===========================
+# Enhanced Financial API Proxies (NEW)
+# ===========================
+
+@app.route('/api/financial/sector-performance')
+def api_sector_performance():
+    """Proxy to FastAPI: Sector performance analysis"""
+    return proxy_to_backend('/api/financial/sector-performance')
+
+@app.route('/api/market/<symbol>')
+def api_market_data(symbol):
+    """Proxy to FastAPI: Real-time market data for symbol"""
+    return proxy_to_backend(f'/api/market/{symbol}')
+
+@app.route('/api/sentiment/<symbol>')
+def api_sentiment(symbol):
+    """Proxy to FastAPI: Social sentiment for symbol"""
+    return proxy_to_backend(f'/api/sentiment/{symbol}')
+
+@app.route('/api/watchlist')
+def api_watchlist():
+    """Proxy to FastAPI: User watchlist"""
+    return proxy_to_backend('/api/watchlist')
+
+# ===========================
+# System API Proxies (NEW)
+# ===========================
+
+@app.route('/api/system/info')
+def api_system_info():
+    """Proxy to FastAPI: Enhanced system information"""
+    return proxy_to_backend('/api/system/info')
+
+# ===========================
 # Alerts API Proxies
 # ===========================
 
@@ -163,6 +216,90 @@ def api_neural_network_prediction(symbol):
 def api_time_series_analysis(symbol):
     """Proxy to FastAPI: Time series analysis for symbol"""
     return proxy_to_backend(f'/api/ai/time-series-analysis/{symbol}')
+
+# ===========================
+# Predictions API Proxies (NEW)
+# ===========================
+
+@app.route('/api/predictions/create', methods=['POST'])
+def api_predictions_create():
+    """Proxy to FastAPI: Create new prediction"""
+    return proxy_to_backend('/api/predictions/create', method='POST', json=request.json)
+
+@app.route('/api/predictions/stats')
+def api_predictions_stats():
+    """Proxy to FastAPI: Prediction statistics"""
+    source = request.args.get('source')
+    endpoint = '/api/predictions/stats'
+    if source:
+        endpoint += f'?source={source}'
+    return proxy_to_backend(endpoint)
+
+@app.route('/api/predictions/list')
+def api_predictions_list():
+    """Proxy to FastAPI: List predictions with filters"""
+    params = []
+    for param in ['status', 'symbol', 'source', 'limit']:
+        value = request.args.get(param)
+        if value:
+            params.append(f'{param}={value}')
+    
+    endpoint = '/api/predictions/list'
+    if params:
+        endpoint += '?' + '&'.join(params)
+    return proxy_to_backend(endpoint)
+
+# ===========================
+# Scanner API Proxies (Enhanced)
+# ===========================
+
+@app.route('/api/scanner/sectors')
+def api_scanner_sectors():
+    """Proxy to FastAPI: Sector analysis"""
+    return proxy_to_backend('/api/scanner/sectors')
+
+@app.route('/api/scanner/sector/<sector_id>')
+def api_scanner_sector_detail(sector_id):
+    """Proxy to FastAPI: Detailed sector analysis"""
+    return proxy_to_backend(f'/api/scanner/sector/{sector_id}')
+
+# ===========================
+# Jobs & Feeds API Proxies
+# ===========================
+
+@app.route('/api/jobs')
+def api_jobs():
+    """Proxy to FastAPI: System jobs status"""
+    return proxy_to_backend('/api/jobs')
+
+@app.route('/api/feeds/status')
+def api_feeds_status():
+    """Proxy to FastAPI: RSS feeds status"""
+    return proxy_to_backend('/api/feeds/status')
+
+@app.route('/api/statistics')
+def api_statistics():
+    """Proxy to FastAPI: System statistics"""
+    return proxy_to_backend('/api/statistics')
+
+# ===========================
+# Trigger API Proxies (NEW)
+# ===========================
+
+@app.route('/api/trigger/major-news', methods=['POST'])
+def api_trigger_major_news():
+    """Proxy to FastAPI: Trigger major news scan"""
+    return proxy_to_backend('/api/trigger/major-news', method='POST')
+
+@app.route('/api/trigger/perplexity-scan', methods=['POST'])
+def api_trigger_perplexity_scan():
+    """Proxy to FastAPI: Trigger Perplexity scan"""
+    return proxy_to_backend('/api/trigger/perplexity-scan', method='POST')
+
+@app.route('/api/test-alert', methods=['POST'])
+def api_test_alert():
+    """Proxy to FastAPI: Send test alert"""
+    return proxy_to_backend('/api/test-alert', method='POST')
 
 # ===========================
 # Legacy Routes (for backward compatibility)
