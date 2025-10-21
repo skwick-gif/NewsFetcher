@@ -1,0 +1,880 @@
+{
+  "Index": "NDX, S&P 500",
+  "P/E": "173.79",
+  "EPS (ttm)": "4.05",
+  "Insider Own": "5.04%",
+  "Shs Outstand": "78.50M",
+  "Perf Week": "-1.74%",
+  "Market Cap": "55.19B",
+  "Forward P/E": "88.20",
+  "EPS next Y": "19.10%",
+  "Insider Trans": "-2.65%",
+  "Shs Float": "74.54M",
+  "Perf Month": "-6.40%",
+  "Enterprise Value": "55.00B",
+  "PEG": "9.46",
+  "EPS next Q": "1.52",
+  "Inst Own": "81.02%",
+  "Short Float": "2.54%",
+  "Perf Quarter": "-6.30%",
+  "Income": "326.31M",
+  "P/S": "23.08",
+  "EPS this Y": "12.67%",
+  "Inst Trans": "1.88%",
+  "Short Ratio": "3.01",
+  "Perf Half Y": "27.53%",
+  "Sales": "2.39B",
+  "P/B": "20.20",
+  "ROA": "6.55%",
+  "Short Interest": "2.54%",
+  "Perf YTD": "18.29%",
+  "Book/sh": "34.81",
+  "P/C": "24.61",
+  "EPS next 5Y": "18.37%",
+  "ROE": "14.00%",
+  "52W High": "885.91 -20.64%",
+  "Perf Year": "64.65%",
+  "Cash/sh": "28.57",
+  "P/FCF": "312.71",
+  "EPS past 3/5Y": "- 218.25%",
+  "ROIC": "7.24%",
+  "52W Low": "422.38 66.44%",
+  "Perf 3Y": "470.22%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "881.83",
+  "Sales past 3/5Y": "34.11% 31.44%",
+  "Gross Margin": "60.47%",
+  "Volatility": "3.79% 3.46%",
+  "Perf 5Y": "665.49%",
+  "Dividend TTM": "-",
+  "EV/Sales": "23.00",
+  "EPS Y/Y TTM": "10.30%",
+  "Oper. Margin": "0.08%",
+  "ATR (14)": "25.87",
+  "Perf 10Y": "3012.13%",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "2.71",
+  "Sales Y/Y TTM": "32.09%",
+  "Profit Margin": "13.64%",
+  "RSI (14)": "40.26",
+  "Recom": "1.43",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "2.95",
+  "EPS Q/Q": "-16.35%",
+  "SMA20": "-4.08%",
+  "Beta": "1.45",
+  "Target Price": "888.93",
+  "Payout": "0.00%",
+  "Debt/Eq": "0.75",
+  "Sales Q/Q": "32.62%",
+  "SMA50": "-6.94%",
+  "Rel Volume": "0.72",
+  "Prev Close": "734.04",
+  "Employees": "4100",
+  "LT Debt/Eq": "0.65",
+  "Earnings": "Aug 04 AMC",
+  "SMA200": "3.92%",
+  "Avg Volume": "628.46K",
+  "Price": "703.03",
+  "IPO": "Jun 07, 2001",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "45.71% 4.29%",
+  "Trades": "",
+  "Volume": "451,396",
+  "Change": "-4.22%",
+  "Insider Trading": [
+    {
+      "Owner": "SMITH PATRICK W",
+      "Relationship": "CHIEF EXECUTIVE OFFICER",
+      "Date": "Oct 07 '25",
+      "Transaction": "Sale",
+      "Cost": "713.74",
+      "Shares": "10,000",
+      "Value": "7,137,353"
+    },
+    {
+      "Owner": "SMITH PATRICK W",
+      "Relationship": "Officer",
+      "Date": "Oct 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "713.74",
+      "Shares": "10,000",
+      "Value": "7,137,353"
+    },
+    {
+      "Owner": "Bagley Brittany",
+      "Relationship": "COO & CFO",
+      "Date": "Sep 29 '25",
+      "Transaction": "Sale",
+      "Cost": "713.88",
+      "Shares": "5,000",
+      "Value": "3,569,388"
+    },
+    {
+      "Owner": "BRITTANY BAGLEY",
+      "Relationship": "Officer",
+      "Date": "Sep 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "708.84",
+      "Shares": "5,000",
+      "Value": "3,544,200"
+    },
+    {
+      "Owner": "Mak Jennifer H",
+      "Relationship": "Chief Accounting Officer",
+      "Date": "Sep 15 '25",
+      "Transaction": "Sale",
+      "Cost": "760.00",
+      "Shares": "77",
+      "Value": "58,520"
+    },
+    {
+      "Owner": "Bagley Brittany",
+      "Relationship": "COO & CFO",
+      "Date": "Sep 15 '25",
+      "Transaction": "Sale",
+      "Cost": "773.25",
+      "Shares": "870",
+      "Value": "672,725"
+    },
+    {
+      "Owner": "Williams Jeri",
+      "Relationship": "Director",
+      "Date": "Sep 11 '25",
+      "Transaction": "Sale",
+      "Cost": "752.54",
+      "Shares": "100",
+      "Value": "75,254"
+    },
+    {
+      "Owner": "BRITTANY BAGLEY",
+      "Relationship": "Officer",
+      "Date": "Sep 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "773.25",
+      "Shares": "870",
+      "Value": "672,725"
+    },
+    {
+      "Owner": "JERI L WILLIAMS",
+      "Relationship": "Director",
+      "Date": "Sep 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "752.54",
+      "Shares": "100",
+      "Value": "75,254"
+    },
+    {
+      "Owner": "SMITH PATRICK W",
+      "Relationship": "CHIEF EXECUTIVE OFFICER",
+      "Date": "Sep 08 '25",
+      "Transaction": "Sale",
+      "Cost": "743.64",
+      "Shares": "10,000",
+      "Value": "7,436,415"
+    },
+    {
+      "Owner": "SMITH PATRICK W",
+      "Relationship": "Officer",
+      "Date": "Sep 08 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "743.64",
+      "Shares": "10,000",
+      "Value": "7,436,415"
+    },
+    {
+      "Owner": "Mak Jennifer H",
+      "Relationship": "Chief Accounting Officer",
+      "Date": "Sep 03 '25",
+      "Transaction": "Sale",
+      "Cost": "723.50",
+      "Shares": "75",
+      "Value": "54,262"
+    },
+    {
+      "Owner": "Kunins Jeffrey C",
+      "Relationship": "CPO & CTO",
+      "Date": "Aug 14 '25",
+      "Transaction": "Sale",
+      "Cost": "750.10",
+      "Shares": "7,891",
+      "Value": "5,919,011"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "PRESIDENT",
+      "Date": "Aug 15 '25",
+      "Transaction": "Sale",
+      "Cost": "746.26",
+      "Shares": "15,919",
+      "Value": "11,879,725"
+    },
+    {
+      "Owner": "Partovi Hadi",
+      "Relationship": "Director",
+      "Date": "Aug 13 '25",
+      "Transaction": "Buy",
+      "Cost": "740.00",
+      "Shares": "1,358",
+      "Value": "1,004,920"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "Officer",
+      "Date": "Aug 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "746.22",
+      "Shares": "15,919",
+      "Value": "11,879,088"
+    },
+    {
+      "Owner": "JEFFREY C KUNINS",
+      "Relationship": "Officer",
+      "Date": "Aug 14 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "765.52",
+      "Shares": "7,891",
+      "Value": "6,040,718"
+    },
+    {
+      "Owner": "SMITH PATRICK W",
+      "Relationship": "CHIEF EXECUTIVE OFFICER",
+      "Date": "Aug 11 '25",
+      "Transaction": "Sale",
+      "Cost": "831.29",
+      "Shares": "10,000",
+      "Value": "8,312,886"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "PRESIDENT",
+      "Date": "Aug 07 '25",
+      "Transaction": "Sale",
+      "Cost": "870.86",
+      "Shares": "2,500",
+      "Value": "2,177,147"
+    },
+    {
+      "Owner": "Kalinowski Caitlin Elizabeth",
+      "Relationship": "Director",
+      "Date": "Aug 07 '25",
+      "Transaction": "Sale",
+      "Cost": "870.97",
+      "Shares": "580",
+      "Value": "505,162"
+    },
+    {
+      "Owner": "SMITH PATRICK W",
+      "Relationship": "Officer",
+      "Date": "Aug 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "842.89",
+      "Shares": "10,000",
+      "Value": "8,428,900"
+    },
+    {
+      "Owner": "CAITLIN KALINOWSKI",
+      "Relationship": "Director",
+      "Date": "Aug 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "870.74",
+      "Shares": "580",
+      "Value": "505,030"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "Officer",
+      "Date": "Aug 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "870.82",
+      "Shares": "2,500",
+      "Value": "2,177,047"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "PRESIDENT",
+      "Date": "Jun 17 '25",
+      "Transaction": "Sale",
+      "Cost": "776.39",
+      "Shares": "905",
+      "Value": "702,633"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "Officer",
+      "Date": "Jun 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "776.31",
+      "Shares": "905",
+      "Value": "702,558"
+    },
+    {
+      "Owner": "Mak Jennifer H",
+      "Relationship": "Chief Accounting Officer",
+      "Date": "Jun 13 '25",
+      "Transaction": "Sale",
+      "Cost": "771.81",
+      "Shares": "75",
+      "Value": "57,886"
+    },
+    {
+      "Owner": "GARNREITER MICHAEL",
+      "Relationship": "Director",
+      "Date": "Jun 04 '25",
+      "Transaction": "Sale",
+      "Cost": "760.00",
+      "Shares": "5,913",
+      "Value": "4,493,880"
+    },
+    {
+      "Owner": "GARNREITER MICHAEL",
+      "Relationship": "Director",
+      "Date": "Jun 03 '25",
+      "Transaction": "Sale",
+      "Cost": "760.00",
+      "Shares": "87",
+      "Value": "66,120"
+    },
+    {
+      "Owner": "THE GARNREITER FAMILY TRUST",
+      "Relationship": "Director",
+      "Date": "Jun 04 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "760.00",
+      "Shares": "5,913",
+      "Value": "4,493,880"
+    },
+    {
+      "Owner": "THE GARNREITER FAMILY TRUST",
+      "Relationship": "Director",
+      "Date": "Jun 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "760.00",
+      "Shares": "87",
+      "Value": "66,120"
+    },
+    {
+      "Owner": "Brooks Cameron",
+      "Relationship": "CHIEF REVENUE OFFICER",
+      "Date": "May 30 '25",
+      "Transaction": "Sale",
+      "Cost": "740.76",
+      "Shares": "3,000",
+      "Value": "2,222,295"
+    },
+    {
+      "Owner": "CAMERON J BROOKS",
+      "Relationship": "Officer",
+      "Date": "May 30 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "740.76",
+      "Shares": "3,000",
+      "Value": "2,222,295"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "PRESIDENT",
+      "Date": "May 21 '25",
+      "Transaction": "Sale",
+      "Cost": "738.03",
+      "Shares": "9,905",
+      "Value": "7,310,207"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "Officer",
+      "Date": "May 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "737.99",
+      "Shares": "9,905",
+      "Value": "7,309,811"
+    },
+    {
+      "Owner": "Kalinowski Caitlin Elizabeth",
+      "Relationship": "Director",
+      "Date": "May 19 '25",
+      "Transaction": "Sale",
+      "Cost": "738.84",
+      "Shares": "1,300",
+      "Value": "960,487"
+    },
+    {
+      "Owner": "CAITLIN KALINOWSKI",
+      "Relationship": "Director",
+      "Date": "May 19 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "738.84",
+      "Shares": "1,300",
+      "Value": "960,487"
+    },
+    {
+      "Owner": "Bagley Brittany",
+      "Relationship": "COO & CFO",
+      "Date": "May 13 '25",
+      "Transaction": "Sale",
+      "Cost": "700.00",
+      "Shares": "3,400",
+      "Value": "2,380,000"
+    },
+    {
+      "Owner": "Kalinowski Caitlin Elizabeth",
+      "Relationship": "Director",
+      "Date": "May 13 '25",
+      "Transaction": "Sale",
+      "Cost": "713.25",
+      "Shares": "800",
+      "Value": "570,600"
+    },
+    {
+      "Owner": "MCBRADY MATTHEW R",
+      "Relationship": "Director",
+      "Date": "May 14 '25",
+      "Transaction": "Sale",
+      "Cost": "718.40",
+      "Shares": "400",
+      "Value": "287,362"
+    },
+    {
+      "Owner": "MATTHEW R MCBRADY",
+      "Relationship": "Officer",
+      "Date": "May 14 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "718.40",
+      "Shares": "400",
+      "Value": "287,362"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "PRESIDENT",
+      "Date": "May 12 '25",
+      "Transaction": "Sale",
+      "Cost": "683.31",
+      "Shares": "9,000",
+      "Value": "6,149,810"
+    },
+    {
+      "Owner": "Cullivan Julie A",
+      "Relationship": "Director",
+      "Date": "May 12 '25",
+      "Transaction": "Sale",
+      "Cost": "700.00",
+      "Shares": "657",
+      "Value": "459,900"
+    },
+    {
+      "Owner": "Williams Jeri",
+      "Relationship": "Director",
+      "Date": "May 12 '25",
+      "Transaction": "Sale",
+      "Cost": "700.00",
+      "Shares": "657",
+      "Value": "459,900"
+    },
+    {
+      "Owner": "CAITLIN KALINOWSKI",
+      "Relationship": "Director",
+      "Date": "May 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "713.25",
+      "Shares": "800",
+      "Value": "570,600"
+    },
+    {
+      "Owner": "BRITTANY BAGLEY",
+      "Relationship": "Officer",
+      "Date": "May 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "700.00",
+      "Shares": "3,400",
+      "Value": "2,380,000"
+    },
+    {
+      "Owner": "JERI WILLIAMS",
+      "Relationship": "Director",
+      "Date": "May 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "684.59",
+      "Shares": "657",
+      "Value": "449,776"
+    },
+    {
+      "Owner": "JULIE CULLIVAN",
+      "Relationship": "Director",
+      "Date": "May 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "684.59",
+      "Shares": "657",
+      "Value": "449,776"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "Officer",
+      "Date": "May 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "683.27",
+      "Shares": "9,000",
+      "Value": "6,149,450"
+    },
+    {
+      "Owner": "SMITH PATRICK W",
+      "Relationship": "CHIEF EXECUTIVE OFFICER",
+      "Date": "Apr 21 '25",
+      "Transaction": "Sale",
+      "Cost": "540.99",
+      "Shares": "10,000",
+      "Value": "5,409,861"
+    },
+    {
+      "Owner": "SMITH PATRICK W",
+      "Relationship": "Officer",
+      "Date": "Apr 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "550.00",
+      "Shares": "10,000",
+      "Value": "5,500,000"
+    },
+    {
+      "Owner": "Williams Jeri",
+      "Relationship": "Director",
+      "Date": "Mar 17 '25",
+      "Transaction": "Sale",
+      "Cost": "552.72",
+      "Shares": "307",
+      "Value": "169,685"
+    },
+    {
+      "Owner": "JERI L WILLIAMS",
+      "Relationship": "Director",
+      "Date": "Mar 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "556.26",
+      "Shares": "307",
+      "Value": "170,772"
+    },
+    {
+      "Owner": "Kalinowski Caitlin Elizabeth",
+      "Relationship": "Director",
+      "Date": "Jan 02 '25",
+      "Transaction": "Sale",
+      "Cost": "604.07",
+      "Shares": "450",
+      "Value": "271,832"
+    },
+    {
+      "Owner": "CAITLIN KALINOWSKI",
+      "Relationship": "Director",
+      "Date": "Jan 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "594.32",
+      "Shares": "450",
+      "Value": "267,444"
+    },
+    {
+      "Owner": "Kunins Jeffrey C",
+      "Relationship": "CPO & CTO",
+      "Date": "Dec 23 '24",
+      "Transaction": "Sale",
+      "Cost": "624.47",
+      "Shares": "1,035",
+      "Value": "646,329"
+    },
+    {
+      "Owner": "JEFFREY C KUNINS",
+      "Relationship": "Officer",
+      "Date": "Dec 23 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "631.69",
+      "Shares": "1,035",
+      "Value": "653,799"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "PRESIDENT",
+      "Date": "Dec 17 '24",
+      "Transaction": "Sale",
+      "Cost": "642.43",
+      "Shares": "1,291",
+      "Value": "829,375"
+    },
+    {
+      "Owner": "Kunins Jeffrey C",
+      "Relationship": "CPO & CTO",
+      "Date": "Dec 17 '24",
+      "Transaction": "Sale",
+      "Cost": "639.14",
+      "Shares": "1,370",
+      "Value": "875,623"
+    },
+    {
+      "Owner": "JEFFREY C KUNINS",
+      "Relationship": "Officer",
+      "Date": "Dec 17 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "649.30",
+      "Shares": "1,370",
+      "Value": "889,541"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "Officer",
+      "Date": "Dec 17 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "642.43",
+      "Shares": "1,291",
+      "Value": "829,375"
+    },
+    {
+      "Owner": "GARNREITER MICHAEL",
+      "Relationship": "Director",
+      "Date": "Dec 16 '24",
+      "Transaction": "Sale",
+      "Cost": "639.69",
+      "Shares": "1,000",
+      "Value": "639,687"
+    },
+    {
+      "Owner": "THE GARNREITER FAMILY TRUST U/",
+      "Relationship": "Director",
+      "Date": "Dec 16 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "644.91",
+      "Shares": "1,000",
+      "Value": "644,910"
+    },
+    {
+      "Owner": "Cullivan Julie A",
+      "Relationship": "Director",
+      "Date": "Dec 04 '24",
+      "Transaction": "Sale",
+      "Cost": "682.06",
+      "Shares": "1,261",
+      "Value": "860,077"
+    },
+    {
+      "Owner": "Kunins Jeffrey C",
+      "Relationship": "CPO & CTO",
+      "Date": "Dec 03 '24",
+      "Transaction": "Sale",
+      "Cost": "654.79",
+      "Shares": "2,304",
+      "Value": "1,508,628"
+    },
+    {
+      "Owner": "Kunins Jeffrey C",
+      "Relationship": "CPO & CTO",
+      "Date": "Dec 04 '24",
+      "Transaction": "Sale",
+      "Cost": "667.09",
+      "Shares": "333",
+      "Value": "222,141"
+    },
+    {
+      "Owner": "Cullivan Julie A",
+      "Relationship": "Director",
+      "Date": "Dec 04 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "682.06",
+      "Shares": "1,261",
+      "Value": "860,077"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "PRESIDENT",
+      "Date": "Dec 03 '24",
+      "Transaction": "Sale",
+      "Cost": "647.38",
+      "Shares": "2,258",
+      "Value": "1,461,782"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "PRESIDENT",
+      "Date": "Dec 04 '24",
+      "Transaction": "Sale",
+      "Cost": "667.09",
+      "Shares": "836",
+      "Value": "557,687"
+    },
+    {
+      "Owner": "JEFFREY C KUNINS",
+      "Relationship": "Officer",
+      "Date": "Dec 04 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "669.87",
+      "Shares": "333",
+      "Value": "223,067"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "Officer",
+      "Date": "Dec 04 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "667.09",
+      "Shares": "836",
+      "Value": "557,687"
+    },
+    {
+      "Owner": "JEFFREY C KUNINS",
+      "Relationship": "Officer",
+      "Date": "Dec 03 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "636.39",
+      "Shares": "2,304",
+      "Value": "1,466,243"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "Officer",
+      "Date": "Dec 03 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "647.38",
+      "Shares": "2,258",
+      "Value": "1,461,782"
+    },
+    {
+      "Owner": "Bagley Brittany",
+      "Relationship": "COO & CFO",
+      "Date": "Nov 22 '24",
+      "Transaction": "Sale",
+      "Cost": "640.00",
+      "Shares": "3,500",
+      "Value": "2,240,000"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "PRESIDENT",
+      "Date": "Nov 21 '24",
+      "Transaction": "Sale",
+      "Cost": "635.06",
+      "Shares": "9,600",
+      "Value": "6,096,539"
+    },
+    {
+      "Owner": "BRITTANY BAGLEY",
+      "Relationship": "Officer",
+      "Date": "Nov 22 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "640.00",
+      "Shares": "3,500",
+      "Value": "2,240,000"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "Officer",
+      "Date": "Nov 21 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "635.06",
+      "Shares": "9,600",
+      "Value": "6,096,539"
+    },
+    {
+      "Owner": "MCBRADY MATTHEW R",
+      "Relationship": "Director",
+      "Date": "Nov 20 '24",
+      "Transaction": "Sale",
+      "Cost": "605.20",
+      "Shares": "1,000",
+      "Value": "605,196"
+    },
+    {
+      "Owner": "Matthew McBrady",
+      "Relationship": "Director",
+      "Date": "Nov 20 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "610.35",
+      "Shares": "1,000",
+      "Value": "610,350"
+    },
+    {
+      "Owner": "Bagley Brittany",
+      "Relationship": "COO & CFO",
+      "Date": "Nov 15 '24",
+      "Transaction": "Sale",
+      "Cost": "598.75",
+      "Shares": "6,325",
+      "Value": "3,787,070"
+    },
+    {
+      "Owner": "GARNREITER MICHAEL",
+      "Relationship": "Director",
+      "Date": "Nov 15 '24",
+      "Transaction": "Sale",
+      "Cost": "599.53",
+      "Shares": "1,000",
+      "Value": "599,530"
+    },
+    {
+      "Owner": "BRITTANY BAGLEY",
+      "Relationship": "Officer",
+      "Date": "Nov 15 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "604.56",
+      "Shares": "6,325",
+      "Value": "3,823,842"
+    },
+    {
+      "Owner": "Kunins Jeffrey C",
+      "Relationship": "CPO & CTO",
+      "Date": "Nov 13 '24",
+      "Transaction": "Sale",
+      "Cost": "609.27",
+      "Shares": "21,834",
+      "Value": "13,302,895"
+    },
+    {
+      "Owner": "Kunins Jeffrey C",
+      "Relationship": "CPO & CTO",
+      "Date": "Nov 12 '24",
+      "Transaction": "Sale",
+      "Cost": "593.88",
+      "Shares": "21,834",
+      "Value": "12,966,791"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "PRESIDENT",
+      "Date": "Nov 12 '24",
+      "Transaction": "Sale",
+      "Cost": "606.15",
+      "Shares": "20,000",
+      "Value": "12,123,060"
+    },
+    {
+      "Owner": "JEFFREY C KUNINS",
+      "Relationship": "Officer",
+      "Date": "Nov 13 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "609.27",
+      "Shares": "21,834",
+      "Value": "13,302,895"
+    },
+    {
+      "Owner": "JEFFREY C KUNINS",
+      "Relationship": "Officer",
+      "Date": "Nov 12 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "593.88",
+      "Shares": "21,834",
+      "Value": "12,966,791"
+    },
+    {
+      "Owner": "Isner Joshua",
+      "Relationship": "Officer",
+      "Date": "Nov 12 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "606.11",
+      "Shares": "20,000",
+      "Value": "12,122,117"
+    },
+    {
+      "Owner": "GARNREITER MICHAEL",
+      "Relationship": "Director",
+      "Date": "Oct 15 '24",
+      "Transaction": "Sale",
+      "Cost": "437.98",
+      "Shares": "1,000",
+      "Value": "437,980"
+    }
+  ],
+  "Dividends": []
+}

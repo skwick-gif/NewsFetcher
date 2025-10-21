@@ -1,0 +1,619 @@
+{
+  "Index": "RUT",
+  "P/E": "1557.81",
+  "EPS (ttm)": "0.01",
+  "Insider Own": "53.84%",
+  "Shs Outstand": "314.04M",
+  "Perf Week": "-4.04%",
+  "Market Cap": "3.13B",
+  "Forward P/E": "11.14",
+  "EPS next Y": "18.24%",
+  "Insider Trans": "-0.80%",
+  "Shs Float": "144.96M",
+  "Perf Month": "-1.19%",
+  "Enterprise Value": "5.70B",
+  "PEG": "66.77",
+  "EPS next Q": "0.14",
+  "Inst Own": "42.07%",
+  "Short Float": "3.93%",
+  "Perf Quarter": "18.41%",
+  "Income": "3.38M",
+  "P/S": "1.10",
+  "EPS this Y": "30.45%",
+  "Inst Trans": "5.58%",
+  "Short Ratio": "3.55",
+  "Perf Half Y": "43.04%",
+  "Sales": "2.85B",
+  "P/B": "-",
+  "ROA": "0.10%",
+  "Short Interest": "3.93%",
+  "Perf YTD": "25.88%",
+  "Book/sh": "-0.36",
+  "P/C": "38.57",
+  "EPS next 5Y": "23.33%",
+  "ROE": "-155.38%",
+  "52W High": "10.68 -6.60%",
+  "Perf Year": "15.13%",
+  "Cash/sh": "0.26",
+  "P/FCF": "11.56",
+  "EPS past 3/5Y": "- 32.70%",
+  "ROIC": "0.16%",
+  "52W Low": "6.68 49.14%",
+  "Perf 3Y": "347.09%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "9.09",
+  "Sales past 3/5Y": "10.10% 11.43%",
+  "Gross Margin": "37.67%",
+  "Volatility": "3.13% 2.83%",
+  "Perf 5Y": "141.40%",
+  "Dividend TTM": "-",
+  "EV/Sales": "2.00",
+  "EPS Y/Y TTM": "101.59%",
+  "Oper. Margin": "13.36%",
+  "ATR (14)": "0.29",
+  "Perf 10Y": "-73.90%",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "0.88",
+  "Sales Y/Y TTM": "9.81%",
+  "Profit Margin": "0.12%",
+  "RSI (14)": "50.70",
+  "Recom": "1.00",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "1.43",
+  "EPS Q/Q": "269.68%",
+  "SMA20": "-0.48%",
+  "Beta": "1.21",
+  "Target Price": "12.50",
+  "Payout": "-",
+  "Debt/Eq": "-",
+  "Sales Q/Q": "3.24%",
+  "SMA50": "4.45%",
+  "Rel Volume": "0.82",
+  "Prev Close": "10.29",
+  "Employees": "8300",
+  "LT Debt/Eq": "-",
+  "Earnings": "Oct 30 BMO",
+  "SMA200": "19.22%",
+  "Avg Volume": "1.60M",
+  "Price": "9.97",
+  "IPO": "Dec 19, 1995",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "42.86% -2.69%",
+  "Trades": "",
+  "Volume": "1,309,330",
+  "Change": "-3.11%",
+  "Insider Trading": [
+    {
+      "Owner": "Kiely John",
+      "Relationship": "Director",
+      "Date": "Aug 27 '25",
+      "Transaction": "Sale",
+      "Cost": "9.23",
+      "Shares": "32,000",
+      "Value": "295,360"
+    },
+    {
+      "Owner": "Kiely John",
+      "Relationship": "Director",
+      "Date": "Aug 27 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.18",
+      "Shares": "32,000",
+      "Value": "293,810"
+    },
+    {
+      "Owner": "Shah Nikita",
+      "Relationship": "Executive Vice President",
+      "Date": "Aug 22 '25",
+      "Transaction": "Sale",
+      "Cost": "9.66",
+      "Shares": "114,492",
+      "Value": "1,105,993"
+    },
+    {
+      "Owner": "Shah Nikita",
+      "Relationship": "Executive Vice President",
+      "Date": "Aug 25 '25",
+      "Transaction": "Sale",
+      "Cost": "9.50",
+      "Shares": "6,340",
+      "Value": "60,230"
+    },
+    {
+      "Owner": "BOYER ANDREW S",
+      "Relationship": "Executive Vice President",
+      "Date": "Aug 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "2.75",
+      "Shares": "175,000",
+      "Value": "481,250"
+    },
+    {
+      "Owner": "BOYER ANDREW S",
+      "Relationship": "Executive Vice President",
+      "Date": "Aug 20 '25",
+      "Transaction": "Sale",
+      "Cost": "9.38",
+      "Shares": "279,244",
+      "Value": "2,619,309"
+    },
+    {
+      "Owner": "Shah Nikita",
+      "Relationship": "Officer",
+      "Date": "Aug 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.70",
+      "Shares": "36,796",
+      "Value": "356,921"
+    },
+    {
+      "Owner": "Shah Nikita",
+      "Relationship": "Officer",
+      "Date": "Aug 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.74",
+      "Shares": "84,036",
+      "Value": "818,931"
+    },
+    {
+      "Owner": "BOYER ANDREW S",
+      "Relationship": "Officer",
+      "Date": "Aug 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.36",
+      "Shares": "175,000",
+      "Value": "1,637,900"
+    },
+    {
+      "Owner": "BOYER ANDREW S",
+      "Relationship": "Officer",
+      "Date": "Aug 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.30",
+      "Shares": "104,244",
+      "Value": "969,469"
+    },
+    {
+      "Owner": "Shah Nikita",
+      "Relationship": "Executive Vice President",
+      "Date": "Aug 14 '25",
+      "Transaction": "Sale",
+      "Cost": "9.29",
+      "Shares": "71,694",
+      "Value": "666,037"
+    },
+    {
+      "Owner": "Konidaris Tasos",
+      "Relationship": "Executive Vice President & CFO",
+      "Date": "Aug 15 '25",
+      "Transaction": "Sale",
+      "Cost": "9.43",
+      "Shares": "219,159",
+      "Value": "2,066,669"
+    },
+    {
+      "Owner": "Konidaris Tasos",
+      "Relationship": "Executive Vice President & CFO",
+      "Date": "Aug 13 '25",
+      "Transaction": "Sale",
+      "Cost": "9.22",
+      "Shares": "161,365",
+      "Value": "1,487,785"
+    },
+    {
+      "Owner": "Konidaris Tasos",
+      "Relationship": "Executive Vice President & CFO",
+      "Date": "Aug 14 '25",
+      "Transaction": "Sale",
+      "Cost": "9.30",
+      "Shares": "119,206",
+      "Value": "1,108,616"
+    },
+    {
+      "Owner": "Konidaris Tasos",
+      "Relationship": "Officer",
+      "Date": "Aug 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.39",
+      "Shares": "219,159",
+      "Value": "2,057,903"
+    },
+    {
+      "Owner": "Shah Nikita",
+      "Relationship": "Officer",
+      "Date": "Aug 14 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.25",
+      "Shares": "71,694",
+      "Value": "663,065"
+    },
+    {
+      "Owner": "Shah Nikita",
+      "Relationship": "Executive Vice President",
+      "Date": "Aug 12 '25",
+      "Transaction": "Sale",
+      "Cost": "9.04",
+      "Shares": "50,000",
+      "Value": "452,000"
+    },
+    {
+      "Owner": "Daly Jason B.",
+      "Relationship": "EVP, Chief Legal Officer",
+      "Date": "Aug 12 '25",
+      "Transaction": "Sale",
+      "Cost": "9.05",
+      "Shares": "22,000",
+      "Value": "199,100"
+    },
+    {
+      "Owner": "BOYER ANDREW S",
+      "Relationship": "Executive Vice President",
+      "Date": "Aug 12 '25",
+      "Transaction": "Sale",
+      "Cost": "9.05",
+      "Shares": "33,436",
+      "Value": "302,596"
+    },
+    {
+      "Owner": "Konidaris Tasos",
+      "Relationship": "Officer",
+      "Date": "Aug 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.27",
+      "Shares": "169,206",
+      "Value": "1,568,539"
+    },
+    {
+      "Owner": "Konidaris Tasos",
+      "Relationship": "Officer",
+      "Date": "Aug 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.02",
+      "Shares": "111,635",
+      "Value": "1,006,947"
+    },
+    {
+      "Owner": "BOYER ANDREW S",
+      "Relationship": "Officer",
+      "Date": "Aug 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.09",
+      "Shares": "33,436",
+      "Value": "304,100"
+    },
+    {
+      "Owner": "Daly Jason B.",
+      "Relationship": "Officer",
+      "Date": "Aug 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.00",
+      "Shares": "22,000",
+      "Value": "198,000"
+    },
+    {
+      "Owner": "Shah Nikita",
+      "Relationship": "Officer",
+      "Date": "Aug 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.06",
+      "Shares": "50,000",
+      "Value": "453,000"
+    },
+    {
+      "Owner": "Patel Gautam",
+      "Relationship": "Director",
+      "Date": "Jun 16 '25",
+      "Transaction": "Sale",
+      "Cost": "8.02",
+      "Shares": "94,906",
+      "Value": "761,146"
+    },
+    {
+      "Owner": "Patel Gautam",
+      "Relationship": "Director",
+      "Date": "Jun 10 '25",
+      "Transaction": "Sale",
+      "Cost": "8.02",
+      "Shares": "56,426",
+      "Value": "452,537"
+    },
+    {
+      "Owner": "Shah Nikita",
+      "Relationship": "Executive Vice President",
+      "Date": "May 16 '25",
+      "Transaction": "Sale",
+      "Cost": "7.58",
+      "Shares": "49,140",
+      "Value": "372,481"
+    },
+    {
+      "Owner": "Shah Nikita",
+      "Relationship": "Officer",
+      "Date": "May 16 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "7.50",
+      "Shares": "49,140",
+      "Value": "368,550"
+    },
+    {
+      "Owner": "Kiely John",
+      "Relationship": "Director",
+      "Date": "May 12 '25",
+      "Transaction": "Sale",
+      "Cost": "7.59",
+      "Shares": "50,000",
+      "Value": "379,500"
+    },
+    {
+      "Owner": "Kiely John",
+      "Relationship": "Director",
+      "Date": "May 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "7.57",
+      "Shares": "50,000",
+      "Value": "378,500"
+    },
+    {
+      "Owner": "Patel Gautam",
+      "Relationship": "Director",
+      "Date": "May 05 '25",
+      "Transaction": "Sale",
+      "Cost": "8.00",
+      "Shares": "4,900",
+      "Value": "39,200"
+    },
+    {
+      "Owner": "Patel Gautam",
+      "Relationship": "Director",
+      "Date": "May 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.00",
+      "Shares": "3,768",
+      "Value": "30,144"
+    },
+    {
+      "Owner": "Gautam Patel",
+      "Relationship": "Director",
+      "Date": "May 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "7.74",
+      "Shares": "160,000",
+      "Value": "1,238,400"
+    },
+    {
+      "Owner": "Patel Gautam",
+      "Relationship": "Director",
+      "Date": "Apr 01 '25",
+      "Transaction": "Sale",
+      "Cost": "8.30",
+      "Shares": "80,000",
+      "Value": "664,000"
+    },
+    {
+      "Owner": "Patel Tushar Bhikhubhai",
+      "Relationship": "10% Owner",
+      "Date": "Mar 14 '25",
+      "Transaction": "Sale",
+      "Cost": "8.35",
+      "Shares": "5,000,000",
+      "Value": "41,750,000"
+    },
+    {
+      "Owner": "Patel Tushar Bhikhubhai",
+      "Relationship": "10% Owner",
+      "Date": "Mar 14 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.75",
+      "Shares": "5,000,000",
+      "Value": "43,750,000"
+    },
+    {
+      "Owner": "BOYER ANDREW S",
+      "Relationship": "Executive Vice President",
+      "Date": "Mar 05 '25",
+      "Transaction": "Sale",
+      "Cost": "8.89",
+      "Shares": "125,000",
+      "Value": "1,111,250"
+    },
+    {
+      "Owner": "Daly Jason B.",
+      "Relationship": "EVP, Chief Legal Officer",
+      "Date": "Mar 06 '25",
+      "Transaction": "Sale",
+      "Cost": "8.73",
+      "Shares": "46,936",
+      "Value": "409,751"
+    },
+    {
+      "Owner": "Daly Jason B.",
+      "Relationship": "EVP, Chief Legal Officer",
+      "Date": "Mar 05 '25",
+      "Transaction": "Sale",
+      "Cost": "8.88",
+      "Shares": "43,064",
+      "Value": "382,408"
+    },
+    {
+      "Owner": "Konidaris Tasos",
+      "Relationship": "Executive Vice President & CFO",
+      "Date": "Mar 05 '25",
+      "Transaction": "Sale",
+      "Cost": "8.91",
+      "Shares": "100,000",
+      "Value": "891,000"
+    },
+    {
+      "Owner": "Alva Emily Peterson",
+      "Relationship": "Director",
+      "Date": "Mar 05 '25",
+      "Transaction": "Sale",
+      "Cost": "8.90",
+      "Shares": "80,000",
+      "Value": "712,000"
+    },
+    {
+      "Owner": "Patel Gautam",
+      "Relationship": "Director",
+      "Date": "Mar 03 '25",
+      "Transaction": "Sale",
+      "Cost": "8.90",
+      "Shares": "80,000",
+      "Value": "712,000"
+    },
+    {
+      "Owner": "Alva Emily Peterson",
+      "Relationship": "Director",
+      "Date": "Mar 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.87",
+      "Shares": "85,000",
+      "Value": "753,950"
+    },
+    {
+      "Owner": "BOYER ANDREW S",
+      "Relationship": "Officer",
+      "Date": "Mar 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.87",
+      "Shares": "125,000",
+      "Value": "1,108,750"
+    },
+    {
+      "Owner": "Daly Jason B.",
+      "Relationship": "Officer",
+      "Date": "Mar 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.80",
+      "Shares": "90,000",
+      "Value": "792,000"
+    },
+    {
+      "Owner": "Konidaris Tasos",
+      "Relationship": "Officer",
+      "Date": "Mar 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.84",
+      "Shares": "100,000",
+      "Value": "884,000"
+    },
+    {
+      "Owner": "Patel Gautam",
+      "Relationship": "Director",
+      "Date": "Feb 03 '25",
+      "Transaction": "Sale",
+      "Cost": "8.14",
+      "Shares": "80,000",
+      "Value": "651,200"
+    },
+    {
+      "Owner": "Patel Gautam",
+      "Relationship": "Director",
+      "Date": "Jan 08 '25",
+      "Transaction": "Sale",
+      "Cost": "8.01",
+      "Shares": "62,590",
+      "Value": "501,346"
+    },
+    {
+      "Owner": "Patel Gautam",
+      "Relationship": "Director",
+      "Date": "Jan 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.01",
+      "Shares": "17,410",
+      "Value": "139,454"
+    },
+    {
+      "Owner": "Gautam J Patel",
+      "Relationship": "Director",
+      "Date": "Jan 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.00",
+      "Shares": "320,000",
+      "Value": "2,560,000"
+    },
+    {
+      "Owner": "Kiely John",
+      "Relationship": "Director",
+      "Date": "Nov 22 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "4.76",
+      "Shares": "28,506",
+      "Value": "135,689"
+    },
+    {
+      "Owner": "Kiely John",
+      "Relationship": "Director",
+      "Date": "Nov 22 '24",
+      "Transaction": "Sale",
+      "Cost": "8.38",
+      "Shares": "17,058",
+      "Value": "142,946"
+    },
+    {
+      "Owner": "Autor Deborah M.",
+      "Relationship": "Director",
+      "Date": "Nov 22 '24",
+      "Transaction": "Sale",
+      "Cost": "8.34",
+      "Shares": "33,229",
+      "Value": "277,130"
+    },
+    {
+      "Owner": "Autor Deborah M.",
+      "Relationship": "Director",
+      "Date": "Nov 21 '24",
+      "Transaction": "Sale",
+      "Cost": "8.41",
+      "Shares": "6,771",
+      "Value": "56,944"
+    },
+    {
+      "Owner": "Daly Jason B.",
+      "Relationship": "SVP, Chief Legal Officer",
+      "Date": "Nov 21 '24",
+      "Transaction": "Sale",
+      "Cost": "8.40",
+      "Shares": "13,665",
+      "Value": "114,786"
+    },
+    {
+      "Owner": "Kiely John",
+      "Relationship": "Director",
+      "Date": "Nov 22 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.33",
+      "Shares": "17,058",
+      "Value": "142,175"
+    },
+    {
+      "Owner": "Autor Deborah M.",
+      "Relationship": "Director",
+      "Date": "Nov 21 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.38",
+      "Shares": "50,000",
+      "Value": "419,000"
+    },
+    {
+      "Owner": "Daly Jason B.",
+      "Relationship": "SVP, Chief Legal Officer",
+      "Date": "Nov 15 '24",
+      "Transaction": "Sale",
+      "Cost": "8.61",
+      "Shares": "43,657",
+      "Value": "375,887"
+    },
+    {
+      "Owner": "Daly Jason B.",
+      "Relationship": "Officer",
+      "Date": "Nov 15 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.50",
+      "Shares": "57,322",
+      "Value": "487,237"
+    }
+  ],
+  "Dividends": []
+}

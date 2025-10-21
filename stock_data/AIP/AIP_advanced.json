@@ -1,0 +1,988 @@
+{
+  "Index": "RUT",
+  "P/E": "-",
+  "EPS (ttm)": "-0.82",
+  "Insider Own": "33.57%",
+  "Shs Outstand": "42.59M",
+  "Perf Week": "12.84%",
+  "Market Cap": "528.43M",
+  "Forward P/E": "-",
+  "EPS next Y": "68.71%",
+  "Insider Trans": "-6.39%",
+  "Shs Float": "28.41M",
+  "Perf Month": "38.75%",
+  "Enterprise Value": "497.74M",
+  "PEG": "-",
+  "EPS next Q": "-0.09",
+  "Inst Own": "47.33%",
+  "Short Float": "5.99%",
+  "Perf Quarter": "33.51%",
+  "Income": "-33.14M",
+  "P/S": "8.36",
+  "EPS this Y": "14.53%",
+  "Inst Trans": "5.41%",
+  "Short Ratio": "1.57",
+  "Perf Half Y": "105.13%",
+  "Sales": "63.24M",
+  "P/B": "-",
+  "ROA": "-32.61%",
+  "Short Interest": "5.99%",
+  "Perf YTD": "21.59%",
+  "Book/sh": "-0.18",
+  "P/C": "13.89",
+  "EPS next 5Y": "-",
+  "ROE": "-1369.57%",
+  "52W High": "14.58 -15.02%",
+  "Perf Year": "66.09%",
+  "Cash/sh": "0.89",
+  "P/FCF": "-",
+  "EPS past 3/5Y": "-5.24% -",
+  "ROIC": "-",
+  "52W Low": "5.46 126.92%",
+  "Perf 3Y": "76.75%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "-",
+  "Sales past 3/5Y": "15.09% 12.88%",
+  "Gross Margin": "86.71%",
+  "Volatility": "11.07% 6.71%",
+  "Perf 5Y": "-",
+  "Dividend TTM": "-",
+  "EV/Sales": "7.87",
+  "EPS Y/Y TTM": "16.54%",
+  "Oper. Margin": "-48.99%",
+  "ATR (14)": "0.87",
+  "Perf 10Y": "-",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "0.95",
+  "Sales Y/Y TTM": "18.64%",
+  "Profit Margin": "-52.41%",
+  "RSI (14)": "61.58",
+  "Recom": "1.50",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "0.95",
+  "EPS Q/Q": "-0.65%",
+  "SMA20": "14.75%",
+  "Beta": "1.44",
+  "Target Price": "14.00",
+  "Payout": "-",
+  "Debt/Eq": "-",
+  "Sales Q/Q": "13.22%",
+  "SMA50": "24.29%",
+  "Rel Volume": "0.84",
+  "Prev Close": "13.11",
+  "Employees": "267",
+  "LT Debt/Eq": "-",
+  "Earnings": "Aug 05 AMC",
+  "SMA200": "37.72%",
+  "Avg Volume": "1.08M",
+  "Price": "12.39",
+  "IPO": "Oct 27, 2021",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "-13.99% 0.93%",
+  "Trades": "",
+  "Volume": "906,745",
+  "Change": "-5.49%",
+  "Insider Trading": [
+    {
+      "Owner": "JANAC K CHARLES",
+      "Relationship": "President and CEO",
+      "Date": "Oct 08 '25",
+      "Transaction": "Sale",
+      "Cost": "13.07",
+      "Shares": "50,000",
+      "Value": "653,710"
+    },
+    {
+      "Owner": "Bayview Legacy, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Oct 08 '25",
+      "Transaction": "Sale",
+      "Cost": "13.07",
+      "Shares": "50,000",
+      "Value": "653,710"
+    },
+    {
+      "Owner": "Hawkins Nicholas B.",
+      "Relationship": "VP and Chief Financial Officer",
+      "Date": "Oct 07 '25",
+      "Transaction": "Sale",
+      "Cost": "13.21",
+      "Shares": "6,421",
+      "Value": "84,804"
+    },
+    {
+      "Owner": "JANAC K CHARLES",
+      "Relationship": "President and CEO",
+      "Date": "Oct 06 '25",
+      "Transaction": "Sale",
+      "Cost": "13.10",
+      "Shares": "100,000",
+      "Value": "1,310,450"
+    },
+    {
+      "Owner": "JANAC K CHARLES",
+      "Relationship": "President and CEO",
+      "Date": "Oct 06 '25",
+      "Transaction": "Sale",
+      "Cost": "14.00",
+      "Shares": "5,755",
+      "Value": "80,570"
+    },
+    {
+      "Owner": "Bayview Legacy, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Oct 06 '25",
+      "Transaction": "Sale",
+      "Cost": "13.10",
+      "Shares": "100,000",
+      "Value": "1,310,450"
+    },
+    {
+      "Owner": "Viana Antonio J",
+      "Relationship": "Director",
+      "Date": "Oct 06 '25",
+      "Transaction": "Sale",
+      "Cost": "14.00",
+      "Shares": "11,841",
+      "Value": "165,774"
+    },
+    {
+      "Owner": "BAYVIEW LEGACY, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Oct 08 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "12.95",
+      "Shares": "50,000",
+      "Value": "647,500"
+    },
+    {
+      "Owner": "NICHOLAS HAWKINS",
+      "Relationship": "Officer",
+      "Date": "Oct 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "13.58",
+      "Shares": "6,421",
+      "Value": "87,197"
+    },
+    {
+      "Owner": "Alpern Paul L",
+      "Relationship": "VP and General Counsel",
+      "Date": "Oct 03 '25",
+      "Transaction": "Sale",
+      "Cost": "11.08",
+      "Shares": "4,750",
+      "Value": "52,640"
+    },
+    {
+      "Owner": "Alpern Paul L",
+      "Relationship": "VP and General Counsel",
+      "Date": "Oct 02 '25",
+      "Transaction": "Sale",
+      "Cost": "10.92",
+      "Shares": "2,877",
+      "Value": "31,419"
+    },
+    {
+      "Owner": "Moll Laurent R",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Oct 02 '25",
+      "Transaction": "Sale",
+      "Cost": "10.98",
+      "Shares": "23,762",
+      "Value": "260,834"
+    },
+    {
+      "Owner": "Moll Laurent R",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Oct 06 '25",
+      "Transaction": "Sale",
+      "Cost": "12.66",
+      "Shares": "17,200",
+      "Value": "217,749"
+    },
+    {
+      "Owner": "Moll Laurent R",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Oct 03 '25",
+      "Transaction": "Sale",
+      "Cost": "11.09",
+      "Shares": "1,554",
+      "Value": "17,229"
+    },
+    {
+      "Owner": "JANAC K CHARLES",
+      "Relationship": "President and CEO",
+      "Date": "Oct 03 '25",
+      "Transaction": "Sale",
+      "Cost": "11.07",
+      "Shares": "11,821",
+      "Value": "130,864"
+    },
+    {
+      "Owner": "JANAC K CHARLES",
+      "Relationship": "President and CEO",
+      "Date": "Oct 02 '25",
+      "Transaction": "Sale",
+      "Cost": "10.92",
+      "Shares": "7,147",
+      "Value": "78,051"
+    },
+    {
+      "Owner": "Hawkins Nicholas B.",
+      "Relationship": "VP and Chief Financial Officer",
+      "Date": "Oct 02 '25",
+      "Transaction": "Sale",
+      "Cost": "10.92",
+      "Shares": "3,887",
+      "Value": "42,449"
+    },
+    {
+      "Owner": "K. CHARLES JANAC",
+      "Relationship": "Director",
+      "Date": "Oct 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "10.98",
+      "Shares": "5,755",
+      "Value": "63,190"
+    },
+    {
+      "Owner": "VIANA FAMILY TRUST U/A DTD 07/",
+      "Relationship": "Director",
+      "Date": "Oct 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "10.98",
+      "Shares": "11,841",
+      "Value": "130,014"
+    },
+    {
+      "Owner": "LAURENT MOLL",
+      "Relationship": "Officer",
+      "Date": "Oct 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "10.98",
+      "Shares": "17,200",
+      "Value": "188,856"
+    },
+    {
+      "Owner": "BAYVIEW LEGACY, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Oct 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "10.98",
+      "Shares": "100,000",
+      "Value": "1,098,000"
+    },
+    {
+      "Owner": "PAUL ALPERN",
+      "Relationship": "Officer",
+      "Date": "Oct 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "11.26",
+      "Shares": "4,750",
+      "Value": "53,485"
+    },
+    {
+      "Owner": "LAURENT MOLL",
+      "Relationship": "Officer",
+      "Date": "Oct 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "11.26",
+      "Shares": "1,554",
+      "Value": "17,498"
+    },
+    {
+      "Owner": "K. CHARLES JANAC",
+      "Relationship": "Director",
+      "Date": "Oct 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "11.26",
+      "Shares": "11,821",
+      "Value": "133,104"
+    },
+    {
+      "Owner": "Alpern Paul L",
+      "Relationship": "VP and General Counsel",
+      "Date": "Oct 01 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.56",
+      "Shares": "5,000",
+      "Value": "2,800"
+    },
+    {
+      "Owner": "Alpern Paul L",
+      "Relationship": "VP and General Counsel",
+      "Date": "Oct 01 '25",
+      "Transaction": "Sale",
+      "Cost": "10.31",
+      "Shares": "5,000",
+      "Value": "51,544"
+    },
+    {
+      "Owner": "LAURENT MOLL",
+      "Relationship": "Officer",
+      "Date": "Oct 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "10.50",
+      "Shares": "19,060",
+      "Value": "200,130"
+    },
+    {
+      "Owner": "PAUL ALPERN",
+      "Relationship": "Officer",
+      "Date": "Oct 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "10.10",
+      "Shares": "5,000",
+      "Value": "50,500"
+    },
+    {
+      "Owner": "Alpern Paul L",
+      "Relationship": "VP and General Counsel",
+      "Date": "Sep 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.56",
+      "Shares": "10,000",
+      "Value": "5,600"
+    },
+    {
+      "Owner": "Alpern Paul L",
+      "Relationship": "VP and General Counsel",
+      "Date": "Sep 15 '25",
+      "Transaction": "Sale",
+      "Cost": "8.88",
+      "Shares": "10,000",
+      "Value": "88,805"
+    },
+    {
+      "Owner": "PAUL LAWRENCE ALPERN",
+      "Relationship": "Officer",
+      "Date": "Sep 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.75",
+      "Shares": "10,000",
+      "Value": "87,500"
+    },
+    {
+      "Owner": "Hawkins Nicholas B.",
+      "Relationship": "VP and Chief Financial Officer",
+      "Date": "Sep 09 '25",
+      "Transaction": "Sale",
+      "Cost": "8.69",
+      "Shares": "3,660",
+      "Value": "31,806"
+    },
+    {
+      "Owner": "Alpern Paul L",
+      "Relationship": "VP and General Counsel",
+      "Date": "Sep 09 '25",
+      "Transaction": "Sale",
+      "Cost": "8.69",
+      "Shares": "2,278",
+      "Value": "19,794"
+    },
+    {
+      "Owner": "Alpern Paul L",
+      "Relationship": "VP and General Counsel",
+      "Date": "Sep 08 '25",
+      "Transaction": "Sale",
+      "Cost": "8.98",
+      "Shares": "424",
+      "Value": "3,808"
+    },
+    {
+      "Owner": "Moll Laurent R",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Sep 08 '25",
+      "Transaction": "Sale",
+      "Cost": "8.74",
+      "Shares": "8,129",
+      "Value": "71,075"
+    },
+    {
+      "Owner": "Moll Laurent R",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Sep 05 '25",
+      "Transaction": "Sale",
+      "Cost": "8.80",
+      "Shares": "4,698",
+      "Value": "41,364"
+    },
+    {
+      "Owner": "Moll Laurent R",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Sep 09 '25",
+      "Transaction": "Sale",
+      "Cost": "8.61",
+      "Shares": "151",
+      "Value": "1,300"
+    },
+    {
+      "Owner": "PAUL LAWRENCE ALPERN",
+      "Relationship": "Officer",
+      "Date": "Sep 09 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.59",
+      "Shares": "2,278",
+      "Value": "19,568"
+    },
+    {
+      "Owner": "NICHOLAS HAWKINS",
+      "Relationship": "Officer",
+      "Date": "Sep 09 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.59",
+      "Shares": "3,660",
+      "Value": "31,439"
+    },
+    {
+      "Owner": "JANAC K CHARLES",
+      "Relationship": "President and CEO",
+      "Date": "Sep 04 '25",
+      "Transaction": "Sale",
+      "Cost": "8.73",
+      "Shares": "2,057",
+      "Value": "17,948"
+    },
+    {
+      "Owner": "PAUL LAWRENCE ALPERN",
+      "Relationship": "Officer",
+      "Date": "Sep 08 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.86",
+      "Shares": "424",
+      "Value": "3,757"
+    },
+    {
+      "Owner": "LAURENT MOLL",
+      "Relationship": "Officer",
+      "Date": "Sep 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.84",
+      "Shares": "12,978",
+      "Value": "114,726"
+    },
+    {
+      "Owner": "K. CHARLES JANAC",
+      "Relationship": "Director",
+      "Date": "Sep 04 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.83",
+      "Shares": "2,057",
+      "Value": "18,163"
+    },
+    {
+      "Owner": "Moll Laurent R",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.94",
+      "Shares": "42,692",
+      "Value": "381,739"
+    },
+    {
+      "Owner": "JANAC K CHARLES",
+      "Relationship": "President and CEO",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.94",
+      "Shares": "1,246",
+      "Value": "11,141"
+    },
+    {
+      "Owner": "Hawkins Nicholas B.",
+      "Relationship": "VP and Chief Financial Officer",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.94",
+      "Shares": "438",
+      "Value": "3,916"
+    },
+    {
+      "Owner": "Alpern Paul L",
+      "Relationship": "VP and General Counsel",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.94",
+      "Shares": "258",
+      "Value": "2,307"
+    },
+    {
+      "Owner": "Bayview Legacy, LLC",
+      "Relationship": "10% Owner",
+      "Date": "Aug 05 '25",
+      "Transaction": "Sale",
+      "Cost": "13.12",
+      "Shares": "50,000",
+      "Value": "655,995"
+    },
+    {
+      "Owner": "Viana Antonio J",
+      "Relationship": "Director",
+      "Date": "Aug 05 '25",
+      "Transaction": "Sale",
+      "Cost": "14.14",
+      "Shares": "6,909",
+      "Value": "97,699"
+    },
+    {
+      "Owner": "RAZA SAIYED ATIQ",
+      "Relationship": "Director",
+      "Date": "Aug 05 '25",
+      "Transaction": "Sale",
+      "Cost": "13.07",
+      "Shares": "63,118",
+      "Value": "825,205"
+    },
+    {
+      "Owner": "Moll Laurent R",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Aug 05 '25",
+      "Transaction": "Sale",
+      "Cost": "13.57",
+      "Shares": "34,400",
+      "Value": "466,763"
+    },
+    {
+      "Owner": "Hawkins Nicholas B.",
+      "Relationship": "VP and Chief Financial Officer",
+      "Date": "Aug 05 '25",
+      "Transaction": "Sale",
+      "Cost": "13.15",
+      "Shares": "11,276",
+      "Value": "148,285"
+    },
+    {
+      "Owner": "JANAC K CHARLES",
+      "Relationship": "President and CEO",
+      "Date": "Aug 05 '25",
+      "Transaction": "Sale",
+      "Cost": "13.49",
+      "Shares": "94,245",
+      "Value": "1,271,120"
+    },
+    {
+      "Owner": "JANAC K CHARLES",
+      "Relationship": "President and CEO",
+      "Date": "Aug 05 '25",
+      "Transaction": "Sale",
+      "Cost": "13.12",
+      "Shares": "50,000",
+      "Value": "655,995"
+    },
+    {
+      "Owner": "LAURENT MOLL",
+      "Relationship": "Officer",
+      "Date": "Aug 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.45",
+      "Shares": "34,400",
+      "Value": "325,080"
+    },
+    {
+      "Owner": "K. CHARLES JANAC",
+      "Relationship": "Director",
+      "Date": "Aug 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.45",
+      "Shares": "94,245",
+      "Value": "890,615"
+    },
+    {
+      "Owner": "VIANA FAMILY TRUST",
+      "Relationship": "Director",
+      "Date": "Aug 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.45",
+      "Shares": "6,909",
+      "Value": "65,290"
+    },
+    {
+      "Owner": "BAYVIEW LEGACY, LLC",
+      "Relationship": "Director",
+      "Date": "Aug 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.45",
+      "Shares": "50,000",
+      "Value": "472,500"
+    },
+    {
+      "Owner": "NICHOLAS HAWKINS",
+      "Relationship": "Officer",
+      "Date": "Aug 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.45",
+      "Shares": "11,276",
+      "Value": "106,558"
+    },
+    {
+      "Owner": "Hawkins Nicholas B.",
+      "Relationship": "VP and Chief Financial Officer",
+      "Date": "Aug 01 '25",
+      "Transaction": "Sale",
+      "Cost": "9.03",
+      "Shares": "5,638",
+      "Value": "50,927"
+    },
+    {
+      "Owner": "NICHOLAS HAWKINS",
+      "Relationship": "Officer",
+      "Date": "Aug 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.86",
+      "Shares": "5,638",
+      "Value": "55,591"
+    },
+    {
+      "Owner": "RAZA SAIYED ATIQ",
+      "Relationship": "Director",
+      "Date": "Jul 29 '25",
+      "Transaction": "Sale",
+      "Cost": "10.07",
+      "Shares": "29,544",
+      "Value": "297,384"
+    },
+    {
+      "Owner": "Hawkins Nicholas B.",
+      "Relationship": "VP and Chief Financial Officer",
+      "Date": "Jul 29 '25",
+      "Transaction": "Sale",
+      "Cost": "10.50",
+      "Shares": "5,638",
+      "Value": "59,206"
+    },
+    {
+      "Owner": "Moll Laurent R",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Jul 29 '25",
+      "Transaction": "Sale",
+      "Cost": "10.90",
+      "Shares": "736",
+      "Value": "8,022"
+    },
+    {
+      "Owner": "LAURENT MOLL",
+      "Relationship": "Officer",
+      "Date": "Jul 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.45",
+      "Shares": "736",
+      "Value": "6,955"
+    },
+    {
+      "Owner": "Saiyed Atiq Raza and Nandini S",
+      "Relationship": "Director",
+      "Date": "Jul 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.45",
+      "Shares": "82,405",
+      "Value": "778,727"
+    },
+    {
+      "Owner": "RAZA SAIYED ATIQ",
+      "Relationship": "Director",
+      "Date": "Jul 18 '25",
+      "Transaction": "Sale",
+      "Cost": "10.00",
+      "Shares": "1,136",
+      "Value": "11,360"
+    },
+    {
+      "Owner": "JANAC K CHARLES",
+      "Relationship": "President and CEO",
+      "Date": "Jul 03 '25",
+      "Transaction": "Sale",
+      "Cost": "9.25",
+      "Shares": "11,815",
+      "Value": "109,231"
+    },
+    {
+      "Owner": "JANAC K CHARLES",
+      "Relationship": "President and CEO",
+      "Date": "Jul 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.99",
+      "Shares": "7,153",
+      "Value": "64,323"
+    },
+    {
+      "Owner": "Alpern Paul L",
+      "Relationship": "VP and General Counsel",
+      "Date": "Jul 03 '25",
+      "Transaction": "Sale",
+      "Cost": "9.25",
+      "Shares": "3,609",
+      "Value": "33,371"
+    },
+    {
+      "Owner": "Alpern Paul L",
+      "Relationship": "VP and General Counsel",
+      "Date": "Jul 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.99",
+      "Shares": "2,879",
+      "Value": "25,889"
+    },
+    {
+      "Owner": "Moll Laurent R",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Jul 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.99",
+      "Shares": "4,704",
+      "Value": "42,300"
+    },
+    {
+      "Owner": "Moll Laurent R",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Jul 03 '25",
+      "Transaction": "Sale",
+      "Cost": "9.23",
+      "Shares": "1,554",
+      "Value": "14,342"
+    },
+    {
+      "Owner": "Hawkins Nicholas B.",
+      "Relationship": "VP and Chief Financial Officer",
+      "Date": "Jul 07 '25",
+      "Transaction": "Sale",
+      "Cost": "9.22",
+      "Shares": "4,948",
+      "Value": "45,624"
+    },
+    {
+      "Owner": "Hawkins Nicholas B.",
+      "Relationship": "VP and Chief Financial Officer",
+      "Date": "Jul 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.99",
+      "Shares": "3,889",
+      "Value": "34,971"
+    },
+    {
+      "Owner": "NICHOLAS HAWKINS",
+      "Relationship": "Officer",
+      "Date": "Jul 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.23",
+      "Shares": "10,586",
+      "Value": "97,709"
+    },
+    {
+      "Owner": "PAUL ALPERN",
+      "Relationship": "Officer",
+      "Date": "Jul 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.09",
+      "Shares": "3,609",
+      "Value": "32,806"
+    },
+    {
+      "Owner": "LAURENT MOLL",
+      "Relationship": "Officer",
+      "Date": "Jul 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.09",
+      "Shares": "1,554",
+      "Value": "14,126"
+    },
+    {
+      "Owner": "K. CHARLES JANAC",
+      "Relationship": "Director",
+      "Date": "Jul 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.09",
+      "Shares": "11,815",
+      "Value": "107,398"
+    },
+    {
+      "Owner": "Moll Laurent R",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Jul 01 '25",
+      "Transaction": "Sale",
+      "Cost": "9.09",
+      "Shares": "294",
+      "Value": "2,672"
+    },
+    {
+      "Owner": "RAZA SAIYED ATIQ",
+      "Relationship": "Director",
+      "Date": "Jun 27 '25",
+      "Transaction": "Sale",
+      "Cost": "10.02",
+      "Shares": "19,809",
+      "Value": "198,492"
+    },
+    {
+      "Owner": "JANAC K CHARLES",
+      "Relationship": "President and CEO",
+      "Date": "Jun 27 '25",
+      "Transaction": "Sale",
+      "Cost": "10.02",
+      "Shares": "18,620",
+      "Value": "186,585"
+    },
+    {
+      "Owner": "JANAC K CHARLES",
+      "Relationship": "President and CEO",
+      "Date": "Jul 01 '25",
+      "Transaction": "Sale",
+      "Cost": "9.09",
+      "Shares": "2,666",
+      "Value": "24,239"
+    },
+    {
+      "Owner": "Hawkins Nicholas B.",
+      "Relationship": "VP and Chief Financial Officer",
+      "Date": "Jun 27 '25",
+      "Transaction": "Sale",
+      "Cost": "10.00",
+      "Shares": "5,638",
+      "Value": "56,380"
+    },
+    {
+      "Owner": "Hawkins Nicholas B.",
+      "Relationship": "VP and Chief Financial Officer",
+      "Date": "Jul 01 '25",
+      "Transaction": "Sale",
+      "Cost": "9.08",
+      "Shares": "5,638",
+      "Value": "51,196"
+    },
+    {
+      "Owner": "NICHOLAS HAWKINS",
+      "Relationship": "Officer",
+      "Date": "Jul 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.53",
+      "Shares": "5,638",
+      "Value": "53,730"
+    },
+    {
+      "Owner": "K. CHARLES JANAC",
+      "Relationship": "Director",
+      "Date": "Jul 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.53",
+      "Shares": "2,666",
+      "Value": "25,407"
+    },
+    {
+      "Owner": "LAURENT MOLL",
+      "Relationship": "Officer",
+      "Date": "Jul 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.53",
+      "Shares": "294",
+      "Value": "2,802"
+    },
+    {
+      "Owner": "BAYVIEW LEGACY, LLC",
+      "Relationship": "Director",
+      "Date": "Jun 27 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.58",
+      "Shares": "50,000",
+      "Value": "479,000"
+    },
+    {
+      "Owner": "Saiyed Atiq Raza and Nandini S",
+      "Relationship": "Director",
+      "Date": "Jun 27 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.58",
+      "Shares": "31,202",
+      "Value": "298,915"
+    },
+    {
+      "Owner": "NICHOLAS HAWKINS",
+      "Relationship": "Officer",
+      "Date": "Jun 27 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.58",
+      "Shares": "5,638",
+      "Value": "54,012"
+    },
+    {
+      "Owner": "Hawkins Nicholas B.",
+      "Relationship": "VP and Chief Financial Officer",
+      "Date": "Jun 26 '25",
+      "Transaction": "Sale",
+      "Cost": "9.75",
+      "Shares": "5,638",
+      "Value": "54,970"
+    },
+    {
+      "Owner": "Hawkins Nicholas B.",
+      "Relationship": "VP and Chief Financial Officer",
+      "Date": "Jun 25 '25",
+      "Transaction": "Sale",
+      "Cost": "9.50",
+      "Shares": "5,638",
+      "Value": "53,561"
+    },
+    {
+      "Owner": "NICHOLAS HAWKINS",
+      "Relationship": "Officer",
+      "Date": "Jun 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "9.02",
+      "Shares": "11,276",
+      "Value": "101,710"
+    },
+    {
+      "Owner": "Hawkins Nicholas B.",
+      "Relationship": "VP and Chief Financial Officer",
+      "Date": "Jun 09 '25",
+      "Transaction": "Sale",
+      "Cost": "8.07",
+      "Shares": "3,770",
+      "Value": "30,405"
+    },
+    {
+      "Owner": "Viana Antonio J",
+      "Relationship": "Director",
+      "Date": "Jun 05 '25",
+      "Transaction": "Sale",
+      "Cost": "7.65",
+      "Shares": "19,287",
+      "Value": "147,594"
+    },
+    {
+      "Owner": "Alpern Paul L",
+      "Relationship": "VP and General Counsel",
+      "Date": "Jun 05 '25",
+      "Transaction": "Sale",
+      "Cost": "7.66",
+      "Shares": "423",
+      "Value": "3,241"
+    },
+    {
+      "Owner": "JANAC K CHARLES",
+      "Relationship": "President and CEO",
+      "Date": "Jun 04 '25",
+      "Transaction": "Sale",
+      "Cost": "7.83",
+      "Shares": "2,057",
+      "Value": "16,102"
+    },
+    {
+      "Owner": "Hawkins Nicholas B.",
+      "Relationship": "VP and Chief Financial Officer",
+      "Date": "Jun 04 '25",
+      "Transaction": "Sale",
+      "Cost": "8.02",
+      "Shares": "1,730",
+      "Value": "13,877"
+    },
+    {
+      "Owner": "Hawkins Nicholas B.",
+      "Relationship": "VP and Chief Financial Officer",
+      "Date": "Jun 05 '25",
+      "Transaction": "Sale",
+      "Cost": "7.66",
+      "Shares": "721",
+      "Value": "5,521"
+    }
+  ],
+  "Dividends": []
+}

@@ -1,0 +1,988 @@
+{
+  "Index": "DJIA, NDX, S&P 500",
+  "P/E": "33.02",
+  "EPS (ttm)": "6.55",
+  "Insider Own": "9.43%",
+  "Shs Outstand": "10.66B",
+  "Perf Week": "-1.43%",
+  "Market Cap": "2307.57B",
+  "Forward P/E": "28.47",
+  "EPS next Y": "13.99%",
+  "Insider Trans": "-2.44%",
+  "Shs Float": "9.66B",
+  "Perf Month": "-5.91%",
+  "Enterprise Value": "2362.59B",
+  "PEG": "1.77",
+  "EPS next Q": "1.56",
+  "Inst Own": "65.37%",
+  "Short Float": "0.80%",
+  "Perf Quarter": "-4.13%",
+  "Income": "70.62B",
+  "P/S": "3.44",
+  "EPS this Y": "20.56%",
+  "Inst Trans": "1.29%",
+  "Short Ratio": "1.80",
+  "Perf Half Y": "19.40%",
+  "Sales": "670.04B",
+  "P/B": "6.91",
+  "ROA": "11.42%",
+  "Short Interest": "0.80%",
+  "Perf YTD": "-1.38%",
+  "Book/sh": "31.31",
+  "P/C": "23.82",
+  "EPS next 5Y": "18.64%",
+  "ROE": "24.77%",
+  "52W High": "242.52 -10.78%",
+  "Perf Year": "18.42%",
+  "Cash/sh": "9.09",
+  "P/FCF": "171.17",
+  "EPS past 3/5Y": "19.49% 36.89%",
+  "ROIC": "15.10%",
+  "52W Low": "161.38 34.07%",
+  "Perf 3Y": "78.89%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "17.41",
+  "Sales past 3/5Y": "10.74% 17.86%",
+  "Gross Margin": "49.61%",
+  "Volatility": "2.99% 2.24%",
+  "Perf 5Y": "35.27%",
+  "Dividend TTM": "-",
+  "EV/Sales": "3.53",
+  "EPS Y/Y TTM": "56.13%",
+  "Oper. Margin": "11.51%",
+  "ATR (14)": "5.37",
+  "Perf 10Y": "712.60%",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "0.81",
+  "Sales Y/Y TTM": "10.87%",
+  "Profit Margin": "10.54%",
+  "RSI (14)": "40.14",
+  "Recom": "1.24",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "1.02",
+  "EPS Q/Q": "33.48%",
+  "SMA20": "-3.46%",
+  "Beta": "1.28",
+  "Target Price": "265.43",
+  "Payout": "0.00%",
+  "Debt/Eq": "0.46",
+  "Sales Q/Q": "13.33%",
+  "SMA50": "-4.11%",
+  "Rel Volume": "1.65",
+  "Prev Close": "227.74",
+  "Employees": "1556000",
+  "LT Debt/Eq": "0.40",
+  "Earnings": "Jul 31 AMC",
+  "SMA200": "0.88%",
+  "Avg Volume": "42.70M",
+  "Price": "216.37",
+  "IPO": "May 15, 1997",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "26.44% 3.25%",
+  "Trades": "",
+  "Volume": "70,628,958",
+  "Change": "-4.99%",
+  "Insider Trading": [
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "Oct 01 '25",
+      "Transaction": "Sale",
+      "Cost": "217.10",
+      "Shares": "2,500",
+      "Value": "542,750"
+    },
+    {
+      "Owner": "DOUGLAS HERRINGTON",
+      "Relationship": "Officer",
+      "Date": "Oct 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "219.57",
+      "Shares": "19,119",
+      "Value": "4,197,959"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "223.49",
+      "Shares": "2,500",
+      "Value": "558,725"
+    },
+    {
+      "Owner": "Jassy Andrew R",
+      "Relationship": "President and CEO",
+      "Date": "Aug 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "49,680",
+      "Value": "0"
+    },
+    {
+      "Owner": "Jassy Andrew R",
+      "Relationship": "President and CEO",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "221.58",
+      "Shares": "19,872",
+      "Value": "4,403,259"
+    },
+    {
+      "Owner": "Garman Matthew S",
+      "Relationship": "CEO Amazon Web Services",
+      "Date": "Aug 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "20,923",
+      "Value": "0"
+    },
+    {
+      "Owner": "Garman Matthew S",
+      "Relationship": "CEO Amazon Web Services",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "221.57",
+      "Shares": "17,785",
+      "Value": "3,940,677"
+    },
+    {
+      "Owner": "Zapolsky David",
+      "Relationship": "Senior Vice President",
+      "Date": "Aug 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "17,750",
+      "Value": "0"
+    },
+    {
+      "Owner": "Zapolsky David",
+      "Relationship": "Senior Vice President",
+      "Date": "Aug 22 '25",
+      "Transaction": "Sale",
+      "Cost": "222.76",
+      "Shares": "13,570",
+      "Value": "3,022,853"
+    },
+    {
+      "Owner": "Zapolsky David",
+      "Relationship": "Senior Vice President",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "221.54",
+      "Shares": "7,100",
+      "Value": "1,572,945"
+    },
+    {
+      "Owner": "Olsavsky Brian T",
+      "Relationship": "Senior Vice President and CFO",
+      "Date": "Aug 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "17,750",
+      "Value": "0"
+    },
+    {
+      "Owner": "Olsavsky Brian T",
+      "Relationship": "Senior Vice President and CFO",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "222.74",
+      "Shares": "17,750",
+      "Value": "3,953,635"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "Aug 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "17,087",
+      "Value": "0"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "221.62",
+      "Shares": "6,835",
+      "Value": "1,514,783"
+    },
+    {
+      "Owner": "Reynolds Shelley",
+      "Relationship": "Vice President",
+      "Date": "Aug 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,715",
+      "Value": "0"
+    },
+    {
+      "Owner": "Reynolds Shelley",
+      "Relationship": "Vice President",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "221.64",
+      "Shares": "2,715",
+      "Value": "601,755"
+    },
+    {
+      "Owner": "Zapolsky David",
+      "Relationship": "Officer",
+      "Date": "Aug 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "222.76",
+      "Shares": "13,570",
+      "Value": "3,022,853"
+    },
+    {
+      "Owner": "SHELLEY REYNOLDS",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "223.81",
+      "Shares": "2,715",
+      "Value": "607,644"
+    },
+    {
+      "Owner": "Zapolsky David",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "221.54",
+      "Shares": "7,100",
+      "Value": "1,572,945"
+    },
+    {
+      "Owner": "Garman Matthew S",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "221.57",
+      "Shares": "17,785",
+      "Value": "3,940,677"
+    },
+    {
+      "Owner": "Jassy Andrew R",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "221.58",
+      "Shares": "19,872",
+      "Value": "4,403,259"
+    },
+    {
+      "Owner": "Olsavsky Brian T",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "222.74",
+      "Shares": "17,750",
+      "Value": "3,953,635"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "Aug 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "11,959",
+      "Value": "0"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "Aug 15 '25",
+      "Transaction": "Sale",
+      "Cost": "232.32",
+      "Shares": "4,784",
+      "Value": "1,111,410"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "Aug 01 '25",
+      "Transaction": "Sale",
+      "Cost": "217.00",
+      "Shares": "2,500",
+      "Value": "542,500"
+    },
+    {
+      "Owner": "BEZOS JEFFREY P",
+      "Relationship": "Executive Chair",
+      "Date": "Jul 24 '25",
+      "Transaction": "Sale",
+      "Cost": "230.43",
+      "Shares": "2,643,142",
+      "Value": "609,055,618"
+    },
+    {
+      "Owner": "BEZOS JEFFREY P",
+      "Relationship": "Executive Chair",
+      "Date": "Jul 23 '25",
+      "Transaction": "Sale",
+      "Cost": "228.48",
+      "Shares": "1,510,956",
+      "Value": "345,219,752"
+    },
+    {
+      "Owner": "BEZOS JEFFREY P",
+      "Relationship": "Executive Chair",
+      "Date": "Jul 21 '25",
+      "Transaction": "Sale",
+      "Cost": "227.77",
+      "Shares": "4,273,237",
+      "Value": "973,318,251"
+    },
+    {
+      "Owner": "BEZOS JEFFREY P",
+      "Relationship": "Executive Chair",
+      "Date": "Jul 22 '25",
+      "Transaction": "Sale",
+      "Cost": "229.39",
+      "Shares": "2,339,470",
+      "Value": "536,641,386"
+    },
+    {
+      "Owner": "BEZOS JEFFREY P",
+      "Relationship": "Executive Chair",
+      "Date": "Jul 15 '25",
+      "Transaction": "Sale",
+      "Cost": "227.02",
+      "Shares": "733,195",
+      "Value": "166,449,709"
+    },
+    {
+      "Owner": "BEZOS JEFFREY P",
+      "Relationship": "Executive Chair",
+      "Date": "Jul 11 '25",
+      "Transaction": "Sale",
+      "Cost": "224.81",
+      "Shares": "4,273,237",
+      "Value": "960,684,493"
+    },
+    {
+      "Owner": "BEZOS JEFFREY P",
+      "Relationship": "Executive Chair",
+      "Date": "Jul 14 '25",
+      "Transaction": "Sale",
+      "Cost": "225.89",
+      "Shares": "2,442,187",
+      "Value": "551,671,567"
+    },
+    {
+      "Owner": "BEZOS JEFFREY P",
+      "Relationship": "Executive Chair",
+      "Date": "Jul 09 '25",
+      "Transaction": "Sale",
+      "Cost": "224.02",
+      "Shares": "384,124",
+      "Value": "86,052,572"
+    },
+    {
+      "Owner": "BEZOS JEFFREY P",
+      "Relationship": "Executive Chair",
+      "Date": "Jul 08 '25",
+      "Transaction": "Sale",
+      "Cost": "223.88",
+      "Shares": "101,081",
+      "Value": "22,630,055"
+    },
+    {
+      "Owner": "BEZOS JEFFREY P",
+      "Relationship": "Executive Chair",
+      "Date": "Jul 07 '25",
+      "Transaction": "Sale",
+      "Cost": "223.92",
+      "Shares": "2,046,582",
+      "Value": "458,271,869"
+    },
+    {
+      "Owner": "BEZOS JEFFREY P",
+      "Relationship": "Executive Chair",
+      "Date": "Jul 03 '25",
+      "Transaction": "Sale",
+      "Cost": "223.73",
+      "Shares": "927,863",
+      "Value": "207,592,274"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "Jul 01 '25",
+      "Transaction": "Sale",
+      "Cost": "220.06",
+      "Shares": "2,500",
+      "Value": "550,144"
+    },
+    {
+      "Owner": "DOUGLAS HERRINGTON",
+      "Relationship": "Officer",
+      "Date": "Jul 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "219.39",
+      "Shares": "19,119",
+      "Value": "4,194,517"
+    },
+    {
+      "Owner": "BEZOS JEFFREY P",
+      "Relationship": "Executive Chair",
+      "Date": "Jun 27 '25",
+      "Transaction": "Sale",
+      "Cost": "221.42",
+      "Shares": "3,100,000",
+      "Value": "686,399,202"
+    },
+    {
+      "Owner": "BEZOS JEFFREY P",
+      "Relationship": "Executive Chair",
+      "Date": "Jun 30 '25",
+      "Transaction": "Sale",
+      "Cost": "223.56",
+      "Shares": "224,926",
+      "Value": "50,284,187"
+    },
+    {
+      "Owner": "Jeffrey P. Bezos",
+      "Relationship": "Director",
+      "Date": "Jun 27 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "217.12",
+      "Shares": "25,000,000",
+      "Value": "5,428,000,000"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "Jun 02 '25",
+      "Transaction": "Sale",
+      "Cost": "204.98",
+      "Shares": "2,500",
+      "Value": "512,450"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "May 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "17,107",
+      "Value": "0"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "May 21 '25",
+      "Transaction": "Sale",
+      "Cost": "200.77",
+      "Shares": "6,843",
+      "Value": "1,373,851"
+    },
+    {
+      "Owner": "Jassy Andrew R",
+      "Relationship": "President and CEO",
+      "Date": "May 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "49,680",
+      "Value": "0"
+    },
+    {
+      "Owner": "Jassy Andrew R",
+      "Relationship": "President and CEO",
+      "Date": "May 21 '25",
+      "Transaction": "Sale",
+      "Cost": "201.30",
+      "Shares": "19,872",
+      "Value": "4,000,320"
+    },
+    {
+      "Owner": "Garman Matthew S",
+      "Relationship": "CEO Amazon Web Services",
+      "Date": "May 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "20,923",
+      "Value": "0"
+    },
+    {
+      "Owner": "Garman Matthew S",
+      "Relationship": "CEO Amazon Web Services",
+      "Date": "May 21 '25",
+      "Transaction": "Sale",
+      "Cost": "201.30",
+      "Shares": "20,923",
+      "Value": "4,211,791"
+    },
+    {
+      "Owner": "Zapolsky David",
+      "Relationship": "Senior Vice President",
+      "Date": "May 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "17,750",
+      "Value": "0"
+    },
+    {
+      "Owner": "Zapolsky David",
+      "Relationship": "Senior Vice President",
+      "Date": "May 22 '25",
+      "Transaction": "Sale",
+      "Cost": "202.41",
+      "Shares": "13,570",
+      "Value": "2,746,678"
+    },
+    {
+      "Owner": "Zapolsky David",
+      "Relationship": "Senior Vice President",
+      "Date": "May 21 '25",
+      "Transaction": "Sale",
+      "Cost": "201.23",
+      "Shares": "7,100",
+      "Value": "1,428,764"
+    },
+    {
+      "Owner": "Olsavsky Brian T",
+      "Relationship": "Senior Vice President and CFO",
+      "Date": "May 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "17,750",
+      "Value": "0"
+    },
+    {
+      "Owner": "Olsavsky Brian T",
+      "Relationship": "Senior Vice President and CFO",
+      "Date": "May 21 '25",
+      "Transaction": "Sale",
+      "Cost": "201.57",
+      "Shares": "17,750",
+      "Value": "3,577,868"
+    },
+    {
+      "Owner": "Reynolds Shelley",
+      "Relationship": "Vice President",
+      "Date": "May 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,695",
+      "Value": "0"
+    },
+    {
+      "Owner": "Reynolds Shelley",
+      "Relationship": "Vice President",
+      "Date": "May 21 '25",
+      "Transaction": "Sale",
+      "Cost": "200.79",
+      "Shares": "2,695",
+      "Value": "541,129"
+    },
+    {
+      "Owner": "Zapolsky David",
+      "Relationship": "Officer",
+      "Date": "May 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "203.42",
+      "Shares": "7,100",
+      "Value": "1,444,267"
+    },
+    {
+      "Owner": "Zapolsky David",
+      "Relationship": "Officer",
+      "Date": "May 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "201.30",
+      "Shares": "6,470",
+      "Value": "1,302,411"
+    },
+    {
+      "Owner": "SHELLEY REYNOLDS",
+      "Relationship": "Officer",
+      "Date": "May 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "204.07",
+      "Shares": "2,695",
+      "Value": "549,969"
+    },
+    {
+      "Owner": "Olsavsky Brian T",
+      "Relationship": "Officer",
+      "Date": "May 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "201.57",
+      "Shares": "17,750",
+      "Value": "3,577,868"
+    },
+    {
+      "Owner": "Zapolsky David",
+      "Relationship": "Officer",
+      "Date": "May 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "201.61",
+      "Shares": "7,100",
+      "Value": "1,431,431"
+    },
+    {
+      "Owner": "Jassy Andrew R",
+      "Relationship": "Officer",
+      "Date": "May 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "201.61",
+      "Shares": "19,872",
+      "Value": "4,006,394"
+    },
+    {
+      "Owner": "Garman Matthew S",
+      "Relationship": "Officer",
+      "Date": "May 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "201.61",
+      "Shares": "20,923",
+      "Value": "4,218,286"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "May 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "11,960",
+      "Value": "0"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "May 15 '25",
+      "Transaction": "Sale",
+      "Cost": "205.05",
+      "Shares": "4,784",
+      "Value": "980,971"
+    },
+    {
+      "Owner": "NOOYI INDRA K",
+      "Relationship": "Director",
+      "Date": "May 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,120",
+      "Value": "0"
+    },
+    {
+      "Owner": "Ng Andrew Y.",
+      "Relationship": "Director",
+      "Date": "May 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,984",
+      "Value": "0"
+    },
+    {
+      "Owner": "DAY 1 ACADEMIES",
+      "Relationship": "Nonprofit founded by Jeffrey P",
+      "Date": "May 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "204.85",
+      "Shares": "474,857",
+      "Value": "97,276,593"
+    },
+    {
+      "Owner": "Alexander Keith Brian",
+      "Relationship": "Director",
+      "Date": "May 12 '25",
+      "Transaction": "Sale",
+      "Cost": "210.68",
+      "Shares": "1,000",
+      "Value": "210,680"
+    },
+    {
+      "Owner": "Alexander Keith Brian",
+      "Relationship": "Director",
+      "Date": "May 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "210.68",
+      "Shares": "1,000",
+      "Value": "210,680"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "May 01 '25",
+      "Transaction": "Sale",
+      "Cost": "190.67",
+      "Shares": "2,500",
+      "Value": "476,675"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "Apr 01 '25",
+      "Transaction": "Sale",
+      "Cost": "187.99",
+      "Shares": "2,500",
+      "Value": "469,975"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "Mar 03 '25",
+      "Transaction": "Sale",
+      "Cost": "213.17",
+      "Shares": "2,500",
+      "Value": "532,925"
+    },
+    {
+      "Owner": "DOUGLAS HERRINGTON",
+      "Relationship": "Officer",
+      "Date": "Mar 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "212.28",
+      "Shares": "21,627",
+      "Value": "4,590,980"
+    },
+    {
+      "Owner": "Jassy Andrew R",
+      "Relationship": "President and CEO",
+      "Date": "Feb 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "51,960",
+      "Value": "0"
+    },
+    {
+      "Owner": "Jassy Andrew R",
+      "Relationship": "President and CEO",
+      "Date": "Feb 21 '25",
+      "Transaction": "Sale",
+      "Cost": "220.65",
+      "Shares": "20,784",
+      "Value": "4,586,006"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "Feb 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "15,260",
+      "Value": "0"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "Feb 21 '25",
+      "Transaction": "Sale",
+      "Cost": "222.47",
+      "Shares": "6,104",
+      "Value": "1,357,967"
+    },
+    {
+      "Owner": "Olsavsky Brian T",
+      "Relationship": "Senior Vice President and CFO",
+      "Date": "Feb 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "14,620",
+      "Value": "0"
+    },
+    {
+      "Owner": "Olsavsky Brian T",
+      "Relationship": "Senior Vice President and CFO",
+      "Date": "Feb 21 '25",
+      "Transaction": "Sale",
+      "Cost": "223.14",
+      "Shares": "14,620",
+      "Value": "3,262,307"
+    },
+    {
+      "Owner": "Zapolsky David",
+      "Relationship": "Senior Vice President",
+      "Date": "Feb 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "14,620",
+      "Value": "0"
+    },
+    {
+      "Owner": "Zapolsky David",
+      "Relationship": "Senior Vice President",
+      "Date": "Feb 24 '25",
+      "Transaction": "Sale",
+      "Cost": "217.50",
+      "Shares": "19,212",
+      "Value": "4,178,610"
+    },
+    {
+      "Owner": "Zapolsky David",
+      "Relationship": "Senior Vice President",
+      "Date": "Feb 21 '25",
+      "Transaction": "Sale",
+      "Cost": "220.72",
+      "Shares": "5,848",
+      "Value": "1,290,754"
+    },
+    {
+      "Owner": "Reynolds Shelley",
+      "Relationship": "Vice President",
+      "Date": "Feb 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "5,471",
+      "Value": "0"
+    },
+    {
+      "Owner": "Reynolds Shelley",
+      "Relationship": "Vice President",
+      "Date": "Feb 21 '25",
+      "Transaction": "Sale",
+      "Cost": "222.47",
+      "Shares": "8,833",
+      "Value": "1,965,107"
+    },
+    {
+      "Owner": "Garman Matthew S",
+      "Relationship": "CEO Amazon Web Services",
+      "Date": "Feb 21 '25",
+      "Transaction": "Sale",
+      "Cost": "220.69",
+      "Shares": "15,240",
+      "Value": "3,363,292"
+    },
+    {
+      "Owner": "Zapolsky David",
+      "Relationship": "Officer",
+      "Date": "Feb 24 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "217.50",
+      "Shares": "19,212",
+      "Value": "4,178,610"
+    },
+    {
+      "Owner": "SHELLEY REYNOLDS",
+      "Relationship": "Officer",
+      "Date": "Feb 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "222.88",
+      "Shares": "8,833",
+      "Value": "1,968,699"
+    },
+    {
+      "Owner": "Olsavsky Brian T",
+      "Relationship": "Officer",
+      "Date": "Feb 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "223.14",
+      "Shares": "14,620",
+      "Value": "3,262,307"
+    },
+    {
+      "Owner": "Jassy Andrew R",
+      "Relationship": "Officer",
+      "Date": "Feb 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "220.65",
+      "Shares": "20,784",
+      "Value": "4,586,006"
+    },
+    {
+      "Owner": "Garman Matthew S",
+      "Relationship": "Officer",
+      "Date": "Feb 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "220.69",
+      "Shares": "15,240",
+      "Value": "3,363,292"
+    },
+    {
+      "Owner": "Zapolsky David",
+      "Relationship": "Officer",
+      "Date": "Feb 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "220.72",
+      "Shares": "5,848",
+      "Value": "1,290,754"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "Feb 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "13,752",
+      "Value": "0"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "Feb 18 '25",
+      "Transaction": "Sale",
+      "Cost": "228.44",
+      "Shares": "5,501",
+      "Value": "1,256,672"
+    },
+    {
+      "Owner": "GORELICK JAMIE S",
+      "Relationship": "Director",
+      "Date": "Feb 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,677",
+      "Value": "0"
+    },
+    {
+      "Owner": "WEEKS WENDELL P",
+      "Relationship": "Director",
+      "Date": "Feb 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,900",
+      "Value": "0"
+    },
+    {
+      "Owner": "Herrington Douglas J",
+      "Relationship": "CEO Worldwide Amazon Stores",
+      "Date": "Feb 12 '25",
+      "Transaction": "Sale",
+      "Cost": "230.27",
+      "Shares": "27,500",
+      "Value": "6,332,368"
+    },
+    {
+      "Owner": "DOUGLAS HERRINGTON",
+      "Relationship": "Officer",
+      "Date": "Feb 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "232.76",
+      "Shares": "39,105",
+      "Value": "9,102,080"
+    },
+    {
+      "Owner": "RUBINSTEIN JONATHAN",
+      "Relationship": "Director",
+      "Date": "Dec 09 '24",
+      "Transaction": "Sale",
+      "Cost": "229.85",
+      "Shares": "4,351",
+      "Value": "1,000,077"
+    },
+    {
+      "Owner": "RUBINSTEIN JONATHAN",
+      "Relationship": "Director",
+      "Date": "Dec 09 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "229.85",
+      "Shares": "4,351",
+      "Value": "1,000,077"
+    },
+    {
+      "Owner": "RUBINSTEIN JONATHAN",
+      "Relationship": "Director",
+      "Date": "Dec 04 '24",
+      "Transaction": "Sale",
+      "Cost": "219.85",
+      "Shares": "4,549",
+      "Value": "1,000,098"
+    }
+  ],
+  "Dividends": []
+}

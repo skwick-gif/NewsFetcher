@@ -1,0 +1,988 @@
+{
+  "Index": "RUT",
+  "P/E": "-",
+  "EPS (ttm)": "-0.34",
+  "Insider Own": "8.65%",
+  "Shs Outstand": "28.18M",
+  "Perf Week": "-5.72%",
+  "Market Cap": "457.24M",
+  "Forward P/E": "6.87",
+  "EPS next Y": "38.17%",
+  "Insider Trans": "-4.97%",
+  "Shs Float": "27.53M",
+  "Perf Month": "-7.50%",
+  "Enterprise Value": "868.98M",
+  "PEG": "-",
+  "EPS next Q": "0.37",
+  "Inst Own": "71.20%",
+  "Short Float": "3.50%",
+  "Perf Quarter": "-0.98%",
+  "Income": "-10.02M",
+  "P/S": "0.60",
+  "EPS this Y": "19.25%",
+  "Inst Trans": "3.65%",
+  "Short Ratio": "3.51",
+  "Perf Half Y": "22.73%",
+  "Sales": "758.11M",
+  "P/B": "1.19",
+  "ROA": "-0.99%",
+  "Short Interest": "3.50%",
+  "Perf YTD": "-10.87%",
+  "Book/sh": "12.76",
+  "P/C": "6.69",
+  "EPS next 5Y": "22.03%",
+  "ROE": "-2.90%",
+  "52W High": "23.00 -34.04%",
+  "Perf Year": "-12.46%",
+  "Cash/sh": "2.27",
+  "P/FCF": "8.06",
+  "EPS past 3/5Y": "39.64% -",
+  "ROIC": "-1.17%",
+  "52W Low": "11.33 33.89%",
+  "Perf 3Y": "16.69%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "21.35",
+  "Sales past 3/5Y": "15.10% 26.33%",
+  "Gross Margin": "35.51%",
+  "Volatility": "4.87% 4.55%",
+  "Perf 5Y": "-91.67%",
+  "Dividend TTM": "-",
+  "EV/Sales": "1.15",
+  "EPS Y/Y TTM": "58.41%",
+  "Oper. Margin": "-1.58%",
+  "ATR (14)": "0.71",
+  "Perf 10Y": "-",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "1.28",
+  "Sales Y/Y TTM": "14.51%",
+  "Profit Margin": "-1.32%",
+  "RSI (14)": "40.66",
+  "Recom": "1.80",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "1.28",
+  "EPS Q/Q": "-220.09%",
+  "SMA20": "-9.93%",
+  "Beta": "1.92",
+  "Target Price": "21.50",
+  "Payout": "-",
+  "Debt/Eq": "1.25",
+  "Sales Q/Q": "3.69%",
+  "SMA50": "-2.04%",
+  "Rel Volume": "0.87",
+  "Prev Close": "15.99",
+  "Employees": "1100",
+  "LT Debt/Eq": "1.22",
+  "Earnings": "Oct 30 BMO",
+  "SMA200": "-0.31%",
+  "Avg Volume": "275.10K",
+  "Price": "15.17",
+  "IPO": "Nov 10, 2017",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "14.01% 0.64%",
+  "Trades": "",
+  "Volume": "238,081",
+  "Change": "-5.13%",
+  "Insider Trading": [
+    {
+      "Owner": "Krupka Devin M",
+      "Relationship": "Controller, PAO",
+      "Date": "Sep 17 '25",
+      "Transaction": "Sale",
+      "Cost": "18.00",
+      "Shares": "7,166",
+      "Value": "129,009"
+    },
+    {
+      "Owner": "Krupka Devin M",
+      "Relationship": "Officer",
+      "Date": "Sep 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "18.00",
+      "Shares": "7,166",
+      "Value": "129,010"
+    },
+    {
+      "Owner": "Raiford Daryl E",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Sep 11 '25",
+      "Transaction": "Sale",
+      "Cost": "15.52",
+      "Shares": "14,500",
+      "Value": "225,085"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Sep 05 '25",
+      "Transaction": "Sale",
+      "Cost": "15.50",
+      "Shares": "19,000",
+      "Value": "294,587"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Sep 09 '25",
+      "Transaction": "Sale",
+      "Cost": "15.47",
+      "Shares": "14,143",
+      "Value": "218,778"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Sep 08 '25",
+      "Transaction": "Sale",
+      "Cost": "15.71",
+      "Shares": "5,000",
+      "Value": "78,534"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Sep 08 '25",
+      "Transaction": "Sale",
+      "Cost": "15.70",
+      "Shares": "1,625",
+      "Value": "25,512"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Officer",
+      "Date": "Sep 08 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "15.68",
+      "Shares": "34,375",
+      "Value": "539,000"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Officer",
+      "Date": "Sep 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "15.65",
+      "Shares": "19,000",
+      "Value": "297,350"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Sep 03 '25",
+      "Transaction": "Sale",
+      "Cost": "15.23",
+      "Shares": "4,117",
+      "Value": "62,708"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Sep 04 '25",
+      "Transaction": "Sale",
+      "Cost": "15.46",
+      "Shares": "2,594",
+      "Value": "40,109"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "14.96",
+      "Shares": "2,150",
+      "Value": "32,162"
+    },
+    {
+      "Owner": "Krupka Devin M",
+      "Relationship": "Controller, PAO",
+      "Date": "Aug 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "4,146",
+      "Value": "0"
+    },
+    {
+      "Owner": "Krupka Devin M",
+      "Relationship": "Controller, PAO",
+      "Date": "Aug 29 '25",
+      "Transaction": "Sale",
+      "Cost": "15.09",
+      "Shares": "1,189",
+      "Value": "17,936"
+    },
+    {
+      "Owner": "Ross Kade",
+      "Relationship": "Chief Information Officer",
+      "Date": "Aug 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "5,697",
+      "Value": "0"
+    },
+    {
+      "Owner": "Ross Kade",
+      "Relationship": "Chief Information Officer",
+      "Date": "Aug 29 '25",
+      "Transaction": "Sale",
+      "Cost": "15.09",
+      "Shares": "1,634",
+      "Value": "24,649"
+    },
+    {
+      "Owner": "Bottorff Rebecca",
+      "Relationship": "Chief People Officer",
+      "Date": "Aug 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "7,867",
+      "Value": "0"
+    },
+    {
+      "Owner": "Bottorff Rebecca",
+      "Relationship": "Chief People Officer",
+      "Date": "Aug 29 '25",
+      "Transaction": "Sale",
+      "Cost": "15.09",
+      "Shares": "2,257",
+      "Value": "34,047"
+    },
+    {
+      "Owner": "Asbill Richard Brandon",
+      "Relationship": "General Counsel",
+      "Date": "Aug 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "6,455",
+      "Value": "0"
+    },
+    {
+      "Owner": "Asbill Richard Brandon",
+      "Relationship": "General Counsel",
+      "Date": "Aug 29 '25",
+      "Transaction": "Sale",
+      "Cost": "15.09",
+      "Shares": "1,852",
+      "Value": "27,938"
+    },
+    {
+      "Owner": "Agarwal Devesh",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Aug 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "6,081",
+      "Value": "0"
+    },
+    {
+      "Owner": "Agarwal Devesh",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Aug 29 '25",
+      "Transaction": "Sale",
+      "Cost": "15.09",
+      "Shares": "1,745",
+      "Value": "26,323"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Aug 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "8,872",
+      "Value": "0"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Aug 30 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "10,603",
+      "Value": "0"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Aug 29 '25",
+      "Transaction": "Sale",
+      "Cost": "15.09",
+      "Shares": "3,488",
+      "Value": "52,617"
+    },
+    {
+      "Owner": "Morken David A.",
+      "Relationship": "Chairman & CEO",
+      "Date": "Aug 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "11,964",
+      "Value": "0"
+    },
+    {
+      "Owner": "Morken David A.",
+      "Relationship": "Chairman & CEO",
+      "Date": "Aug 29 '25",
+      "Transaction": "Sale",
+      "Cost": "15.09",
+      "Shares": "5,224",
+      "Value": "78,805"
+    },
+    {
+      "Owner": "Suriano Douglas A",
+      "Relationship": "Director",
+      "Date": "Aug 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,025",
+      "Value": "0"
+    },
+    {
+      "Owner": "Bailey Brian D.",
+      "Relationship": "Director",
+      "Date": "Aug 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,025",
+      "Value": "0"
+    },
+    {
+      "Owner": "Roush Lukas M.",
+      "Relationship": "Director",
+      "Date": "Aug 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,025",
+      "Value": "0"
+    },
+    {
+      "Owner": "Murdock John C.",
+      "Relationship": "Director",
+      "Date": "Aug 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,025",
+      "Value": "0"
+    },
+    {
+      "Owner": "Murdock John C.",
+      "Relationship": "Director",
+      "Date": "Aug 29 '25",
+      "Transaction": "Sale",
+      "Cost": "15.05",
+      "Shares": "2,025",
+      "Value": "30,478"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Officer",
+      "Date": "Aug 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.75",
+      "Shares": "4,000",
+      "Value": "59,000"
+    },
+    {
+      "Owner": "Morken David A.",
+      "Relationship": "Officer",
+      "Date": "Aug 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.75",
+      "Shares": "6,000",
+      "Value": "88,500"
+    },
+    {
+      "Owner": "Agarwal Devesh",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Aug 08 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "7,370",
+      "Value": "0"
+    },
+    {
+      "Owner": "Agarwal Devesh",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Aug 11 '25",
+      "Transaction": "Sale",
+      "Cost": "13.30",
+      "Shares": "2,132",
+      "Value": "28,357"
+    },
+    {
+      "Owner": "Agarwal Devesh",
+      "Relationship": "Officer",
+      "Date": "Aug 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "13.37",
+      "Shares": "3,000",
+      "Value": "40,110"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Jul 23 '25",
+      "Transaction": "Sale",
+      "Cost": "15.65",
+      "Shares": "1,136",
+      "Value": "17,778"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Jul 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "4,690",
+      "Value": "0"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Jul 22 '25",
+      "Transaction": "Sale",
+      "Cost": "15.46",
+      "Shares": "1,849",
+      "Value": "28,592"
+    },
+    {
+      "Owner": "Bottorff Rebecca",
+      "Relationship": "Chief People Officer",
+      "Date": "Jun 09 '25",
+      "Transaction": "Sale",
+      "Cost": "15.14",
+      "Shares": "16,935",
+      "Value": "256,355"
+    },
+    {
+      "Owner": "Bottorff Rebecca",
+      "Relationship": "Officer",
+      "Date": "Jun 09 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.95",
+      "Shares": "20,000",
+      "Value": "299,000"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "May 30 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "10,602",
+      "Value": "0"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Jun 03 '25",
+      "Transaction": "Sale",
+      "Cost": "14.47",
+      "Shares": "3,188",
+      "Value": "46,140"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Jun 02 '25",
+      "Transaction": "Sale",
+      "Cost": "14.40",
+      "Shares": "2,630",
+      "Value": "37,862"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "May 30 '25",
+      "Transaction": "Sale",
+      "Cost": "14.11",
+      "Shares": "2,655",
+      "Value": "37,454"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Officer",
+      "Date": "Jun 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.02",
+      "Shares": "30,000",
+      "Value": "420,600"
+    },
+    {
+      "Owner": "Krupka Devin M",
+      "Relationship": "Controller, PAO",
+      "Date": "May 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "4,144",
+      "Value": "0"
+    },
+    {
+      "Owner": "Krupka Devin M",
+      "Relationship": "Controller, PAO",
+      "Date": "May 29 '25",
+      "Transaction": "Sale",
+      "Cost": "14.47",
+      "Shares": "1,229",
+      "Value": "17,789"
+    },
+    {
+      "Owner": "Ross Kade",
+      "Relationship": "Chief Information Officer",
+      "Date": "May 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "5,698",
+      "Value": "0"
+    },
+    {
+      "Owner": "Ross Kade",
+      "Relationship": "Chief Information Officer",
+      "Date": "May 29 '25",
+      "Transaction": "Sale",
+      "Cost": "14.47",
+      "Shares": "1,691",
+      "Value": "24,476"
+    },
+    {
+      "Owner": "Bottorff Rebecca",
+      "Relationship": "Chief People Officer",
+      "Date": "May 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "7,866",
+      "Value": "0"
+    },
+    {
+      "Owner": "Bottorff Rebecca",
+      "Relationship": "Chief People Officer",
+      "Date": "May 29 '25",
+      "Transaction": "Sale",
+      "Cost": "14.47",
+      "Shares": "2,333",
+      "Value": "33,769"
+    },
+    {
+      "Owner": "Asbill Richard Brandon",
+      "Relationship": "General Counsel",
+      "Date": "May 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "6,453",
+      "Value": "0"
+    },
+    {
+      "Owner": "Asbill Richard Brandon",
+      "Relationship": "General Counsel",
+      "Date": "May 29 '25",
+      "Transaction": "Sale",
+      "Cost": "14.47",
+      "Shares": "1,914",
+      "Value": "27,704"
+    },
+    {
+      "Owner": "Agarwal Devesh",
+      "Relationship": "Chief Operating Officer",
+      "Date": "May 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "6,080",
+      "Value": "0"
+    },
+    {
+      "Owner": "Agarwal Devesh",
+      "Relationship": "Chief Operating Officer",
+      "Date": "May 29 '25",
+      "Transaction": "Sale",
+      "Cost": "14.47",
+      "Shares": "1,804",
+      "Value": "26,112"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "May 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "8,872",
+      "Value": "0"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "May 29 '25",
+      "Transaction": "Sale",
+      "Cost": "14.47",
+      "Shares": "2,233",
+      "Value": "32,321"
+    },
+    {
+      "Owner": "Morken David A.",
+      "Relationship": "Chairman & CEO",
+      "Date": "May 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "11,963",
+      "Value": "0"
+    },
+    {
+      "Owner": "Morken David A.",
+      "Relationship": "Chairman & CEO",
+      "Date": "May 29 '25",
+      "Transaction": "Sale",
+      "Cost": "14.47",
+      "Shares": "4,999",
+      "Value": "72,357"
+    },
+    {
+      "Owner": "Suriano Douglas A",
+      "Relationship": "Director",
+      "Date": "May 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,024",
+      "Value": "0"
+    },
+    {
+      "Owner": "Bailey Brian D.",
+      "Relationship": "Director",
+      "Date": "May 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,024",
+      "Value": "0"
+    },
+    {
+      "Owner": "Roush Lukas M.",
+      "Relationship": "Director",
+      "Date": "May 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,024",
+      "Value": "0"
+    },
+    {
+      "Owner": "Murdock John C.",
+      "Relationship": "Director",
+      "Date": "May 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,024",
+      "Value": "0"
+    },
+    {
+      "Owner": "Ross Kade",
+      "Relationship": "Officer",
+      "Date": "May 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.74",
+      "Shares": "3,500",
+      "Value": "51,590"
+    },
+    {
+      "Owner": "Morken David A.",
+      "Relationship": "Officer",
+      "Date": "May 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.74",
+      "Shares": "10,000",
+      "Value": "147,400"
+    },
+    {
+      "Owner": "Krupka Devin M",
+      "Relationship": "Officer",
+      "Date": "May 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.74",
+      "Shares": "3,000",
+      "Value": "44,220"
+    },
+    {
+      "Owner": "Bottorff Rebecca",
+      "Relationship": "Officer",
+      "Date": "May 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.74",
+      "Shares": "5,000",
+      "Value": "73,700"
+    },
+    {
+      "Owner": "Agarwal Devesh",
+      "Relationship": "Officer",
+      "Date": "May 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.74",
+      "Shares": "3,750",
+      "Value": "55,275"
+    },
+    {
+      "Owner": "Asbill Richard Brandon",
+      "Relationship": "Officer",
+      "Date": "May 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.74",
+      "Shares": "4,000",
+      "Value": "58,960"
+    },
+    {
+      "Owner": "Krupka Devin M",
+      "Relationship": "Officer",
+      "Date": "Mar 24 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "15.10",
+      "Shares": "544",
+      "Value": "8,214"
+    },
+    {
+      "Owner": "Krupka Devin M",
+      "Relationship": "Controller, PAO",
+      "Date": "Mar 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,842",
+      "Value": "0"
+    },
+    {
+      "Owner": "Krupka Devin M",
+      "Relationship": "Controller, PAO",
+      "Date": "Mar 24 '25",
+      "Transaction": "Sale",
+      "Cost": "15.18",
+      "Shares": "544",
+      "Value": "8,259"
+    },
+    {
+      "Owner": "Asbill Richard Brandon",
+      "Relationship": "General Counsel",
+      "Date": "Mar 05 '25",
+      "Transaction": "Sale",
+      "Cost": "15.24",
+      "Shares": "9,878",
+      "Value": "150,583"
+    },
+    {
+      "Owner": "Ross Kade",
+      "Relationship": "Officer",
+      "Date": "Mar 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "15.10",
+      "Shares": "4,881",
+      "Value": "73,703"
+    },
+    {
+      "Owner": "Morken David A.",
+      "Relationship": "Officer",
+      "Date": "Mar 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "15.10",
+      "Shares": "13,653",
+      "Value": "206,160"
+    },
+    {
+      "Owner": "Krupka Devin M",
+      "Relationship": "Officer",
+      "Date": "Mar 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "15.10",
+      "Shares": "3,770",
+      "Value": "56,927"
+    },
+    {
+      "Owner": "Bottorff Rebecca",
+      "Relationship": "Officer",
+      "Date": "Mar 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "15.10",
+      "Shares": "6,125",
+      "Value": "92,488"
+    },
+    {
+      "Owner": "Agarwal Devesh",
+      "Relationship": "Officer",
+      "Date": "Mar 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "15.10",
+      "Shares": "6,538",
+      "Value": "98,724"
+    },
+    {
+      "Owner": "Asbill Richard Brandon",
+      "Relationship": "Officer",
+      "Date": "Mar 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "15.10",
+      "Shares": "5,629",
+      "Value": "84,998"
+    },
+    {
+      "Owner": "Krupka Devin M",
+      "Relationship": "Controller, PAO",
+      "Date": "Feb 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "11,545",
+      "Value": "0"
+    },
+    {
+      "Owner": "Krupka Devin M",
+      "Relationship": "Controller, PAO",
+      "Date": "Mar 03 '25",
+      "Transaction": "Sale",
+      "Cost": "15.70",
+      "Shares": "3,770",
+      "Value": "59,175"
+    },
+    {
+      "Owner": "Ross Kade",
+      "Relationship": "Chief Information Officer",
+      "Date": "Feb 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "15,645",
+      "Value": "0"
+    },
+    {
+      "Owner": "Ross Kade",
+      "Relationship": "Chief Information Officer",
+      "Date": "Mar 03 '25",
+      "Transaction": "Sale",
+      "Cost": "15.70",
+      "Shares": "4,881",
+      "Value": "76,614"
+    },
+    {
+      "Owner": "Bottorff Rebecca",
+      "Relationship": "Chief People Officer",
+      "Date": "Feb 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "20,079",
+      "Value": "0"
+    },
+    {
+      "Owner": "Bottorff Rebecca",
+      "Relationship": "Chief People Officer",
+      "Date": "Mar 03 '25",
+      "Transaction": "Sale",
+      "Cost": "15.63",
+      "Shares": "14,532",
+      "Value": "227,202"
+    },
+    {
+      "Owner": "Asbill Richard Brandon",
+      "Relationship": "General Counsel",
+      "Date": "Feb 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "18,745",
+      "Value": "0"
+    },
+    {
+      "Owner": "Asbill Richard Brandon",
+      "Relationship": "General Counsel",
+      "Date": "Mar 03 '25",
+      "Transaction": "Sale",
+      "Cost": "15.70",
+      "Shares": "5,629",
+      "Value": "88,354"
+    },
+    {
+      "Owner": "Asbill Richard Brandon",
+      "Relationship": "General Counsel",
+      "Date": "Mar 04 '25",
+      "Transaction": "Sale",
+      "Cost": "15.29",
+      "Shares": "5,122",
+      "Value": "78,325"
+    },
+    {
+      "Owner": "Agarwal Devesh",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Feb 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "21,112",
+      "Value": "0"
+    },
+    {
+      "Owner": "Agarwal Devesh",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Mar 03 '25",
+      "Transaction": "Sale",
+      "Cost": "15.70",
+      "Shares": "6,538",
+      "Value": "102,622"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Mar 02 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "10,602",
+      "Value": "0"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Feb 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "30,924",
+      "Value": "0"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Mar 03 '25",
+      "Transaction": "Sale",
+      "Cost": "15.58",
+      "Shares": "24,253",
+      "Value": "377,896"
+    },
+    {
+      "Owner": "Raiford Daryl",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Mar 04 '25",
+      "Transaction": "Sale",
+      "Cost": "14.80",
+      "Shares": "2,856",
+      "Value": "42,279"
+    },
+    {
+      "Owner": "Morken David A.",
+      "Relationship": "Chairman & CEO",
+      "Date": "Feb 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "46,309",
+      "Value": "0"
+    },
+    {
+      "Owner": "Morken David A.",
+      "Relationship": "Chairman & CEO",
+      "Date": "Mar 03 '25",
+      "Transaction": "Sale",
+      "Cost": "15.70",
+      "Shares": "13,653",
+      "Value": "214,302"
+    },
+    {
+      "Owner": "Roush Lukas M.",
+      "Relationship": "Director",
+      "Date": "Feb 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,025",
+      "Value": "0"
+    },
+    {
+      "Owner": "Suriano Douglas A",
+      "Relationship": "Director",
+      "Date": "Feb 28 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,025",
+      "Value": "0"
+    }
+  ],
+  "Dividends": []
+}

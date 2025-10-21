@@ -1,0 +1,988 @@
+{
+  "Index": "-",
+  "P/E": "80.59",
+  "EPS (ttm)": "1.75",
+  "Insider Own": "5.79%",
+  "Shs Outstand": "215.88M",
+  "Perf Week": "-7.56%",
+  "Market Cap": "46.03B",
+  "Forward P/E": "22.09",
+  "EPS next Y": "26.87%",
+  "Insider Trans": "-65.12%",
+  "Shs Float": "206.72M",
+  "Perf Month": "-23.73%",
+  "Enterprise Value": "62.44B",
+  "PEG": "3.35",
+  "EPS next Q": "1.15",
+  "Inst Own": "88.45%",
+  "Short Float": "3.52%",
+  "Perf Quarter": "-21.88%",
+  "Income": "369.52M",
+  "P/S": "8.78",
+  "EPS this Y": "26.59%",
+  "Inst Trans": "0.40%",
+  "Short Ratio": "4.64",
+  "Perf Half Y": "3.76%",
+  "Sales": "5.24B",
+  "P/B": "7.09",
+  "ROA": "1.72%",
+  "Short Interest": "3.52%",
+  "Perf YTD": "-20.42%",
+  "Book/sh": "19.88",
+  "P/C": "30.05",
+  "EPS next 5Y": "24.04%",
+  "ROE": "13.92%",
+  "52W High": "200.49 -29.73%",
+  "Perf Year": "-8.15%",
+  "Cash/sh": "4.69",
+  "P/FCF": "19.92",
+  "EPS past 3/5Y": "-1.20% 14.31%",
+  "ROIC": "2.08%",
+  "52W Low": "110.63 27.34%",
+  "Perf 3Y": "107.49%",
+  "Dividend Est.": "4.51 (3.20%)",
+  "EV/EBITDA": "40.73",
+  "Sales past 3/5Y": "-0.73% 18.68%",
+  "Gross Margin": "78.49%",
+  "Volatility": "3.40% 3.11%",
+  "Perf 5Y": "239.69%",
+  "Dividend TTM": "4.29 (3.05%)",
+  "EV/Sales": "11.92",
+  "EPS Y/Y TTM": "-9.53%",
+  "Oper. Margin": "25.52%",
+  "ATR (14)": "5.14",
+  "Perf 10Y": "725.06%",
+  "Dividend Ex-Date": "Sep 16, 2025",
+  "Quick Ratio": "0.53",
+  "Sales Y/Y TTM": "45.89%",
+  "Profit Margin": "7.05%",
+  "RSI (14)": "19.71",
+  "Recom": "2.00",
+  "Dividend Gr. 3/5Y": "25.54% 23.78%",
+  "Current Ratio": "0.53",
+  "EPS Q/Q": "4.00%",
+  "SMA20": "-14.06%",
+  "Beta": "1.47",
+  "Target Price": "182.07",
+  "Payout": "179.61%",
+  "Debt/Eq": "3.09",
+  "Sales Q/Q": "67.38%",
+  "SMA50": "-19.65%",
+  "Rel Volume": "1.27",
+  "Prev Close": "147.26",
+  "Employees": "3200",
+  "LT Debt/Eq": "3.08",
+  "Earnings": "Nov 03 BMO",
+  "SMA200": "-17.10%",
+  "Avg Volume": "1.57M",
+  "Price": "140.88",
+  "IPO": "May 02, 2014",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "-4.85% 33.31%",
+  "Trades": "",
+  "Volume": "1,997,336",
+  "Change": "-4.33%",
+  "Insider Trading": [
+    {
+      "Owner": "Sagati Aghili Naseem",
+      "Relationship": "General Counsel",
+      "Date": "Oct 01 '25",
+      "Transaction": "Sale",
+      "Cost": "155.97",
+      "Shares": "21,000",
+      "Value": "3,275,370"
+    },
+    {
+      "Owner": "NASEEM SAGATI AGHILI",
+      "Relationship": "Officer",
+      "Date": "Oct 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "159.89",
+      "Shares": "21,000",
+      "Value": "3,357,690"
+    },
+    {
+      "Owner": "Sagati Aghili Naseem",
+      "Relationship": "General Counsel",
+      "Date": "Sep 10 '25",
+      "Transaction": "Sale",
+      "Cost": "178.40",
+      "Shares": "21,000",
+      "Value": "3,746,321"
+    },
+    {
+      "Owner": "RESSLER ANTONY P",
+      "Relationship": "Co-Founder & Exec. Chairman",
+      "Date": "Sep 10 '25",
+      "Transaction": "Sale",
+      "Cost": "178.30",
+      "Shares": "128,837",
+      "Value": "22,971,970"
+    },
+    {
+      "Owner": "ARES MANAGEMENT LLC",
+      "Relationship": "10% Owner",
+      "Date": "Sep 10 '25",
+      "Transaction": "Sale",
+      "Cost": "1.13",
+      "Shares": "13,000,000",
+      "Value": "14,710,800"
+    },
+    {
+      "Owner": "ARES MANAGEMENT LLC",
+      "Relationship": "10% Owner",
+      "Date": "Sep 09 '25",
+      "Transaction": "Sale",
+      "Cost": "1.39",
+      "Shares": "1,631,555",
+      "Value": "2,261,335"
+    },
+    {
+      "Owner": "TJ CAPITAL INVESTORS LLC",
+      "Relationship": "Director",
+      "Date": "Sep 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "175.07",
+      "Shares": "128,837",
+      "Value": "22,555,494"
+    },
+    {
+      "Owner": "NASEEM SAGATI AGHILI",
+      "Relationship": "Officer",
+      "Date": "Sep 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "175.07",
+      "Shares": "21,000",
+      "Value": "3,676,470"
+    },
+    {
+      "Owner": "RESSLER ANTONY P",
+      "Relationship": "Co-Founder & Exec. Chairman",
+      "Date": "Sep 08 '25",
+      "Transaction": "Sale",
+      "Cost": "175.78",
+      "Shares": "170,341",
+      "Value": "29,942,945"
+    },
+    {
+      "Owner": "RESSLER ANTONY P",
+      "Relationship": "Co-Founder & Exec. Chairman",
+      "Date": "Sep 09 '25",
+      "Transaction": "Sale",
+      "Cost": "175.53",
+      "Shares": "101,400",
+      "Value": "17,799,237"
+    },
+    {
+      "Owner": "TJ CAPITAL INVESTORS LLC",
+      "Relationship": "Director",
+      "Date": "Sep 09 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "176.25",
+      "Shares": "95,701",
+      "Value": "16,867,301"
+    },
+    {
+      "Owner": "RESSLER ANTONY P",
+      "Relationship": "Co-Founder & Exec. Chairman",
+      "Date": "Sep 05 '25",
+      "Transaction": "Sale",
+      "Cost": "177.05",
+      "Shares": "176,784",
+      "Value": "31,300,367"
+    },
+    {
+      "Owner": "RESSLER ANTONY P",
+      "Relationship": "Co-Founder & Exec. Chairman",
+      "Date": "Sep 04 '25",
+      "Transaction": "Sale",
+      "Cost": "179.05",
+      "Shares": "161,656",
+      "Value": "28,945,033"
+    },
+    {
+      "Owner": "RESSLER ANTONY P",
+      "Relationship": "Co-Founder & Exec. Chairman",
+      "Date": "Sep 03 '25",
+      "Transaction": "Sale",
+      "Cost": "176.76",
+      "Shares": "126,499",
+      "Value": "22,359,617"
+    },
+    {
+      "Owner": "TJ CAPITAL INVESTORS LLC",
+      "Relationship": "Director",
+      "Date": "Sep 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "180.05",
+      "Shares": "300,000",
+      "Value": "54,015,000"
+    },
+    {
+      "Owner": "TJ CAPITAL INVESTORS LLC",
+      "Relationship": "Director",
+      "Date": "Sep 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "179.78",
+      "Shares": "300,000",
+      "Value": "53,934,000"
+    },
+    {
+      "Owner": "RESSLER ANTONY P",
+      "Relationship": "Co-Founder & Exec. Chairman",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "178.61",
+      "Shares": "177,929",
+      "Value": "31,780,770"
+    },
+    {
+      "Owner": "RESSLER ANTONY P",
+      "Relationship": "Co-Founder & Exec. Chairman",
+      "Date": "Aug 29 '25",
+      "Transaction": "Sale",
+      "Cost": "179.30",
+      "Shares": "101,032",
+      "Value": "18,115,234"
+    },
+    {
+      "Owner": "TJ CAPITAL INVESTORS LLC",
+      "Relationship": "Director",
+      "Date": "Aug 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "180.27",
+      "Shares": "300,000",
+      "Value": "54,081,000"
+    },
+    {
+      "Owner": "RESSLER ANTONY P",
+      "Relationship": "Co-Founder & Exec. Chairman",
+      "Date": "Aug 27 '25",
+      "Transaction": "Sale",
+      "Cost": "180.23",
+      "Shares": "171,686",
+      "Value": "30,943,111"
+    },
+    {
+      "Owner": "RESSLER ANTONY P",
+      "Relationship": "Co-Founder & Exec. Chairman",
+      "Date": "Aug 28 '25",
+      "Transaction": "Sale",
+      "Cost": "180.72",
+      "Shares": "108,374",
+      "Value": "19,585,265"
+    },
+    {
+      "Owner": "TJ CAPITAL INVESTORS LLC",
+      "Relationship": "Director",
+      "Date": "Aug 27 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "178.93",
+      "Shares": "300,000",
+      "Value": "53,679,000"
+    },
+    {
+      "Owner": "Arougheti Michael J",
+      "Relationship": "Co-Founder and CEO",
+      "Date": "Aug 25 '25",
+      "Transaction": "Sale",
+      "Cost": "178.19",
+      "Shares": "44,760",
+      "Value": "7,975,789"
+    },
+    {
+      "Owner": "RESSLER ANTONY P",
+      "Relationship": "Co-Founder & Exec. Chairman",
+      "Date": "Aug 26 '25",
+      "Transaction": "Sale",
+      "Cost": "178.79",
+      "Shares": "196,197",
+      "Value": "35,077,536"
+    },
+    {
+      "Owner": "RESSLER ANTONY P",
+      "Relationship": "Co-Founder & Exec. Chairman",
+      "Date": "Aug 25 '25",
+      "Transaction": "Sale",
+      "Cost": "178.08",
+      "Shares": "112,522",
+      "Value": "20,037,464"
+    },
+    {
+      "Owner": "TJ CAPITAL INVESTORS LLC",
+      "Relationship": "Director",
+      "Date": "Aug 26 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "178.13",
+      "Shares": "196,197",
+      "Value": "34,948,572"
+    },
+    {
+      "Owner": "TJ CAPITAL INVESTORS LLC",
+      "Relationship": "Director",
+      "Date": "Aug 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "181.07",
+      "Shares": "112,522",
+      "Value": "20,374,359"
+    },
+    {
+      "Owner": "Arougheti Michael J",
+      "Relationship": "Co-Founder and CEO",
+      "Date": "Aug 22 '25",
+      "Transaction": "Sale",
+      "Cost": "181.65",
+      "Shares": "105,648",
+      "Value": "19,191,285"
+    },
+    {
+      "Owner": "Arougheti Michael J",
+      "Relationship": "Co-Founder and CEO",
+      "Date": "Aug 20 '25",
+      "Transaction": "Sale",
+      "Cost": "178.39",
+      "Shares": "97,880",
+      "Value": "17,461,120"
+    },
+    {
+      "Owner": "Arougheti Michael J",
+      "Relationship": "Co-Founder and CEO",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "178.20",
+      "Shares": "63,440",
+      "Value": "11,304,739"
+    },
+    {
+      "Owner": "RESSLER ANTONY P",
+      "Relationship": "Co-Founder & Exec. Chairman",
+      "Date": "Aug 22 '25",
+      "Transaction": "Sale",
+      "Cost": "181.65",
+      "Shares": "105,394",
+      "Value": "19,144,739"
+    },
+    {
+      "Owner": "RESSLER ANTONY P",
+      "Relationship": "Co-Founder & Exec. Chairman",
+      "Date": "Aug 20 '25",
+      "Transaction": "Sale",
+      "Cost": "178.40",
+      "Shares": "97,971",
+      "Value": "17,477,619"
+    },
+    {
+      "Owner": "RESSLER ANTONY P",
+      "Relationship": "Co-Founder & Exec. Chairman",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "178.19",
+      "Shares": "63,378",
+      "Value": "11,293,585"
+    },
+    {
+      "Owner": "TJ CAPITAL INVESTORS LLC",
+      "Relationship": "Director",
+      "Date": "Aug 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "180.59",
+      "Shares": "300,000",
+      "Value": "54,177,000"
+    },
+    {
+      "Owner": "Arougheti Michael J",
+      "Relationship": "Co-Founder and CEO",
+      "Date": "Aug 19 '25",
+      "Transaction": "Sale",
+      "Cost": "182.74",
+      "Shares": "136,516",
+      "Value": "24,946,638"
+    },
+    {
+      "Owner": "Arougheti Michael J",
+      "Relationship": "Co-Founder and CEO",
+      "Date": "Aug 18 '25",
+      "Transaction": "Sale",
+      "Cost": "189.05",
+      "Shares": "85,552",
+      "Value": "16,173,525"
+    },
+    {
+      "Owner": "Arougheti Michael J",
+      "Relationship": "Co-Founder and CEO",
+      "Date": "Aug 15 '25",
+      "Transaction": "Sale",
+      "Cost": "188.69",
+      "Shares": "56,204",
+      "Value": "10,604,893"
+    },
+    {
+      "Owner": "ATTICUS ENTERPRISES LLC",
+      "Relationship": "Director",
+      "Date": "Aug 18 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "187.78",
+      "Shares": "533,796",
+      "Value": "100,236,213"
+    },
+    {
+      "Owner": "ATTICUS ENTERPRISES LLC",
+      "Relationship": "Director",
+      "Date": "Aug 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "190.45",
+      "Shares": "56,204",
+      "Value": "10,704,052"
+    },
+    {
+      "Owner": "Rosenthal Bennett",
+      "Relationship": "Co-Founder & Chairman of PEG",
+      "Date": "Jun 12 '25",
+      "Transaction": "Sale",
+      "Cost": "168.79",
+      "Shares": "85,000",
+      "Value": "14,347,484"
+    },
+    {
+      "Owner": "ARES MANAGEMENT LLC",
+      "Relationship": "10% Owner",
+      "Date": "Jun 11 '25",
+      "Transaction": "Sale",
+      "Cost": "8.86",
+      "Shares": "2,250,000",
+      "Value": "19,928,025"
+    },
+    {
+      "Owner": "BAR HOLDINGS, LLC",
+      "Relationship": "Director",
+      "Date": "Jun 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "168.78",
+      "Shares": "85,000",
+      "Value": "14,346,300"
+    },
+    {
+      "Owner": "KAPLAN DAVID B",
+      "Relationship": "Co-Founder",
+      "Date": "May 30 '25",
+      "Transaction": "Sale",
+      "Cost": "165.12",
+      "Shares": "33,145",
+      "Value": "5,472,902"
+    },
+    {
+      "Owner": "KAPLAN DAVID B",
+      "Relationship": "Co-Founder",
+      "Date": "May 29 '25",
+      "Transaction": "Sale",
+      "Cost": "165.06",
+      "Shares": "23,524",
+      "Value": "3,882,871"
+    },
+    {
+      "Owner": "KAPLAN DAVID B",
+      "Relationship": "Co-Founder",
+      "Date": "May 28 '25",
+      "Transaction": "Sale",
+      "Cost": "165.06",
+      "Shares": "5,205",
+      "Value": "859,137"
+    },
+    {
+      "Owner": "KAPLAN DAVID B",
+      "Relationship": "Co-Founder",
+      "Date": "May 27 '25",
+      "Transaction": "Sale",
+      "Cost": "165.07",
+      "Shares": "626",
+      "Value": "103,334"
+    },
+    {
+      "Owner": "TRENTLY HOLDINGS, LLC",
+      "Relationship": "Officer",
+      "Date": "May 27 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "160.29",
+      "Shares": "62,500",
+      "Value": "10,018,125"
+    },
+    {
+      "Owner": "Arougheti Michael J",
+      "Relationship": "Co-Founder and CEO",
+      "Date": "May 20 '25",
+      "Transaction": "Sale",
+      "Cost": "166.37",
+      "Shares": "150,000",
+      "Value": "24,955,537"
+    },
+    {
+      "Owner": "Arougheti Michael J",
+      "Relationship": "Co-Founder and CEO",
+      "Date": "May 21 '25",
+      "Transaction": "Sale",
+      "Cost": "161.34",
+      "Shares": "107,500",
+      "Value": "17,344,225"
+    },
+    {
+      "Owner": "ARES MANAGEMENT LLC",
+      "Relationship": "10% Owner",
+      "Date": "May 16 '25",
+      "Transaction": "Sale",
+      "Cost": "8.86",
+      "Shares": "14,960,000",
+      "Value": "132,499,224"
+    },
+    {
+      "Owner": "Rosenthal Bennett",
+      "Relationship": "Co-Founder & Chairman of PEG",
+      "Date": "May 15 '25",
+      "Transaction": "Sale",
+      "Cost": "169.37",
+      "Shares": "40,000",
+      "Value": "6,774,878"
+    },
+    {
+      "Owner": "KAPLAN DAVID B",
+      "Relationship": "Co-Founder",
+      "Date": "May 15 '25",
+      "Transaction": "Sale",
+      "Cost": "169.36",
+      "Shares": "62,500",
+      "Value": "10,584,827"
+    },
+    {
+      "Owner": "Arougheti Michael J",
+      "Relationship": "Co-Founder and CEO",
+      "Date": "May 16 '25",
+      "Transaction": "Sale",
+      "Cost": "170.07",
+      "Shares": "182,108",
+      "Value": "30,971,183"
+    },
+    {
+      "Owner": "Arougheti Michael J",
+      "Relationship": "Co-Founder and CEO",
+      "Date": "May 19 '25",
+      "Transaction": "Sale",
+      "Cost": "168.87",
+      "Shares": "93,184",
+      "Value": "15,735,584"
+    },
+    {
+      "Owner": "Arougheti Michael J",
+      "Relationship": "Co-Founder and CEO",
+      "Date": "May 15 '25",
+      "Transaction": "Sale",
+      "Cost": "169.55",
+      "Shares": "57,208",
+      "Value": "9,699,584"
+    },
+    {
+      "Owner": "BAR HOLDINGS, LLC",
+      "Relationship": "Officer",
+      "Date": "May 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "175.83",
+      "Shares": "40,000",
+      "Value": "7,033,200"
+    },
+    {
+      "Owner": "TRENTLY HOLDINGS, LLC",
+      "Relationship": "Officer",
+      "Date": "May 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "175.83",
+      "Shares": "62,500",
+      "Value": "10,989,375"
+    },
+    {
+      "Owner": "ATTICUS ENTERPRISES LLC",
+      "Relationship": "Director",
+      "Date": "May 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "175.83",
+      "Shares": "590,000",
+      "Value": "103,739,700"
+    },
+    {
+      "Owner": "Arougheti Michael J",
+      "Relationship": "Co-Founder and CEO",
+      "Date": "Mar 24 '25",
+      "Transaction": "Sale",
+      "Cost": "153.17",
+      "Shares": "110,845",
+      "Value": "16,977,649"
+    },
+    {
+      "Owner": "MICHAEL J AROUGHETI",
+      "Relationship": "Officer",
+      "Date": "Mar 24 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "147.71",
+      "Shares": "110,845",
+      "Value": "16,372,915"
+    },
+    {
+      "Owner": "BHUTANI ASHISH",
+      "Relationship": "Director",
+      "Date": "Mar 11 '25",
+      "Transaction": "Buy",
+      "Cost": "141.33",
+      "Shares": "10,000",
+      "Value": "1,413,300"
+    },
+    {
+      "Owner": "Rosenthal Bennett",
+      "Relationship": "Co-Founder & Chairman of PEG",
+      "Date": "Mar 04 '25",
+      "Transaction": "Sale",
+      "Cost": "161.01",
+      "Shares": "69,809",
+      "Value": "11,239,742"
+    },
+    {
+      "Owner": "Rosenthal Bennett",
+      "Relationship": "Co-Founder & Chairman of PEG",
+      "Date": "Mar 05 '25",
+      "Transaction": "Sale",
+      "Cost": "160.99",
+      "Shares": "30,191",
+      "Value": "4,860,362"
+    },
+    {
+      "Owner": "KAPLAN DAVID B",
+      "Relationship": "Co-Founder",
+      "Date": "Mar 04 '25",
+      "Transaction": "Sale",
+      "Cost": "160.99",
+      "Shares": "69,526",
+      "Value": "11,192,960"
+    },
+    {
+      "Owner": "KAPLAN DAVID B",
+      "Relationship": "Co-Founder",
+      "Date": "Mar 05 '25",
+      "Transaction": "Sale",
+      "Cost": "160.99",
+      "Shares": "30,474",
+      "Value": "4,906,037"
+    },
+    {
+      "Owner": "TRENTLY HOLDINGS",
+      "Relationship": "Officer",
+      "Date": "Mar 04 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "169.76",
+      "Shares": "100,000",
+      "Value": "16,976,000"
+    },
+    {
+      "Owner": "BAR HOLDINGS, LLC",
+      "Relationship": "Officer",
+      "Date": "Mar 04 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "169.76",
+      "Shares": "100,000",
+      "Value": "16,976,000"
+    },
+    {
+      "Owner": "deVeer R. Kipp",
+      "Relationship": "Co-President",
+      "Date": "Feb 06 '25",
+      "Transaction": "Sale",
+      "Cost": "190.02",
+      "Shares": "78,933",
+      "Value": "14,998,894"
+    },
+    {
+      "Owner": "ROBERT KIPP DEVEER",
+      "Relationship": "Officer",
+      "Date": "Feb 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "189.65",
+      "Shares": "78,933",
+      "Value": "14,969,643"
+    },
+    {
+      "Owner": "Berry Ryan",
+      "Relationship": "Chief Mktg. & Strategy Officer",
+      "Date": "Dec 11 '24",
+      "Transaction": "Sale",
+      "Cost": "180.16",
+      "Shares": "14,357",
+      "Value": "2,586,557"
+    },
+    {
+      "Owner": "Berry Ryan",
+      "Relationship": "Chief Mktg. & Strategy Officer",
+      "Date": "Nov 27 '24",
+      "Transaction": "Sale",
+      "Cost": "180.07",
+      "Shares": "200",
+      "Value": "36,014"
+    },
+    {
+      "Owner": "ARES MANAGEMENT LLC",
+      "Relationship": "10% Owner",
+      "Date": "Dec 10 '24",
+      "Transaction": "Sale",
+      "Cost": "34.37",
+      "Shares": "11,500,000",
+      "Value": "395,255,000"
+    },
+    {
+      "Owner": "Berry Ryan",
+      "Relationship": "Chief Mktg. & Strategy Officer",
+      "Date": "Dec 09 '24",
+      "Transaction": "Sale",
+      "Cost": "180.14",
+      "Shares": "5,443",
+      "Value": "980,502"
+    },
+    {
+      "Owner": "deVeer R. Kipp",
+      "Relationship": "Head of Credit Group",
+      "Date": "Dec 09 '24",
+      "Transaction": "Sale",
+      "Cost": "176.82",
+      "Shares": "121,762",
+      "Value": "21,529,463"
+    },
+    {
+      "Owner": "deVeer R. Kipp",
+      "Relationship": "Head of Credit Group",
+      "Date": "Dec 06 '24",
+      "Transaction": "Sale",
+      "Cost": "177.83",
+      "Shares": "115,838",
+      "Value": "20,599,464"
+    },
+    {
+      "Owner": "deVeer R. Kipp",
+      "Relationship": "Head of Credit Group",
+      "Date": "Dec 10 '24",
+      "Transaction": "Sale",
+      "Cost": "176.57",
+      "Shares": "62,400",
+      "Value": "11,017,852"
+    },
+    {
+      "Owner": "ARES MANAGEMENT LLC",
+      "Relationship": "10% Owner",
+      "Date": "Dec 09 '24",
+      "Transaction": "Sale",
+      "Cost": "34.61",
+      "Shares": "300,000",
+      "Value": "10,384,440"
+    },
+    {
+      "Owner": "ARES MANAGEMENT LLC",
+      "Relationship": "10% Owner",
+      "Date": "Dec 06 '24",
+      "Transaction": "Sale",
+      "Cost": "34.64",
+      "Shares": "275,000",
+      "Value": "9,525,092"
+    },
+    {
+      "Owner": "ROBERT KIPP DEVEER",
+      "Relationship": "Officer",
+      "Date": "Dec 10 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "175.29",
+      "Shares": "62,400",
+      "Value": "10,938,096"
+    },
+    {
+      "Owner": "ROBERT KIPP DEVEER",
+      "Relationship": "Officer",
+      "Date": "Dec 09 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "178.07",
+      "Shares": "121,762",
+      "Value": "21,682,159"
+    },
+    {
+      "Owner": "ROBERT KIPP DEVEER",
+      "Relationship": "Director",
+      "Date": "Dec 06 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "177.07",
+      "Shares": "115,838",
+      "Value": "20,511,435"
+    },
+    {
+      "Owner": "ARES MANAGEMENT LLC",
+      "Relationship": "10% Owner",
+      "Date": "Dec 03 '24",
+      "Transaction": "Sale",
+      "Cost": "34.59",
+      "Shares": "660,000",
+      "Value": "22,830,258"
+    },
+    {
+      "Owner": "ARES MANAGEMENT LLC",
+      "Relationship": "10% Owner",
+      "Date": "Dec 04 '24",
+      "Transaction": "Sale",
+      "Cost": "34.52",
+      "Shares": "170,000",
+      "Value": "5,868,230"
+    },
+    {
+      "Owner": "ARES MANAGEMENT LLC",
+      "Relationship": "10% Owner",
+      "Date": "Dec 02 '24",
+      "Transaction": "Sale",
+      "Cost": "34.75",
+      "Shares": "475,000",
+      "Value": "16,505,728"
+    },
+    {
+      "Owner": "ARES MANAGEMENT LLC",
+      "Relationship": "10% Owner",
+      "Date": "Nov 29 '24",
+      "Transaction": "Sale",
+      "Cost": "34.80",
+      "Shares": "44,940",
+      "Value": "1,564,114"
+    },
+    {
+      "Owner": "Arougheti Michael J",
+      "Relationship": "Co-Founder, CEO and President",
+      "Date": "Nov 27 '24",
+      "Transaction": "Sale",
+      "Cost": "176.16",
+      "Shares": "30,465",
+      "Value": "5,366,612"
+    },
+    {
+      "Owner": "KAPLAN DAVID B",
+      "Relationship": "Co-Founder",
+      "Date": "Nov 27 '24",
+      "Transaction": "Sale",
+      "Cost": "176.16",
+      "Shares": "30,680",
+      "Value": "5,404,447"
+    },
+    {
+      "Owner": "Rosenthal Bennett",
+      "Relationship": "Co-Founder & Chairman of PEG",
+      "Date": "Nov 27 '24",
+      "Transaction": "Sale",
+      "Cost": "176.15",
+      "Shares": "29,107",
+      "Value": "5,127,237"
+    },
+    {
+      "Owner": "ARES MANAGEMENT LLC",
+      "Relationship": "10% Owner",
+      "Date": "Nov 26 '24",
+      "Transaction": "Sale",
+      "Cost": "34.85",
+      "Shares": "106,648",
+      "Value": "3,716,917"
+    },
+    {
+      "Owner": "ARES MANAGEMENT LLC",
+      "Relationship": "10% Owner",
+      "Date": "Nov 27 '24",
+      "Transaction": "Sale",
+      "Cost": "34.80",
+      "Shares": "83,491",
+      "Value": "2,905,812"
+    },
+    {
+      "Owner": "BAR HOLDINGS LLC",
+      "Relationship": "Officer",
+      "Date": "Nov 27 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "178.83",
+      "Shares": "29,107",
+      "Value": "5,205,205"
+    },
+    {
+      "Owner": "RYAN BERRY",
+      "Relationship": "Officer",
+      "Date": "Nov 27 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "178.83",
+      "Shares": "20,000",
+      "Value": "3,576,600"
+    },
+    {
+      "Owner": "KAPLAN DAVID B",
+      "Relationship": "Co-Founder",
+      "Date": "Nov 26 '24",
+      "Transaction": "Sale",
+      "Cost": "178.17",
+      "Shares": "56,781",
+      "Value": "10,116,489"
+    },
+    {
+      "Owner": "KAPLAN DAVID B",
+      "Relationship": "Co-Founder",
+      "Date": "Nov 25 '24",
+      "Transaction": "Sale",
+      "Cost": "175.82",
+      "Shares": "28,887",
+      "Value": "5,078,809"
+    },
+    {
+      "Owner": "Rosenthal Bennett",
+      "Relationship": "Co-Founder & Chairman of PEG",
+      "Date": "Nov 26 '24",
+      "Transaction": "Sale",
+      "Cost": "178.17",
+      "Shares": "56,662",
+      "Value": "10,095,734"
+    },
+    {
+      "Owner": "Rosenthal Bennett",
+      "Relationship": "Co-Founder & Chairman of PEG",
+      "Date": "Nov 25 '24",
+      "Transaction": "Sale",
+      "Cost": "175.82",
+      "Shares": "29,198",
+      "Value": "5,133,703"
+    },
+    {
+      "Owner": "Arougheti Michael J",
+      "Relationship": "Co-Founder, CEO and President",
+      "Date": "Nov 26 '24",
+      "Transaction": "Sale",
+      "Cost": "178.17",
+      "Shares": "56,444",
+      "Value": "10,056,612"
+    },
+    {
+      "Owner": "Arougheti Michael J",
+      "Relationship": "Co-Founder, CEO and President",
+      "Date": "Nov 25 '24",
+      "Transaction": "Sale",
+      "Cost": "175.82",
+      "Shares": "29,292",
+      "Value": "5,150,234"
+    },
+    {
+      "Owner": "ARES MANAGEMENT LLC",
+      "Relationship": "10% Owner",
+      "Date": "Nov 25 '24",
+      "Transaction": "Sale",
+      "Cost": "34.88",
+      "Shares": "360,922",
+      "Value": "12,587,913"
+    },
+    {
+      "Owner": "ARES MANAGEMENT LLC",
+      "Relationship": "10% Owner",
+      "Date": "Nov 22 '24",
+      "Transaction": "Sale",
+      "Cost": "34.81",
+      "Shares": "227,902",
+      "Value": "7,934,408"
+    }
+  ],
+  "Dividends": []
+}

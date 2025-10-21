@@ -1,0 +1,709 @@
+{
+  "Index": "RUT",
+  "P/E": "-",
+  "EPS (ttm)": "-0.07",
+  "Insider Own": "3.65%",
+  "Shs Outstand": "104.29M",
+  "Perf Week": "-3.36%",
+  "Market Cap": "1.74B",
+  "Forward P/E": "21.18",
+  "EPS next Y": "26.07%",
+  "Insider Trans": "-46.75%",
+  "Shs Float": "100.56M",
+  "Perf Month": "-3.86%",
+  "Enterprise Value": "1.60B",
+  "PEG": "-",
+  "EPS next Q": "0.15",
+  "Inst Own": "93.87%",
+  "Short Float": "10.56%",
+  "Perf Quarter": "2.90%",
+  "Income": "-7.01M",
+  "P/S": "3.43",
+  "EPS this Y": "56.10%",
+  "Inst Trans": "6.30%",
+  "Short Ratio": "7.57",
+  "Perf Half Y": "88.79%",
+  "Sales": "507.71M",
+  "P/B": "14.70",
+  "ROA": "-2.28%",
+  "Short Interest": "10.56%",
+  "Perf YTD": "48.97%",
+  "Book/sh": "1.13",
+  "P/C": "10.85",
+  "EPS next 5Y": "-",
+  "ROE": "-6.45%",
+  "52W High": "19.25 -13.40%",
+  "Perf Year": "50.05%",
+  "Cash/sh": "1.54",
+  "P/FCF": "30.54",
+  "EPS past 3/5Y": "23.00% 23.03%",
+  "ROIC": "-5.20%",
+  "52W Low": "7.84 112.63%",
+  "Perf 3Y": "242.30%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "-",
+  "Sales past 3/5Y": "5.51% 6.69%",
+  "Gross Margin": "40.19%",
+  "Volatility": "4.14% 3.33%",
+  "Perf 5Y": "206.43%",
+  "Dividend TTM": "-",
+  "EV/Sales": "3.15",
+  "EPS Y/Y TTM": "68.19%",
+  "Oper. Margin": "-1.95%",
+  "ATR (14)": "0.63",
+  "Perf 10Y": "-",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "1.30",
+  "Sales Y/Y TTM": "-1.75%",
+  "Profit Margin": "-1.38%",
+  "RSI (14)": "41.93",
+  "Recom": "1.40",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "1.47",
+  "EPS Q/Q": "124.45%",
+  "SMA20": "-4.21%",
+  "Beta": "1.69",
+  "Target Price": "23.20",
+  "Payout": "-",
+  "Debt/Eq": "0.17",
+  "Sales Q/Q": "1.54%",
+  "SMA50": "-3.41%",
+  "Rel Volume": "0.60",
+  "Prev Close": "17.35",
+  "Employees": "360",
+  "LT Debt/Eq": "0.14",
+  "Earnings": "Aug 07 AMC",
+  "SMA200": "20.34%",
+  "Avg Volume": "1.40M",
+  "Price": "16.67",
+  "IPO": "Aug 03, 2018",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "11.48% 4.81%",
+  "Trades": "",
+  "Volume": "838,599",
+  "Change": "-3.92%",
+  "Insider Trading": [
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Oct 02 '25",
+      "Transaction": "Sale",
+      "Cost": "16.99",
+      "Shares": "95,430",
+      "Value": "1,621,566"
+    },
+    {
+      "Owner": "Busse Brian",
+      "Relationship": "GENERAL COUNSEL",
+      "Date": "Oct 02 '25",
+      "Transaction": "Sale",
+      "Cost": "16.99",
+      "Shares": "9,171",
+      "Value": "155,835"
+    },
+    {
+      "Owner": "Brian Busse",
+      "Relationship": "Officer",
+      "Date": "Oct 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "16.99",
+      "Shares": "9,171",
+      "Value": "155,815"
+    },
+    {
+      "Owner": "Matthew Blake McRae",
+      "Relationship": "Officer",
+      "Date": "Oct 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "16.99",
+      "Shares": "95,430",
+      "Value": "1,621,356"
+    },
+    {
+      "Owner": "Binder Kurtis Joseph",
+      "Relationship": "CHIEF FINANCIAL OFFICER",
+      "Date": "Sep 30 '25",
+      "Transaction": "Sale",
+      "Cost": "16.89",
+      "Shares": "135,494",
+      "Value": "2,289,158"
+    },
+    {
+      "Owner": "Binder Kurtis Joseph",
+      "Relationship": "CHIEF FINANCIAL OFFICER",
+      "Date": "Sep 29 '25",
+      "Transaction": "Sale",
+      "Cost": "17.04",
+      "Shares": "81,440",
+      "Value": "1,388,072"
+    },
+    {
+      "Owner": "KURTIS BINDER",
+      "Relationship": "Officer",
+      "Date": "Sep 30 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "17.14",
+      "Shares": "68,560",
+      "Value": "1,175,118"
+    },
+    {
+      "Owner": "Kurtis Joseph Binder",
+      "Relationship": "Officer",
+      "Date": "Sep 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "17.04",
+      "Shares": "81,440",
+      "Value": "1,387,737"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Sep 08 '25",
+      "Transaction": "Sale",
+      "Cost": "18.30",
+      "Shares": "49,795",
+      "Value": "911,413"
+    },
+    {
+      "Owner": "Matthew Blake McRae",
+      "Relationship": "Officer",
+      "Date": "Sep 08 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "18.30",
+      "Shares": "49,795",
+      "Value": "911,246"
+    },
+    {
+      "Owner": "Binder Kurtis Joseph",
+      "Relationship": "CHIEF FINANCIAL OFFICER",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "17.71",
+      "Shares": "125,000",
+      "Value": "2,214,050"
+    },
+    {
+      "Owner": "KURTIS BINDER",
+      "Relationship": "Officer",
+      "Date": "Sep 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "17.41",
+      "Shares": "191,934",
+      "Value": "3,341,571"
+    },
+    {
+      "Owner": "Aggarwal Prashant",
+      "Relationship": "Director",
+      "Date": "Aug 14 '25",
+      "Transaction": "Sale",
+      "Cost": "16.61",
+      "Shares": "60,787",
+      "Value": "1,009,836"
+    },
+    {
+      "Owner": "PRASHANT AGGARWAL",
+      "Relationship": "Director",
+      "Date": "Aug 14 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "17.25",
+      "Shares": "60,787",
+      "Value": "1,048,576"
+    },
+    {
+      "Owner": "Busse Brian",
+      "Relationship": "GENERAL COUNSEL",
+      "Date": "Aug 12 '25",
+      "Transaction": "Sale",
+      "Cost": "17.40",
+      "Shares": "50,018",
+      "Value": "870,128"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Aug 12 '25",
+      "Transaction": "Sale",
+      "Cost": "17.40",
+      "Shares": "520,557",
+      "Value": "9,055,766"
+    },
+    {
+      "Owner": "BINDER KURTIS JOSEPH",
+      "Relationship": "CHIEF FINANCIAL OFFICER",
+      "Date": "Aug 08 '25",
+      "Transaction": "Sale",
+      "Cost": "18.56",
+      "Shares": "113,912",
+      "Value": "2,113,979"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Aug 08 '25",
+      "Transaction": "Sale",
+      "Cost": "17.38",
+      "Shares": "331,625",
+      "Value": "5,762,223"
+    },
+    {
+      "Owner": "Matthew Blake McRae",
+      "Relationship": "Director",
+      "Date": "Aug 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "17.40",
+      "Shares": "520,557",
+      "Value": "9,055,766"
+    },
+    {
+      "Owner": "Brian Busse",
+      "Relationship": "Officer",
+      "Date": "Aug 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "17.40",
+      "Shares": "50,018",
+      "Value": "870,128"
+    },
+    {
+      "Owner": "KURTIS BINDER",
+      "Relationship": "Officer",
+      "Date": "Aug 08 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "16.43",
+      "Shares": "113,912",
+      "Value": "1,871,574"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Aug 04 '25",
+      "Transaction": "Sale",
+      "Cost": "15.97",
+      "Shares": "14,228",
+      "Value": "227,193"
+    },
+    {
+      "Owner": "Matthew Blake McRae",
+      "Relationship": "Officer",
+      "Date": "Aug 04 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "15.90",
+      "Shares": "14,288",
+      "Value": "227,193"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Jul 29 '25",
+      "Transaction": "Sale",
+      "Cost": "16.56",
+      "Shares": "25,380",
+      "Value": "420,305"
+    },
+    {
+      "Owner": "Matthew Blake McRae",
+      "Relationship": "Director",
+      "Date": "Jul 29 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "16.34",
+      "Shares": "25,380",
+      "Value": "414,709"
+    },
+    {
+      "Owner": "BINDER KURTIS JOSEPH",
+      "Relationship": "CHIEF FINANCIAL OFFICER",
+      "Date": "Jul 01 '25",
+      "Transaction": "Sale",
+      "Cost": "17.17",
+      "Shares": "92,247",
+      "Value": "1,583,613"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Jun 25 '25",
+      "Transaction": "Sale",
+      "Cost": "16.87",
+      "Shares": "243,302",
+      "Value": "4,103,313"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Jun 26 '25",
+      "Transaction": "Sale",
+      "Cost": "17.22",
+      "Shares": "113,322",
+      "Value": "1,950,929"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Jun 20 '25",
+      "Transaction": "Sale",
+      "Cost": "17.14",
+      "Shares": "372,488",
+      "Value": "6,386,270"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Jun 24 '25",
+      "Transaction": "Sale",
+      "Cost": "16.80",
+      "Shares": "305,204",
+      "Value": "5,128,404"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Jun 23 '25",
+      "Transaction": "Sale",
+      "Cost": "16.71",
+      "Shares": "188,930",
+      "Value": "3,156,113"
+    },
+    {
+      "Owner": "MATTHEW B MCRAE",
+      "Relationship": "Director",
+      "Date": "Jun 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "17.23",
+      "Shares": "1,554,871",
+      "Value": "26,790,427"
+    },
+    {
+      "Owner": "CARTER MILLER JOYCELYN",
+      "Relationship": "Director",
+      "Date": "Jun 06 '25",
+      "Transaction": "Sale",
+      "Cost": "17.00",
+      "Shares": "20,000",
+      "Value": "340,000"
+    },
+    {
+      "Owner": "CARTER MILLER JOYCELYN",
+      "Relationship": "Officer",
+      "Date": "Jun 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "16.95",
+      "Shares": "20,000",
+      "Value": "339,000"
+    },
+    {
+      "Owner": "Busse Brian",
+      "Relationship": "GENERAL COUNSEL",
+      "Date": "Jun 05 '25",
+      "Transaction": "Sale",
+      "Cost": "15.73",
+      "Shares": "46,029",
+      "Value": "723,838"
+    },
+    {
+      "Owner": "BINDER KURTIS JOSEPH",
+      "Relationship": "CHIEF FINANCIAL OFFICER",
+      "Date": "Jun 05 '25",
+      "Transaction": "Sale",
+      "Cost": "15.42",
+      "Shares": "76,500",
+      "Value": "1,179,607"
+    },
+    {
+      "Owner": "KURTIS BINDER",
+      "Relationship": "Officer",
+      "Date": "Jun 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.60",
+      "Shares": "168,747",
+      "Value": "2,463,706"
+    },
+    {
+      "Owner": "BRIAN C BUSSE",
+      "Relationship": "Officer",
+      "Date": "Jun 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.60",
+      "Shares": "46,029",
+      "Value": "672,023"
+    },
+    {
+      "Owner": "Busse Brian",
+      "Relationship": "GENERAL COUNSEL",
+      "Date": "May 08 '25",
+      "Transaction": "Sale",
+      "Cost": "10.37",
+      "Shares": "21,367",
+      "Value": "221,614"
+    },
+    {
+      "Owner": "BINDER KURTIS JOSEPH",
+      "Relationship": "CHIEF FINANCIAL OFFICER",
+      "Date": "May 08 '25",
+      "Transaction": "Sale",
+      "Cost": "10.37",
+      "Shares": "135,183",
+      "Value": "1,402,091"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "May 08 '25",
+      "Transaction": "Sale",
+      "Cost": "10.37",
+      "Shares": "91,999",
+      "Value": "954,195"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Apr 29 '25",
+      "Transaction": "Sale",
+      "Cost": "9.90",
+      "Shares": "25,405",
+      "Value": "251,507"
+    },
+    {
+      "Owner": "Busse Brian",
+      "Relationship": "GENERAL COUNSEL",
+      "Date": "Mar 20 '25",
+      "Transaction": "Sale",
+      "Cost": "10.70",
+      "Shares": "26,258",
+      "Value": "280,861"
+    },
+    {
+      "Owner": "BINDER KURTIS JOSEPH",
+      "Relationship": "CHIEF FINANCIAL OFFICER",
+      "Date": "Mar 20 '25",
+      "Transaction": "Sale",
+      "Cost": "10.70",
+      "Shares": "184,589",
+      "Value": "1,974,401"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Mar 20 '25",
+      "Transaction": "Sale",
+      "Cost": "10.70",
+      "Shares": "157,851",
+      "Value": "1,688,406"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Mar 11 '25",
+      "Transaction": "Sale",
+      "Cost": "11.09",
+      "Shares": "59,226",
+      "Value": "656,597"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Mar 06 '25",
+      "Transaction": "Sale",
+      "Cost": "12.03",
+      "Shares": "259,227",
+      "Value": "3,117,282"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Mar 07 '25",
+      "Transaction": "Sale",
+      "Cost": "11.79",
+      "Shares": "259,227",
+      "Value": "3,056,649"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Mar 10 '25",
+      "Transaction": "Sale",
+      "Cost": "11.04",
+      "Shares": "200,000",
+      "Value": "2,207,180"
+    },
+    {
+      "Owner": "MATTHEW B MCRAE",
+      "Relationship": "Director",
+      "Date": "Mar 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "12.28",
+      "Shares": "777,680",
+      "Value": "9,549,910"
+    },
+    {
+      "Owner": "Busse Brian",
+      "Relationship": "GENERAL COUNSEL",
+      "Date": "Mar 04 '25",
+      "Transaction": "Sale",
+      "Cost": "11.50",
+      "Shares": "6,593",
+      "Value": "75,849"
+    },
+    {
+      "Owner": "BINDER KURTIS JOSEPH",
+      "Relationship": "CHIEF FINANCIAL OFFICER",
+      "Date": "Mar 04 '25",
+      "Transaction": "Sale",
+      "Cost": "11.50",
+      "Shares": "12,155",
+      "Value": "139,826"
+    },
+    {
+      "Owner": "BINDER KURTIS JOSEPH",
+      "Relationship": "CHIEF FINANCIAL OFFICER",
+      "Date": "Mar 05 '25",
+      "Transaction": "Sale",
+      "Cost": "12.06",
+      "Shares": "9,193",
+      "Value": "110,890"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Mar 04 '25",
+      "Transaction": "Sale",
+      "Cost": "11.50",
+      "Shares": "26,435",
+      "Value": "304,116"
+    },
+    {
+      "Owner": "KURTIS BINDER",
+      "Relationship": "Officer",
+      "Date": "Mar 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "11.84",
+      "Shares": "9,193",
+      "Value": "108,845"
+    },
+    {
+      "Owner": "Busse Brian",
+      "Relationship": "GENERAL COUNSEL",
+      "Date": "Feb 12 '25",
+      "Transaction": "Sale",
+      "Cost": "11.11",
+      "Shares": "17,669",
+      "Value": "196,350"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Feb 12 '25",
+      "Transaction": "Sale",
+      "Cost": "11.11",
+      "Shares": "146,338",
+      "Value": "1,626,196"
+    },
+    {
+      "Owner": "Busse Brian",
+      "Relationship": "GENERAL COUNSEL",
+      "Date": "Feb 05 '25",
+      "Transaction": "Sale",
+      "Cost": "11.43",
+      "Shares": "11,475",
+      "Value": "131,186"
+    },
+    {
+      "Owner": "Busse Brian",
+      "Relationship": "GENERAL COUNSEL",
+      "Date": "Feb 06 '25",
+      "Transaction": "Sale",
+      "Cost": "11.24",
+      "Shares": "5,780",
+      "Value": "64,941"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Feb 06 '25",
+      "Transaction": "Sale",
+      "Cost": "11.24",
+      "Shares": "73,706",
+      "Value": "828,131"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Feb 05 '25",
+      "Transaction": "Sale",
+      "Cost": "11.43",
+      "Shares": "59,316",
+      "Value": "678,118"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Jan 29 '25",
+      "Transaction": "Sale",
+      "Cost": "11.66",
+      "Shares": "46,866",
+      "Value": "546,593"
+    },
+    {
+      "Owner": "Busse Brian",
+      "Relationship": "GENERAL COUNSEL",
+      "Date": "Jan 29 '25",
+      "Transaction": "Sale",
+      "Cost": "11.66",
+      "Shares": "9,007",
+      "Value": "105,049"
+    },
+    {
+      "Owner": "BINDER KURTIS JOSEPH",
+      "Relationship": "CHIEF FINANCIAL OFFICER",
+      "Date": "Dec 16 '24",
+      "Transaction": "Sale",
+      "Cost": "12.80",
+      "Shares": "63,882",
+      "Value": "817,498"
+    },
+    {
+      "Owner": "KURTIS BINDER",
+      "Relationship": "Officer",
+      "Date": "Dec 16 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "12.39",
+      "Shares": "63,882",
+      "Value": "791,498"
+    },
+    {
+      "Owner": "MCRAE MATTHEW BLAKE",
+      "Relationship": "CEO",
+      "Date": "Dec 02 '24",
+      "Transaction": "Sale",
+      "Cost": "11.54",
+      "Shares": "316,644",
+      "Value": "3,653,818"
+    },
+    {
+      "Owner": "Busse Brian",
+      "Relationship": "GENERAL COUNSEL",
+      "Date": "Dec 02 '24",
+      "Transaction": "Sale",
+      "Cost": "11.54",
+      "Shares": "27,588",
+      "Value": "318,343"
+    },
+    {
+      "Owner": "Busse Brian",
+      "Relationship": "GENERAL COUNSEL",
+      "Date": "Nov 26 '24",
+      "Transaction": "Sale",
+      "Cost": "11.96",
+      "Shares": "86,421",
+      "Value": "1,033,224"
+    },
+    {
+      "Owner": "BRIAN C BUSSE",
+      "Relationship": "Officer",
+      "Date": "Nov 26 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "12.19",
+      "Shares": "86,421",
+      "Value": "1,053,472"
+    }
+  ],
+  "Dividends": []
+}

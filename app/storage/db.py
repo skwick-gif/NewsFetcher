@@ -46,6 +46,11 @@ def get_db_session() -> Session:
     return SessionLocal()
 
 
+def get_db_engine():
+    """Get database engine for migrations"""
+    return engine
+
+
 # Health check
 def check_db_health() -> bool:
     """Check if database connection is healthy"""

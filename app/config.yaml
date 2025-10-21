@@ -1,0 +1,546 @@
+# ============================================================================
+# MarketPulse Configuration
+# Financial Intelligence Platform - AI-Powered Market Analysis
+# ============================================================================
+
+# =============================================================================
+# AI MODELS CONFIGURATION
+# =============================================================================
+llm:
+  provider: "perplexity"      # Options: perplexity, openai, anthropic
+  model: "sonar"              # Perplexity 2025 model (fast search with grounding)
+  # Alternative models:
+  # - "sonar-pro"           # Advanced search for complex queries
+  # - "sonar-reasoning"     # Deep reasoning with chain-of-thought
+  # - "sonar-deep-research" # Comprehensive research reports
+  temperature: 0.2            # Lower = more focused, Higher = more creative
+  max_tokens: 1000            # Maximum response length
+  timeout: 30                 # API timeout in seconds
+
+# =============================================================================
+# PROMPTS CONFIGURATION - עריכת פרומפטים לפי צורך
+# כאן תוכל לערוך את כל הפרומפטים שנשלחים ל-AI
+# =============================================================================
+prompts:
+  
+  # ניתוח מניה - Stock Analysis Prompt
+  stock_analysis:
+    system: |
+      You are a professional financial analyst with expertise in:
+      - Technical analysis and chart patterns
+      - Fundamental analysis and company valuation
+      - Market sentiment and news interpretation
+      - Risk assessment and portfolio management
+      
+      Provide actionable insights based on real-time data and recent market movements.
+    
+    user_template: |
+      Analyze {symbol} stock and provide:
+      
+      1. **Current Outlook** - Price action, trend, momentum
+      2. **Recent News** - Key developments in last 24-48 hours
+      3. **Analyst Consensus** - Buy/Hold/Sell ratings and price targets
+      4. **Key Catalysts** - Upcoming events, earnings, product launches
+      5. **Risk Factors** - Technical levels, fundamental concerns
+      6. **Trading Recommendation** - Entry/exit points, position sizing
+      
+      Be specific, data-driven, and actionable. Focus on tradeable insights.
+  
+  # ניתוח אירוע שוק - Market Event Analysis
+  market_event:
+    system: |
+      You are a senior market strategist analyzing macro events and their impact on financial markets.
+      
+      Expertise areas:
+      - Geopolitical events and market reactions
+      - Central bank policy and interest rates
+      - Economic indicators and GDP data
+      - Sector rotation and market cycles
+      
+      Provide clear cause-effect analysis and trading implications.
+    
+    user_template: |
+      Analyze this market event: {event_description}
+      
+      Provide:
+      1. **Event Classification** - Type and severity
+      2. **Affected Markets** - Stocks, bonds, commodities, currencies
+      3. **Sector Impact** - Which sectors benefit/suffer
+      4. **Time Horizon** - Short-term vs long-term effects
+      5. **Historical Parallels** - Similar past events
+      6. **Trading Strategy** - How to position for this event
+      
+      Include specific stock symbols and actionable trades.
+  
+  # ניתוח סנטימנט חדשות - News Sentiment Analysis
+  news_sentiment:
+    system: |
+      You are a financial news analyst specializing in sentiment analysis and market psychology.
+      
+      Analyze news headlines for:
+      - Bullish/bearish sentiment indicators
+      - Market-moving information
+      - Hidden implications and second-order effects
+      - Sentiment divergence from fundamentals
+    
+    user_template: |
+      Analyze these news headlines about {symbol}:
+      
+      {headlines}
+      
+      Provide analysis of:
+      1. Overall sentiment (bullish/bearish/neutral)
+      2. Market impact potential (high/medium/low)
+      3. Key insights and implications
+      4. Risk factors to watch
+      5. Expected price impact
+      6. Confidence level in assessment
+  
+  # ניתוח מגזר - Sector Analysis
+  sector_analysis:
+    system: |
+      You are a sector specialist tracking industry trends, competitive dynamics, and rotation patterns.
+      
+      Focus on:
+      - Industry fundamentals and growth drivers
+      - Competitive landscape and market share
+      - Regulatory environment and policy changes
+      - Technological disruption and innovation
+    
+    user_template: |
+      Analyze the {sector} sector:
+      
+      1. **Sector Health** - Current state and momentum
+      2. **Key Trends** - Major themes driving the sector
+      3. **Top Performers** - Leading stocks and why
+      4. **Laggards** - Underperforming stocks and reasons
+      5. **Catalysts** - Upcoming events or drivers
+      6. **Outlook** - 3-6 month forecast
+      
+      Include specific stock symbols and avoid generic advice.
+  
+  # תחזית רווחים - Earnings Preview
+  earnings_preview:
+    system: |
+      You are an earnings analyst preparing investors for quarterly reports.
+      
+      Analyze:
+      - Historical earnings patterns and beats/misses
+      - Street expectations vs likely outcomes
+      - Guidance trends and management credibility
+      - Post-earnings stock price reactions
+    
+    user_template: |
+      Prepare earnings preview for {symbol} reporting on {date}:
+      
+      1. **Consensus Estimates** - EPS, Revenue expectations
+      2. **Key Metrics to Watch** - Company-specific KPIs
+      3. **Potential Surprises** - Upside/downside risks
+      4. **Guidance Outlook** - What management might say about future
+      5. **Stock Reaction Scenarios** - Price moves for beat/miss/in-line
+      6. **Trading Strategy** - How to play the earnings (long/short/options)
+      
+      Focus on trading implications and probability-weighted outcomes.
+  
+  # הערכת סיכונים - Risk Assessment
+  risk_assessment:
+    system: |
+      You are a risk management specialist focused on portfolio protection and downside management.
+      
+      Evaluate:
+      - Market risk (beta, volatility, correlation, drawdowns)
+      - Company-specific risks (debt, management, competition)
+      - Macro risks (recession, interest rates, geopolitics)
+      - Technical risks (support levels, trend breaks, stop losses)
+    
+    user_template: |
+      Assess risks for {symbol} position:
+      
+      1. **Risk Rating** - High/Medium/Low with detailed explanation
+      2. **Top 3 Risks** - Most significant threats to the position
+      3. **Risk Indicators** - Warning signs to monitor closely
+      4. **Downside Scenarios** - Worst case outcomes and probabilities
+      5. **Risk Mitigation** - Hedging strategies and position management
+      6. **Position Sizing** - Recommended allocation given risk profile
+      
+      Be conservative, quantify potential losses, highlight tail risks.
+  
+  # ניתוח FDA - FDA Drug Approval Impact
+  fda_analysis:
+    system: |
+      You are a biotech analyst specializing in FDA approvals and pharmaceutical stocks.
+      
+      Focus on:
+      - Drug approval impact on stock price
+      - Market size and revenue potential
+      - Competitive landscape
+      - Patent protection and exclusivity
+    
+    user_template: |
+      Analyze FDA approval: {drug_name} for {company_symbol}
+      
+      1. **Market Opportunity** - Addressable patient population and pricing
+      2. **Revenue Impact** - Peak sales estimates and timeline
+      3. **Competitive Position** - How it compares to existing treatments
+      4. **Stock Implications** - Expected price reaction and valuation impact
+      5. **Risks** - Manufacturing, side effects, reimbursement issues
+      6. **Trading Recommendation** - Buy/sell with price targets
+  
+  # ניתוח גאופוליטי - Geopolitical Event Impact
+  geopolitical_analysis:
+    system: |
+      You are a geopolitical analyst focused on market implications of global events.
+      
+      Expertise:
+      - Trade wars and tariffs impact on sectors
+      - Central bank policy divergence
+      - Currency movements and commodity prices
+      - Regulatory changes across jurisdictions
+    
+    user_template: |
+      Analyze geopolitical event: {event_description}
+      
+      1. **Event Significance** - Scale and market relevance
+      2. **Affected Sectors** - Winners and losers
+      3. **Geographic Impact** - Which markets/regions affected
+      4. **Currency/Commodity Effects** - FX and commodity price moves
+      5. **Duration** - Temporary shock vs structural shift
+      6. **Trading Plays** - Specific positions to consider
+
+# =============================================================================
+# DATA SOURCES CONFIGURATION
+# =============================================================================
+data_sources:
+  
+  # Market Data Providers
+  market_data:
+    primary: "yahoo_finance"          # Free, reliable, real-time
+    backup: "alpha_vantage"           # API key required
+    update_frequency: 60              # Seconds between updates
+    
+  # Financial News Sources (RSS Feeds)
+  news_sources:
+    - name: "Reuters Finance"
+      url: "https://www.reuters.com/finance/rss"
+      priority: high
+      check_interval: 300             # 5 minutes
+      
+    - name: "Bloomberg Markets"
+      url: "https://www.bloomberg.com/feed/podcast/etf-report.xml"
+      priority: high
+      check_interval: 300
+      
+    - name: "WSJ Markets"
+      url: "https://feeds.a.dj.com/rss/RSSMarketsMain.xml"
+      priority: high
+      check_interval: 300
+      
+    - name: "CNBC"
+      url: "https://www.cnbc.com/id/100003114/device/rss/rss.html"
+      priority: medium
+      check_interval: 600             # 10 minutes
+      
+    - name: "MarketWatch"
+      url: "https://www.marketwatch.com/rss/marketpulse"
+      priority: medium
+      check_interval: 600
+      
+    - name: "Seeking Alpha"
+      url: "https://seekingalpha.com/feed.xml"
+      priority: medium
+      check_interval: 900             # 15 minutes
+  
+  # Social Media Sentiment
+  social_media:
+    twitter:
+      enabled: true
+      rate_limit: 50                  # Requests per 15 minutes
+      keywords: ["$", "stock", "bullish", "bearish", "moon", "crash"]
+      
+    reddit:
+      enabled: true
+      subreddits: ["wallstreetbets", "stocks", "investing", "options", "stockmarket"]
+      min_upvotes: 10
+      max_posts: 50
+      
+  # Regulatory Sources
+  regulatory:
+    sec_filings:
+      enabled: true
+      forms: ["10-K", "10-Q", "8-K", "4", "13F"]    # Key SEC forms
+      check_interval: 3600            # 1 hour
+      
+    fda_approvals:
+      enabled: true
+      check_interval: 86400           # Daily
+      categories: ["drug", "device", "biologic"]
+      
+  # Geopolitical News
+  geopolitical:
+    - name: "Reuters World"
+      url: "https://www.reuters.com/world/rss"
+      keywords: ["trade", "tariff", "sanctions", "war", "election", "fed", "ecb"]
+      
+    - name: "BBC Business"
+      url: "http://feeds.bbci.co.uk/news/business/rss.xml"
+      keywords: ["economy", "central bank", "interest rate", "inflation"]
+
+# =============================================================================
+# ANALYSIS THRESHOLDS
+# =============================================================================
+thresholds:
+  sentiment:
+    strong_bullish: 0.75              # Very positive sentiment
+    bullish: 0.60
+    neutral: 0.40
+    bearish: 0.25
+    strong_bearish: 0.15              # Very negative sentiment
+    
+  confidence:
+    high: 0.80                        # High confidence in analysis
+    medium: 0.60
+    low: 0.40
+    
+  price_movement:
+    significant: 0.03                 # 3% move is significant
+    major: 0.05                       # 5% move is major
+    extreme: 0.10                     # 10% move is extreme
+    
+  volume:
+    high_volume: 2.0                  # 2x average volume
+    unusual_volume: 3.0               # 3x average volume
+
+# =============================================================================
+# ML/AI CONFIGURATION
+# =============================================================================
+ml:
+  # TensorFlow Models
+  tensorflow:
+    device: "cpu"                     # or "cuda" for GPU
+    models:
+      lstm: "models/lstm_price_predictor.h5"
+      transformer: "models/transformer_sentiment.h5"
+      cnn: "models/cnn_pattern_recognition.h5"
+      
+  # Scikit-learn Models
+  sklearn:
+    models:
+      random_forest: "models/rf_classifier.pkl"
+      gradient_boosting: "models/gb_regressor.pkl"
+      
+  # Training Configuration
+  training:
+    batch_size: 32
+    epochs: 100
+    validation_split: 0.2
+    early_stopping_patience: 10
+    learning_rate: 0.001
+    
+  # Feature Engineering
+  features:
+    technical_indicators: ["RSI", "MACD", "BB", "SMA_20", "SMA_50", "SMA_200", "EMA", "Volume", "ATR"]
+    sentiment_features: ["twitter_sentiment", "reddit_sentiment", "news_sentiment", "analyst_ratings"]
+    fundamental_features: ["PE_ratio", "EPS_growth", "revenue_growth", "profit_margin", "debt_ratio"]
+
+# =============================================================================
+# ALERTS & NOTIFICATIONS
+# =============================================================================
+alerts:
+  telegram:
+    enabled: true
+    bot_token: "${TELEGRAM_BOT_TOKEN}"
+    chat_id: "${TELEGRAM_CHAT_ID}"
+    
+  email:
+    enabled: false
+    smtp_host: "${SMTP_HOST}"
+    smtp_port: 587
+    from: "${SMTP_USER}"
+    to: "${EMAIL_TO}"
+    
+  # Alert Triggers
+  triggers:
+    price_move: 0.05                  # Alert on 5%+ moves
+    volume_spike: 3.0                 # Alert on 3x volume
+    sentiment_shift: 0.3              # Alert on major sentiment change
+    news_impact: "high"               # Alert on high-impact news
+    earnings_surprise: 0.1            # Alert on 10%+ earnings beat/miss
+    fda_approval: true                # Alert on drug approvals
+    insider_trading: true             # Alert on Form 4 filings
+
+# =============================================================================
+# WEBSOCKET STREAMING
+# =============================================================================
+websocket:
+  enabled: true
+  host: "0.0.0.0"
+  port: 8000
+  update_frequency: 5                 # Seconds between updates
+  max_connections: 100
+  
+  # Default symbols to stream
+  symbols:
+    indices: ["SPY", "QQQ", "DIA", "IWM"]
+    tech: ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA", "TSLA"]
+    finance: ["JPM", "GS", "BAC", "MS", "WFC"]
+    healthcare: ["JNJ", "UNH", "PFE", "ABBV", "TMO"]
+    default: ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "NVDA", "META", "SPY", "QQQ"]
+
+# =============================================================================
+# STORAGE & PERSISTENCE
+# =============================================================================
+storage:
+  database:
+    type: "sqlite"
+    path: "data/marketpulse.db"
+    backup_enabled: true
+    backup_interval: 86400            # Daily backups
+    
+  cache:
+    type: "memory"
+    ttl: 300                          # 5 minutes
+    max_size: 1000                    # items
+    
+  vector_store:
+    enabled: true
+    collection: "financial_articles"
+    embedding_model: "BAAI/bge-m3"
+    dimension: 1024
+    similarity_threshold: 0.80
+
+# =============================================================================
+# MONITORING & LOGGING
+# =============================================================================
+monitoring:
+  enabled: true
+  
+  metrics:
+    - api_latency
+    - prediction_accuracy
+    - data_freshness
+    - alert_frequency
+    - websocket_connections
+    
+  health_checks:
+    interval: 60                      # seconds
+    endpoints:
+      - yahoo_finance
+      - alpha_vantage
+      - twitter_api
+      - reddit_api
+      - perplexity_api
+    
+  performance:
+    track_api_calls: true
+    track_model_inference: true
+    track_data_pipeline: true
+
+logging:
+  level: INFO                         # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/marketpulse.log"
+  rotation: "daily"
+  retention: 30                       # days
+  
+  # Separate log files for different components
+  components:
+    api: "logs/api.log"
+    ml: "logs/ml_training.log"
+    data: "logs/data_pipeline.log"
+    alerts: "logs/alerts.log"
+
+# =============================================================================
+# SECURITY
+# =============================================================================
+security:
+  secret_key: "${SECRET_KEY}"
+  jwt_algorithm: "HS256"
+  jwt_expiration_hours: 24
+  
+  rate_limiting:
+    enabled: true
+    requests_per_minute: 60
+    burst: 10
+    
+  cors:
+    enabled: true
+    allow_origins: ["http://localhost:3000", "http://localhost:8000", "http://127.0.0.1:8000"]
+    allow_methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    allow_headers: ["*"]
+  
+  api_keys:
+    require_auth: false               # Set true for production
+    key_header: "X-API-Key"
+
+# =============================================================================
+# SCHEDULER
+# =============================================================================
+scheduler:
+  enabled: true
+  timezone: "UTC"
+  
+  jobs:
+    # Real-time jobs
+    - name: "fetch_market_data"
+      interval: 60                    # Every minute
+      enabled: true
+      
+    - name: "fetch_news"
+      interval: 300                   # Every 5 minutes
+      enabled: true
+      
+    - name: "analyze_sentiment"
+      interval: 900                   # Every 15 minutes
+      enabled: true
+      
+    - name: "check_sec_filings"
+      interval: 3600                  # Every hour
+      enabled: true
+      
+    # Daily jobs
+    - name: "train_models"
+      cron: "0 2 * * *"              # 2 AM daily
+      enabled: true
+      
+    - name: "generate_reports"
+      cron: "0 6 * * *"              # 6 AM daily
+      enabled: true
+      
+    # Weekly jobs
+    - name: "cleanup_old_data"
+      cron: "0 3 * * 0"              # 3 AM Sundays
+      enabled: true
+      retention_days: 90
+      
+    - name: "model_evaluation"
+      cron: "0 4 * * 0"              # 4 AM Sundays
+      enabled: true
+
+# =============================================================================
+# WATCHLIST CONFIGURATION
+# =============================================================================
+watchlist:
+  max_symbols: 50                     # Maximum symbols per user
+  
+  presets:
+    magnificent_7: ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA"]
+    faang: ["META", "AAPL", "AMZN", "NFLX", "GOOGL"]
+    dow_30: ["AAPL", "MSFT", "JPM", "JNJ", "V", "PG", "UNH", "HD", "CVX", "MRK"]
+    biotech: ["MRNA", "BNTX", "REGN", "VRTX", "GILD", "BIIB"]
+    ev: ["TSLA", "RIVN", "LCID", "NIO", "XPEV", "LI"]
+
+# =============================================================================
+# FEATURE FLAGS
+# =============================================================================
+features:
+  ml_predictions: true
+  sentiment_analysis: true
+  news_alerts: true
+  social_media_monitoring: true
+  sec_filings_tracking: true
+  fda_approvals_tracking: true
+  geopolitical_monitoring: true
+  websocket_streaming: true
+  real_time_charts: true
+  portfolio_tracking: false           # Future feature
+  options_analysis: false             # Future feature

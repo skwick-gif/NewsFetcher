@@ -1,0 +1,790 @@
+{
+  "Index": "RUT",
+  "P/E": "-",
+  "EPS (ttm)": "-0.34",
+  "Insider Own": "84.59%",
+  "Shs Outstand": "10.32M",
+  "Perf Week": "-3.95%",
+  "Market Cap": "2.51B",
+  "Forward P/E": "-",
+  "EPS next Y": "14.13%",
+  "Insider Trans": "-0.56%",
+  "Shs Float": "9.67M",
+  "Perf Month": "-6.57%",
+  "Enterprise Value": "3.18B",
+  "PEG": "-",
+  "EPS next Q": "0.22",
+  "Inst Own": "12.44%",
+  "Short Float": "3.79%",
+  "Perf Quarter": "-13.89%",
+  "Income": "-21.00M",
+  "P/S": "3.58",
+  "EPS this Y": "33.33%",
+  "Inst Trans": "-",
+  "Short Ratio": "8.26",
+  "Perf Half Y": "1.94%",
+  "Sales": "702.44M",
+  "P/B": "5.17",
+  "ROA": "-1.29%",
+  "Short Interest": "3.79%",
+  "Perf YTD": "5.61%",
+  "Book/sh": "8.33",
+  "P/C": "16.36",
+  "EPS next 5Y": "37.02%",
+  "ROE": "-4.06%",
+  "52W High": "50.50 -14.67%",
+  "Perf Year": "2.69%",
+  "Cash/sh": "2.63",
+  "P/FCF": "-",
+  "EPS past 3/5Y": "-33.37% -",
+  "ROIC": "-1.72%",
+  "52W Low": "38.67 11.43%",
+  "Perf 3Y": "50.14%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "62.94",
+  "Sales past 3/5Y": "5.54% -",
+  "Gross Margin": "16.01%",
+  "Volatility": "1.60% 1.54%",
+  "Perf 5Y": "104.70%",
+  "Dividend TTM": "-",
+  "EV/Sales": "4.52",
+  "EPS Y/Y TTM": "65.80%",
+  "Oper. Margin": "-2.12%",
+  "ATR (14)": "0.74",
+  "Perf 10Y": "-",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "0.64",
+  "Sales Y/Y TTM": "6.51%",
+  "Profit Margin": "-2.99%",
+  "RSI (14)": "24.89",
+  "Recom": "1.50",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "0.64",
+  "EPS Q/Q": "0.26%",
+  "SMA20": "-4.17%",
+  "Beta": "0.85",
+  "Target Price": "61.75",
+  "Payout": "-",
+  "Debt/Eq": "1.54",
+  "Sales Q/Q": "10.45%",
+  "SMA50": "-6.32%",
+  "Rel Volume": "1.66",
+  "Prev Close": "43.47",
+  "Employees": "1450",
+  "LT Debt/Eq": "1.34",
+  "Earnings": "Nov 05 BMO",
+  "SMA200": "-3.36%",
+  "Avg Volume": "44.41K",
+  "Price": "43.09",
+  "IPO": "Apr 18, 2016",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "-18.16% 5.43%",
+  "Trades": "",
+  "Volume": "73,718",
+  "Change": "-0.87%",
+  "Insider Trading": [
+    {
+      "Owner": "Robinson Jill L.",
+      "Relationship": "EVP, CFO & Treasurer",
+      "Date": "Oct 01 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "27.18",
+      "Shares": "20,000",
+      "Value": "543,600"
+    },
+    {
+      "Owner": "Robinson Jill L.",
+      "Relationship": "EVP, CFO & Treasurer",
+      "Date": "Oct 01 '25",
+      "Transaction": "Sale",
+      "Cost": "41.00",
+      "Shares": "20,000",
+      "Value": "819,960"
+    },
+    {
+      "Owner": "Robinson Jill L.",
+      "Relationship": "Officer",
+      "Date": "Oct 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "41.00",
+      "Shares": "20,000",
+      "Value": "820,000"
+    },
+    {
+      "Owner": "GAMCO INVESTORS, INC. ET AL",
+      "Relationship": "10% Owner",
+      "Date": "Sep 29 '25",
+      "Transaction": "Sale",
+      "Cost": "45.35",
+      "Shares": "500",
+      "Value": "22,675"
+    },
+    {
+      "Owner": "GAMCO INVESTORS, INC. ET AL",
+      "Relationship": "10% Owner",
+      "Date": "Sep 25 '25",
+      "Transaction": "Sale",
+      "Cost": "45.41",
+      "Shares": "800",
+      "Value": "36,328"
+    },
+    {
+      "Owner": "GAMCO INVESTORS, INC. ET AL",
+      "Relationship": "10% Owner",
+      "Date": "Sep 26 '25",
+      "Transaction": "Sale",
+      "Cost": "45.51",
+      "Shares": "500",
+      "Value": "22,755"
+    },
+    {
+      "Owner": "GAMCO INVESTORS, INC. ET AL",
+      "Relationship": "10% Owner",
+      "Date": "Sep 19 '25",
+      "Transaction": "Sale",
+      "Cost": "45.19",
+      "Shares": "1,100",
+      "Value": "49,714"
+    },
+    {
+      "Owner": "GAMCO INVESTORS, INC. ET AL",
+      "Relationship": "10% Owner",
+      "Date": "Sep 18 '25",
+      "Transaction": "Sale",
+      "Cost": "45.49",
+      "Shares": "800",
+      "Value": "36,391"
+    },
+    {
+      "Owner": "Heller Gregory John",
+      "Relationship": "EVP, CLO & Secretary",
+      "Date": "Aug 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "27.18",
+      "Shares": "60,000",
+      "Value": "1,630,800"
+    },
+    {
+      "Owner": "Heller Gregory John",
+      "Relationship": "EVP, CLO & Secretary",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "43.45",
+      "Shares": "60,000",
+      "Value": "2,607,000"
+    },
+    {
+      "Owner": "Greg Heller",
+      "Relationship": "Officer",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "43.55",
+      "Shares": "60,000",
+      "Value": "2,613,000"
+    },
+    {
+      "Owner": "Robinson Jill L.",
+      "Relationship": "EVP, CFO & Treasurer",
+      "Date": "Aug 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "27.18",
+      "Shares": "40,000",
+      "Value": "1,087,200"
+    },
+    {
+      "Owner": "Robinson Jill L.",
+      "Relationship": "EVP, CFO & Treasurer",
+      "Date": "Aug 15 '25",
+      "Transaction": "Sale",
+      "Cost": "43.82",
+      "Shares": "40,000",
+      "Value": "1,752,800"
+    },
+    {
+      "Owner": "Robinson Jill L.",
+      "Relationship": "Officer",
+      "Date": "Aug 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "44.02",
+      "Shares": "40,000",
+      "Value": "1,760,800"
+    },
+    {
+      "Owner": "Schiller Derek Gordon",
+      "Relationship": "EVP, Business",
+      "Date": "Jun 18 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "27.18",
+      "Shares": "40,000",
+      "Value": "1,087,200"
+    },
+    {
+      "Owner": "Schiller Derek Gordon",
+      "Relationship": "EVP, Business",
+      "Date": "Jun 20 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "27.18",
+      "Shares": "30,000",
+      "Value": "815,400"
+    },
+    {
+      "Owner": "Schiller Derek Gordon",
+      "Relationship": "EVP, Business",
+      "Date": "Jun 18 '25",
+      "Transaction": "Sale",
+      "Cost": "44.00",
+      "Shares": "40,000",
+      "Value": "1,760,000"
+    },
+    {
+      "Owner": "Schiller Derek Gordon",
+      "Relationship": "EVP, Business",
+      "Date": "Jun 20 '25",
+      "Transaction": "Sale",
+      "Cost": "45.50",
+      "Shares": "30,000",
+      "Value": "1,365,000"
+    },
+    {
+      "Owner": "GAMCO INVESTORS, INC. ET AL",
+      "Relationship": "10% Owner",
+      "Date": "Jun 20 '25",
+      "Transaction": "Sale",
+      "Cost": "48.12",
+      "Shares": "100",
+      "Value": "4,812"
+    },
+    {
+      "Owner": "Schiller Derek Gordon",
+      "Relationship": "Officer",
+      "Date": "Jun 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "45.50",
+      "Shares": "30,000",
+      "Value": "1,365,000"
+    },
+    {
+      "Owner": "Schiller Derek Gordon",
+      "Relationship": "Officer",
+      "Date": "Jun 18 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "44.00",
+      "Shares": "40,000",
+      "Value": "1,760,000"
+    },
+    {
+      "Owner": "Plant Michael P.",
+      "Relationship": "EVP, Development",
+      "Date": "Jun 11 '25",
+      "Transaction": "Sale",
+      "Cost": "43.00",
+      "Shares": "69,000",
+      "Value": "2,967,000"
+    },
+    {
+      "Owner": "Schiller Derek Gordon",
+      "Relationship": "EVP, Business",
+      "Date": "Jun 11 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "27.18",
+      "Shares": "40,000",
+      "Value": "1,087,200"
+    },
+    {
+      "Owner": "Schiller Derek Gordon",
+      "Relationship": "EVP, Business",
+      "Date": "Jun 11 '25",
+      "Transaction": "Sale",
+      "Cost": "43.00",
+      "Shares": "72,505",
+      "Value": "3,117,715"
+    },
+    {
+      "Owner": "Schiller Derek Gordon",
+      "Relationship": "Officer",
+      "Date": "Jun 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "43.00",
+      "Shares": "72,505",
+      "Value": "3,117,766"
+    },
+    {
+      "Owner": "Plant Michael P.",
+      "Relationship": "Officer",
+      "Date": "Jun 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "43.00",
+      "Shares": "69,000",
+      "Value": "2,967,034"
+    },
+    {
+      "Owner": "GABELLI MARIO J",
+      "Relationship": "10% Owner",
+      "Date": "May 28 '25",
+      "Transaction": "Buy",
+      "Cost": "43.45",
+      "Shares": "1,549",
+      "Value": "67,304"
+    },
+    {
+      "Owner": "GABELLI MARIO J",
+      "Relationship": "10% Owner",
+      "Date": "May 23 '25",
+      "Transaction": "Buy",
+      "Cost": "43.45",
+      "Shares": "451",
+      "Value": "19,596"
+    },
+    {
+      "Owner": "Rhodes DeRetta C.",
+      "Relationship": "EVP, Chief Culture Officer",
+      "Date": "May 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "27.18",
+      "Shares": "5,000",
+      "Value": "135,900"
+    },
+    {
+      "Owner": "Rhodes DeRetta C.",
+      "Relationship": "EVP, Chief Culture Officer",
+      "Date": "May 15 '25",
+      "Transaction": "Sale",
+      "Cost": "41.20",
+      "Shares": "5,000",
+      "Value": "206,000"
+    },
+    {
+      "Owner": "Rhodes DeRetta C.",
+      "Relationship": "EVP, Chief Culture Officer",
+      "Date": "May 14 '25",
+      "Transaction": "Sale",
+      "Cost": "40.97",
+      "Shares": "767",
+      "Value": "31,424"
+    },
+    {
+      "Owner": "DeRetta Rhodes",
+      "Relationship": "Officer",
+      "Date": "May 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "41.20",
+      "Shares": "5,000",
+      "Value": "206,002"
+    },
+    {
+      "Owner": "Heller Gregory John",
+      "Relationship": "EVP, CLO & Secretary",
+      "Date": "May 12 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "27.18",
+      "Shares": "25,000",
+      "Value": "679,500"
+    },
+    {
+      "Owner": "Heller Gregory John",
+      "Relationship": "EVP, CLO & Secretary",
+      "Date": "May 12 '25",
+      "Transaction": "Sale",
+      "Cost": "41.25",
+      "Shares": "25,000",
+      "Value": "1,031,250"
+    },
+    {
+      "Owner": "MALONE JOHN C",
+      "Relationship": "10% Owner",
+      "Date": "Apr 21 '25",
+      "Transaction": "Buy",
+      "Cost": "41.94",
+      "Shares": "8,371",
+      "Value": "351,080"
+    },
+    {
+      "Owner": "MALONE JOHN C",
+      "Relationship": "10% Owner",
+      "Date": "Apr 16 '25",
+      "Transaction": "Buy",
+      "Cost": "41.91",
+      "Shares": "25,182",
+      "Value": "1,055,378"
+    },
+    {
+      "Owner": "MALONE JOHN C",
+      "Relationship": "10% Owner",
+      "Date": "Apr 17 '25",
+      "Transaction": "Buy",
+      "Cost": "42.00",
+      "Shares": "282",
+      "Value": "11,844"
+    },
+    {
+      "Owner": "MALONE JOHN C",
+      "Relationship": "10% Owner",
+      "Date": "Apr 14 '25",
+      "Transaction": "Buy",
+      "Cost": "41.99",
+      "Shares": "3,609",
+      "Value": "151,542"
+    },
+    {
+      "Owner": "MALONE JOHN C",
+      "Relationship": "10% Owner",
+      "Date": "Apr 15 '25",
+      "Transaction": "Buy",
+      "Cost": "42.00",
+      "Shares": "1,202",
+      "Value": "50,484"
+    },
+    {
+      "Owner": "MALONE JOHN C",
+      "Relationship": "10% Owner",
+      "Date": "Apr 10 '25",
+      "Transaction": "Buy",
+      "Cost": "41.80",
+      "Shares": "44,258",
+      "Value": "1,849,984"
+    },
+    {
+      "Owner": "MALONE JOHN C",
+      "Relationship": "10% Owner",
+      "Date": "Apr 11 '25",
+      "Transaction": "Buy",
+      "Cost": "41.99",
+      "Shares": "2,191",
+      "Value": "92,000"
+    },
+    {
+      "Owner": "MALONE JOHN C",
+      "Relationship": "10% Owner",
+      "Date": "Apr 08 '25",
+      "Transaction": "Buy",
+      "Cost": "40.28",
+      "Shares": "38,452",
+      "Value": "1,548,847"
+    },
+    {
+      "Owner": "MALONE JOHN C",
+      "Relationship": "10% Owner",
+      "Date": "Apr 09 '25",
+      "Transaction": "Buy",
+      "Cost": "40.57",
+      "Shares": "32,184",
+      "Value": "1,305,705"
+    },
+    {
+      "Owner": "MALONE JOHN C",
+      "Relationship": "10% Owner",
+      "Date": "Mar 14 '25",
+      "Transaction": "Buy",
+      "Cost": "42.00",
+      "Shares": "1,135",
+      "Value": "47,670"
+    },
+    {
+      "Owner": "MALONE JOHN C",
+      "Relationship": "10% Owner",
+      "Date": "Mar 12 '25",
+      "Transaction": "Buy",
+      "Cost": "41.99",
+      "Shares": "2,760",
+      "Value": "115,892"
+    },
+    {
+      "Owner": "MALONE JOHN C",
+      "Relationship": "10% Owner",
+      "Date": "Mar 13 '25",
+      "Transaction": "Buy",
+      "Cost": "41.99",
+      "Shares": "723",
+      "Value": "30,359"
+    },
+    {
+      "Owner": "Heller Gregory John",
+      "Relationship": "EVP, CLO & Secretary",
+      "Date": "Mar 03 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "27.18",
+      "Shares": "25,000",
+      "Value": "679,500"
+    },
+    {
+      "Owner": "Heller Gregory John",
+      "Relationship": "EVP, CLO & Secretary",
+      "Date": "Mar 03 '25",
+      "Transaction": "Sale",
+      "Cost": "41.00",
+      "Shares": "25,000",
+      "Value": "1,025,000"
+    },
+    {
+      "Owner": "Heller Gregory John",
+      "Relationship": "Officer",
+      "Date": "Mar 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "40.29",
+      "Shares": "50,000",
+      "Value": "2,014,500"
+    },
+    {
+      "Owner": "MALONE JOHN C",
+      "Relationship": "10% Owner",
+      "Date": "Jan 29 '25",
+      "Transaction": "Buy",
+      "Cost": "41.94",
+      "Shares": "24,646",
+      "Value": "1,033,653"
+    },
+    {
+      "Owner": "MALONE JOHN C",
+      "Relationship": "10% Owner",
+      "Date": "Jan 28 '25",
+      "Transaction": "Buy",
+      "Cost": "41.99",
+      "Shares": "17,190",
+      "Value": "721,808"
+    },
+    {
+      "Owner": "MALONE JOHN C",
+      "Relationship": "10% Owner",
+      "Date": "Jan 27 '25",
+      "Transaction": "Buy",
+      "Cost": "41.94",
+      "Shares": "5,094",
+      "Value": "213,642"
+    },
+    {
+      "Owner": "MALONE JOHN C",
+      "Relationship": "10% Owner",
+      "Date": "Jan 23 '25",
+      "Transaction": "Buy",
+      "Cost": "41.10",
+      "Shares": "18,408",
+      "Value": "756,569"
+    },
+    {
+      "Owner": "MALONE JOHN C",
+      "Relationship": "10% Owner",
+      "Date": "Jan 22 '25",
+      "Transaction": "Buy",
+      "Cost": "40.62",
+      "Shares": "15,192",
+      "Value": "617,099"
+    },
+    {
+      "Owner": "Associated Capital Group, Inc.",
+      "Relationship": "10% Owner",
+      "Date": "Jan 10 '25",
+      "Transaction": "Buy",
+      "Cost": "39.19",
+      "Shares": "2,000",
+      "Value": "78,377"
+    },
+    {
+      "Owner": "DeRetta Rhodes",
+      "Relationship": "Officer",
+      "Date": "Dec 12 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "39.90",
+      "Shares": "2,528",
+      "Value": "100,867"
+    },
+    {
+      "Owner": "Terence McGuirk",
+      "Relationship": "Officer",
+      "Date": "Dec 12 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "39.90",
+      "Shares": "20,166",
+      "Value": "804,623"
+    },
+    {
+      "Owner": "Jill Robinson",
+      "Relationship": "Officer",
+      "Date": "Dec 12 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "39.93",
+      "Shares": "10,274",
+      "Value": "410,250"
+    },
+    {
+      "Owner": "Rhodes DeRetta C.",
+      "Relationship": "EVP, Chief Culture Officer",
+      "Date": "Dec 11 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "5,640",
+      "Value": "0"
+    },
+    {
+      "Owner": "Rhodes DeRetta C.",
+      "Relationship": "EVP, Chief Culture Officer",
+      "Date": "Dec 12 '24",
+      "Transaction": "Sale",
+      "Cost": "39.93",
+      "Shares": "2,528",
+      "Value": "100,943"
+    },
+    {
+      "Owner": "Plant Michael P.",
+      "Relationship": "EVP, Development",
+      "Date": "Dec 11 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "33,426",
+      "Value": "0"
+    },
+    {
+      "Owner": "Plant Michael P.",
+      "Relationship": "EVP, Development",
+      "Date": "Dec 12 '24",
+      "Transaction": "Sale",
+      "Cost": "39.93",
+      "Shares": "14,940",
+      "Value": "596,554"
+    },
+    {
+      "Owner": "MCGUIRK TERENCE F",
+      "Relationship": "Chairman and CEO of the Braves",
+      "Date": "Dec 11 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "45,125",
+      "Value": "0"
+    },
+    {
+      "Owner": "MCGUIRK TERENCE F",
+      "Relationship": "Chairman and CEO of the Braves",
+      "Date": "Dec 12 '24",
+      "Transaction": "Sale",
+      "Cost": "39.93",
+      "Shares": "20,166",
+      "Value": "805,228"
+    },
+    {
+      "Owner": "Heller Gregory John",
+      "Relationship": "EVP, CLO & Secretary",
+      "Date": "Dec 11 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "22,980",
+      "Value": "0"
+    },
+    {
+      "Owner": "Heller Gregory John",
+      "Relationship": "EVP, CLO & Secretary",
+      "Date": "Dec 12 '24",
+      "Transaction": "Sale",
+      "Cost": "39.93",
+      "Shares": "10,274",
+      "Value": "410,241"
+    },
+    {
+      "Owner": "Schiller Derek Gordon",
+      "Relationship": "EVP, Business",
+      "Date": "Dec 11 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "33,426",
+      "Value": "0"
+    },
+    {
+      "Owner": "Schiller Derek Gordon",
+      "Relationship": "EVP, Business",
+      "Date": "Dec 12 '24",
+      "Transaction": "Sale",
+      "Cost": "39.93",
+      "Shares": "14,940",
+      "Value": "596,554"
+    },
+    {
+      "Owner": "Robinson Jill L.",
+      "Relationship": "EVP, CFO & Treasurer",
+      "Date": "Dec 11 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "22,980",
+      "Value": "0"
+    },
+    {
+      "Owner": "Robinson Jill L.",
+      "Relationship": "EVP, CFO & Treasurer",
+      "Date": "Dec 12 '24",
+      "Transaction": "Sale",
+      "Cost": "39.93",
+      "Shares": "10,274",
+      "Value": "410,241"
+    },
+    {
+      "Owner": "Michael Plant",
+      "Relationship": "Officer",
+      "Date": "Dec 12 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "39.93",
+      "Shares": "14,940",
+      "Value": "596,568"
+    },
+    {
+      "Owner": "Greg Heller",
+      "Relationship": "Officer",
+      "Date": "Dec 12 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "39.93",
+      "Shares": "10,274",
+      "Value": "410,250"
+    },
+    {
+      "Owner": "Derek Schiller",
+      "Relationship": "Officer",
+      "Date": "Dec 12 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "39.93",
+      "Shares": "14,940",
+      "Value": "596,568"
+    },
+    {
+      "Owner": "DEEVY BRIAN",
+      "Relationship": "Director",
+      "Date": "Dec 11 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,462",
+      "Value": "0"
+    },
+    {
+      "Owner": "MURPHY DIANA M",
+      "Relationship": "Director",
+      "Date": "Dec 11 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,462",
+      "Value": "0"
+    },
+    {
+      "Owner": "Lucas Wonya Y",
+      "Relationship": "Director",
+      "Date": "Dec 11 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,925",
+      "Value": "0"
+    },
+    {
+      "Owner": "DEEVY BRIAN",
+      "Relationship": "Director",
+      "Date": "Nov 21 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "22.56",
+      "Shares": "466",
+      "Value": "10,513"
+    },
+    {
+      "Owner": "GAMCO INVESTORS, INC. ET AL",
+      "Relationship": "10% Owner",
+      "Date": "Nov 22 '24",
+      "Transaction": "Buy",
+      "Cost": "41.50",
+      "Shares": "300",
+      "Value": "12,450"
+    }
+  ],
+  "Dividends": []
+}

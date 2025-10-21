@@ -1,0 +1,736 @@
+{
+  "Index": "NDX, S&P 500",
+  "P/E": "123.70",
+  "EPS (ttm)": "1.74",
+  "Insider Own": "0.65%",
+  "Shs Outstand": "1.62B",
+  "Perf Week": "30.50%",
+  "Market Cap": "348.75B",
+  "Forward P/E": "34.91",
+  "EPS next Y": "60.13%",
+  "Insider Trans": "-3.24%",
+  "Shs Float": "1.61B",
+  "Perf Month": "38.05%",
+  "Enterprise Value": "346.77B",
+  "PEG": "3.31",
+  "EPS next Q": "1.17",
+  "Inst Own": "65.82%",
+  "Short Float": "2.35%",
+  "Perf Quarter": "46.95%",
+  "Income": "2.83B",
+  "P/S": "11.78",
+  "EPS this Y": "16.16%",
+  "Inst Trans": "1.10%",
+  "Short Ratio": "0.63",
+  "Perf Half Y": "142.28%",
+  "Sales": "29.60B",
+  "P/B": "5.84",
+  "ROA": "3.83%",
+  "Short Interest": "2.35%",
+  "Perf YTD": "77.91%",
+  "Book/sh": "36.78",
+  "P/C": "59.44",
+  "EPS next 5Y": "37.42%",
+  "ROE": "4.70%",
+  "52W High": "240.10 -10.50%",
+  "Perf Year": "24.36%",
+  "Cash/sh": "3.62",
+  "P/FCF": "86.26",
+  "EPS past 3/5Y": "-26.96% 26.91%",
+  "ROIC": "4.46%",
+  "52W Low": "76.48 180.99%",
+  "Perf 3Y": "216.31%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "62.53",
+  "Sales past 3/5Y": "16.20% 30.81%",
+  "Gross Margin": "43.20%",
+  "Volatility": "8.54% 4.55%",
+  "Perf 5Y": "149.45%",
+  "Dividend TTM": "-",
+  "EV/Sales": "11.72",
+  "EPS Y/Y TTM": "108.67%",
+  "Oper. Margin": "8.36%",
+  "ATR (14)": "11.88",
+  "Perf 10Y": "11643.17%",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "1.81",
+  "Sales Y/Y TTM": "27.17%",
+  "Profit Margin": "9.57%",
+  "RSI (14)": "68.58",
+  "Recom": "1.68",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "2.49",
+  "EPS Q/Q": "230.45%",
+  "SMA20": "22.15%",
+  "Beta": "1.86",
+  "Target Price": "230.47",
+  "Payout": "0.00%",
+  "Debt/Eq": "0.07",
+  "Sales Q/Q": "31.71%",
+  "SMA50": "26.03%",
+  "Rel Volume": "1.91",
+  "Prev Close": "232.89",
+  "Employees": "28000",
+  "LT Debt/Eq": "0.07",
+  "Earnings": "Nov 04 AMC",
+  "SMA200": "64.73%",
+  "Avg Volume": "60.48M",
+  "Price": "214.90",
+  "IPO": "Oct 15, 1979",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "0.27% 3.65%",
+  "Trades": "",
+  "Volume": "115,386,968",
+  "Change": "-7.72%",
+  "Insider Trading": [
+    {
+      "Owner": "Hahn Ava",
+      "Relationship": "SVP, GC & Corporate Secretary",
+      "Date": "Oct 06 '25",
+      "Transaction": "Sale",
+      "Cost": "226.01",
+      "Shares": "2,868",
+      "Value": "648,197"
+    },
+    {
+      "Owner": "AVA HAHN",
+      "Relationship": "Officer",
+      "Date": "Oct 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "226.01",
+      "Shares": "2,868",
+      "Value": "648,197"
+    },
+    {
+      "Owner": "Norrod Forrest Eugene",
+      "Relationship": "EVP & GM DESG",
+      "Date": "Sep 24 '25",
+      "Transaction": "Sale",
+      "Cost": "165.01",
+      "Shares": "2,250",
+      "Value": "371,272"
+    },
+    {
+      "Owner": "FORREST E NORROD",
+      "Relationship": "Officer",
+      "Date": "Sep 24 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "165.01",
+      "Shares": "2,250",
+      "Value": "371,272"
+    },
+    {
+      "Owner": "Papermaster Mark D",
+      "Relationship": "Chief Technology Officer & EVP",
+      "Date": "Sep 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "34.19",
+      "Shares": "16,800",
+      "Value": "574,392"
+    },
+    {
+      "Owner": "Papermaster Mark D",
+      "Relationship": "Chief Technology Officer & EVP",
+      "Date": "Sep 15 '25",
+      "Transaction": "Sale",
+      "Cost": "159.20",
+      "Shares": "16,800",
+      "Value": "2,674,513"
+    },
+    {
+      "Owner": "MARK PAPERMASTER",
+      "Relationship": "Officer",
+      "Date": "Sep 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "159.20",
+      "Shares": "16,800",
+      "Value": "2,674,552"
+    },
+    {
+      "Owner": "Norrod Forrest Eugene",
+      "Relationship": "EVP & GM DESG",
+      "Date": "Sep 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "34.19",
+      "Shares": "8,200",
+      "Value": "280,358"
+    },
+    {
+      "Owner": "Norrod Forrest Eugene",
+      "Relationship": "EVP & GM DESG",
+      "Date": "Sep 10 '25",
+      "Transaction": "Sale",
+      "Cost": "160.93",
+      "Shares": "17,200",
+      "Value": "2,768,021"
+    },
+    {
+      "Owner": "FORREST E NORROD",
+      "Relationship": "Officer",
+      "Date": "Sep 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "160.93",
+      "Shares": "17,200",
+      "Value": "2,768,018"
+    },
+    {
+      "Owner": "Hahn Ava",
+      "Relationship": "SVP, GC & Corporate Secretary",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "158.10",
+      "Shares": "143",
+      "Value": "22,608"
+    },
+    {
+      "Owner": "Su Lisa T",
+      "Relationship": "Chair, President & CEO",
+      "Date": "Aug 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "34.19",
+      "Shares": "224,727",
+      "Value": "7,683,416"
+    },
+    {
+      "Owner": "Su Lisa T",
+      "Relationship": "Chair, President & CEO",
+      "Date": "Aug 21 '25",
+      "Transaction": "Sale",
+      "Cost": "163.97",
+      "Shares": "225,000",
+      "Value": "36,893,351"
+    },
+    {
+      "Owner": "LISA SU",
+      "Relationship": "Director",
+      "Date": "Aug 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "165.20",
+      "Shares": "225,000",
+      "Value": "37,170,000"
+    },
+    {
+      "Owner": "GRASBY PAUL DARREN",
+      "Relationship": "EVP & CSO",
+      "Date": "Aug 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "33,659",
+      "Value": "0"
+    },
+    {
+      "Owner": "HUYNH JACK M",
+      "Relationship": "SVP & GM, Computing & Graphics",
+      "Date": "Aug 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,804",
+      "Value": "0"
+    },
+    {
+      "Owner": "Norrod Forrest Eugene",
+      "Relationship": "EVP & GM DESG",
+      "Date": "Aug 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "26,927",
+      "Value": "0"
+    },
+    {
+      "Owner": "Papermaster Mark D",
+      "Relationship": "Chief Technology Officer & EVP",
+      "Date": "Aug 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "9.76",
+      "Shares": "58,875",
+      "Value": "574,392"
+    },
+    {
+      "Owner": "Papermaster Mark D",
+      "Relationship": "Chief Technology Officer & EVP",
+      "Date": "Aug 15 '25",
+      "Transaction": "Sale",
+      "Cost": "178.11",
+      "Shares": "16,800",
+      "Value": "2,992,244"
+    },
+    {
+      "Owner": "Su Lisa T",
+      "Relationship": "Chair, President & CEO",
+      "Date": "Aug 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "125,663",
+      "Value": "0"
+    },
+    {
+      "Owner": "MARK PAPERMASTER",
+      "Relationship": "Officer",
+      "Date": "Aug 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "178.11",
+      "Shares": "16,800",
+      "Value": "2,992,255"
+    },
+    {
+      "Owner": "PAUL DARREN GRASBY",
+      "Relationship": "Officer",
+      "Date": "Aug 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "173.21",
+      "Shares": "10,000",
+      "Value": "1,732,100"
+    },
+    {
+      "Owner": "GRASBY PAUL DARREN",
+      "Relationship": "EVP & CSO",
+      "Date": "Aug 09 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "23,258",
+      "Value": "0"
+    },
+    {
+      "Owner": "GRASBY PAUL DARREN",
+      "Relationship": "EVP & CSO",
+      "Date": "Aug 12 '25",
+      "Transaction": "Sale",
+      "Cost": "173.21",
+      "Shares": "10,000",
+      "Value": "1,732,100"
+    },
+    {
+      "Owner": "Su Lisa T",
+      "Relationship": "Chair, President & CEO",
+      "Date": "Aug 09 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "16,221",
+      "Value": "0"
+    },
+    {
+      "Owner": "Hu Jean X.",
+      "Relationship": "EVP, CFO and Treasurer",
+      "Date": "Aug 09 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "5,893",
+      "Value": "0"
+    },
+    {
+      "Owner": "Hahn Ava",
+      "Relationship": "SVP, GC & Corporate Secretary",
+      "Date": "Aug 09 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,133",
+      "Value": "0"
+    },
+    {
+      "Owner": "HUYNH JACK M",
+      "Relationship": "SVP & GM, Computing & Graphics",
+      "Date": "Aug 09 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "5,553",
+      "Value": "0"
+    },
+    {
+      "Owner": "GUIDO PHILIP",
+      "Relationship": "EVP & Chief Commercial Officer",
+      "Date": "Aug 09 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "4,584",
+      "Value": "0"
+    },
+    {
+      "Owner": "Papermaster Mark D",
+      "Relationship": "Chief Technology Officer & EVP",
+      "Date": "Aug 09 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "12,633",
+      "Value": "0"
+    },
+    {
+      "Owner": "Norrod Forrest Eugene",
+      "Relationship": "EVP & GM DESG",
+      "Date": "Aug 09 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "8,605",
+      "Value": "0"
+    },
+    {
+      "Owner": "Papermaster Mark D",
+      "Relationship": "Chief Technology Officer & EVP",
+      "Date": "Jul 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "19.10",
+      "Shares": "17,998",
+      "Value": "343,762"
+    },
+    {
+      "Owner": "Papermaster Mark D",
+      "Relationship": "Chief Technology Officer & EVP",
+      "Date": "Jul 15 '25",
+      "Transaction": "Sale",
+      "Cost": "155.03",
+      "Shares": "17,998",
+      "Value": "2,790,187"
+    },
+    {
+      "Owner": "MARK PAPERMASTER",
+      "Relationship": "Officer",
+      "Date": "Jul 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "155.03",
+      "Shares": "17,998",
+      "Value": "2,790,190"
+    },
+    {
+      "Owner": "GUIDO PHILIP",
+      "Relationship": "EVP & Chief Commercial Officer",
+      "Date": "Jun 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "7,494",
+      "Value": "0"
+    },
+    {
+      "Owner": "Papermaster Mark D",
+      "Relationship": "Chief Technology Officer & EVP",
+      "Date": "Jun 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "19.10",
+      "Shares": "17,500",
+      "Value": "334,250"
+    },
+    {
+      "Owner": "Papermaster Mark D",
+      "Relationship": "Chief Technology Officer & EVP",
+      "Date": "Jun 13 '25",
+      "Transaction": "Sale",
+      "Cost": "116.00",
+      "Shares": "17,500",
+      "Value": "2,029,996"
+    },
+    {
+      "Owner": "MARK PAPERMASTER",
+      "Relationship": "Officer",
+      "Date": "Jun 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "116.00",
+      "Shares": "17,500",
+      "Value": "2,029,934"
+    },
+    {
+      "Owner": "GUIDO PHILIP",
+      "Relationship": "EVP & Chief Commercial Officer",
+      "Date": "May 20 '25",
+      "Transaction": "Buy",
+      "Cost": "113.56",
+      "Shares": "8,800",
+      "Value": "999,328"
+    },
+    {
+      "Owner": "Papermaster Mark D",
+      "Relationship": "Chief Technology Officer & EVP",
+      "Date": "May 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "19.10",
+      "Shares": "17,500",
+      "Value": "334,250"
+    },
+    {
+      "Owner": "Papermaster Mark D",
+      "Relationship": "Chief Technology Officer & EVP",
+      "Date": "May 15 '25",
+      "Transaction": "Sale",
+      "Cost": "116.59",
+      "Shares": "17,500",
+      "Value": "2,040,276"
+    },
+    {
+      "Owner": "MARK PAPERMASTER",
+      "Relationship": "Officer",
+      "Date": "May 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "116.59",
+      "Shares": "17,500",
+      "Value": "2,040,297"
+    },
+    {
+      "Owner": "VANDERSLICE ELIZABETH W",
+      "Relationship": "Director",
+      "Date": "May 08 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,547",
+      "Value": "0"
+    },
+    {
+      "Owner": "TALWALKAR ABHIJIT Y",
+      "Relationship": "Director",
+      "Date": "May 08 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,547",
+      "Value": "0"
+    },
+    {
+      "Owner": "Olson Jon A",
+      "Relationship": "Director",
+      "Date": "May 08 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,547",
+      "Value": "0"
+    },
+    {
+      "Owner": "HOUSEHOLDER JOSEPH A",
+      "Relationship": "Director",
+      "Date": "May 08 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,547",
+      "Value": "0"
+    },
+    {
+      "Owner": "Denzel Nora",
+      "Relationship": "Director",
+      "Date": "May 08 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,547",
+      "Value": "0"
+    },
+    {
+      "Owner": "Papermaster Mark D",
+      "Relationship": "Chief Technology Officer & EVP",
+      "Date": "Apr 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "19.10",
+      "Shares": "17,500",
+      "Value": "334,250"
+    },
+    {
+      "Owner": "Papermaster Mark D",
+      "Relationship": "Chief Technology Officer & EVP",
+      "Date": "Apr 15 '25",
+      "Transaction": "Sale",
+      "Cost": "95.47",
+      "Shares": "17,500",
+      "Value": "1,670,688"
+    },
+    {
+      "Owner": "MARK PAPERMASTER",
+      "Relationship": "Officer",
+      "Date": "Apr 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "95.47",
+      "Shares": "17,500",
+      "Value": "1,670,736"
+    },
+    {
+      "Owner": "Papermaster Mark D",
+      "Relationship": "Chief Technology Officer & EVP",
+      "Date": "Mar 14 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "19.10",
+      "Shares": "17,500",
+      "Value": "334,250"
+    },
+    {
+      "Owner": "Papermaster Mark D",
+      "Relationship": "Chief Technology Officer & EVP",
+      "Date": "Mar 14 '25",
+      "Transaction": "Sale",
+      "Cost": "100.27",
+      "Shares": "17,500",
+      "Value": "1,754,674"
+    },
+    {
+      "Owner": "MARK PAPERMASTER",
+      "Relationship": "Officer",
+      "Date": "Mar 14 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "100.27",
+      "Shares": "17,500",
+      "Value": "1,754,676"
+    },
+    {
+      "Owner": "Norrod Forrest Eugene",
+      "Relationship": "EVP & GM DESG",
+      "Date": "Feb 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "10,995",
+      "Value": "0"
+    },
+    {
+      "Owner": "HUYNH JACK M",
+      "Relationship": "SVP & GM, Computing & Graphics",
+      "Date": "Feb 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,474",
+      "Value": "0"
+    },
+    {
+      "Owner": "Hu Jean X.",
+      "Relationship": "EVP, CFO and Treasurer",
+      "Date": "Feb 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "30,786",
+      "Value": "0"
+    },
+    {
+      "Owner": "Hahn Ava",
+      "Relationship": "SVP, GC & Corporate Secretary",
+      "Date": "Feb 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,267",
+      "Value": "0"
+    },
+    {
+      "Owner": "Papermaster Mark D",
+      "Relationship": "Chief Technology Officer & EVP",
+      "Date": "Feb 14 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "19.10",
+      "Shares": "17,500",
+      "Value": "334,250"
+    },
+    {
+      "Owner": "Papermaster Mark D",
+      "Relationship": "Chief Technology Officer & EVP",
+      "Date": "Feb 14 '25",
+      "Transaction": "Sale",
+      "Cost": "113.57",
+      "Shares": "17,500",
+      "Value": "1,987,545"
+    },
+    {
+      "Owner": "MARK PAPERMASTER",
+      "Relationship": "Officer",
+      "Date": "Feb 14 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "113.57",
+      "Shares": "17,500",
+      "Value": "1,987,550"
+    },
+    {
+      "Owner": "GUIDO PHILIP",
+      "Relationship": "EVP & Chief Commercial Officer",
+      "Date": "Feb 07 '25",
+      "Transaction": "Buy",
+      "Cost": "107.56",
+      "Shares": "4,645",
+      "Value": "499,616"
+    },
+    {
+      "Owner": "Hahn Ava",
+      "Relationship": "SVP, GC & Corporate Secretary",
+      "Date": "Jan 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "12,095",
+      "Value": "0"
+    },
+    {
+      "Owner": "HUYNH JACK M",
+      "Relationship": "SVP & GM, Computing & Graphics",
+      "Date": "Jan 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,773",
+      "Value": "0"
+    },
+    {
+      "Owner": "Su Lisa T",
+      "Relationship": "Chair, President & CEO",
+      "Date": "Dec 04 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "19.10",
+      "Shares": "76,496",
+      "Value": "1,461,074"
+    },
+    {
+      "Owner": "Su Lisa T",
+      "Relationship": "Chair, President & CEO",
+      "Date": "Dec 04 '24",
+      "Transaction": "Sale",
+      "Cost": "142.66",
+      "Shares": "76,496",
+      "Value": "10,912,740"
+    },
+    {
+      "Owner": "LISA SU",
+      "Relationship": "Director",
+      "Date": "Dec 04 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "141.98",
+      "Shares": "76,496",
+      "Value": "10,860,902"
+    },
+    {
+      "Owner": "Su Lisa T",
+      "Relationship": "Chair, President & CEO",
+      "Date": "Nov 06 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "19.10",
+      "Shares": "80,000",
+      "Value": "1,528,000"
+    },
+    {
+      "Owner": "Su Lisa T",
+      "Relationship": "Chair, President & CEO",
+      "Date": "Nov 06 '24",
+      "Transaction": "Sale",
+      "Cost": "143.87",
+      "Shares": "80,000",
+      "Value": "11,509,369"
+    },
+    {
+      "Owner": "Norrod Forrest Eugene",
+      "Relationship": "EVP & GM DESG",
+      "Date": "Nov 05 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "19.10",
+      "Shares": "40,540",
+      "Value": "774,314"
+    },
+    {
+      "Owner": "Norrod Forrest Eugene",
+      "Relationship": "EVP & GM DESG",
+      "Date": "Nov 05 '24",
+      "Transaction": "Sale",
+      "Cost": "141.67",
+      "Shares": "40,540",
+      "Value": "5,743,302"
+    },
+    {
+      "Owner": "LISA SU",
+      "Relationship": "Director",
+      "Date": "Nov 06 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "141.66",
+      "Shares": "80,000",
+      "Value": "11,332,800"
+    },
+    {
+      "Owner": "Norrod Forrest Eugene",
+      "Relationship": "Officer",
+      "Date": "Nov 05 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "141.67",
+      "Shares": "40,540",
+      "Value": "5,743,204"
+    }
+  ],
+  "Dividends": []
+}

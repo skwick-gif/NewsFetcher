@@ -1,0 +1,628 @@
+{
+  "Index": "RUT",
+  "P/E": "-",
+  "EPS (ttm)": "-1.26",
+  "Insider Own": "7.16%",
+  "Shs Outstand": "138.14M",
+  "Perf Week": "-1.97%",
+  "Market Cap": "4.90B",
+  "Forward P/E": "-",
+  "EPS next Y": "-5740.00%",
+  "Insider Trans": "-0.60%",
+  "Shs Float": "128.36M",
+  "Perf Month": "19.15%",
+  "Enterprise Value": "4.71B",
+  "PEG": "-",
+  "EPS next Q": "-0.31",
+  "Inst Own": "75.27%",
+  "Short Float": "9.11%",
+  "Perf Quarter": "90.27%",
+  "Income": "-148.42M",
+  "P/S": "8.54",
+  "EPS this Y": "98.94%",
+  "Inst Trans": "1.26%",
+  "Short Ratio": "4.71",
+  "Perf Half Y": "218.72%",
+  "Sales": "572.98M",
+  "P/B": "9.37",
+  "ROA": "-13.11%",
+  "Short Interest": "9.11%",
+  "Perf YTD": "88.35%",
+  "Book/sh": "3.78",
+  "P/C": "5.44",
+  "EPS next 5Y": "13.41%",
+  "ROE": "-34.80%",
+  "52W High": "39.42 -10.17%",
+  "Perf Year": "96.50%",
+  "Cash/sh": "6.51",
+  "P/FCF": "-",
+  "EPS past 3/5Y": "-54.48% -",
+  "ROIC": "-12.49%",
+  "52W Low": "9.57 270.01%",
+  "Perf 3Y": "2.76%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "-",
+  "Sales past 3/5Y": "-70.50% -53.80%",
+  "Gross Margin": "96.06%",
+  "Volatility": "4.47% 4.43%",
+  "Perf 5Y": "-24.84%",
+  "Dividend TTM": "-",
+  "EV/Sales": "8.21",
+  "EPS Y/Y TTM": "73.33%",
+  "Oper. Margin": "-18.84%",
+  "ATR (14)": "1.48",
+  "Perf 10Y": "510.52%",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "4.87",
+  "Sales Y/Y TTM": "2816.21%",
+  "Profit Margin": "-25.90%",
+  "RSI (14)": "65.24",
+  "Recom": "1.71",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "4.87",
+  "EPS Q/Q": "8.35%",
+  "SMA20": "6.06%",
+  "Beta": "1.26",
+  "Target Price": "43.00",
+  "Payout": "-",
+  "Debt/Eq": "1.37",
+  "Sales Q/Q": "-",
+  "SMA50": "33.77%",
+  "Rel Volume": "0.74",
+  "Prev Close": "36.06",
+  "Employees": "609",
+  "LT Debt/Eq": "1.28",
+  "Earnings": "Aug 07 AMC",
+  "SMA200": "86.82%",
+  "Avg Volume": "2.48M",
+  "Price": "35.41",
+  "IPO": "Dec 16, 1993",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "-32.31% -40.71%",
+  "Trades": "",
+  "Volume": "1,827,795",
+  "Change": "-1.80%",
+  "Insider Trading": [
+    {
+      "Owner": "Hamilton James C",
+      "Relationship": "Chief Medical Officer",
+      "Date": "Oct 01 '25",
+      "Transaction": "Sale",
+      "Cost": "35.00",
+      "Shares": "20,000",
+      "Value": "700,000"
+    },
+    {
+      "Owner": "James Hamilton",
+      "Relationship": "Officer",
+      "Date": "Oct 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "35.00",
+      "Shares": "20,000",
+      "Value": "700,015"
+    },
+    {
+      "Owner": "Hamilton James C",
+      "Relationship": "Chief Medical Officer",
+      "Date": "Sep 12 '25",
+      "Transaction": "Sale",
+      "Cost": "30.00",
+      "Shares": "15,000",
+      "Value": "450,000"
+    },
+    {
+      "Owner": "Hamilton James C",
+      "Relationship": "Officer",
+      "Date": "Sep 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "30.00",
+      "Shares": "15,000",
+      "Value": "449,970"
+    },
+    {
+      "Owner": "Hamilton James C",
+      "Relationship": "Chief Medical Officer",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "25.00",
+      "Shares": "15,000",
+      "Value": "375,000"
+    },
+    {
+      "Owner": "Hamilton James C",
+      "Relationship": "Officer",
+      "Date": "Sep 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "25.00",
+      "Shares": "15,000",
+      "Value": "374,970"
+    },
+    {
+      "Owner": "Hamilton James C",
+      "Relationship": "Chief Medical Officer",
+      "Date": "Aug 15 '25",
+      "Transaction": "Sale",
+      "Cost": "20.00",
+      "Shares": "9,389",
+      "Value": "187,780"
+    },
+    {
+      "Owner": "Hamilton James C",
+      "Relationship": "Chief Medical Officer",
+      "Date": "Aug 13 '25",
+      "Transaction": "Sale",
+      "Cost": "20.00",
+      "Shares": "611",
+      "Value": "12,220"
+    },
+    {
+      "Owner": "Hamilton James C",
+      "Relationship": "Officer",
+      "Date": "Aug 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "20.00",
+      "Shares": "9,389",
+      "Value": "187,750"
+    },
+    {
+      "Owner": "Sarepta Therapeutics, Inc.",
+      "Relationship": "Shareholder",
+      "Date": "Aug 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "19.99",
+      "Shares": "9,265,312",
+      "Value": "185,213,587"
+    },
+    {
+      "Owner": "Hamilton James C",
+      "Relationship": "Officer",
+      "Date": "Aug 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "19.95",
+      "Shares": "611",
+      "Value": "12,190"
+    },
+    {
+      "Owner": "Myszkowski Kenneth Allen",
+      "Relationship": "Officer",
+      "Date": "Jul 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "19.04",
+      "Shares": "40,000",
+      "Value": "761,709"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Apr 11 '25",
+      "Transaction": "Sale",
+      "Cost": "11.49",
+      "Shares": "50,800",
+      "Value": "583,692"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Apr 10 '25",
+      "Transaction": "Sale",
+      "Cost": "10.87",
+      "Shares": "50,000",
+      "Value": "543,500"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Apr 09 '25",
+      "Transaction": "Sale",
+      "Cost": "10.07",
+      "Shares": "40,322",
+      "Value": "406,145"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Officer",
+      "Date": "Apr 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "11.49",
+      "Shares": "50,800",
+      "Value": "583,751"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Officer",
+      "Date": "Apr 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "10.86",
+      "Shares": "50,000",
+      "Value": "543,215"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Officer",
+      "Date": "Apr 09 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "10.07",
+      "Shares": "40,322",
+      "Value": "406,057"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Mar 13 '25",
+      "Transaction": "Sale",
+      "Cost": "15.07",
+      "Shares": "51,425",
+      "Value": "774,975"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Officer",
+      "Date": "Mar 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "15.07",
+      "Shares": "51,425",
+      "Value": "774,785"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Mar 03 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "7.75",
+      "Shares": "166,667",
+      "Value": "1,291,669"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Mar 04 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "7.75",
+      "Shares": "133,333",
+      "Value": "1,033,331"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Mar 03 '25",
+      "Transaction": "Sale",
+      "Cost": "18.03",
+      "Shares": "166,667",
+      "Value": "3,005,006"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Mar 04 '25",
+      "Transaction": "Sale",
+      "Cost": "17.02",
+      "Shares": "133,333",
+      "Value": "2,269,328"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Officer",
+      "Date": "Mar 04 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "17.02",
+      "Shares": "133,333",
+      "Value": "2,268,742"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Officer",
+      "Date": "Mar 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "18.03",
+      "Shares": "166,667",
+      "Value": "3,004,203"
+    },
+    {
+      "Owner": "OLUKOTUN ADEOYE Y",
+      "Relationship": "Director",
+      "Date": "Jan 23 '25",
+      "Transaction": "Sale",
+      "Cost": "21.00",
+      "Shares": "959",
+      "Value": "20,139"
+    },
+    {
+      "Owner": "OLUKOTUN ADEOYE Y",
+      "Relationship": "Director",
+      "Date": "Jan 23 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "20.97",
+      "Shares": "959",
+      "Value": "20,108"
+    },
+    {
+      "Owner": "Hamilton James C",
+      "Relationship": "Chief Discovery/Trans Medicine",
+      "Date": "Jan 06 '25",
+      "Transaction": "Sale",
+      "Cost": "19.82",
+      "Shares": "32,729",
+      "Value": "648,824"
+    },
+    {
+      "Owner": "O'Brien Patrick",
+      "Relationship": "COO and General Counsel",
+      "Date": "Jan 06 '25",
+      "Transaction": "Sale",
+      "Cost": "19.82",
+      "Shares": "29,184",
+      "Value": "578,539"
+    },
+    {
+      "Owner": "O'Brien Patrick",
+      "Relationship": "COO and General Counsel",
+      "Date": "Jan 07 '25",
+      "Transaction": "Sale",
+      "Cost": "19.69",
+      "Shares": "8,000",
+      "Value": "157,520"
+    },
+    {
+      "Owner": "Myszkowski Kenneth Allen",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Jan 06 '25",
+      "Transaction": "Sale",
+      "Cost": "19.83",
+      "Shares": "27,167",
+      "Value": "538,595"
+    },
+    {
+      "Owner": "Myszkowski Kenneth Allen",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Jan 07 '25",
+      "Transaction": "Sale",
+      "Cost": "19.69",
+      "Shares": "18,000",
+      "Value": "354,500"
+    },
+    {
+      "Owner": "Myszkowski Kenneth Allen",
+      "Relationship": "Officer",
+      "Date": "Jan 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "19.69",
+      "Shares": "10,000",
+      "Value": "196,877"
+    },
+    {
+      "Owner": "Myszkowski Kenneth Allen",
+      "Relationship": "Officer",
+      "Date": "Jan 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "19.69",
+      "Shares": "8,000",
+      "Value": "157,529"
+    },
+    {
+      "Owner": "O'Brien Patrick",
+      "Relationship": "Officer",
+      "Date": "Jan 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "19.69",
+      "Shares": "8,000",
+      "Value": "157,507"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Jan 02 '25",
+      "Transaction": "Sale",
+      "Cost": "19.05",
+      "Shares": "11,520",
+      "Value": "219,456"
+    },
+    {
+      "Owner": "Myszkowski Kenneth Allen",
+      "Relationship": "Officer",
+      "Date": "Jan 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "19.82",
+      "Shares": "5,817",
+      "Value": "115,318"
+    },
+    {
+      "Owner": "Myszkowski Kenneth Allen",
+      "Relationship": "Officer",
+      "Date": "Jan 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "19.82",
+      "Shares": "9,255",
+      "Value": "183,476"
+    },
+    {
+      "Owner": "Myszkowski Kenneth Allen",
+      "Relationship": "Officer",
+      "Date": "Jan 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "19.80",
+      "Shares": "6,287",
+      "Value": "124,452"
+    },
+    {
+      "Owner": "Myszkowski Kenneth Allen",
+      "Relationship": "Officer",
+      "Date": "Jan 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "19.82",
+      "Shares": "5,817",
+      "Value": "115,320"
+    },
+    {
+      "Owner": "Hamilton James C",
+      "Relationship": "Officer",
+      "Date": "Jan 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "19.82",
+      "Shares": "32,729",
+      "Value": "648,743"
+    },
+    {
+      "Owner": "O'Brien Patrick",
+      "Relationship": "Officer",
+      "Date": "Jan 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "19.82",
+      "Shares": "29,184",
+      "Value": "578,456"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Officer",
+      "Date": "Jan 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "19.04",
+      "Shares": "11,520",
+      "Value": "219,392"
+    },
+    {
+      "Owner": "OLUKOTUN ADEOYE Y",
+      "Relationship": "Director",
+      "Date": "Dec 27 '24",
+      "Transaction": "Sale",
+      "Cost": "20.00",
+      "Shares": "2,850",
+      "Value": "57,000"
+    },
+    {
+      "Owner": "OLUKOTUN ADEOYE Y",
+      "Relationship": "Director",
+      "Date": "Dec 27 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "19.99",
+      "Shares": "2,850",
+      "Value": "56,968"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Dec 23 '24",
+      "Transaction": "Sale",
+      "Cost": "19.59",
+      "Shares": "12,563",
+      "Value": "246,109"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Officer",
+      "Date": "Dec 23 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "19.59",
+      "Shares": "12,563",
+      "Value": "246,085"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Chief Executive Officer",
+      "Date": "Dec 18 '24",
+      "Transaction": "Sale",
+      "Cost": "21.24",
+      "Shares": "26,712",
+      "Value": "567,486"
+    },
+    {
+      "Owner": "Waddill William D.",
+      "Relationship": "Director",
+      "Date": "Dec 17 '24",
+      "Transaction": "Sale",
+      "Cost": "22.04",
+      "Shares": "3,747",
+      "Value": "82,584"
+    },
+    {
+      "Owner": "Waddill William D.",
+      "Relationship": "Director",
+      "Date": "Dec 16 '24",
+      "Transaction": "Sale",
+      "Cost": "21.90",
+      "Shares": "3,748",
+      "Value": "82,081"
+    },
+    {
+      "Owner": "GIVEN DOUGLAS B",
+      "Relationship": "Director",
+      "Date": "Dec 16 '24",
+      "Transaction": "Sale",
+      "Cost": "21.90",
+      "Shares": "5,000",
+      "Value": "109,500"
+    },
+    {
+      "Owner": "GIVEN DOUGLAS B",
+      "Relationship": "Director",
+      "Date": "Dec 17 '24",
+      "Transaction": "Sale",
+      "Cost": "22.04",
+      "Shares": "547",
+      "Value": "12,056"
+    },
+    {
+      "Owner": "Vakiener Victoria",
+      "Relationship": "Director",
+      "Date": "Dec 16 '24",
+      "Transaction": "Sale",
+      "Cost": "21.91",
+      "Shares": "8,994",
+      "Value": "197,059"
+    },
+    {
+      "Owner": "Anzalone Christopher Richard",
+      "Relationship": "Officer",
+      "Date": "Dec 18 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "21.24",
+      "Shares": "26,712",
+      "Value": "567,415"
+    },
+    {
+      "Owner": "GIVEN DOUGLAS B",
+      "Relationship": "Director",
+      "Date": "Dec 17 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "21.98",
+      "Shares": "547",
+      "Value": "12,026"
+    },
+    {
+      "Owner": "Waddill William D.",
+      "Relationship": "Director",
+      "Date": "Dec 17 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "22.03",
+      "Shares": "3,747",
+      "Value": "82,552"
+    },
+    {
+      "Owner": "Waddill William D.",
+      "Relationship": "Director",
+      "Date": "Dec 16 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "21.89",
+      "Shares": "3,748",
+      "Value": "82,056"
+    },
+    {
+      "Owner": "Vakiener Victoria",
+      "Relationship": "Director",
+      "Date": "Dec 16 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "21.91",
+      "Shares": "8,994",
+      "Value": "197,066"
+    },
+    {
+      "Owner": "GIVEN DOUGLAS B",
+      "Relationship": "Director",
+      "Date": "Dec 16 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "21.89",
+      "Shares": "5,000",
+      "Value": "109,470"
+    }
+  ],
+  "Dividends": []
+}

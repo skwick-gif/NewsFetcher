@@ -1,0 +1,655 @@
+{
+  "Index": "RUT",
+  "P/E": "32.80",
+  "EPS (ttm)": "1.16",
+  "Insider Own": "39.74%",
+  "Shs Outstand": "34.70M",
+  "Perf Week": "2.28%",
+  "Market Cap": "2.01B",
+  "Forward P/E": "33.72",
+  "EPS next Y": "39.52%",
+  "Insider Trans": "-0.10%",
+  "Shs Float": "31.76M",
+  "Perf Month": "39.70%",
+  "Enterprise Value": "3.77B",
+  "PEG": "2.52",
+  "EPS next Q": "0.25",
+  "Inst Own": "70.00%",
+  "Short Float": "10.33%",
+  "Perf Quarter": "105.49%",
+  "Income": "61.96M",
+  "P/S": "1.08",
+  "EPS this Y": "-32.37%",
+  "Inst Trans": "10.42%",
+  "Short Ratio": "4.15",
+  "Perf Half Y": "273.58%",
+  "Sales": "1.86B",
+  "P/B": "1.95",
+  "ROA": "1.50%",
+  "Short Interest": "10.33%",
+  "Perf YTD": "62.61%",
+  "Book/sh": "19.63",
+  "P/C": "11.81",
+  "EPS next 5Y": "13.03%",
+  "ROE": "6.36%",
+  "52W High": "40.88 -6.60%",
+  "Perf Year": "13.83%",
+  "Cash/sh": "3.23",
+  "P/FCF": "-",
+  "EPS past 3/5Y": "-7.48% 2.77%",
+  "ROIC": "2.25%",
+  "52W Low": "8.49 349.47%",
+  "Perf 3Y": "-44.85%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "19.37",
+  "Sales past 3/5Y": "13.34% 15.34%",
+  "Gross Margin": "14.10%",
+  "Volatility": "5.53% 6.11%",
+  "Perf 5Y": "7.46%",
+  "Dividend TTM": "-",
+  "EV/Sales": "2.03",
+  "EPS Y/Y TTM": "8.26%",
+  "Oper. Margin": "5.11%",
+  "ATR (14)": "2.05",
+  "Perf 10Y": "535.27%",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "1.34",
+  "Sales Y/Y TTM": "22.85%",
+  "Profit Margin": "3.33%",
+  "RSI (14)": "69.52",
+  "Recom": "1.64",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "1.36",
+  "EPS Q/Q": "159.06%",
+  "SMA20": "11.39%",
+  "Beta": "2.40",
+  "Target Price": "34.22",
+  "Payout": "0.00%",
+  "Debt/Eq": "1.82",
+  "Sales Q/Q": "7.83%",
+  "SMA50": "38.31%",
+  "Rel Volume": "0.83",
+  "Prev Close": "39.53",
+  "Employees": "1509",
+  "LT Debt/Eq": "1.66",
+  "Earnings": "Nov 03 AMC",
+  "SMA200": "100.61%",
+  "Avg Volume": "790.87K",
+  "Price": "38.18",
+  "IPO": "Jul 22, 2010",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "259.52% 13.98%",
+  "Trades": "",
+  "Volume": "653,955",
+  "Change": "-3.42%",
+  "Insider Trading": [
+    {
+      "Owner": "MARK CHIPLOCK",
+      "Relationship": "Officer",
+      "Date": "Oct 09 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "38.59",
+      "Shares": "5,000",
+      "Value": "192,950"
+    },
+    {
+      "Owner": "Chiplock Mark",
+      "Relationship": "EVP, CFO & CAO",
+      "Date": "Oct 06 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "13.37",
+      "Shares": "5,900",
+      "Value": "78,883"
+    },
+    {
+      "Owner": "Chiplock Mark",
+      "Relationship": "EVP, CFO & CAO",
+      "Date": "Oct 07 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "13.37",
+      "Shares": "5,900",
+      "Value": "78,883"
+    },
+    {
+      "Owner": "Chiplock Mark",
+      "Relationship": "EVP, CFO & CAO",
+      "Date": "Oct 08 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "13.37",
+      "Shares": "3,800",
+      "Value": "50,806"
+    },
+    {
+      "Owner": "Chiplock Mark",
+      "Relationship": "EVP, CFO & CAO",
+      "Date": "Oct 07 '25",
+      "Transaction": "Sale",
+      "Cost": "39.51",
+      "Shares": "5,900",
+      "Value": "233,109"
+    },
+    {
+      "Owner": "Chiplock Mark",
+      "Relationship": "EVP, CFO & CAO",
+      "Date": "Oct 06 '25",
+      "Transaction": "Sale",
+      "Cost": "38.92",
+      "Shares": "5,900",
+      "Value": "229,628"
+    },
+    {
+      "Owner": "Chiplock Mark",
+      "Relationship": "EVP, CFO & CAO",
+      "Date": "Oct 08 '25",
+      "Transaction": "Sale",
+      "Cost": "39.75",
+      "Shares": "3,800",
+      "Value": "151,050"
+    },
+    {
+      "Owner": "MARK CHIPLOCK",
+      "Relationship": "Officer",
+      "Date": "Oct 08 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "38.85",
+      "Shares": "5,900",
+      "Value": "229,215"
+    },
+    {
+      "Owner": "MARK CHIPLOCK",
+      "Relationship": "Officer",
+      "Date": "Oct 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "38.25",
+      "Shares": "5,900",
+      "Value": "225,675"
+    },
+    {
+      "Owner": "MARK CHIPLOCK",
+      "Relationship": "Officer",
+      "Date": "Oct 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "37.33",
+      "Shares": "5,900",
+      "Value": "220,247"
+    },
+    {
+      "Owner": "Chiplock Mark",
+      "Relationship": "EVP, CFO & CAO",
+      "Date": "Oct 01 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "12.46",
+      "Shares": "5,602",
+      "Value": "69,799"
+    },
+    {
+      "Owner": "Chiplock Mark",
+      "Relationship": "EVP, CFO & CAO",
+      "Date": "Oct 01 '25",
+      "Transaction": "Sale",
+      "Cost": "37.95",
+      "Shares": "5,602",
+      "Value": "212,596"
+    },
+    {
+      "Owner": "MARK CHIPLOCK",
+      "Relationship": "Officer",
+      "Date": "Oct 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "33.58",
+      "Shares": "5,602",
+      "Value": "188,115"
+    },
+    {
+      "Owner": "Corrsin David J",
+      "Relationship": "EVP and General Counsel",
+      "Date": "Sep 15 '25",
+      "Transaction": "Sale",
+      "Cost": "28.00",
+      "Shares": "19",
+      "Value": "532"
+    },
+    {
+      "Owner": "Chiplock Mark",
+      "Relationship": "EVP, CFO & CAO",
+      "Date": "Sep 15 '25",
+      "Transaction": "Sale",
+      "Cost": "28.00",
+      "Shares": "269",
+      "Value": "7,532"
+    },
+    {
+      "Owner": "Sakellaris George P",
+      "Relationship": "President and CEO",
+      "Date": "Sep 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "3,750",
+      "Value": "0"
+    },
+    {
+      "Owner": "Chiplock Mark",
+      "Relationship": "EVP, CFO & CAO",
+      "Date": "Sep 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "750",
+      "Value": "0"
+    },
+    {
+      "Owner": "Bulgarino Nicole E",
+      "Relationship": "President - Federal & Utility",
+      "Date": "Sep 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "875",
+      "Value": "0"
+    },
+    {
+      "Owner": "Christakis Peter",
+      "Relationship": "President-EastUSA, ProjectRisk",
+      "Date": "Sep 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "750",
+      "Value": "0"
+    },
+    {
+      "Owner": "Corrsin David J",
+      "Relationship": "EVP and General Counsel",
+      "Date": "Sep 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "50",
+      "Value": "0"
+    },
+    {
+      "Owner": "Bakas Michael T",
+      "Relationship": "President - Renewable Fuels",
+      "Date": "Sep 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "875",
+      "Value": "0"
+    },
+    {
+      "Owner": "Maltezos Louis P",
+      "Relationship": "President-Central&West USA Can",
+      "Date": "Sep 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "875",
+      "Value": "0"
+    },
+    {
+      "Owner": "Corrsin David J",
+      "Relationship": "EVP and General Counsel",
+      "Date": "Sep 08 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "50",
+      "Value": "0"
+    },
+    {
+      "Owner": "Corrsin David J",
+      "Relationship": "EVP and General Counsel",
+      "Date": "Sep 10 '25",
+      "Transaction": "Sale",
+      "Cost": "27.04",
+      "Shares": "19",
+      "Value": "514"
+    },
+    {
+      "Owner": "Patton Charles R.",
+      "Relationship": "Director",
+      "Date": "Jun 04 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "4,886",
+      "Value": "0"
+    },
+    {
+      "Owner": "Miller Jennifer L",
+      "Relationship": "Director",
+      "Date": "Jun 04 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "4,886",
+      "Value": "0"
+    },
+    {
+      "Owner": "WISNESKI FRANCIS V JR",
+      "Relationship": "Director",
+      "Date": "Jun 04 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "4,886",
+      "Value": "0"
+    },
+    {
+      "Owner": "Sutton Joseph W.",
+      "Relationship": "Director",
+      "Date": "Jun 04 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "4,886",
+      "Value": "0"
+    },
+    {
+      "Owner": "Johnson Claire D'Oyly-Hughes",
+      "Relationship": "Director",
+      "Date": "Jun 04 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "4,886",
+      "Value": "0"
+    },
+    {
+      "Owner": "STAVROPOULOS NICKOLAS",
+      "Relationship": "Director",
+      "Date": "Jun 04 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "4,886",
+      "Value": "0"
+    },
+    {
+      "Owner": "Sutton Joseph W.",
+      "Relationship": "Director",
+      "Date": "May 06 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "7.30",
+      "Shares": "10,000",
+      "Value": "73,000"
+    },
+    {
+      "Owner": "Maltezos Louis P",
+      "Relationship": "President-Central&West USA Can",
+      "Date": "Mar 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "221",
+      "Value": "0"
+    },
+    {
+      "Owner": "Bakas Michael T",
+      "Relationship": "President - Renewable Fuels",
+      "Date": "Mar 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "295",
+      "Value": "0"
+    },
+    {
+      "Owner": "Chiplock Mark",
+      "Relationship": "EVP, CFO & CAO",
+      "Date": "Mar 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "276",
+      "Value": "0"
+    },
+    {
+      "Owner": "Chiplock Mark",
+      "Relationship": "EVP, CFO & CAO",
+      "Date": "Mar 19 '25",
+      "Transaction": "Sale",
+      "Cost": "11.92",
+      "Shares": "95",
+      "Value": "1,132"
+    },
+    {
+      "Owner": "Corrsin David J",
+      "Relationship": "EVP and General Counsel",
+      "Date": "Mar 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "101",
+      "Value": "0"
+    },
+    {
+      "Owner": "Corrsin David J",
+      "Relationship": "EVP and General Counsel",
+      "Date": "Mar 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "183",
+      "Value": "0"
+    },
+    {
+      "Owner": "Corrsin David J",
+      "Relationship": "EVP and General Counsel",
+      "Date": "Mar 19 '25",
+      "Transaction": "Sale",
+      "Cost": "11.92",
+      "Shares": "64",
+      "Value": "763"
+    },
+    {
+      "Owner": "Corrsin David J",
+      "Relationship": "EVP and General Counsel",
+      "Date": "Mar 19 '25",
+      "Transaction": "Sale",
+      "Cost": "11.92",
+      "Shares": "36",
+      "Value": "429"
+    },
+    {
+      "Owner": "Bulgarino Nicole E",
+      "Relationship": "President - Federal & Utility",
+      "Date": "Mar 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "295",
+      "Value": "0"
+    },
+    {
+      "Owner": "Sakellaris George P",
+      "Relationship": "President and CEO",
+      "Date": "Mar 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "2,459",
+      "Value": "0"
+    },
+    {
+      "Owner": "Christakis Peter",
+      "Relationship": "President-EastUSA, ProjectRisk",
+      "Date": "Mar 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "295",
+      "Value": "0"
+    },
+    {
+      "Owner": "Corrsin David J",
+      "Relationship": "EVP and General Counsel",
+      "Date": "Mar 08 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "50",
+      "Value": "0"
+    },
+    {
+      "Owner": "Corrsin David J",
+      "Relationship": "EVP and General Counsel",
+      "Date": "Mar 10 '25",
+      "Transaction": "Sale",
+      "Cost": "10.22",
+      "Shares": "21",
+      "Value": "215"
+    },
+    {
+      "Owner": "WISNESKI FRANCIS V JR",
+      "Relationship": "Director",
+      "Date": "Mar 10 '25",
+      "Transaction": "Buy",
+      "Cost": "10.17",
+      "Shares": "400",
+      "Value": "4,068"
+    },
+    {
+      "Owner": "Bakas Michael T",
+      "Relationship": "President - Renewable Fuels",
+      "Date": "Mar 05 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "4.64",
+      "Shares": "650",
+      "Value": "3,016"
+    },
+    {
+      "Owner": "Sakellaris George P",
+      "Relationship": "President and CEO",
+      "Date": "Mar 04 '25",
+      "Transaction": "Buy",
+      "Cost": "9.96",
+      "Shares": "50,000",
+      "Value": "498,000"
+    },
+    {
+      "Owner": "Sakellaris George P",
+      "Relationship": "President and CEO",
+      "Date": "Mar 05 '25",
+      "Transaction": "Buy",
+      "Cost": "9.74",
+      "Shares": "50,000",
+      "Value": "487,000"
+    },
+    {
+      "Owner": "Sakellaris George P",
+      "Relationship": "President and CEO",
+      "Date": "Mar 06 '25",
+      "Transaction": "Buy",
+      "Cost": "9.27",
+      "Shares": "25,000",
+      "Value": "231,750"
+    },
+    {
+      "Owner": "WISNESKI FRANCIS V JR",
+      "Relationship": "Director",
+      "Date": "Mar 04 '25",
+      "Transaction": "Buy",
+      "Cost": "9.67",
+      "Shares": "3,500",
+      "Value": "33,845"
+    },
+    {
+      "Owner": "WISNESKI FRANCIS V JR",
+      "Relationship": "Director",
+      "Date": "Mar 06 '25",
+      "Transaction": "Buy",
+      "Cost": "9.23",
+      "Shares": "1,908",
+      "Value": "17,611"
+    },
+    {
+      "Owner": "WISNESKI FRANCIS V JR",
+      "Relationship": "Director",
+      "Date": "Mar 05 '25",
+      "Transaction": "Buy",
+      "Cost": "9.56",
+      "Shares": "300",
+      "Value": "2,868"
+    },
+    {
+      "Owner": "Johnson Claire D'Oyly-Hughes",
+      "Relationship": "Director",
+      "Date": "Mar 04 '25",
+      "Transaction": "Buy",
+      "Cost": "9.95",
+      "Shares": "1,800",
+      "Value": "17,910"
+    },
+    {
+      "Owner": "Patton Charles R.",
+      "Relationship": "Director",
+      "Date": "Mar 05 '25",
+      "Transaction": "Buy",
+      "Cost": "9.96",
+      "Shares": "5,000",
+      "Value": "49,800"
+    },
+    {
+      "Owner": "Bulgarino Nicole E",
+      "Relationship": "President - Federal & Utility",
+      "Date": "Feb 27 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "6.53",
+      "Shares": "25,528",
+      "Value": "166,698"
+    },
+    {
+      "Owner": "Miller Jennifer L",
+      "Relationship": "Director",
+      "Date": "Feb 03 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "5.85",
+      "Shares": "40,000",
+      "Value": "234,000"
+    },
+    {
+      "Owner": "Miller Jennifer L",
+      "Relationship": "Director",
+      "Date": "Feb 03 '25",
+      "Transaction": "Sale",
+      "Cost": "21.06",
+      "Shares": "40,000",
+      "Value": "842,529"
+    },
+    {
+      "Owner": "JENNIFER MILLER",
+      "Relationship": "Director",
+      "Date": "Feb 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "21.07",
+      "Shares": "40,000",
+      "Value": "842,600"
+    },
+    {
+      "Owner": "Hole Spencer Doran",
+      "Relationship": "Officer",
+      "Date": "Nov 27 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "27.20",
+      "Shares": "14,000",
+      "Value": "380,800"
+    },
+    {
+      "Owner": "Hole Spencer Doran",
+      "Relationship": "Officer",
+      "Date": "Nov 25 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "27.00",
+      "Shares": "7,000",
+      "Value": "189,000"
+    },
+    {
+      "Owner": "Sutton Joseph W.",
+      "Relationship": "Director",
+      "Date": "Nov 15 '24",
+      "Transaction": "Buy",
+      "Cost": "26.00",
+      "Shares": "10,000",
+      "Value": "260,000"
+    },
+    {
+      "Owner": "Sutton Joseph W.",
+      "Relationship": "Director",
+      "Date": "Nov 15 '24",
+      "Transaction": "Buy",
+      "Cost": "26.66",
+      "Shares": "5,000",
+      "Value": "133,300"
+    },
+    {
+      "Owner": "Sakellaris George P",
+      "Relationship": "President and CEO",
+      "Date": "Nov 13 '24",
+      "Transaction": "Buy",
+      "Cost": "26.54",
+      "Shares": "25,000",
+      "Value": "663,500"
+    }
+  ],
+  "Dividends": []
+}

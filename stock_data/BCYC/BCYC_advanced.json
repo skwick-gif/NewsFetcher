@@ -1,0 +1,835 @@
+{
+  "Index": "-",
+  "P/E": "-",
+  "EPS (ttm)": "-3.52",
+  "Insider Own": "11.60%",
+  "Shs Outstand": "49.82M",
+  "Perf Week": "-0.60%",
+  "Market Cap": "414.92M",
+  "Forward P/E": "-",
+  "EPS next Y": "-2.20%",
+  "Insider Trans": "-0.37%",
+  "Shs Float": "44.08M",
+  "Perf Month": "18.52%",
+  "Enterprise Value": "-298.54M",
+  "PEG": "-",
+  "EPS next Q": "-1.08",
+  "Inst Own": "73.95%",
+  "Short Float": "3.51%",
+  "Perf Quarter": "2.97%",
+  "Income": "-243.57M",
+  "P/S": "21.44",
+  "EPS this Y": "-44.36%",
+  "Inst Trans": "-0.67%",
+  "Short Ratio": "5.55",
+  "Perf Half Y": "27.41%",
+  "Sales": "19.35M",
+  "P/B": "0.86",
+  "ROA": "-25.78%",
+  "Short Interest": "3.51%",
+  "Perf YTD": "-40.57%",
+  "Book/sh": "9.66",
+  "P/C": "0.58",
+  "EPS next 5Y": "-9.62%",
+  "ROE": "-31.58%",
+  "52W High": "28.67 -70.98%",
+  "Perf Year": "-64.64%",
+  "Cash/sh": "14.47",
+  "P/FCF": "-",
+  "EPS past 3/5Y": "-2.91% -0.87%",
+  "ROIC": "-36.27%",
+  "52W Low": "6.10 36.39%",
+  "Perf 3Y": "-62.22%",
+  "Dividend Est.": "-",
+  "EV/EBITDA": "-",
+  "Sales past 3/5Y": "44.50% 20.56%",
+  "Gross Margin": "62.58%",
+  "Volatility": "7.56% 5.87%",
+  "Perf 5Y": "-56.60%",
+  "Dividend TTM": "-",
+  "EV/Sales": "-15.43",
+  "EPS Y/Y TTM": "7.57%",
+  "Oper. Margin": "-1710.05%",
+  "ATR (14)": "0.48",
+  "Perf 10Y": "-",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "10.39",
+  "Sales Y/Y TTM": "-51.13%",
+  "Profit Margin": "-1258.96%",
+  "RSI (14)": "58.59",
+  "Recom": "1.38",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "10.39",
+  "EPS Q/Q": "-50.48%",
+  "SMA20": "8.18%",
+  "Beta": "1.47",
+  "Target Price": "25.36",
+  "Payout": "-",
+  "Debt/Eq": "0.01",
+  "Sales Q/Q": "-68.47%",
+  "SMA50": "11.71%",
+  "Rel Volume": "1.07",
+  "Prev Close": "8.87",
+  "Employees": "305",
+  "LT Debt/Eq": "0.00",
+  "Earnings": "Aug 08 BMO",
+  "SMA200": "-9.44%",
+  "Avg Volume": "278.62K",
+  "Price": "8.32",
+  "IPO": "May 23, 2019",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "-20.48% -69.13%",
+  "Trades": "",
+  "Volume": "298,155",
+  "Change": "-6.20%",
+  "Insider Trading": [
+    {
+      "Owner": "Lee Kevin",
+      "Relationship": "CHIEF EXECUTIVE OFFICER",
+      "Date": "Oct 03 '25",
+      "Transaction": "Sale",
+      "Cost": "8.41",
+      "Shares": "3,231",
+      "Value": "27,173"
+    },
+    {
+      "Owner": "Lee Kevin",
+      "Relationship": "CHIEF EXECUTIVE OFFICER",
+      "Date": "Oct 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.40",
+      "Shares": "2,263",
+      "Value": "19,009"
+    },
+    {
+      "Owner": "Skynner Michael",
+      "Relationship": "CHIEF TECHNOLOGY OFFICER",
+      "Date": "Oct 03 '25",
+      "Transaction": "Sale",
+      "Cost": "8.41",
+      "Shares": "978",
+      "Value": "8,225"
+    },
+    {
+      "Owner": "Skynner Michael",
+      "Relationship": "CHIEF TECHNOLOGY OFFICER",
+      "Date": "Oct 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.40",
+      "Shares": "824",
+      "Value": "6,922"
+    },
+    {
+      "Owner": "Milnes Alistair",
+      "Relationship": "CHIEF OPERATING OFFICER",
+      "Date": "Oct 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.40",
+      "Shares": "1,147",
+      "Value": "9,635"
+    },
+    {
+      "Owner": "Milnes Alistair",
+      "Relationship": "CHIEF OPERATING OFFICER",
+      "Date": "Oct 03 '25",
+      "Transaction": "Sale",
+      "Cost": "8.41",
+      "Shares": "978",
+      "Value": "8,225"
+    },
+    {
+      "Owner": "Hannay Michael Charles Ferguso",
+      "Relationship": "CHIEF PROD & SUPPLY CHAIN OFF",
+      "Date": "Oct 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.40",
+      "Shares": "473",
+      "Value": "3,973"
+    },
+    {
+      "Owner": "Hannay Michael Charles Ferguso",
+      "Relationship": "CHIEF PROD & SUPPLY CHAIN OFF",
+      "Date": "Oct 03 '25",
+      "Transaction": "Sale",
+      "Cost": "8.41",
+      "Shares": "250",
+      "Value": "2,102"
+    },
+    {
+      "Owner": "Young Alethia",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Oct 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.51",
+      "Shares": "482",
+      "Value": "4,103"
+    },
+    {
+      "Owner": "Thompson Travis Alvin",
+      "Relationship": "CHIEF ACCOUNTING OFFICER",
+      "Date": "Oct 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.40",
+      "Shares": "221",
+      "Value": "1,856"
+    },
+    {
+      "Owner": "Thompson Travis Alvin",
+      "Relationship": "CHIEF ACCOUNTING OFFICER",
+      "Date": "Oct 03 '25",
+      "Transaction": "Sale",
+      "Cost": "8.41",
+      "Shares": "103",
+      "Value": "866"
+    },
+    {
+      "Owner": "Swanton Robert Charles",
+      "Relationship": "Director",
+      "Date": "Oct 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.55",
+      "Shares": "102",
+      "Value": "872"
+    },
+    {
+      "Owner": "Swanton Robert Charles",
+      "Relationship": "Director",
+      "Date": "Oct 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.55",
+      "Shares": "102",
+      "Value": "872"
+    },
+    {
+      "Owner": "Thompson Travis Alvin",
+      "Relationship": "Officer",
+      "Date": "Oct 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.40",
+      "Shares": "543",
+      "Value": "4,563"
+    },
+    {
+      "Owner": "Hannay Michael Charles Ferguso",
+      "Relationship": "Officer",
+      "Date": "Oct 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.40",
+      "Shares": "755",
+      "Value": "6,344"
+    },
+    {
+      "Owner": "Young Alethia",
+      "Relationship": "Officer",
+      "Date": "Oct 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "7.09",
+      "Shares": "486",
+      "Value": "3,447"
+    },
+    {
+      "Owner": "Lee Kevin",
+      "Relationship": "Officer",
+      "Date": "Oct 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.40",
+      "Shares": "5,958",
+      "Value": "50,061"
+    },
+    {
+      "Owner": "Milnes Alistair",
+      "Relationship": "Officer",
+      "Date": "Oct 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.40",
+      "Shares": "2,264",
+      "Value": "19,023"
+    },
+    {
+      "Owner": "Lee Kevin",
+      "Relationship": "CHIEF EXECUTIVE OFFICER",
+      "Date": "Jul 03 '25",
+      "Transaction": "Sale",
+      "Cost": "7.44",
+      "Shares": "3,193",
+      "Value": "23,756"
+    },
+    {
+      "Owner": "Lee Kevin",
+      "Relationship": "CHIEF EXECUTIVE OFFICER",
+      "Date": "Jul 02 '25",
+      "Transaction": "Sale",
+      "Cost": "7.09",
+      "Shares": "2,268",
+      "Value": "16,080"
+    },
+    {
+      "Owner": "Skynner Michael",
+      "Relationship": "CHIEF TECHNOLOGY OFFICER",
+      "Date": "Jul 03 '25",
+      "Transaction": "Sale",
+      "Cost": "7.44",
+      "Shares": "966",
+      "Value": "7,187"
+    },
+    {
+      "Owner": "Skynner Michael",
+      "Relationship": "CHIEF TECHNOLOGY OFFICER",
+      "Date": "Jul 02 '25",
+      "Transaction": "Sale",
+      "Cost": "7.09",
+      "Shares": "825",
+      "Value": "5,849"
+    },
+    {
+      "Owner": "Milnes Alistair",
+      "Relationship": "CHIEF OPERATING OFFICER",
+      "Date": "Jul 02 '25",
+      "Transaction": "Sale",
+      "Cost": "7.09",
+      "Shares": "1,149",
+      "Value": "8,146"
+    },
+    {
+      "Owner": "Milnes Alistair",
+      "Relationship": "CHIEF OPERATING OFFICER",
+      "Date": "Jul 03 '25",
+      "Transaction": "Sale",
+      "Cost": "7.44",
+      "Shares": "966",
+      "Value": "7,187"
+    },
+    {
+      "Owner": "Hannay Michael Charles Ferguso",
+      "Relationship": "CHIEF PROD & SUPPLY CHAIN OFF",
+      "Date": "Jul 02 '25",
+      "Transaction": "Sale",
+      "Cost": "7.09",
+      "Shares": "474",
+      "Value": "3,361"
+    },
+    {
+      "Owner": "Hannay Michael Charles Ferguso",
+      "Relationship": "CHIEF PROD & SUPPLY CHAIN OFF",
+      "Date": "Jul 03 '25",
+      "Transaction": "Sale",
+      "Cost": "7.44",
+      "Shares": "248",
+      "Value": "1,845"
+    },
+    {
+      "Owner": "Thompson Travis Alvin",
+      "Relationship": "CHIEF ACCOUNTING OFFICER",
+      "Date": "Jul 02 '25",
+      "Transaction": "Sale",
+      "Cost": "7.09",
+      "Shares": "206",
+      "Value": "1,461"
+    },
+    {
+      "Owner": "Thompson Travis Alvin",
+      "Relationship": "CHIEF ACCOUNTING OFFICER",
+      "Date": "Jul 03 '25",
+      "Transaction": "Sale",
+      "Cost": "7.44",
+      "Shares": "100",
+      "Value": "744"
+    },
+    {
+      "Owner": "Young Alethia",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Jul 02 '25",
+      "Transaction": "Sale",
+      "Cost": "7.09",
+      "Shares": "204",
+      "Value": "1,446"
+    },
+    {
+      "Owner": "Young Alethia",
+      "Relationship": "Officer",
+      "Date": "Jul 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "7.09",
+      "Shares": "206",
+      "Value": "1,461"
+    },
+    {
+      "Owner": "Thompson Travis Alvin",
+      "Relationship": "Officer",
+      "Date": "Jul 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "7.09",
+      "Shares": "530",
+      "Value": "3,760"
+    },
+    {
+      "Owner": "Hannay Michael Charles Ferguso",
+      "Relationship": "Officer",
+      "Date": "Jul 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "7.09",
+      "Shares": "756",
+      "Value": "5,358"
+    },
+    {
+      "Owner": "Milnes Alistair",
+      "Relationship": "Officer",
+      "Date": "Jul 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "7.09",
+      "Shares": "2,266",
+      "Value": "16,066"
+    },
+    {
+      "Owner": "Skynner Michael",
+      "Relationship": "Officer",
+      "Date": "Jul 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "7.09",
+      "Shares": "1,942",
+      "Value": "13,769"
+    },
+    {
+      "Owner": "Lee Kevin",
+      "Relationship": "Officer",
+      "Date": "Jul 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "7.09",
+      "Shares": "5,963",
+      "Value": "42,287"
+    },
+    {
+      "Owner": "Young Alethia",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Apr 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.02",
+      "Shares": "215",
+      "Value": "1,724"
+    },
+    {
+      "Owner": "Skynner Michael",
+      "Relationship": "CHIEF TECHNOLOGY OFFICER",
+      "Date": "Apr 03 '25",
+      "Transaction": "Sale",
+      "Cost": "7.48",
+      "Shares": "1,038",
+      "Value": "7,764"
+    },
+    {
+      "Owner": "Skynner Michael",
+      "Relationship": "CHIEF TECHNOLOGY OFFICER",
+      "Date": "Apr 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.02",
+      "Shares": "814",
+      "Value": "6,528"
+    },
+    {
+      "Owner": "Lee Kevin",
+      "Relationship": "CHIEF EXECUTIVE OFFICER",
+      "Date": "Apr 03 '25",
+      "Transaction": "Sale",
+      "Cost": "7.48",
+      "Shares": "3,432",
+      "Value": "25,671"
+    },
+    {
+      "Owner": "Lee Kevin",
+      "Relationship": "CHIEF EXECUTIVE OFFICER",
+      "Date": "Apr 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.02",
+      "Shares": "2,237",
+      "Value": "17,941"
+    },
+    {
+      "Owner": "Milnes Alistair",
+      "Relationship": "CHIEF OPERATING OFFICER",
+      "Date": "Apr 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.02",
+      "Shares": "1,133",
+      "Value": "9,087"
+    },
+    {
+      "Owner": "Milnes Alistair",
+      "Relationship": "CHIEF OPERATING OFFICER",
+      "Date": "Apr 03 '25",
+      "Transaction": "Sale",
+      "Cost": "7.48",
+      "Shares": "1,038",
+      "Value": "7,764"
+    },
+    {
+      "Owner": "Hannay Michael Charles Ferguso",
+      "Relationship": "CHIEF PROD & SUPPLY CHAIN OFF",
+      "Date": "Apr 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.02",
+      "Shares": "467",
+      "Value": "3,745"
+    },
+    {
+      "Owner": "Hannay Michael Charles Ferguso",
+      "Relationship": "CHIEF PROD & SUPPLY CHAIN OFF",
+      "Date": "Apr 03 '25",
+      "Transaction": "Sale",
+      "Cost": "7.48",
+      "Shares": "266",
+      "Value": "1,990"
+    },
+    {
+      "Owner": "Thompson Travis Alvin",
+      "Relationship": "CHIEF ACCOUNTING OFFICER",
+      "Date": "Apr 02 '25",
+      "Transaction": "Sale",
+      "Cost": "8.02",
+      "Shares": "210",
+      "Value": "1,684"
+    },
+    {
+      "Owner": "Thompson Travis Alvin",
+      "Relationship": "CHIEF ACCOUNTING OFFICER",
+      "Date": "Apr 03 '25",
+      "Transaction": "Sale",
+      "Cost": "7.48",
+      "Shares": "109",
+      "Value": "815"
+    },
+    {
+      "Owner": "Thompson Travis Alvin",
+      "Relationship": "Officer",
+      "Date": "Apr 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.02",
+      "Shares": "536",
+      "Value": "4,297"
+    },
+    {
+      "Owner": "Arroyo Santiago",
+      "Relationship": "Officer",
+      "Date": "Apr 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.02",
+      "Shares": "834",
+      "Value": "6,685"
+    },
+    {
+      "Owner": "Crockett Nigel",
+      "Relationship": "Officer",
+      "Date": "Apr 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.02",
+      "Shares": "1,757",
+      "Value": "14,084"
+    },
+    {
+      "Owner": "Skynner Michael",
+      "Relationship": "Officer",
+      "Date": "Apr 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.02",
+      "Shares": "1,931",
+      "Value": "15,479"
+    },
+    {
+      "Owner": "Hannay Michael Charles Ferguso",
+      "Relationship": "Officer",
+      "Date": "Apr 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.02",
+      "Shares": "749",
+      "Value": "6,004"
+    },
+    {
+      "Owner": "Lee Kevin",
+      "Relationship": "Officer",
+      "Date": "Apr 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.02",
+      "Shares": "5,932",
+      "Value": "47,550"
+    },
+    {
+      "Owner": "Young Alethia",
+      "Relationship": "Officer",
+      "Date": "Apr 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.01",
+      "Shares": "215",
+      "Value": "1,723"
+    },
+    {
+      "Owner": "Milnes Alistair",
+      "Relationship": "Officer",
+      "Date": "Apr 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "8.02",
+      "Shares": "2,250",
+      "Value": "18,036"
+    },
+    {
+      "Owner": "Thompson Travis Alvin",
+      "Relationship": "CHIEF ACCOUNTING OFFICER",
+      "Date": "Jan 06 '25",
+      "Transaction": "Sale",
+      "Cost": "15.00",
+      "Shares": "2,686",
+      "Value": "40,290"
+    },
+    {
+      "Owner": "Thompson Travis Alvin",
+      "Relationship": "CHIEF ACCOUNTING OFFICER",
+      "Date": "Jan 02 '25",
+      "Transaction": "Sale",
+      "Cost": "14.09",
+      "Shares": "1,750",
+      "Value": "24,658"
+    },
+    {
+      "Owner": "Thompson Travis Alvin",
+      "Relationship": "CHIEF ACCOUNTING OFFICER",
+      "Date": "Jan 03 '25",
+      "Transaction": "Sale",
+      "Cost": "14.75",
+      "Shares": "159",
+      "Value": "2,345"
+    },
+    {
+      "Owner": "Young Alethia",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Jan 02 '25",
+      "Transaction": "Sale",
+      "Cost": "14.09",
+      "Shares": "1,395",
+      "Value": "19,656"
+    },
+    {
+      "Owner": "Arroyo Santiago",
+      "Relationship": "CHIEF DEVELOPMENT OFFICER",
+      "Date": "Jan 02 '25",
+      "Transaction": "Sale",
+      "Cost": "14.09",
+      "Shares": "4,943",
+      "Value": "69,647"
+    },
+    {
+      "Owner": "Crockett Nigel",
+      "Relationship": "CHIEF BUSINESS OFFICER",
+      "Date": "Jan 02 '25",
+      "Transaction": "Sale",
+      "Cost": "14.09",
+      "Shares": "2,583",
+      "Value": "36,394"
+    },
+    {
+      "Owner": "Crockett Nigel",
+      "Relationship": "CHIEF BUSINESS OFFICER",
+      "Date": "Jan 03 '25",
+      "Transaction": "Sale",
+      "Cost": "14.75",
+      "Shares": "936",
+      "Value": "13,806"
+    },
+    {
+      "Owner": "Milnes Alistair",
+      "Relationship": "CHIEF OPERATING OFFICER",
+      "Date": "Jan 02 '25",
+      "Transaction": "Sale",
+      "Cost": "14.09",
+      "Shares": "4,578",
+      "Value": "64,504"
+    },
+    {
+      "Owner": "Milnes Alistair",
+      "Relationship": "CHIEF OPERATING OFFICER",
+      "Date": "Jan 03 '25",
+      "Transaction": "Sale",
+      "Cost": "14.75",
+      "Shares": "936",
+      "Value": "13,806"
+    },
+    {
+      "Owner": "Skynner Michael",
+      "Relationship": "CHIEF TECHNOLOGY OFFICER",
+      "Date": "Jan 02 '25",
+      "Transaction": "Sale",
+      "Cost": "14.09",
+      "Shares": "3,287",
+      "Value": "46,314"
+    },
+    {
+      "Owner": "Skynner Michael",
+      "Relationship": "CHIEF TECHNOLOGY OFFICER",
+      "Date": "Jan 03 '25",
+      "Transaction": "Sale",
+      "Cost": "14.75",
+      "Shares": "936",
+      "Value": "13,806"
+    },
+    {
+      "Owner": "Hannay Michael Charles Ferguso",
+      "Relationship": "CHIEF PROD & SUPPLY CHAIN OFF",
+      "Date": "Jan 02 '25",
+      "Transaction": "Sale",
+      "Cost": "14.09",
+      "Shares": "1,879",
+      "Value": "26,475"
+    },
+    {
+      "Owner": "Hannay Michael Charles Ferguso",
+      "Relationship": "CHIEF PROD & SUPPLY CHAIN OFF",
+      "Date": "Jan 03 '25",
+      "Transaction": "Sale",
+      "Cost": "14.75",
+      "Shares": "239",
+      "Value": "3,525"
+    },
+    {
+      "Owner": "Lee Kevin",
+      "Relationship": "CHIEF EXECUTIVE OFFICER",
+      "Date": "Jan 02 '25",
+      "Transaction": "Sale",
+      "Cost": "14.09",
+      "Shares": "9,038",
+      "Value": "127,345"
+    },
+    {
+      "Owner": "Lee Kevin",
+      "Relationship": "CHIEF EXECUTIVE OFFICER",
+      "Date": "Jan 03 '25",
+      "Transaction": "Sale",
+      "Cost": "14.75",
+      "Shares": "3,092",
+      "Value": "45,607"
+    },
+    {
+      "Owner": "Thompson Travis Alvin",
+      "Relationship": "Officer",
+      "Date": "Jan 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "15.00",
+      "Shares": "2,686",
+      "Value": "40,290"
+    },
+    {
+      "Owner": "Thompson Travis Alvin",
+      "Relationship": "Officer",
+      "Date": "Jan 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.00",
+      "Shares": "2,016",
+      "Value": "28,224"
+    },
+    {
+      "Owner": "Young Alethia",
+      "Relationship": "Officer",
+      "Date": "Jan 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.00",
+      "Shares": "1,395",
+      "Value": "19,530"
+    },
+    {
+      "Owner": "Arroyo Santiago",
+      "Relationship": "Officer",
+      "Date": "Jan 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.00",
+      "Shares": "4,943",
+      "Value": "69,202"
+    },
+    {
+      "Owner": "Hannay Michael Charles Ferguso",
+      "Relationship": "Officer",
+      "Date": "Jan 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.00",
+      "Shares": "2,145",
+      "Value": "30,030"
+    },
+    {
+      "Owner": "Crockett Nigel",
+      "Relationship": "Officer",
+      "Date": "Jan 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.00",
+      "Shares": "3,636",
+      "Value": "50,904"
+    },
+    {
+      "Owner": "Milnes Alistair",
+      "Relationship": "Officer",
+      "Date": "Jan 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.00",
+      "Shares": "5,631",
+      "Value": "78,834"
+    },
+    {
+      "Owner": "Skynner Michael",
+      "Relationship": "Officer",
+      "Date": "Jan 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.00",
+      "Shares": "4,340",
+      "Value": "60,760"
+    },
+    {
+      "Owner": "Lee Kevin",
+      "Relationship": "Officer",
+      "Date": "Jan 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "14.00",
+      "Shares": "12,516",
+      "Value": "175,224"
+    },
+    {
+      "Owner": "BAKER BROS. ADVISORS LP",
+      "Relationship": "Director",
+      "Date": "Dec 13 '24",
+      "Transaction": "Buy",
+      "Cost": "13.76",
+      "Shares": "985,397",
+      "Value": "13,559,485"
+    },
+    {
+      "Owner": "BAKER BROS. ADVISORS LP",
+      "Relationship": "Director",
+      "Date": "Dec 16 '24",
+      "Transaction": "Buy",
+      "Cost": "15.34",
+      "Shares": "500,000",
+      "Value": "7,670,900"
+    },
+    {
+      "Owner": "Thompson Travis Alvin",
+      "Relationship": "CHIEF ACCOUNTING OFFICER",
+      "Date": "Nov 11 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "5.67",
+      "Shares": "2,575",
+      "Value": "14,608"
+    },
+    {
+      "Owner": "Thompson Travis Alvin",
+      "Relationship": "CHIEF ACCOUNTING OFFICER",
+      "Date": "Nov 11 '24",
+      "Transaction": "Sale",
+      "Cost": "25.11",
+      "Shares": "6,256",
+      "Value": "157,114"
+    },
+    {
+      "Owner": "Thompson Travis Alvin",
+      "Relationship": "Officer",
+      "Date": "Nov 11 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "25.11",
+      "Shares": "6,256",
+      "Value": "157,112"
+    }
+  ],
+  "Dividends": []
+}

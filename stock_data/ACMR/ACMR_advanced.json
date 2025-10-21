@@ -1,0 +1,790 @@
+{
+  "Index": "RUT",
+  "P/E": "22.20",
+  "EPS (ttm)": "1.65",
+  "Insider Own": "17.00%",
+  "Shs Outstand": "59.10M",
+  "Perf Week": "-11.96%",
+  "Market Cap": "2.35B",
+  "Forward P/E": "15.57",
+  "EPS next Y": "14.75%",
+  "Insider Trans": "-3.93%",
+  "Shs Float": "53.27M",
+  "Perf Month": "21.56%",
+  "Enterprise Value": "2.34B",
+  "PEG": "2.34",
+  "EPS next Q": "0.54",
+  "Inst Own": "59.30%",
+  "Short Float": "10.06%",
+  "Perf Quarter": "26.48%",
+  "Income": "112.12M",
+  "P/S": "2.88",
+  "EPS this Y": "-9.35%",
+  "Inst Trans": "9.87%",
+  "Short Ratio": "3.19",
+  "Perf Half Y": "98.64%",
+  "Sales": "815.17M",
+  "P/B": "2.38",
+  "ROA": "6.05%",
+  "Short Interest": "10.06%",
+  "Perf YTD": "142.32%",
+  "Book/sh": "15.38",
+  "P/C": "4.65",
+  "EPS next 5Y": "9.49%",
+  "ROE": "12.32%",
+  "52W High": "45.12 -18.91%",
+  "Perf Year": "67.81%",
+  "Cash/sh": "7.87",
+  "P/FCF": "-",
+  "EPS past 3/5Y": "38.38% 36.00%",
+  "ROIC": "9.71%",
+  "52W Low": "13.87 163.81%",
+  "Perf 3Y": "178.25%",
+  "Dividend Est.": "0.20 (0.55%)",
+  "EV/EBITDA": "14.85",
+  "Sales past 3/5Y": "44.40% 48.71%",
+  "Gross Margin": "49.40%",
+  "Volatility": "5.97% 5.16%",
+  "Perf 5Y": "44.59%",
+  "Dividend TTM": "-",
+  "EV/Sales": "2.87",
+  "EPS Y/Y TTM": "27.74%",
+  "Oper. Margin": "17.87%",
+  "ATR (14)": "2.12",
+  "Perf 10Y": "-",
+  "Dividend Ex-Date": "-",
+  "Quick Ratio": "1.49",
+  "Sales Y/Y TTM": "17.53%",
+  "Profit Margin": "13.75%",
+  "RSI (14)": "49.76",
+  "Recom": "1.25",
+  "Dividend Gr. 3/5Y": "- -",
+  "Current Ratio": "2.45",
+  "EPS Q/Q": "23.84%",
+  "SMA20": "-4.33%",
+  "Beta": "1.43",
+  "Target Price": "41.73",
+  "Payout": "0.00%",
+  "Debt/Eq": "0.29",
+  "Sales Q/Q": "6.37%",
+  "SMA50": "15.72%",
+  "Rel Volume": "1.41",
+  "Prev Close": "41.07",
+  "Employees": "2023",
+  "LT Debt/Eq": "0.17",
+  "Earnings": "Aug 06 BMO",
+  "SMA200": "43.86%",
+  "Avg Volume": "1.68M",
+  "Price": "36.59",
+  "IPO": "Nov 03, 2017",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "11.27% -3.59%",
+  "Trades": "",
+  "Volume": "2,372,091",
+  "Change": "-10.91%",
+  "Insider Trading": [
+    {
+      "Owner": "Wang David H",
+      "Relationship": "See Remarks",
+      "Date": "Sep 08 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "1.00",
+      "Shares": "130,000",
+      "Value": "130,000"
+    },
+    {
+      "Owner": "Liu Tracy",
+      "Relationship": "Director",
+      "Date": "Sep 17 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "1.00",
+      "Shares": "15,000",
+      "Value": "15,000"
+    },
+    {
+      "Owner": "Liu Tracy",
+      "Relationship": "Director",
+      "Date": "Sep 17 '25",
+      "Transaction": "Sale",
+      "Cost": "33.00",
+      "Shares": "15,000",
+      "Value": "495,000"
+    },
+    {
+      "Owner": "Wang Jian",
+      "Relationship": "See remarks",
+      "Date": "Sep 18 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "5.60",
+      "Shares": "30,000",
+      "Value": "168,000"
+    },
+    {
+      "Owner": "Wang Jian",
+      "Relationship": "See remarks",
+      "Date": "Sep 18 '25",
+      "Transaction": "Sale",
+      "Cost": "35.00",
+      "Shares": "30,000",
+      "Value": "1,050,000"
+    },
+    {
+      "Owner": "Cheav Sotheara",
+      "Relationship": "See remarks",
+      "Date": "Sep 18 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "13.89",
+      "Shares": "10,000",
+      "Value": "138,900"
+    },
+    {
+      "Owner": "Cheav Sotheara",
+      "Relationship": "See remarks",
+      "Date": "Sep 18 '25",
+      "Transaction": "Sale",
+      "Cost": "35.00",
+      "Shares": "10,000",
+      "Value": "350,000"
+    },
+    {
+      "Owner": "JIAN WANG",
+      "Relationship": "Officer",
+      "Date": "Sep 18 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "35.00",
+      "Shares": "30,000",
+      "Value": "1,050,000"
+    },
+    {
+      "Owner": "SOTHEARA CHEAV",
+      "Relationship": "Officer",
+      "Date": "Sep 18 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "35.00",
+      "Shares": "10,000",
+      "Value": "350,000"
+    },
+    {
+      "Owner": "TRACY DONG LIU",
+      "Relationship": "Director",
+      "Date": "Sep 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "33.00",
+      "Shares": "15,000",
+      "Value": "495,000"
+    },
+    {
+      "Owner": "Wang David H",
+      "Relationship": "See Remarks",
+      "Date": "Sep 03 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "1.00",
+      "Shares": "70,000",
+      "Value": "70,000"
+    },
+    {
+      "Owner": "Wang David H",
+      "Relationship": "See Remarks",
+      "Date": "Sep 04 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "1.00",
+      "Shares": "60,000",
+      "Value": "60,000"
+    },
+    {
+      "Owner": "Wang David H",
+      "Relationship": "See Remarks",
+      "Date": "Sep 03 '25",
+      "Transaction": "Sale",
+      "Cost": "26.76",
+      "Shares": "70,000",
+      "Value": "1,873,387"
+    },
+    {
+      "Owner": "Wang David H",
+      "Relationship": "See Remarks",
+      "Date": "Sep 04 '25",
+      "Transaction": "Sale",
+      "Cost": "26.44",
+      "Shares": "60,000",
+      "Value": "1,586,400"
+    },
+    {
+      "Owner": "HUI WANG",
+      "Relationship": "Officer",
+      "Date": "Sep 04 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "26.44",
+      "Shares": "60,000",
+      "Value": "1,586,508"
+    },
+    {
+      "Owner": "HUI WANG",
+      "Relationship": "Officer",
+      "Date": "Sep 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "26.77",
+      "Shares": "70,000",
+      "Value": "1,873,711"
+    },
+    {
+      "Owner": "Cheav Sotheara",
+      "Relationship": "See remarks",
+      "Date": "Aug 22 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "13.89",
+      "Shares": "11,152",
+      "Value": "154,901"
+    },
+    {
+      "Owner": "Cheav Sotheara",
+      "Relationship": "See remarks",
+      "Date": "Aug 22 '25",
+      "Transaction": "Sale",
+      "Cost": "30.00",
+      "Shares": "11,152",
+      "Value": "334,560"
+    },
+    {
+      "Owner": "Wang Jian",
+      "Relationship": "See remarks",
+      "Date": "Aug 22 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "5.60",
+      "Shares": "30,000",
+      "Value": "168,000"
+    },
+    {
+      "Owner": "Wang Jian",
+      "Relationship": "See remarks",
+      "Date": "Aug 25 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "5.60",
+      "Shares": "30,000",
+      "Value": "168,000"
+    },
+    {
+      "Owner": "Wang Jian",
+      "Relationship": "See remarks",
+      "Date": "Aug 25 '25",
+      "Transaction": "Sale",
+      "Cost": "32.00",
+      "Shares": "30,000",
+      "Value": "960,000"
+    },
+    {
+      "Owner": "Wang Jian",
+      "Relationship": "See remarks",
+      "Date": "Aug 22 '25",
+      "Transaction": "Sale",
+      "Cost": "30.00",
+      "Shares": "30,000",
+      "Value": "900,000"
+    },
+    {
+      "Owner": "JIAN WANG",
+      "Relationship": "Officer",
+      "Date": "Aug 25 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "32.00",
+      "Shares": "30,000",
+      "Value": "960,000"
+    },
+    {
+      "Owner": "JIAN WANG",
+      "Relationship": "Officer",
+      "Date": "Aug 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "30.00",
+      "Shares": "30,000",
+      "Value": "900,012"
+    },
+    {
+      "Owner": "SOTHEARA CHEAV",
+      "Relationship": "Officer",
+      "Date": "Aug 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "30.00",
+      "Shares": "11,152",
+      "Value": "334,560"
+    },
+    {
+      "Owner": "Liu Tracy",
+      "Relationship": "Director",
+      "Date": "Jul 15 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "1.00",
+      "Shares": "15,000",
+      "Value": "15,000"
+    },
+    {
+      "Owner": "Liu Tracy",
+      "Relationship": "Director",
+      "Date": "Jul 15 '25",
+      "Transaction": "Sale",
+      "Cost": "30.00",
+      "Shares": "15,000",
+      "Value": "450,000"
+    },
+    {
+      "Owner": "TRACY DONG LIU",
+      "Relationship": "Director",
+      "Date": "Jul 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "30.00",
+      "Shares": "15,000",
+      "Value": "450,000"
+    },
+    {
+      "Owner": "Feng Lisa",
+      "Relationship": "See remarks",
+      "Date": "Jul 07 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "5.60",
+      "Shares": "15,000",
+      "Value": "84,000"
+    },
+    {
+      "Owner": "Feng Lisa",
+      "Relationship": "See remarks",
+      "Date": "Jul 07 '25",
+      "Transaction": "Sale",
+      "Cost": "28.00",
+      "Shares": "15,000",
+      "Value": "420,000"
+    },
+    {
+      "Owner": "LISA YI LU FENG",
+      "Relationship": "Officer",
+      "Date": "Jul 07 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "28.00",
+      "Shares": "15,000",
+      "Value": "420,000"
+    },
+    {
+      "Owner": "Feng Lisa",
+      "Relationship": "See remarks",
+      "Date": "Jun 24 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "5.60",
+      "Shares": "15,000",
+      "Value": "84,000"
+    },
+    {
+      "Owner": "Feng Lisa",
+      "Relationship": "See remarks",
+      "Date": "Jun 24 '25",
+      "Transaction": "Sale",
+      "Cost": "26.00",
+      "Shares": "15,000",
+      "Value": "390,000"
+    },
+    {
+      "Owner": "LISA YI LU FENG",
+      "Relationship": "Officer",
+      "Date": "Jun 24 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "26.00",
+      "Shares": "15,000",
+      "Value": "390,000"
+    },
+    {
+      "Owner": "Wang David H",
+      "Relationship": "See Remarks",
+      "Date": "May 21 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "1.00",
+      "Shares": "70,000",
+      "Value": "70,000"
+    },
+    {
+      "Owner": "Wang David H",
+      "Relationship": "See Remarks",
+      "Date": "May 22 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "1.00",
+      "Shares": "60,000",
+      "Value": "60,000"
+    },
+    {
+      "Owner": "Wang David H",
+      "Relationship": "See Remarks",
+      "Date": "May 21 '25",
+      "Transaction": "Sale",
+      "Cost": "23.60",
+      "Shares": "70,000",
+      "Value": "1,652,004"
+    },
+    {
+      "Owner": "Wang David H",
+      "Relationship": "See Remarks",
+      "Date": "May 22 '25",
+      "Transaction": "Sale",
+      "Cost": "22.63",
+      "Shares": "60,000",
+      "Value": "1,357,800"
+    },
+    {
+      "Owner": "HUI WANG",
+      "Relationship": "Officer",
+      "Date": "May 22 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "22.63",
+      "Shares": "60,000",
+      "Value": "1,357,872"
+    },
+    {
+      "Owner": "HUI WANG",
+      "Relationship": "Officer",
+      "Date": "May 21 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "23.60",
+      "Shares": "70,000",
+      "Value": "1,652,140"
+    },
+    {
+      "Owner": "McKechnie Mark",
+      "Relationship": "See Remarks",
+      "Date": "May 14 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "5.60",
+      "Shares": "15,000",
+      "Value": "84,000"
+    },
+    {
+      "Owner": "McKechnie Mark",
+      "Relationship": "See Remarks",
+      "Date": "May 14 '25",
+      "Transaction": "Sale",
+      "Cost": "25.22",
+      "Shares": "15,000",
+      "Value": "378,300"
+    },
+    {
+      "Owner": "MARK A MCKECHNIE",
+      "Relationship": "Officer",
+      "Date": "May 14 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "25.22",
+      "Shares": "15,000",
+      "Value": "378,294"
+    },
+    {
+      "Owner": "Hu Chenming",
+      "Relationship": "Director",
+      "Date": "Mar 17 '25",
+      "Transaction": "Sale",
+      "Cost": "30.00",
+      "Shares": "163,308",
+      "Value": "4,899,240"
+    },
+    {
+      "Owner": "Dun Haiping",
+      "Relationship": "Director",
+      "Date": "Mar 14 '25",
+      "Transaction": "Sale",
+      "Cost": "29.00",
+      "Shares": "9,518",
+      "Value": "275,976"
+    },
+    {
+      "Owner": "CHENMING HU",
+      "Relationship": "Director",
+      "Date": "Mar 17 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "30.00",
+      "Shares": "163,308",
+      "Value": "4,899,240"
+    },
+    {
+      "Owner": "McKechnie Mark",
+      "Relationship": "See Remarks",
+      "Date": "Mar 12 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "5.60",
+      "Shares": "15,000",
+      "Value": "84,000"
+    },
+    {
+      "Owner": "McKechnie Mark",
+      "Relationship": "See Remarks",
+      "Date": "Mar 12 '25",
+      "Transaction": "Sale",
+      "Cost": "27.42",
+      "Shares": "15,000",
+      "Value": "411,300"
+    },
+    {
+      "Owner": "HAIPING DUN",
+      "Relationship": "Director",
+      "Date": "Mar 14 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "28.99",
+      "Shares": "9,518",
+      "Value": "275,954"
+    },
+    {
+      "Owner": "Wang David H",
+      "Relationship": "See Remarks",
+      "Date": "Mar 11 '25",
+      "Transaction": "Sale",
+      "Cost": "26.57",
+      "Shares": "56,250",
+      "Value": "1,494,562"
+    },
+    {
+      "Owner": "Wang David H",
+      "Relationship": "See Remarks",
+      "Date": "Mar 12 '25",
+      "Transaction": "Sale",
+      "Cost": "27.42",
+      "Shares": "37,500",
+      "Value": "1,028,250"
+    },
+    {
+      "Owner": "Wang David H",
+      "Relationship": "See Remarks",
+      "Date": "Mar 13 '25",
+      "Transaction": "Sale",
+      "Cost": "27.30",
+      "Shares": "37,500",
+      "Value": "1,023,742"
+    },
+    {
+      "Owner": "HUI WANG",
+      "Relationship": "Officer",
+      "Date": "Mar 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "27.30",
+      "Shares": "37,500",
+      "Value": "1,023,889"
+    },
+    {
+      "Owner": "Dun Haiping",
+      "Relationship": "Director",
+      "Date": "Mar 10 '25",
+      "Transaction": "Sale",
+      "Cost": "26.54",
+      "Shares": "15,001",
+      "Value": "398,127"
+    },
+    {
+      "Owner": "MARK A MCKECHNIE",
+      "Relationship": "Officer",
+      "Date": "Mar 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "27.42",
+      "Shares": "15,000",
+      "Value": "411,334"
+    },
+    {
+      "Owner": "HUI WANG",
+      "Relationship": "Officer",
+      "Date": "Mar 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "27.42",
+      "Shares": "37,500",
+      "Value": "1,028,299"
+    },
+    {
+      "Owner": "HUI WANG",
+      "Relationship": "Officer",
+      "Date": "Mar 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "26.57",
+      "Shares": "56,250",
+      "Value": "1,494,793"
+    },
+    {
+      "Owner": "HAIPING DUN",
+      "Relationship": "Director",
+      "Date": "Mar 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "26.54",
+      "Shares": "15,001",
+      "Value": "398,197"
+    },
+    {
+      "Owner": "Dun Haiping",
+      "Relationship": "Director",
+      "Date": "Mar 03 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.50",
+      "Shares": "25,001",
+      "Value": "12,500"
+    },
+    {
+      "Owner": "Wang David H",
+      "Relationship": "See Remarks",
+      "Date": "Mar 03 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.50",
+      "Shares": "210,000",
+      "Value": "105,000"
+    },
+    {
+      "Owner": "Cheav Sotheara",
+      "Relationship": "See remarks",
+      "Date": "Feb 06 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "13.89",
+      "Shares": "22,598",
+      "Value": "313,886"
+    },
+    {
+      "Owner": "Cheav Sotheara",
+      "Relationship": "See remarks",
+      "Date": "Feb 06 '25",
+      "Transaction": "Sale",
+      "Cost": "23.00",
+      "Shares": "22,598",
+      "Value": "519,754"
+    },
+    {
+      "Owner": "McKechnie Mark",
+      "Relationship": "See Remarks",
+      "Date": "Feb 06 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "5.60",
+      "Shares": "15,000",
+      "Value": "84,000"
+    },
+    {
+      "Owner": "McKechnie Mark",
+      "Relationship": "See Remarks",
+      "Date": "Feb 06 '25",
+      "Transaction": "Sale",
+      "Cost": "22.00",
+      "Shares": "15,000",
+      "Value": "330,000"
+    },
+    {
+      "Owner": "SOTHEARA CHEAV",
+      "Relationship": "Officer",
+      "Date": "Feb 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "23.00",
+      "Shares": "22,598",
+      "Value": "519,754"
+    },
+    {
+      "Owner": "MARK A MCKECHNIE",
+      "Relationship": "Officer",
+      "Date": "Feb 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "22.00",
+      "Shares": "15,000",
+      "Value": "330,000"
+    },
+    {
+      "Owner": "Dun Haiping",
+      "Relationship": "Director",
+      "Date": "Nov 29 '24",
+      "Transaction": "Sale",
+      "Cost": "17.43",
+      "Shares": "19,058",
+      "Value": "332,181"
+    },
+    {
+      "Owner": "Wang David H",
+      "Relationship": "See Remarks",
+      "Date": "Nov 29 '24",
+      "Transaction": "Sale",
+      "Cost": "17.44",
+      "Shares": "56,250",
+      "Value": "981,000"
+    },
+    {
+      "Owner": "Wang David H",
+      "Relationship": "See Remarks",
+      "Date": "Nov 26 '24",
+      "Transaction": "Sale",
+      "Cost": "17.89",
+      "Shares": "56,250",
+      "Value": "1,006,087"
+    },
+    {
+      "Owner": "HUI WANG",
+      "Relationship": "Officer",
+      "Date": "Nov 29 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "17.44",
+      "Shares": "56,250",
+      "Value": "980,826"
+    },
+    {
+      "Owner": "HAIPING DUN",
+      "Relationship": "Director",
+      "Date": "Nov 29 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "17.43",
+      "Shares": "19,058",
+      "Value": "332,259"
+    },
+    {
+      "Owner": "Dun Haiping",
+      "Relationship": "Director",
+      "Date": "Nov 22 '24",
+      "Transaction": "Sale",
+      "Cost": "19.12",
+      "Shares": "15,000",
+      "Value": "286,800"
+    },
+    {
+      "Owner": "Wang David H",
+      "Relationship": "See Remarks",
+      "Date": "Nov 22 '24",
+      "Transaction": "Sale",
+      "Cost": "19.08",
+      "Shares": "56,250",
+      "Value": "1,073,250"
+    },
+    {
+      "Owner": "HUI WANG",
+      "Relationship": "Officer",
+      "Date": "Nov 26 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "17.88",
+      "Shares": "56,250",
+      "Value": "1,006,009"
+    },
+    {
+      "Owner": "HAIPING DUN",
+      "Relationship": "Director",
+      "Date": "Nov 22 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "19.12",
+      "Shares": "15,000",
+      "Value": "286,780"
+    },
+    {
+      "Owner": "HUI WANG",
+      "Relationship": "Officer",
+      "Date": "Nov 22 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "19.08",
+      "Shares": "56,250",
+      "Value": "1,073,076"
+    },
+    {
+      "Owner": "Dun Haiping",
+      "Relationship": "Director",
+      "Date": "Nov 14 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "0.50",
+      "Shares": "35,000",
+      "Value": "17,500"
+    },
+    {
+      "Owner": "Wang David H",
+      "Relationship": "See Remarks",
+      "Date": "Nov 14 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "0.50",
+      "Shares": "270,000",
+      "Value": "135,000"
+    }
+  ],
+  "Dividends": []
+}

@@ -1,0 +1,881 @@
+{
+  "Category": "Other Asset Types - Multi-Asset / Other",
+  "Asset Type": "MLP",
+  "Tags": "-",
+  "Return% 1Y": "2.29%",
+  "Total Holdings": "-",
+  "Perf Week": "-4.07%",
+  "Sponsor": "JPMorgan Chase",
+  "ETF Type": "",
+  "Return% 3Y": "-",
+  "AUM": "668.10M",
+  "Perf Month": "-6.94%",
+  "Fund Family": "",
+  "Bond Type": "",
+  "Return% 5Y": "-",
+  "NAV/sh": "",
+  "Perf Quarter": "-8.31%",
+  "Index": "Alerian MLP Index",
+  "Average Maturity": "",
+  "Return% 10Y": "",
+  "52W High": "33.40 -16.05%",
+  "Perf Half Y": "0.47%",
+  "Index Weighting": "",
+  "Commodity Type": "",
+  "Return% SI": "",
+  "52W Low": "26.65 5.24%",
+  "Perf YTD": "-4.98%",
+  "Active/Passive": "",
+  "Quant Type": "",
+  "Flows% 1M": "0.00%",
+  "Volatility": "1.30% 1.07%",
+  "Perf Year": "-2.20%",
+  "Dividend TTM": "1.90 (6.77%)",
+  "ESG Type": "",
+  "Flows% 3M": "0.00%",
+  "ATR (14)": "0.37",
+  "Perf 3Y": "-",
+  "Dividend Ex-Date": "Aug 28, 2025",
+  "Dividend Type": "",
+  "Sector/Theme": "",
+  "Flows% YTD": "-15.81%",
+  "RSI (14)": "25.25",
+  "Perf 5Y": "-",
+  "Dividend Gr. 3/5Y": "- -",
+  "Structure Type": "",
+  "Region": "",
+  "Flows% 1Y": "",
+  "Beta": "0.67",
+  "Perf 10Y": "-",
+  "Expense": "0.85%",
+  "Growth/Value": "",
+  "SMA20": "-4.69%",
+  "Flows% 3Y": "",
+  "Rel Volume": "1.62",
+  "Prev Close": "28.56",
+  "Inverse/Leveraged": "",
+  "Market Cap": "",
+  "SMA50": "-6.72%",
+  "Flows% 5Y": "",
+  "Avg Volume": "38.15K",
+  "Price": "28.04",
+  "IPO": "Jan 29, 2024",
+  "Option/Short": "No / Yes",
+  "SMA200": "-8.66%",
+  "Trades": "",
+  "Volume": "61,776",
+  "Change": "-1.82%",
+  "Insider Trading": [
+    {
+      "Owner": "BAMMANN LINDA",
+      "Relationship": "Director",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "297.94",
+      "Shares": "9,500",
+      "Value": "2,830,472"
+    },
+    {
+      "Owner": "Linda B. Bammann",
+      "Relationship": "Director",
+      "Date": "Sep 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "297.94",
+      "Shares": "9,500",
+      "Value": "2,830,472"
+    },
+    {
+      "Owner": "BACON ASHLEY",
+      "Relationship": "Chief Risk Officer",
+      "Date": "Jun 12 '25",
+      "Transaction": "Sale",
+      "Cost": "267.44",
+      "Shares": "5,201",
+      "Value": "1,390,972"
+    },
+    {
+      "Owner": "Ashley Bacon",
+      "Relationship": "Chief Risk Officer",
+      "Date": "Jun 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "267.44",
+      "Shares": "5,201",
+      "Value": "1,390,971"
+    },
+    {
+      "Owner": "Piepszak Jennifer",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Jun 05 '25",
+      "Transaction": "Sale",
+      "Cost": "262.47",
+      "Shares": "6,128",
+      "Value": "1,608,424"
+    },
+    {
+      "Owner": "Jennifer Piepszak",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Jun 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "262.47",
+      "Shares": "6,128",
+      "Value": "1,608,424"
+    },
+    {
+      "Owner": "Friedman Stacey",
+      "Relationship": "General Counsel",
+      "Date": "May 20 '25",
+      "Transaction": "Sale",
+      "Cost": "265.71",
+      "Shares": "6,608",
+      "Value": "1,755,833"
+    },
+    {
+      "Owner": "Friedman Stacey",
+      "Relationship": "General Counsel",
+      "Date": "May 20 '25",
+      "Transaction": "Sale",
+      "Cost": "265.71",
+      "Shares": "2,821",
+      "Value": "749,576"
+    },
+    {
+      "Owner": "Stacey Friedman",
+      "Relationship": "General Counsel",
+      "Date": "May 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "265.71",
+      "Shares": "9,429",
+      "Value": "2,505,410"
+    },
+    {
+      "Owner": "Marianne Lake",
+      "Relationship": "CEO, Consumer and Community Ba",
+      "Date": "May 16 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "267.08",
+      "Shares": "12,274",
+      "Value": "3,278,087"
+    },
+    {
+      "Owner": "Lake Marianne",
+      "Relationship": "CEO CCB",
+      "Date": "May 16 '25",
+      "Transaction": "Sale",
+      "Cost": "267.08",
+      "Shares": "12,274",
+      "Value": "3,278,087"
+    },
+    {
+      "Owner": "Beer Lori A",
+      "Relationship": "Chief Information Officer",
+      "Date": "May 16 '25",
+      "Transaction": "Sale",
+      "Cost": "267.09",
+      "Shares": "5,873",
+      "Value": "1,568,605"
+    },
+    {
+      "Owner": "Lori Beer",
+      "Relationship": "Global Chief Information Offic",
+      "Date": "May 16 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "267.09",
+      "Shares": "5,873",
+      "Value": "1,568,606"
+    },
+    {
+      "Owner": "Petno Douglas B",
+      "Relationship": "Co-CEO CIB",
+      "Date": "May 15 '25",
+      "Transaction": "Sale",
+      "Cost": "266.89",
+      "Shares": "10,141",
+      "Value": "2,706,562"
+    },
+    {
+      "Owner": "Douglas B. Petno",
+      "Relationship": "Co-CEO, Commercial and Investm",
+      "Date": "May 15 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "266.89",
+      "Shares": "10,141",
+      "Value": "2,706,562"
+    },
+    {
+      "Owner": "Erdoes Mary E.",
+      "Relationship": "CEO Asset & Wealth Management",
+      "Date": "May 13 '25",
+      "Transaction": "Sale",
+      "Cost": "262.54",
+      "Shares": "14,055",
+      "Value": "3,689,941"
+    },
+    {
+      "Owner": "BACON ASHLEY",
+      "Relationship": "Chief Risk Officer",
+      "Date": "May 13 '25",
+      "Transaction": "Sale",
+      "Cost": "262.53",
+      "Shares": "5,202",
+      "Value": "1,365,656"
+    },
+    {
+      "Owner": "Mary E. Erdoes",
+      "Relationship": "CEO, Asset & Wealth Management",
+      "Date": "May 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "262.54",
+      "Shares": "14,055",
+      "Value": "3,689,941"
+    },
+    {
+      "Owner": "Ashley Bacon",
+      "Relationship": "Chief Risk Officer",
+      "Date": "May 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "262.53",
+      "Shares": "5,202",
+      "Value": "1,365,656"
+    },
+    {
+      "Owner": "Rohrbaugh Troy L",
+      "Relationship": "Co-CEO CIB",
+      "Date": "May 12 '25",
+      "Transaction": "Sale",
+      "Cost": "263.08",
+      "Shares": "12,500",
+      "Value": "3,288,444"
+    },
+    {
+      "Owner": "Troy Rohrbaugh",
+      "Relationship": "Co-CEO, Commercial and Investm",
+      "Date": "May 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "263.08",
+      "Shares": "12,500",
+      "Value": "3,288,443"
+    },
+    {
+      "Owner": "Barnum Jeremy",
+      "Relationship": "Chief Financial Officer",
+      "Date": "May 06 '25",
+      "Transaction": "Sale",
+      "Cost": "250.77",
+      "Shares": "40,014",
+      "Value": "10,034,435"
+    },
+    {
+      "Owner": "Piepszak Jennifer",
+      "Relationship": "Chief Operating Officer",
+      "Date": "May 06 '25",
+      "Transaction": "Sale",
+      "Cost": "250.76",
+      "Shares": "6,129",
+      "Value": "1,536,931"
+    },
+    {
+      "Owner": "Jeremy Barnum",
+      "Relationship": "Chief Financial Officer",
+      "Date": "May 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "250.77",
+      "Shares": "40,014",
+      "Value": "10,034,433"
+    },
+    {
+      "Owner": "Jennifer Piepszak",
+      "Relationship": "Chief Operating Officer",
+      "Date": "May 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "250.76",
+      "Shares": "6,129",
+      "Value": "1,536,931"
+    },
+    {
+      "Owner": "BAMMANN LINDA",
+      "Relationship": "Director",
+      "Date": "May 06 '25",
+      "Transaction": "Sale",
+      "Cost": "250.00",
+      "Shares": "9,500",
+      "Value": "2,375,000"
+    },
+    {
+      "Owner": "Linda B. Bammann",
+      "Relationship": "Director",
+      "Date": "May 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "250.00",
+      "Shares": "9,500",
+      "Value": "2,375,000"
+    },
+    {
+      "Owner": "DIMON JAMES",
+      "Relationship": "Chairman & CEO",
+      "Date": "Apr 14 '25",
+      "Transaction": "Sale",
+      "Cost": "235.68",
+      "Shares": "133,639",
+      "Value": "31,495,692"
+    },
+    {
+      "Owner": "James Dimon",
+      "Relationship": "Director, Chairman and Chief E",
+      "Date": "Apr 14 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "235.68",
+      "Shares": "133,639",
+      "Value": "31,495,688"
+    },
+    {
+      "Owner": "JPMORGAN CHASE & CO",
+      "Relationship": "10% Owner",
+      "Date": "Apr 09 '25",
+      "Transaction": "Buy",
+      "Cost": "3.67",
+      "Shares": "14",
+      "Value": "51"
+    },
+    {
+      "Owner": "Petno Douglas B",
+      "Relationship": "Co-CEO CIB",
+      "Date": "Mar 25 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "45,374",
+      "Value": "0"
+    },
+    {
+      "Owner": "Pinto Daniel E",
+      "Relationship": "President & COO",
+      "Date": "Mar 25 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "104,384",
+      "Value": "0"
+    },
+    {
+      "Owner": "Lake Marianne",
+      "Relationship": "CEO CCB",
+      "Date": "Mar 25 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "50,151",
+      "Value": "0"
+    },
+    {
+      "Owner": "Erdoes Mary E.",
+      "Relationship": "CEO Asset & Wealth Management",
+      "Date": "Mar 25 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "62,888",
+      "Value": "0"
+    },
+    {
+      "Owner": "BACON ASHLEY",
+      "Relationship": "Chief Risk Officer",
+      "Date": "Mar 25 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "42,191",
+      "Value": "0"
+    },
+    {
+      "Owner": "Rohrbaugh Troy L",
+      "Relationship": "Co-CEO CIB",
+      "Date": "Mar 25 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "67,664",
+      "Value": "0"
+    },
+    {
+      "Owner": "Piepszak Jennifer",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Mar 25 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "50,151",
+      "Value": "0"
+    },
+    {
+      "Owner": "Leopold Robin",
+      "Relationship": "Head of Human Resources",
+      "Date": "Mar 25 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "23,085",
+      "Value": "0"
+    },
+    {
+      "Owner": "Friedman Stacey",
+      "Relationship": "General Counsel",
+      "Date": "Mar 25 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "42,191",
+      "Value": "0"
+    },
+    {
+      "Owner": "DIMON JAMES",
+      "Relationship": "Chairman & CEO",
+      "Date": "Mar 25 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "297,186",
+      "Value": "0"
+    },
+    {
+      "Owner": "Beer Lori A",
+      "Relationship": "Chief Information Officer",
+      "Date": "Mar 25 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "26,270",
+      "Value": "0"
+    },
+    {
+      "Owner": "Barnum Jeremy",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Mar 25 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "29,633",
+      "Value": "0"
+    },
+    {
+      "Owner": "Rohrbaugh Troy L",
+      "Relationship": "Co-CEO CIB",
+      "Date": "Mar 24 '25",
+      "Transaction": "Sale",
+      "Cost": "247.02",
+      "Shares": "25,000",
+      "Value": "6,175,485"
+    },
+    {
+      "Owner": "Beer Lori A",
+      "Relationship": "Chief Information Officer",
+      "Date": "Mar 24 '25",
+      "Transaction": "Sale",
+      "Cost": "246.93",
+      "Shares": "2,052",
+      "Value": "506,698"
+    },
+    {
+      "Owner": "Piepszak Jennifer",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Mar 24 '25",
+      "Transaction": "Sale",
+      "Cost": "247.03",
+      "Shares": "4,272",
+      "Value": "1,055,314"
+    },
+    {
+      "Owner": "Leopold Robin",
+      "Relationship": "Head of Human Resources",
+      "Date": "Mar 24 '25",
+      "Transaction": "Sale",
+      "Cost": "246.92",
+      "Shares": "1,250",
+      "Value": "308,652"
+    },
+    {
+      "Owner": "Troy Rohrbaugh",
+      "Relationship": "Co-CEO, Commercial and Investm",
+      "Date": "Mar 24 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "247.02",
+      "Shares": "25,000",
+      "Value": "6,175,485"
+    },
+    {
+      "Owner": "Lori Beer",
+      "Relationship": "Global Chief Information Offic",
+      "Date": "Mar 24 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "246.93",
+      "Shares": "2,052",
+      "Value": "506,698"
+    },
+    {
+      "Owner": "Jennifer Piepszak",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Mar 24 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "247.03",
+      "Shares": "4,272",
+      "Value": "1,055,314"
+    },
+    {
+      "Owner": "Robin Leopold",
+      "Relationship": "Head of Human Resources",
+      "Date": "Mar 24 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "246.92",
+      "Shares": "1,250",
+      "Value": "308,652"
+    },
+    {
+      "Owner": "Rohrbaugh Troy L",
+      "Relationship": "Co-CEO CIB",
+      "Date": "Feb 20 '25",
+      "Transaction": "Sale",
+      "Cost": "269.84",
+      "Shares": "37,500",
+      "Value": "10,118,869"
+    },
+    {
+      "Owner": "Troy Rohrbaugh",
+      "Relationship": "Co-CEO, Commercial and Investm",
+      "Date": "Feb 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "269.84",
+      "Shares": "37,500",
+      "Value": "10,118,868"
+    },
+    {
+      "Owner": "Beer Lori A",
+      "Relationship": "Chief Information Officer",
+      "Date": "Feb 20 '25",
+      "Transaction": "Sale",
+      "Cost": "269.88",
+      "Shares": "2,053",
+      "Value": "554,054"
+    },
+    {
+      "Owner": "Lori Beer",
+      "Relationship": "Chief Information Officer",
+      "Date": "Feb 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "269.88",
+      "Shares": "2,053",
+      "Value": "554,054"
+    },
+    {
+      "Owner": "Piepszak Jennifer",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Feb 20 '25",
+      "Transaction": "Sale",
+      "Cost": "269.85",
+      "Shares": "4,273",
+      "Value": "1,153,078"
+    },
+    {
+      "Owner": "Jennifer Piepszak",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Feb 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "269.85",
+      "Shares": "4,273",
+      "Value": "1,153,078"
+    },
+    {
+      "Owner": "Leopold Robin",
+      "Relationship": "Head of Human Resources",
+      "Date": "Feb 20 '25",
+      "Transaction": "Sale",
+      "Cost": "270.09",
+      "Shares": "1,250",
+      "Value": "337,610"
+    },
+    {
+      "Owner": "Robin Leopold",
+      "Relationship": "Head of Human Resources",
+      "Date": "Feb 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "270.09",
+      "Shares": "1,250",
+      "Value": "337,610"
+    },
+    {
+      "Owner": "DIMON JAMES",
+      "Relationship": "Chairman & CEO",
+      "Date": "Feb 20 '25",
+      "Transaction": "Sale",
+      "Cost": "269.84",
+      "Shares": "866,361",
+      "Value": "233,776,513"
+    },
+    {
+      "Owner": "James Dimon",
+      "Relationship": "Director, Chairman and Chief E",
+      "Date": "Feb 20 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "269.84",
+      "Shares": "866,361",
+      "Value": "233,776,518"
+    },
+    {
+      "Owner": "Erdoes Mary E.",
+      "Relationship": "CEO Asset & Wealth Management",
+      "Date": "Feb 18 '25",
+      "Transaction": "Sale",
+      "Cost": "278.37",
+      "Shares": "5,277",
+      "Value": "1,468,971"
+    },
+    {
+      "Owner": "Petno Douglas B",
+      "Relationship": "Co-CEO CIB",
+      "Date": "Feb 18 '25",
+      "Transaction": "Sale",
+      "Cost": "278.41",
+      "Shares": "3,490",
+      "Value": "971,646"
+    },
+    {
+      "Owner": "Friedman Stacey",
+      "Relationship": "General Counsel",
+      "Date": "Feb 18 '25",
+      "Transaction": "Sale",
+      "Cost": "278.34",
+      "Shares": "3,303",
+      "Value": "919,371"
+    },
+    {
+      "Owner": "Lake Marianne",
+      "Relationship": "CEO CCB",
+      "Date": "Feb 18 '25",
+      "Transaction": "Sale",
+      "Cost": "278.36",
+      "Shares": "4,232",
+      "Value": "1,178,009"
+    },
+    {
+      "Owner": "Mary E. Erdoes",
+      "Relationship": "CEO, Asset & Wealth Management",
+      "Date": "Feb 18 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "278.37",
+      "Shares": "5,277",
+      "Value": "1,468,971"
+    },
+    {
+      "Owner": "Stacey Friedman",
+      "Relationship": "General Counsel",
+      "Date": "Feb 18 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "278.34",
+      "Shares": "3,303",
+      "Value": "919,371"
+    },
+    {
+      "Owner": "Douglas B. Petno",
+      "Relationship": "Co-CEO, Commercial and Investm",
+      "Date": "Feb 18 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "278.41",
+      "Shares": "3,490",
+      "Value": "971,646"
+    },
+    {
+      "Owner": "Marianne Lake",
+      "Relationship": "CEO, Consumer and Community Ba",
+      "Date": "Feb 18 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "278.36",
+      "Shares": "4,232",
+      "Value": "1,178,009"
+    },
+    {
+      "Owner": "Lake Marianne",
+      "Relationship": "CEO CCB",
+      "Date": "Jan 16 '25",
+      "Transaction": "Sale",
+      "Cost": "254.00",
+      "Shares": "4,233",
+      "Value": "1,075,203"
+    },
+    {
+      "Owner": "Petno Douglas B",
+      "Relationship": "Co-CEO CIB",
+      "Date": "Jan 16 '25",
+      "Transaction": "Sale",
+      "Cost": "253.96",
+      "Shares": "3,491",
+      "Value": "886,565"
+    },
+    {
+      "Owner": "Friedman Stacey",
+      "Relationship": "General Counsel",
+      "Date": "Jan 16 '25",
+      "Transaction": "Sale",
+      "Cost": "253.94",
+      "Shares": "3,303",
+      "Value": "838,778"
+    },
+    {
+      "Owner": "Erdoes Mary E.",
+      "Relationship": "CEO Asset & Wealth Management",
+      "Date": "Jan 16 '25",
+      "Transaction": "Sale",
+      "Cost": "253.97",
+      "Shares": "5,277",
+      "Value": "1,340,216"
+    },
+    {
+      "Owner": "BACON ASHLEY",
+      "Relationship": "Chief Risk Officer",
+      "Date": "Jan 16 '25",
+      "Transaction": "Sale",
+      "Cost": "253.94",
+      "Shares": "7,122",
+      "Value": "1,808,591"
+    },
+    {
+      "Owner": "Douglas B. Petno",
+      "Relationship": "Co-CEO, Commercial and Investm",
+      "Date": "Jan 16 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "253.96",
+      "Shares": "3,491",
+      "Value": "886,565"
+    },
+    {
+      "Owner": "Marianne Lake",
+      "Relationship": "CEO, Consumer and Community Ba",
+      "Date": "Jan 16 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "254.00",
+      "Shares": "4,233",
+      "Value": "1,075,203"
+    },
+    {
+      "Owner": "Stacey Friedman",
+      "Relationship": "General Counsel",
+      "Date": "Jan 16 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "253.94",
+      "Shares": "3,303",
+      "Value": "838,778"
+    },
+    {
+      "Owner": "Mary E. Erdoes",
+      "Relationship": "CEO, Asset & Wealth Management",
+      "Date": "Jan 16 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "253.97",
+      "Shares": "5,277",
+      "Value": "1,340,215"
+    },
+    {
+      "Owner": "Ashley Bacon",
+      "Relationship": "Chief Risk Officer",
+      "Date": "Jan 16 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "253.94",
+      "Shares": "7,122",
+      "Value": "1,808,590"
+    },
+    {
+      "Owner": "Korablina Elena A",
+      "Relationship": "Corporate Controller",
+      "Date": "Jan 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "10,661",
+      "Value": "0"
+    },
+    {
+      "Owner": "Pinto Daniel E",
+      "Relationship": "President & COO",
+      "Date": "Jan 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "70,588",
+      "Value": "0"
+    },
+    {
+      "Owner": "Lake Marianne",
+      "Relationship": "CEO CCB",
+      "Date": "Jan 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "33,324",
+      "Value": "0"
+    },
+    {
+      "Owner": "Erdoes Mary E.",
+      "Relationship": "CEO Asset & Wealth Management",
+      "Date": "Jan 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "45,789",
+      "Value": "0"
+    },
+    {
+      "Owner": "Piepszak Jennifer",
+      "Relationship": "Chief Operating Officer",
+      "Date": "Jan 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "33,324",
+      "Value": "0"
+    },
+    {
+      "Owner": "BACON ASHLEY",
+      "Relationship": "Chief Risk Officer",
+      "Date": "Jan 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "27,669",
+      "Value": "0"
+    },
+    {
+      "Owner": "Barnum Jeremy",
+      "Relationship": "Chief Financial Officer",
+      "Date": "Jan 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "21,136",
+      "Value": "0"
+    },
+    {
+      "Owner": "Beer Lori A",
+      "Relationship": "Chief Information Officer",
+      "Date": "Jan 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "16,895",
+      "Value": "0"
+    },
+    {
+      "Owner": "Rohrbaugh Troy L",
+      "Relationship": "Co-CEO CIB",
+      "Date": "Jan 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "43,518",
+      "Value": "0"
+    },
+    {
+      "Owner": "Friedman Stacey",
+      "Relationship": "General Counsel",
+      "Date": "Jan 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "28,203",
+      "Value": "0"
+    },
+    {
+      "Owner": "Leopold Robin",
+      "Relationship": "Head of Human Resources",
+      "Date": "Jan 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "14,848",
+      "Value": "0"
+    },
+    {
+      "Owner": "Korablina Elena A",
+      "Relationship": "Corporate Controller",
+      "Date": "Oct 25 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "0.00",
+      "Shares": "1,707",
+      "Value": "0"
+    }
+  ],
+  "Dividends": []
+}

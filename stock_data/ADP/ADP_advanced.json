@@ -1,0 +1,979 @@
+{
+  "Index": "NDX, S&P 500",
+  "P/E": "28.57",
+  "EPS (ttm)": "9.98",
+  "Insider Own": "0.14%",
+  "Shs Outstand": "405.30M",
+  "Perf Week": "-2.10%",
+  "Market Cap": "115.53B",
+  "Forward P/E": "23.80",
+  "EPS next Y": "9.74%",
+  "Insider Trans": "-20.83%",
+  "Shs Float": "404.52M",
+  "Perf Month": "-4.31%",
+  "Enterprise Value": "116.89B",
+  "PEG": "3.02",
+  "EPS next Q": "2.44",
+  "Inst Own": "82.88%",
+  "Short Float": "2.13%",
+  "Perf Quarter": "-5.99%",
+  "Income": "4.08B",
+  "P/S": "5.62",
+  "EPS this Y": "9.10%",
+  "Inst Trans": "-0.12%",
+  "Short Ratio": "5.20",
+  "Perf Half Y": "-2.40%",
+  "Sales": "20.56B",
+  "P/B": "18.68",
+  "ROA": "7.57%",
+  "Short Interest": "2.13%",
+  "Perf YTD": "-2.58%",
+  "Book/sh": "15.27",
+  "P/C": "14.72",
+  "EPS next 5Y": "9.46%",
+  "ROE": "76.00%",
+  "52W High": "329.93 -13.56%",
+  "Perf Year": "-0.08%",
+  "Cash/sh": "19.37",
+  "P/FCF": "24.21",
+  "EPS past 3/5Y": "12.54% 11.86%",
+  "ROIC": "38.91%",
+  "52W Low": "272.62 4.61%",
+  "Perf 3Y": "19.30%",
+  "Dividend Est.": "6.33 (2.22%)",
+  "EV/EBITDA": "19.50",
+  "Sales past 3/5Y": "7.61% 7.10%",
+  "Gross Margin": "50.37%",
+  "Volatility": "1.29% 1.67%",
+  "Perf 5Y": "102.32%",
+  "Dividend TTM": "6.16 (2.16%)",
+  "EV/Sales": "5.68",
+  "EPS Y/Y TTM": "9.66%",
+  "Oper. Margin": "26.32%",
+  "ATR (14)": "4.70",
+  "Perf 10Y": "250.53%",
+  "Dividend Ex-Date": "Sep 12, 2025",
+  "Quick Ratio": "1.05",
+  "Sales Y/Y TTM": "7.07%",
+  "Profit Margin": "19.84%",
+  "RSI (14)": "37.10",
+  "Recom": "2.83",
+  "Dividend Gr. 3/5Y": "14.12% 11.33%",
+  "Current Ratio": "1.05",
+  "EPS Q/Q": "10.59%",
+  "SMA20": "-1.83%",
+  "Beta": "0.88",
+  "Target Price": "317.27",
+  "Payout": "60.31%",
+  "Debt/Eq": "1.49",
+  "Sales Q/Q": "7.51%",
+  "SMA50": "-4.04%",
+  "Rel Volume": "1.64",
+  "Prev Close": "285.89",
+  "Employees": "67000",
+  "LT Debt/Eq": "0.69",
+  "Earnings": "Oct 29 BMO",
+  "SMA200": "-5.71%",
+  "Avg Volume": "1.66M",
+  "Price": "285.19",
+  "IPO": "Jun 26, 1967",
+  "Option/Short": "Yes / Yes",
+  "EPS/Sales Surpr.": "1.33% 1.64%",
+  "Trades": "",
+  "Volume": "2,715,085",
+  "Change": "-0.24%",
+  "Insider Trading": [
+    {
+      "Owner": "Rodriguez Carlos A",
+      "Relationship": "Director",
+      "Date": "Sep 11 '25",
+      "Transaction": "Sale",
+      "Cost": "295.89",
+      "Shares": "2,813",
+      "Value": "832,325"
+    },
+    {
+      "Owner": "Rodriguez Carlos A",
+      "Relationship": "Director",
+      "Date": "Sep 12 '25",
+      "Transaction": "Sale",
+      "Cost": "293.87",
+      "Shares": "1,273",
+      "Value": "374,100"
+    },
+    {
+      "Owner": "Rodriguez Carlos A",
+      "Relationship": "Director",
+      "Date": "Sep 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "294.96",
+      "Shares": "1,273",
+      "Value": "375,484"
+    },
+    {
+      "Owner": "D'Ambrosio Christopher",
+      "Relationship": "Corp. VP",
+      "Date": "Sep 10 '25",
+      "Transaction": "Sale",
+      "Cost": "296.90",
+      "Shares": "597",
+      "Value": "177,249"
+    },
+    {
+      "Owner": "Bonarti Michael A",
+      "Relationship": "Corporate Vice President",
+      "Date": "Sep 09 '25",
+      "Transaction": "Sale",
+      "Cost": "298.43",
+      "Shares": "8,728",
+      "Value": "2,604,697"
+    },
+    {
+      "Owner": "Rodriguez Carlos A",
+      "Relationship": "Director",
+      "Date": "Sep 09 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "206.86",
+      "Shares": "21,950",
+      "Value": "4,540,577"
+    },
+    {
+      "Owner": "Rodriguez Carlos A",
+      "Relationship": "Director",
+      "Date": "Sep 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "206.86",
+      "Shares": "21,950",
+      "Value": "4,540,577"
+    },
+    {
+      "Owner": "Rodriguez Carlos A",
+      "Relationship": "Director",
+      "Date": "Sep 09 '25",
+      "Transaction": "Sale",
+      "Cost": "297.14",
+      "Shares": "21,950",
+      "Value": "6,522,114"
+    },
+    {
+      "Owner": "Rodriguez Carlos A",
+      "Relationship": "Director",
+      "Date": "Sep 10 '25",
+      "Transaction": "Sale",
+      "Cost": "292.96",
+      "Shares": "21,950",
+      "Value": "6,430,440"
+    },
+    {
+      "Owner": "Rodriguez Carlos A",
+      "Relationship": "Director",
+      "Date": "Sep 11 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "295.89",
+      "Shares": "2,813",
+      "Value": "832,325"
+    },
+    {
+      "Owner": "Rodriguez Carlos A",
+      "Relationship": "Director",
+      "Date": "Sep 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "292.96",
+      "Shares": "21,950",
+      "Value": "6,430,441"
+    },
+    {
+      "Owner": "D'Ambrosio Christopher",
+      "Relationship": "Officer",
+      "Date": "Sep 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "296.90",
+      "Shares": "597",
+      "Value": "177,249"
+    },
+    {
+      "Owner": "Rodriguez Carlos A",
+      "Relationship": "Director",
+      "Date": "Sep 09 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "297.14",
+      "Shares": "21,950",
+      "Value": "6,522,114"
+    },
+    {
+      "Owner": "Bonarti Michael A",
+      "Relationship": "Officer",
+      "Date": "Sep 09 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "298.43",
+      "Shares": "8,728",
+      "Value": "2,604,697"
+    },
+    {
+      "Owner": "Rodriguez Carlos A",
+      "Relationship": "Director",
+      "Date": "Sep 05 '25",
+      "Transaction": "Sale",
+      "Cost": "297.12",
+      "Shares": "12,056",
+      "Value": "3,582,032"
+    },
+    {
+      "Owner": "Black Maria",
+      "Relationship": "President & CEO",
+      "Date": "Sep 03 '25",
+      "Transaction": "Sale",
+      "Cost": "298.32",
+      "Shares": "23,605",
+      "Value": "7,041,744"
+    },
+    {
+      "Owner": "DeSilva Joseph",
+      "Relationship": "Executive VP",
+      "Date": "Sep 03 '25",
+      "Transaction": "Sale",
+      "Cost": "296.57",
+      "Shares": "4,614",
+      "Value": "1,368,374"
+    },
+    {
+      "Owner": "Foskett David",
+      "Relationship": "Corp. VP",
+      "Date": "Sep 03 '25",
+      "Transaction": "Sale",
+      "Cost": "296.57",
+      "Shares": "1,373",
+      "Value": "407,191"
+    },
+    {
+      "Owner": "McGuire Don",
+      "Relationship": "Corp VP",
+      "Date": "Sep 03 '25",
+      "Transaction": "Sale",
+      "Cost": "296.57",
+      "Shares": "13,599",
+      "Value": "4,033,055"
+    },
+    {
+      "Owner": "Rodriguez Carlos A",
+      "Relationship": "Director",
+      "Date": "Sep 04 '25",
+      "Transaction": "Sale",
+      "Cost": "300.29",
+      "Shares": "11,701",
+      "Value": "3,513,661"
+    },
+    {
+      "Owner": "Rodriguez Carlos A",
+      "Relationship": "Director",
+      "Date": "Sep 03 '25",
+      "Transaction": "Sale",
+      "Cost": "298.33",
+      "Shares": "11,701",
+      "Value": "3,490,745"
+    },
+    {
+      "Owner": "Rodriguez Carlos A",
+      "Relationship": "Director",
+      "Date": "Sep 05 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "301.19",
+      "Shares": "12,056",
+      "Value": "3,631,147"
+    },
+    {
+      "Owner": "Rodriguez Carlos A",
+      "Relationship": "Director",
+      "Date": "Sep 04 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "300.29",
+      "Shares": "11,701",
+      "Value": "3,513,662"
+    },
+    {
+      "Owner": "DeSilva Joseph",
+      "Relationship": "Executive VP",
+      "Date": "Sep 02 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "206.86",
+      "Shares": "1,987",
+      "Value": "411,031"
+    },
+    {
+      "Owner": "DeSilva Joseph",
+      "Relationship": "Executive VP",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "301.64",
+      "Shares": "1,987",
+      "Value": "599,359"
+    },
+    {
+      "Owner": "Foskett David",
+      "Relationship": "Corp. VP",
+      "Date": "Sep 02 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "206.86",
+      "Shares": "1,249",
+      "Value": "258,368"
+    },
+    {
+      "Owner": "Foskett David",
+      "Relationship": "Corp. VP",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "301.13",
+      "Shares": "1,043",
+      "Value": "314,079"
+    },
+    {
+      "Owner": "Black Maria",
+      "Relationship": "President & CEO",
+      "Date": "Sep 02 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "206.86",
+      "Shares": "7,721",
+      "Value": "1,597,166"
+    },
+    {
+      "Owner": "Black Maria",
+      "Relationship": "President & CEO",
+      "Date": "Sep 02 '25",
+      "Transaction": "Sale",
+      "Cost": "299.93",
+      "Shares": "7,721",
+      "Value": "2,315,777"
+    },
+    {
+      "Owner": "Rodriguez Carlos A",
+      "Relationship": "Director",
+      "Date": "Sep 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "296.57",
+      "Shares": "11,701",
+      "Value": "3,470,166"
+    },
+    {
+      "Owner": "Black Maria",
+      "Relationship": "Officer",
+      "Date": "Sep 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "296.57",
+      "Shares": "23,605",
+      "Value": "7,000,535"
+    },
+    {
+      "Owner": "DeSilva Joseph",
+      "Relationship": "Officer",
+      "Date": "Sep 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "296.57",
+      "Shares": "4,614",
+      "Value": "1,368,374"
+    },
+    {
+      "Owner": "McGuire Don",
+      "Relationship": "Officer",
+      "Date": "Sep 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "296.57",
+      "Shares": "13,599",
+      "Value": "4,033,055"
+    },
+    {
+      "Owner": "Foskett David",
+      "Relationship": "Officer",
+      "Date": "Sep 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "296.57",
+      "Shares": "1,373",
+      "Value": "407,191"
+    },
+    {
+      "Owner": "DeSilva Joseph",
+      "Relationship": "Officer",
+      "Date": "Sep 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "301.64",
+      "Shares": "1,987",
+      "Value": "599,359"
+    },
+    {
+      "Owner": "Foskett David",
+      "Relationship": "Officer",
+      "Date": "Sep 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "301.13",
+      "Shares": "1,043",
+      "Value": "314,079"
+    },
+    {
+      "Owner": "Black Maria",
+      "Relationship": "Officer",
+      "Date": "Sep 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "301.64",
+      "Shares": "7,721",
+      "Value": "2,328,962"
+    },
+    {
+      "Owner": "Michaud Brian L.",
+      "Relationship": "Corp VP",
+      "Date": "Jul 01 '25",
+      "Transaction": "Sale",
+      "Cost": "308.18",
+      "Shares": "206",
+      "Value": "63,485"
+    },
+    {
+      "Owner": "Michaud Brian L.",
+      "Relationship": "Officer",
+      "Date": "Jul 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "308.18",
+      "Shares": "206",
+      "Value": "63,485"
+    },
+    {
+      "Owner": "DeSilva Joseph",
+      "Relationship": "Corp VP",
+      "Date": "Jun 13 '25",
+      "Transaction": "Sale",
+      "Cost": "307.07",
+      "Shares": "1,381",
+      "Value": "424,064"
+    },
+    {
+      "Owner": "DeSilva Joseph",
+      "Relationship": "Officer",
+      "Date": "Jun 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "307.07",
+      "Shares": "1,381",
+      "Value": "424,064"
+    },
+    {
+      "Owner": "D'Ambrosio Christopher",
+      "Relationship": "Corp. VP",
+      "Date": "May 12 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "161.13",
+      "Shares": "599",
+      "Value": "96,516"
+    },
+    {
+      "Owner": "D'Ambrosio Christopher",
+      "Relationship": "Corp. VP",
+      "Date": "May 12 '25",
+      "Transaction": "Sale",
+      "Cost": "311.82",
+      "Shares": "472",
+      "Value": "147,179"
+    },
+    {
+      "Owner": "D'Ambrosio Christopher",
+      "Relationship": "Officer",
+      "Date": "May 12 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "311.82",
+      "Shares": "472",
+      "Value": "147,179"
+    },
+    {
+      "Owner": "D'Ambrosio Christopher",
+      "Relationship": "Corp. VP",
+      "Date": "Apr 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "161.15",
+      "Shares": "598",
+      "Value": "96,369"
+    },
+    {
+      "Owner": "D'Ambrosio Christopher",
+      "Relationship": "Corp. VP",
+      "Date": "Apr 10 '25",
+      "Transaction": "Sale",
+      "Cost": "293.14",
+      "Shares": "478",
+      "Value": "140,121"
+    },
+    {
+      "Owner": "D'Ambrosio Christopher",
+      "Relationship": "Officer",
+      "Date": "Apr 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "293.14",
+      "Shares": "478",
+      "Value": "140,121"
+    },
+    {
+      "Owner": "Michaud Brian L.",
+      "Relationship": "Corp VP",
+      "Date": "Apr 01 '25",
+      "Transaction": "Sale",
+      "Cost": "305.38",
+      "Shares": "1,500",
+      "Value": "458,070"
+    },
+    {
+      "Owner": "Michaud Brian L.",
+      "Relationship": "Officer",
+      "Date": "Apr 01 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "305.38",
+      "Shares": "1,500",
+      "Value": "458,070"
+    },
+    {
+      "Owner": "D'Ambrosio Christopher",
+      "Relationship": "Corp. VP",
+      "Date": "Mar 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "161.13",
+      "Shares": "599",
+      "Value": "96,516"
+    },
+    {
+      "Owner": "D'Ambrosio Christopher",
+      "Relationship": "Corp. VP",
+      "Date": "Mar 10 '25",
+      "Transaction": "Sale",
+      "Cost": "306.20",
+      "Shares": "473",
+      "Value": "144,833"
+    },
+    {
+      "Owner": "D'Ambrosio Christopher",
+      "Relationship": "Officer",
+      "Date": "Mar 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "306.20",
+      "Shares": "473",
+      "Value": "144,833"
+    },
+    {
+      "Owner": "D'Ambrosio Christopher",
+      "Relationship": "Corp. VP",
+      "Date": "Feb 10 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "161.14",
+      "Shares": "597",
+      "Value": "96,199"
+    },
+    {
+      "Owner": "D'Ambrosio Christopher",
+      "Relationship": "Corp. VP",
+      "Date": "Feb 10 '25",
+      "Transaction": "Sale",
+      "Cost": "308.24",
+      "Shares": "471",
+      "Value": "145,181"
+    },
+    {
+      "Owner": "D'Ambrosio Christopher",
+      "Relationship": "Officer",
+      "Date": "Feb 10 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "308.24",
+      "Shares": "471",
+      "Value": "145,181"
+    },
+    {
+      "Owner": "Lehberger Jonathan S",
+      "Relationship": "Corp. VP",
+      "Date": "Feb 03 '25",
+      "Transaction": "Sale",
+      "Cost": "303.30",
+      "Shares": "2,324",
+      "Value": "704,869"
+    },
+    {
+      "Owner": "Bonarti Michael A",
+      "Relationship": "Corporate Vice President",
+      "Date": "Feb 03 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "184.87",
+      "Shares": "30,131",
+      "Value": "5,570,371"
+    },
+    {
+      "Owner": "Bonarti Michael A",
+      "Relationship": "Corporate Vice President",
+      "Date": "Feb 03 '25",
+      "Transaction": "Sale",
+      "Cost": "303.30",
+      "Shares": "30,131",
+      "Value": "9,138,732"
+    },
+    {
+      "Owner": "Lehberger Jonathan S",
+      "Relationship": "Officer",
+      "Date": "Feb 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "303.30",
+      "Shares": "2,324",
+      "Value": "704,869"
+    },
+    {
+      "Owner": "Bonarti Michael A",
+      "Relationship": "Officer",
+      "Date": "Feb 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "303.30",
+      "Shares": "30,131",
+      "Value": "9,138,732"
+    },
+    {
+      "Owner": "Magliulo Virginia",
+      "Relationship": "Corp VP",
+      "Date": "Jan 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "206.86",
+      "Shares": "1,702",
+      "Value": "352,076"
+    },
+    {
+      "Owner": "Magliulo Virginia",
+      "Relationship": "Corp VP",
+      "Date": "Jan 13 '25",
+      "Transaction": "Sale",
+      "Cost": "285.50",
+      "Shares": "3,578",
+      "Value": "1,021,519"
+    },
+    {
+      "Owner": "Foskett David",
+      "Relationship": "Corp. VP",
+      "Date": "Jan 13 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "206.86",
+      "Shares": "1,249",
+      "Value": "258,368"
+    },
+    {
+      "Owner": "Foskett David",
+      "Relationship": "Corp. VP",
+      "Date": "Jan 13 '25",
+      "Transaction": "Sale",
+      "Cost": "286.15",
+      "Shares": "1,067",
+      "Value": "305,322"
+    },
+    {
+      "Owner": "Foskett David",
+      "Relationship": "Officer",
+      "Date": "Jan 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "286.15",
+      "Shares": "1,067",
+      "Value": "305,322"
+    },
+    {
+      "Owner": "Magliulo Virginia",
+      "Relationship": "Officer",
+      "Date": "Jan 13 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "285.50",
+      "Shares": "3,578",
+      "Value": "1,021,519"
+    },
+    {
+      "Owner": "Magliulo Virginia",
+      "Relationship": "Corp VP",
+      "Date": "Jan 06 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "206.86",
+      "Shares": "851",
+      "Value": "176,038"
+    },
+    {
+      "Owner": "Magliulo Virginia",
+      "Relationship": "Corp VP",
+      "Date": "Jan 06 '25",
+      "Transaction": "Sale",
+      "Cost": "289.15",
+      "Shares": "2,065",
+      "Value": "597,095"
+    },
+    {
+      "Owner": "Foskett David",
+      "Relationship": "Corp. VP",
+      "Date": "Jan 06 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "138.53",
+      "Shares": "1,385",
+      "Value": "191,864"
+    },
+    {
+      "Owner": "Foskett David",
+      "Relationship": "Corp. VP",
+      "Date": "Jan 06 '25",
+      "Transaction": "Sale",
+      "Cost": "289.29",
+      "Shares": "1,004",
+      "Value": "290,443"
+    },
+    {
+      "Owner": "Kwon David",
+      "Relationship": "Corp VP",
+      "Date": "Jan 03 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "169.84",
+      "Shares": "967",
+      "Value": "164,235"
+    },
+    {
+      "Owner": "Kwon David",
+      "Relationship": "Corp VP",
+      "Date": "Jan 03 '25",
+      "Transaction": "Sale",
+      "Cost": "290.73",
+      "Shares": "1,016",
+      "Value": "295,382"
+    },
+    {
+      "Owner": "Kwon David",
+      "Relationship": "Corp VP",
+      "Date": "Jan 06 '25",
+      "Transaction": "Sale",
+      "Cost": "289.15",
+      "Shares": "300",
+      "Value": "86,745"
+    },
+    {
+      "Owner": "Ayala John",
+      "Relationship": "Corp. VP",
+      "Date": "Jan 03 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "206.86",
+      "Shares": "7,720",
+      "Value": "1,596,959"
+    },
+    {
+      "Owner": "Ayala John",
+      "Relationship": "Corp. VP",
+      "Date": "Jan 03 '25",
+      "Transaction": "Sale",
+      "Cost": "290.73",
+      "Shares": "10,720",
+      "Value": "3,116,626"
+    },
+    {
+      "Owner": "McGuire Don",
+      "Relationship": "Corp VP",
+      "Date": "Jan 02 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "206.86",
+      "Shares": "2,635",
+      "Value": "545,076"
+    },
+    {
+      "Owner": "Kwon David",
+      "Relationship": "Corp VP",
+      "Date": "Jan 02 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "138.53",
+      "Shares": "1,137",
+      "Value": "157,509"
+    },
+    {
+      "Owner": "McGuire Don",
+      "Relationship": "Corp VP",
+      "Date": "Jan 02 '25",
+      "Transaction": "Sale",
+      "Cost": "293.83",
+      "Shares": "8,664",
+      "Value": "2,545,743"
+    },
+    {
+      "Owner": "Kwon David",
+      "Relationship": "Corp VP",
+      "Date": "Jan 02 '25",
+      "Transaction": "Sale",
+      "Cost": "293.83",
+      "Shares": "1,946",
+      "Value": "571,793"
+    },
+    {
+      "Owner": "Lehberger Jonathan S",
+      "Relationship": "Corp. VP",
+      "Date": "Jan 02 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "121.69",
+      "Shares": "2,479",
+      "Value": "301,659"
+    },
+    {
+      "Owner": "Lehberger Jonathan S",
+      "Relationship": "Corp. VP",
+      "Date": "Jan 02 '25",
+      "Transaction": "Sale",
+      "Cost": "293.83",
+      "Shares": "2,479",
+      "Value": "728,405"
+    },
+    {
+      "Owner": "DeSilva Joseph",
+      "Relationship": "Corp VP",
+      "Date": "Jan 02 '25",
+      "Transaction": "Option Exercise",
+      "Cost": "206.86",
+      "Shares": "5,960",
+      "Value": "1,232,886"
+    },
+    {
+      "Owner": "DeSilva Joseph",
+      "Relationship": "Corp VP",
+      "Date": "Jan 02 '25",
+      "Transaction": "Sale",
+      "Cost": "293.83",
+      "Shares": "6,516",
+      "Value": "1,914,596"
+    },
+    {
+      "Owner": "Black Maria",
+      "Relationship": "President & CEO",
+      "Date": "Jan 03 '25",
+      "Transaction": "Sale",
+      "Cost": "291.59",
+      "Shares": "721",
+      "Value": "210,233"
+    },
+    {
+      "Owner": "Foskett David",
+      "Relationship": "Officer",
+      "Date": "Jan 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "289.29",
+      "Shares": "1,004",
+      "Value": "290,443"
+    },
+    {
+      "Owner": "Kwon David",
+      "Relationship": "Officer",
+      "Date": "Jan 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "289.15",
+      "Shares": "300",
+      "Value": "86,745"
+    },
+    {
+      "Owner": "Magliulo Virginia",
+      "Relationship": "Officer",
+      "Date": "Jan 06 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "289.15",
+      "Shares": "2,065",
+      "Value": "597,095"
+    },
+    {
+      "Owner": "Michaud Brian L.",
+      "Relationship": "Corp VP",
+      "Date": "Jan 02 '25",
+      "Transaction": "Sale",
+      "Cost": "293.83",
+      "Shares": "362",
+      "Value": "106,366"
+    },
+    {
+      "Owner": "Kwon David",
+      "Relationship": "Officer",
+      "Date": "Jan 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "290.73",
+      "Shares": "1,016",
+      "Value": "295,382"
+    },
+    {
+      "Owner": "Black Maria",
+      "Relationship": "Officer",
+      "Date": "Jan 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "290.73",
+      "Shares": "721",
+      "Value": "209,616"
+    },
+    {
+      "Owner": "Ayala John",
+      "Relationship": "Officer",
+      "Date": "Jan 03 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "290.73",
+      "Shares": "10,720",
+      "Value": "3,116,626"
+    },
+    {
+      "Owner": "Kwon David",
+      "Relationship": "Officer",
+      "Date": "Jan 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "293.83",
+      "Shares": "1,946",
+      "Value": "571,793"
+    },
+    {
+      "Owner": "Lehberger Jonathan S",
+      "Relationship": "Officer",
+      "Date": "Jan 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "293.83",
+      "Shares": "2,479",
+      "Value": "728,405"
+    },
+    {
+      "Owner": "McGuire Don",
+      "Relationship": "Officer",
+      "Date": "Jan 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "293.83",
+      "Shares": "8,664",
+      "Value": "2,545,743"
+    },
+    {
+      "Owner": "DeSilva Joseph",
+      "Relationship": "Officer",
+      "Date": "Jan 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "293.83",
+      "Shares": "6,516",
+      "Value": "1,914,596"
+    },
+    {
+      "Owner": "Michaud Brian L.",
+      "Relationship": "Officer",
+      "Date": "Jan 02 '25",
+      "Transaction": "Proposed Sale",
+      "Cost": "293.83",
+      "Shares": "362",
+      "Value": "106,366"
+    },
+    {
+      "Owner": "KUTAM SREENIVASA",
+      "Relationship": "Corp VP",
+      "Date": "Nov 06 '24",
+      "Transaction": "Option Exercise",
+      "Cost": "160.44",
+      "Shares": "44,982",
+      "Value": "7,217,103"
+    },
+    {
+      "Owner": "KUTAM SREENIVASA",
+      "Relationship": "Corp VP",
+      "Date": "Nov 06 '24",
+      "Transaction": "Sale",
+      "Cost": "300.00",
+      "Shares": "38,975",
+      "Value": "11,692,500"
+    },
+    {
+      "Owner": "KUTAM SREENIVASA",
+      "Relationship": "Officer",
+      "Date": "Nov 06 '24",
+      "Transaction": "Proposed Sale",
+      "Cost": "300.00",
+      "Shares": "38,975",
+      "Value": "11,692,500"
+    }
+  ],
+  "Dividends": []
+}
