@@ -857,6 +857,92 @@
                             <p style="opacity: 0.6; text-align: center;">Training results will appear here</p>
                         </div>
                     </div>
+
+                    <!-- Advanced Backtesting Section -->
+                    <div class="settings-group" style="margin-top: 20px; background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(59,130,246,0.1)); border: 1px solid rgba(139,92,246,0.3); border-radius: 12px; padding: 20px;">
+                        <h4>🔬 Advanced Backtesting Training</h4>
+                        <p style="font-size: 0.9em; opacity: 0.8; margin-bottom: 15px;">Train with expanding date windows and automatic accuracy improvement</p>
+                        
+                        <div class="setting-item">
+                            <label for="backtest-start-date" title="תאריך התחלת האימון - צריך מינימום 90 ימים של נתונים לפניו">Training Start Date:</label>
+                            <input type="date" id="backtest-start-date" value="2024-01-01" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0;">
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label for="backtest-end-date" title="תאריך סיום האימון הראשוני - יורחב בכל איטרציה">Training End Date:</label>
+                            <input type="date" id="backtest-end-date" value="2025-10-07" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0;">
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label for="backtest-test-period" title="כמה ימים לבדוק אחרי כל אימון">Test Period (days):</label>
+                            <input type="number" id="backtest-test-period" value="14" min="1" max="365" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; width: 100px;">
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label for="backtest-max-iterations" title="מקסימום איטרציות אימון">Max Iterations:</label>
+                            <input type="number" id="backtest-max-iterations" value="10" min="1" max="50" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; width: 100px;">
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label for="backtest-target-accuracy" title="דיוק יעד להשגה (0-100%)">Target Accuracy (%):</label>
+                            <input type="range" id="backtest-target-accuracy" min="50" max="100" value="85" style="width: 200px;">
+                            <span id="accuracy-display" style="margin-right: 10px; font-weight: bold; color: #10b981;">85%</span>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="backtest-auto-stop" checked style="margin-left: 5px;">
+                                Auto-stop when target reached
+                            </label>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                            <button onclick="startBacktesting()" style="flex: 1; background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 12px; border-radius: 6px; color: white; cursor: pointer; font-weight: bold;">
+                                🔬 Start Backtesting
+                            </button>
+                            <button onclick="stopBacktesting()" style="flex: 0.3; background: #ef4444; border: none; padding: 12px; border-radius: 6px; color: white; cursor: pointer;">
+                                ⏹ Stop
+                            </button>
+                        </div>
+                        
+                        <!-- Progress Display -->
+                        <div id="backtest-progress" style="margin-top: 20px; display: none;">
+                            <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px; margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span id="backtest-status-text">Starting backtest...</span>
+                                    <span id="backtest-iteration-text">Iteration 0/10</span>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.1); border-radius: 10px; height: 10px; overflow: hidden;">
+                                    <div id="backtest-progress-fill" style="background: linear-gradient(90deg, #10b981, #3b82f6); height: 100%; width: 0%; transition: width 0.3s;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Results Table -->
+                        <div id="backtest-results-container" style="margin-top: 20px; display: none;">
+                            <h5 style="margin-bottom: 10px;">📊 Backtest Results</h5>
+                            <div style="overflow-x: auto; background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px;">
+                                <table style="width: 100%; color: #e2e8f0; font-size: 0.9em;">
+                                    <thead>
+                                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                            <th style="padding: 8px; text-align: left;">#</th>
+                                            <th style="padding: 8px; text-align: left;">Train Until</th>
+                                            <th style="padding: 8px; text-align: left;">Accuracy</th>
+                                            <th style="padding: 8px; text-align: left;">Loss</th>
+                                            <th style="padding: 8px; text-align: left;">Time</th>
+                                            <th style="padding: 8px; text-align: left;">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="backtest-results-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Chart -->
+                        <div id="backtest-chart-container" style="margin-top: 20px; display: none;">
+                            <canvas id="backtest-chart"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2083,6 +2169,228 @@
             console.error('Error starting progressive training:', error);
             resultsDiv.innerHTML = `<div style="color: #ef4444;">❌ Error: ${error.message}</div>`;
         }
+    }
+
+    // ============================================
+    // Advanced Backtesting Functions
+    // ============================================
+
+    // Update accuracy slider display
+    document.addEventListener('DOMContentLoaded', function() {
+        const accuracySlider = document.getElementById('backtest-target-accuracy');
+        if (accuracySlider) {
+            accuracySlider.addEventListener('input', (e) => {
+                document.getElementById('accuracy-display').textContent = e.target.value + '%';
+            });
+        }
+    });
+
+    let backtestPollingInterval = null;
+    let backtestChart = null;
+
+    async function startBacktesting() {
+        const symbol = document.getElementById('progressive-symbol').value.toUpperCase();
+        const startDate = document.getElementById('backtest-start-date').value;
+        const endDate = document.getElementById('backtest-end-date').value;
+        const testPeriod = parseInt(document.getElementById('backtest-test-period').value);
+        const maxIterations = parseInt(document.getElementById('backtest-max-iterations').value);
+        const targetAccuracy = parseFloat(document.getElementById('backtest-target-accuracy').value) / 100;
+        const autoStop = document.getElementById('backtest-auto-stop').checked;
+        const modelSelect = document.getElementById('progressive-model-types');
+        const selectedModels = Array.from(modelSelect.selectedOptions).map(option => option.value);
+
+        // Validation
+        if (!symbol) {
+            alert('Please enter a stock symbol');
+            return;
+        }
+
+        if (!startDate || !endDate) {
+            alert('Please select both start and end dates');
+            return;
+        }
+
+        if (new Date(startDate) >= new Date(endDate)) {
+            alert('Start date must be before end date');
+            return;
+        }
+
+        if (selectedModels.length === 0) {
+            alert('Please select at least one model type');
+            return;
+        }
+
+        // Show progress
+        document.getElementById('backtest-progress').style.display = 'block';
+        document.getElementById('backtest-results-container').style.display = 'none';
+        document.getElementById('backtest-chart-container').style.display = 'none';
+        document.getElementById('backtest-status-text').textContent = 'Starting backtest...';
+        document.getElementById('backtest-progress-fill').style.width = '0%';
+
+        try {
+            const response = await fetch('/api/ml/progressive/backtest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    symbol: symbol,
+                    train_start_date: startDate,
+                    train_end_date: endDate,
+                    test_period_days: testPeriod,
+                    max_iterations: maxIterations,
+                    target_accuracy: targetAccuracy,
+                    auto_stop: autoStop,
+                    model_types: selectedModels
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                displayBacktestResults(data.backtest_results);
+            } else {
+                document.getElementById('backtest-status-text').textContent = 'Backtest failed';
+                alert('Backtesting failed: ' + (data.error || 'Unknown error'));
+            }
+
+        } catch (error) {
+            console.error('Error starting backtest:', error);
+            document.getElementById('backtest-status-text').textContent = 'Error: ' + error.message;
+            alert('Error starting backtest: ' + error.message);
+        }
+    }
+
+    function stopBacktesting() {
+        if (backtestPollingInterval) {
+            clearInterval(backtestPollingInterval);
+            backtestPollingInterval = null;
+        }
+        document.getElementById('backtest-status-text').textContent = 'Stopped';
+    }
+
+    function displayBacktestResults(results) {
+        if (!results || !results.all_iterations) {
+            alert('No results to display');
+            return;
+        }
+
+        // Hide progress, show results
+        document.getElementById('backtest-progress').style.display = 'none';
+        document.getElementById('backtest-results-container').style.display = 'block';
+        document.getElementById('backtest-chart-container').style.display = 'block';
+
+        // Populate table
+        const tbody = document.getElementById('backtest-results-tbody');
+        tbody.innerHTML = '';
+
+        results.all_iterations.forEach((iter, index) => {
+            const row = tbody.insertRow();
+            const isBest = (iter.iteration === results.best_iteration);
+            
+            row.innerHTML = `
+                <td style="padding: 8px;">${iter.iteration}</td>
+                <td style="padding: 8px;">${iter.train_until}</td>
+                <td style="padding: 8px; color: ${iter.accuracy >= 0.85 ? '#10b981' : '#f59e0b'};">${(iter.accuracy * 100).toFixed(1)}%</td>
+                <td style="padding: 8px;">${iter.val_loss ? iter.val_loss.toFixed(4) : 'N/A'}</td>
+                <td style="padding: 8px;">${iter.training_time ? iter.training_time.toFixed(1) + 's' : 'N/A'}</td>
+                <td style="padding: 8px;">${isBest ? '✅ Best' : ''}</td>
+            `;
+        });
+
+        // Create chart
+        createBacktestChart(results);
+    }
+
+    function createBacktestChart(results) {
+        const ctx = document.getElementById('backtest-chart').getContext('2d');
+
+        // Destroy existing chart if any
+        if (backtestChart) {
+            backtestChart.destroy();
+        }
+
+        const iterations = results.all_iterations.map(iter => `Iter ${iter.iteration}`);
+        const accuracies = results.all_iterations.map(iter => iter.accuracy * 100);
+        const losses = results.all_iterations.map(iter => iter.val_loss || 0);
+
+        backtestChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: iterations,
+                datasets: [
+                    {
+                        label: 'Accuracy (%)',
+                        data: accuracies,
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        yAxisID: 'y',
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Loss',
+                        data: losses,
+                        borderColor: 'rgb(239, 68, 68)',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        yAxisID: 'y1',
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Backtest Performance Over Iterations',
+                        color: '#e2e8f0'
+                    },
+                    legend: {
+                        labels: {
+                            color: '#e2e8f0'
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#e2e8f0' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Accuracy (%)',
+                            color: '#e2e8f0'
+                        },
+                        ticks: { color: '#e2e8f0' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Loss',
+                            color: '#e2e8f0'
+                        },
+                        ticks: { color: '#e2e8f0' },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
     }
 
     </script>
