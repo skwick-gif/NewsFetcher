@@ -495,7 +495,6 @@
             <button class="tab" data-tab="settings-tab" onclick="showTabDirect('settings-tab')">Settings ⚙️</button>
             <button class="tab" data-tab="articles-tab" onclick="showTabDirect('articles-tab')">Articles 📄</button>
             <button class="tab" data-tab="ai-tab" onclick="showTabDirect('ai-tab')">AI Analysis 🤖</button>
-            <button class="tab" data-tab="ml-tab" onclick="showTabDirect('ml-tab')">ML Training 🧠</button>
             <button class="tab" data-tab="progressive-ml-tab" onclick="showTabDirect('progressive-ml-tab')">Progressive ML 🚀</button>
             <button class="tab" data-tab="data-management-tab" onclick="showTabDirect('data-management-tab')">Data Management 📊</button>
             <button class="tab" data-tab="financial-tab" onclick="showTabDirect('financial-tab')">Finance 💰</button>
@@ -789,55 +788,6 @@
             </div>
         </div>
 
-        <!-- ML Training Tab -->
-        <div id="ml-tab" class="tab-content">
-            <div class="section">
-                <h3>🧠 Machine Learning Training & Predictions</h3>
-                
-                <!-- ML Status Section -->
-                <div class="ai-grid" style="margin-bottom: 20px;">
-                    <div class="ai-card">
-                        <h4>🤖 ML System Status</h4>
-                        <div id="ml-status-display">Loading ML status...</div>
-                    </div>
-                    <div class="ai-card">
-                        <h4>📊 Training Statistics</h4>
-                        <div id="training-stats-display">Loading training stats...</div>
-                    </div>
-                </div>
-
-                <!-- Symbol Analysis & Training -->
-                <div class="settings-container">
-                    <div class="settings-group">
-                        <h4>🎯 Symbol Analysis & Training</h4>
-                        <div class="setting-item">
-                            <label for="ml-symbol">Stock Symbol:</label>
-                            <input type="text" id="ml-symbol" placeholder="e.g., AAPL" value="AAPL" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0;">
-                        </div>
-                        <div class="setting-item">
-                            <label for="training-days">Training Period (days):</label>
-                            <input type="number" id="training-days" min="30" max="3650" value="365">
-                        </div>
-                        <div style="display: flex; gap: 10px; margin-top: 10px;">
-                            <button onclick="getPrediction()" style="flex: 1; background: #10b981; border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer;">
-                                🔮 Get Prediction
-                            </button>
-                            <button onclick="trainModel()" style="flex: 1; background: #3b82f6; border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer;">
-                                🏋️ Train Model
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="settings-group">
-                        <h4>📈 Prediction Results</h4>
-                        <div id="prediction-results" style="min-height: 100px; background: rgba(255,255,255,0.03); border-radius: 8px; padding: 15px; border: 1px solid rgba(255,255,255,0.1);">
-                            <p style="opacity: 0.6; text-align: center;">Select a symbol and click "Get Prediction" to see ML predictions</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Progressive ML Tab -->
         <div id="progressive-ml-tab" class="tab-content">
             <div class="section">
@@ -865,7 +815,8 @@
                         <h4>🎯 Progressive Model Training</h4>
                         <div class="setting-item">
                             <label for="progressive-symbol">Stock Symbol:</label>
-                            <input type="text" id="progressive-symbol" placeholder="e.g., AAPL" value="AAPL" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0;">
+                            <input type="text" id="progressive-symbol" placeholder="e.g., AAPL, TSLA, MSFT, GOOGL, AMZN" value="AAPL" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0;">
+                            <small style="opacity: 0.7; font-size: 0.85em;">💡 Enter any stock symbol from your stock_data folder</small>
                         </div>
                         <div class="setting-item">
                             <label for="progressive-model-types">Model Types:</label>
