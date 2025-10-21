@@ -67,6 +67,19 @@ except ImportError as e:
     logger.warning(f"⚠️ Financial modules not available: {e}")
     logger.info("📊 Running in demo mode with limited functionality")
 
+# Progressive ML imports
+try:
+    from app.ml.progressive.data_loader import ProgressiveDataLoader
+    from app.ml.progressive.trainer import ProgressiveTrainer
+    from app.ml.progressive.predictor import ProgressivePredictor
+    from app.ml.progressive.models import ProgressiveModels
+    
+    PROGRESSIVE_ML_AVAILABLE = True
+    logger.info("✅ Progressive ML system loaded successfully")
+except ImportError as e:
+    PROGRESSIVE_ML_AVAILABLE = False
+    logger.warning(f"⚠️ Progressive ML system not available: {e}")
+
 # Initialize templates
 try:
     templates = Jinja2Templates(directory="templates")
@@ -85,6 +98,11 @@ websocket_manager = None
 market_streamer = None
 keyword_analyzer = None
 real_data_loader = None
+
+# Progressive ML instances
+progressive_data_loader = None
+progressive_trainer = None
+progressive_predictor = None
 
 # Initialize financial components if available
 if FINANCIAL_MODULES_AVAILABLE:
@@ -119,6 +137,17 @@ try:
         logger.warning(f"Config file not found: {config_path}")
 except Exception as e:
     logger.error(f"Failed to initialize RSS/keyword systems: {e}")
+
+# Initialize Progressive ML system
+if PROGRESSIVE_ML_AVAILABLE:
+    try:
+        progressive_data_loader = ProgressiveDataLoader()
+        progressive_trainer = ProgressiveTrainer(progressive_data_loader)
+        progressive_predictor = ProgressivePredictor(progressive_data_loader)
+        logger.info("✅ Progressive ML system initialized successfully")
+    except Exception as e:
+        logger.error(f"Failed to initialize Progressive ML system: {e}")
+        PROGRESSIVE_ML_AVAILABLE = False
 
 # ============================================================
 # WebSocket Connection Manager
@@ -193,11 +222,10 @@ async def lifespan(app: FastAPI):
     # Initialize financial streaming if available
     if FINANCIAL_MODULES_AVAILABLE and market_streamer:
         try:
-            # Start market data streaming
-            asyncio.create_task(market_streamer.start_streaming())
-            logger.info("✅ Market data streaming started")
+            # Market data streaming will be handled by WebSocket connections
+            logger.info("✅ Market data streamer ready (WebSocket-based)")
         except Exception as e:
-            logger.error(f"Failed to start market streaming: {e}")
+            logger.error(f"Failed to initialize market streaming: {e}")
     
     # Start background scheduler if available
     if scheduler:
@@ -1678,6 +1706,174 @@ async def train_ml_model(symbol: str, days_back: int = 365):
         logger.error(f"Failed to train models for {symbol}: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to train models for {symbol}")
 
+# Progressive ML endpoints
+@app.get("/api/ml/progressive/status", tags=["Progressive ML"])
+async def get_progressive_ml_status():
+    """Get Progressive ML system status"""
+    try:
+        if not PROGRESSIVE_ML_AVAILABLE:
+            return {
+                "status": "unavailable",
+                "message": "Progressive ML system not loaded",
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            }
+        
+        status = {
+            "status": "available",
+            "data_loader": progressive_data_loader is not None,
+            "trainer": progressive_trainer is not None,
+            "predictor": progressive_predictor is not None,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        
+        # Add training status if trainer is available
+        if progressive_trainer:
+            try:
+                # Check if trainer has training info
+                status["training"] = {
+                    "is_training": False,
+                    "status": "ready"
+                }
+            except:
+                status["training"] = {
+                    "is_training": False,
+                    "status": "unknown"
+                }
+            
+        return status
+        
+    except Exception as e:
+        logger.error(f"Failed to get Progressive ML status: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get Progressive ML status")
+
+@app.post("/api/ml/progressive/train", tags=["Progressive ML"])
+async def start_progressive_training(
+    symbol: str = "AAPL",
+    model_types: List[str] = ["lstm"],
+    mode: str = "progressive"
+):
+    """Start progressive training for a stock symbol"""
+    try:
+        if not PROGRESSIVE_ML_AVAILABLE or not progressive_trainer:
+            raise HTTPException(status_code=503, detail="Progressive ML trainer not available")
+        
+        # Start training based on mode
+        if mode == "progressive":
+            training_result = progressive_trainer.train_progressive_models(
+                symbol=symbol,
+                model_types=model_types
+            )
+        else:
+            training_result = progressive_trainer.train_unified_models(
+                symbol=symbol,
+                model_types=model_types
+            )
+        
+        return {
+            "status": "training_completed",
+            "symbol": symbol,
+            "model_types": model_types,
+            "mode": mode,
+            "training_result": training_result,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to start progressive training: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to start progressive training: {str(e)}")
+
+@app.get("/api/ml/progressive/training/status", tags=["Progressive ML"])
+async def get_training_status():
+    """Get current training status"""
+    try:
+        if not PROGRESSIVE_ML_AVAILABLE or not progressive_trainer:
+            raise HTTPException(status_code=503, detail="Progressive ML trainer not available")
+        
+        # Simple training status since the original function doesn't exist
+        status = {
+            "is_training": False,
+            "status": "ready",
+            "trainer_available": True
+        }
+        
+        return {
+            "status": "success",
+            "training_status": status,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get training status: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get training status")
+
+@app.post("/api/ml/progressive/predict/{symbol}", tags=["Progressive ML"])
+async def progressive_predict(symbol: str, mode: str = "progressive"):
+    """Get progressive ML predictions for a symbol"""
+    try:
+        if not PROGRESSIVE_ML_AVAILABLE or not progressive_predictor:
+            raise HTTPException(status_code=503, detail="Progressive ML predictor not available")
+        
+        # Get ensemble predictions
+        predictions = progressive_predictor.predict_ensemble(symbol=symbol, mode=mode)
+        
+        return {
+            "status": "success",
+            "symbol": symbol,
+            "mode": mode,
+            "predictions": predictions,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get progressive predictions for {symbol}: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get progressive predictions for {symbol}")
+
+@app.get("/api/ml/progressive/models", tags=["Progressive ML"])
+async def get_progressive_models():
+    """Get available progressive ML models"""
+    try:
+        if not PROGRESSIVE_ML_AVAILABLE:
+            raise HTTPException(status_code=503, detail="Progressive ML system not available")
+        
+        models_info = {
+            "available_models": [
+                "lstm",
+                "gru", 
+                "cnn_lstm",
+                "transformer"
+            ],
+            "available_modes": [
+                "progressive",
+                "unified"
+            ],
+            "models_saved": {},
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        
+        # Check for saved models if predictor is available
+        if progressive_predictor:
+            try:
+                import os
+                models_dir = "app/ml/models"
+                if os.path.exists(models_dir):
+                    models_info["models_saved"] = {
+                        "directory": models_dir,
+                        "found": True
+                    }
+                else:
+                    models_info["models_saved"] = {
+                        "directory": models_dir,
+                        "found": False
+                    }
+            except:
+                models_info["models_saved"] = {"error": "Cannot check models directory"}
+        
+        return models_info
+        
+    except Exception as e:
+        logger.error(f"Failed to get progressive models info: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get progressive models info")
+
 @app.get("/api/market/{symbol}", tags=["Market"])
 async def get_market_data(symbol: str):
     """Get real-time market data for symbol"""
@@ -1805,6 +2001,276 @@ async def websocket_market_data(websocket: WebSocket, symbol: str):
     finally:
         if market_streamer:
             await market_streamer.remove_subscription(websocket, symbol)
+
+# ============================================================
+# Data Management Endpoints 
+# ============================================================
+@app.get("/data-management", response_class=HTMLResponse)
+async def data_management_page():
+    """Data Management Dashboard - serve data_management.html"""
+    from pathlib import Path
+    
+    dashboard_path = Path(__file__).parent / "templates" / "data_management.html"
+    
+    try:
+        with open(dashboard_path, "r", encoding="utf-8") as f:
+            html_content = f.read()
+        return HTMLResponse(content=html_content)
+    except FileNotFoundError:
+        return HTMLResponse(
+            content="<h1>Data Management dashboard not found.</h1>",
+            status_code=500
+        )
+
+@app.get("/api/data-management/status")
+async def get_data_management_status():
+    """Get current status of data download jobs"""
+    try:
+        from datetime import datetime
+        import subprocess
+        import json
+        from pathlib import Path
+        
+        # Check if scheduler jobs exist and get their status
+        status = {
+            "daily_downloads": 0,
+            "weekly_updates": 0,
+            "error_count": 0,
+            "last_run": None,
+            "jobs": []
+        }
+        
+        # Check log files for recent activity
+        logs_dir = Path("logs")
+        if logs_dir.exists():
+            # Count daily scans from today
+            today_daily_logs = list(logs_dir.glob(f"daily_scan_{datetime.now().strftime('%Y%m%d')}*.log"))
+            status["daily_downloads"] = len(today_daily_logs)
+            
+            # Count weekly fundamentals from this week
+            this_week = datetime.now().strftime('%Y%m')
+            weekly_logs = list(logs_dir.glob(f"weekly_fundamentals_{this_week}*.log"))
+            status["weekly_updates"] = len(weekly_logs)
+            
+            # Find most recent log
+            all_logs = list(logs_dir.glob("*.log"))
+            if all_logs:
+                latest_log = max(all_logs, key=lambda x: x.stat().st_mtime)
+                status["last_run"] = datetime.fromtimestamp(latest_log.stat().st_mtime).isoformat()
+        
+        # Mock job statuses (in real implementation, these would come from scheduler)
+        status["jobs"] = [
+            {
+                "id": "daily_data",
+                "name": "Daily Stock Data Download",
+                "status": "scheduled",
+                "last_run": status["last_run"],
+                "next_run": _get_next_daily_run().isoformat() if _get_next_daily_run() else None,
+                "frequency": "daily"
+            },
+            {
+                "id": "weekly_fundamentals", 
+                "name": "Weekly Fundamentals Update",
+                "status": "scheduled",
+                "last_run": status["last_run"],
+                "next_run": _get_next_weekly_run().isoformat() if _get_next_weekly_run() else None,
+                "frequency": "weekly"
+            }
+        ]
+        
+        return JSONResponse(content=status)
+        
+    except Exception as e:
+        logger.error(f"Error getting data management status: {e}")
+        return JSONResponse(
+            content={"error": str(e)}, 
+            status_code=500
+        )
+
+@app.post("/api/data-management/run-job/{job_type}")
+async def run_data_job(job_type: str, background_tasks: BackgroundTasks):
+    """Run a specific data download job"""
+    try:
+        if job_type == "daily":
+            # Run daily stock data scan
+            background_tasks.add_task(run_daily_scan)
+            return JSONResponse(
+                content={
+                    "success": True, 
+                    "message": "Daily scan started", 
+                    "job_id": f"daily_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                }
+            )
+        elif job_type == "weekly":
+            # Run weekly fundamentals update
+            background_tasks.add_task(run_weekly_fundamentals)
+            return JSONResponse(
+                content={
+                    "success": True, 
+                    "message": "Weekly fundamentals update started",
+                    "job_id": f"weekly_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                }
+            )
+        else:
+            return JSONResponse(
+                content={"success": False, "error": f"Unknown job type: {job_type}"},
+                status_code=400
+            )
+            
+    except Exception as e:
+        logger.error(f"Error running job {job_type}: {e}")
+        return JSONResponse(
+            content={"success": False, "error": str(e)},
+            status_code=500
+        )
+
+@app.get("/api/data-management/logs/{job_type}")
+async def get_job_logs(job_type: str):
+    """Get logs for a specific job type"""
+    try:
+        from pathlib import Path
+        
+        logs_dir = Path("logs")
+        if not logs_dir.exists():
+            return JSONResponse(content={"logs": []})
+        
+        # Get logs based on job type
+        if job_type == "daily":
+            log_files = list(logs_dir.glob("daily_scan_*.log"))
+        elif job_type == "weekly":
+            log_files = list(logs_dir.glob("weekly_fundamentals_*.log"))
+        else:
+            log_files = list(logs_dir.glob("*.log"))
+        
+        # Get the most recent log file
+        if not log_files:
+            return JSONResponse(content={"logs": ["No logs found for this job type."]})
+        
+        latest_log = max(log_files, key=lambda x: x.stat().st_mtime)
+        
+        # Read log content
+        with open(latest_log, 'r', encoding='utf-8') as f:
+            log_content = f.read()
+        
+        return JSONResponse(content={
+            "logs": log_content.split('\n'),
+            "file": str(latest_log),
+            "timestamp": datetime.fromtimestamp(latest_log.stat().st_mtime).isoformat()
+        })
+        
+    except Exception as e:
+        logger.error(f"Error reading logs for {job_type}: {e}")
+        return JSONResponse(
+            content={"error": str(e)},
+            status_code=500
+        )
+
+# Helper functions for data management
+def _get_next_daily_run():
+    """Calculate next daily run time (17:10)"""
+    try:
+        now = datetime.now()
+        next_run = now.replace(hour=17, minute=10, second=0, microsecond=0)
+        if next_run <= now:
+            next_run += timedelta(days=1)
+        return next_run
+    except:
+        return None
+
+def _get_next_weekly_run():
+    """Calculate next weekly run time (Sunday 2:00 AM)"""
+    try:
+        now = datetime.now()
+        days_until_sunday = (6 - now.weekday()) % 7
+        if days_until_sunday == 0 and now.hour >= 2:
+            days_until_sunday = 7
+        next_run = now + timedelta(days=days_until_sunday)
+        next_run = next_run.replace(hour=2, minute=0, second=0, microsecond=0)
+        return next_run
+    except:
+        return None
+
+async def run_daily_scan():
+    """Background task to run daily stock scan"""
+    try:
+        import subprocess
+        import sys
+        
+        logger.info("🚀 Starting daily stock scan...")
+        
+        # Run the daily scan script
+        result = subprocess.run([
+            sys.executable, "daily_scan.py"
+        ], capture_output=True, text=True, cwd=".")
+        
+        if result.returncode == 0:
+            logger.info("✅ Daily scan completed successfully")
+        else:
+            logger.error(f"❌ Daily scan failed: {result.stderr}")
+            raise Exception(f"Daily scan failed: {result.stderr}")
+            
+    except Exception as e:
+        logger.error(f"Error in daily scan background task: {e}")
+
+async def run_weekly_fundamentals():
+    """Background task to run weekly fundamentals update"""
+    try:
+        import subprocess
+        import sys
+        
+        logger.info("🚀 Starting weekly fundamentals update...")
+        
+        # Run the weekly fundamentals script
+        result = subprocess.run([
+            sys.executable, "ToUse/run_weekly_fundamentals.py"
+        ], capture_output=True, text=True, cwd=".")
+        
+        if result.returncode == 0:
+            logger.info("✅ Weekly fundamentals update completed successfully")
+        else:
+            logger.error(f"❌ Weekly fundamentals update failed: {result.stderr}")
+            raise Exception(f"Weekly fundamentals update failed: {result.stderr}")
+            
+    except Exception as e:
+        logger.error(f"Error in weekly fundamentals background task: {e}")
+
+@app.get("/api/system/health")
+async def system_health():
+    """System health check endpoint"""
+    try:
+        health_status = {
+            "database": True,  # Always true for now (SQLite)
+            "api": True,       # If we're responding, API is working
+            "scheduler": SCHEDULER_AVAILABLE,
+            "storage": True,   # Check if we can write to logs directory
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        # Check storage (try to write a temp file)
+        try:
+            from pathlib import Path
+            logs_dir = Path("logs")
+            logs_dir.mkdir(exist_ok=True)
+            test_file = logs_dir / "health_check.tmp"
+            test_file.write_text("test")
+            test_file.unlink()
+        except:
+            health_status["storage"] = False
+        
+        return JSONResponse(content=health_status)
+        
+    except Exception as e:
+        return JSONResponse(
+            content={
+                "database": False,
+                "api": False, 
+                "scheduler": False,
+                "storage": False,
+                "error": str(e),
+                "timestamp": datetime.now().isoformat()
+            },
+            status_code=500
+        )
 
 # ============================================================
 # Dashboard Endpoint  

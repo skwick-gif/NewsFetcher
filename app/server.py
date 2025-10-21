@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'development-key'
 
 # FastAPI Backend URL
-FASTAPI_BACKEND = os.getenv('FASTAPI_BACKEND', 'http://localhost:8005')
+FASTAPI_BACKEND = os.getenv('FASTAPI_BACKEND', 'http://localhost:8000')
 
 def proxy_to_backend(endpoint, method='GET', **kwargs):
     """
@@ -132,6 +132,36 @@ def api_ml_train(symbol):
 def api_ml_status():
     """Proxy to FastAPI: ML system status"""
     return proxy_to_backend('/api/ml/status')
+
+# Progressive ML endpoints
+@app.route('/api/ml/progressive/status')
+def api_progressive_ml_status():
+    """Proxy to FastAPI: Progressive ML system status"""
+    return proxy_to_backend('/api/ml/progressive/status')
+
+@app.route('/api/ml/progressive/models')
+def api_progressive_ml_models():
+    """Proxy to FastAPI: Progressive ML models info"""
+    return proxy_to_backend('/api/ml/progressive/models')
+
+@app.route('/api/ml/progressive/training/status')
+def api_progressive_training_status():
+    """Proxy to FastAPI: Progressive ML training status"""
+    return proxy_to_backend('/api/ml/progressive/training/status')
+
+@app.route('/api/ml/progressive/train', methods=['POST'])
+def api_progressive_train():
+    """Proxy to FastAPI: Start Progressive ML training"""
+    symbol = request.args.get('symbol', 'AAPL')
+    model_types = request.args.get('model_types', 'lstm').split(',')
+    mode = request.args.get('mode', 'progressive')
+    return proxy_to_backend(f'/api/ml/progressive/train?symbol={symbol}&model_types={",".join(model_types)}&mode={mode}', method='POST')
+
+@app.route('/api/ml/progressive/predict/<symbol>', methods=['POST'])
+def api_progressive_predict(symbol):
+    """Proxy to FastAPI: Get Progressive ML predictions"""
+    mode = request.args.get('mode', 'progressive')
+    return proxy_to_backend(f'/api/ml/progressive/predict/{symbol}?mode={mode}', method='POST')
 
 # ===========================
 # Enhanced Financial API Proxies (NEW)

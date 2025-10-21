@@ -1,5 +1,5 @@
 # MarketPulse - Start Integrated Server
-# הפעלת המערכת המשולבת עם כל הפיצ'רים
+# Start the integrated system with all features
 
 Write-Host "============================================" -ForegroundColor Cyan
 Write-Host "🚀 MarketPulse - Integrated System v2.1.0" -ForegroundColor Cyan

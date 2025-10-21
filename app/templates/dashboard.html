@@ -496,6 +496,8 @@
             <button class="tab" data-tab="articles-tab" onclick="showTabDirect('articles-tab')">Articles 📄</button>
             <button class="tab" data-tab="ai-tab" onclick="showTabDirect('ai-tab')">AI Analysis 🤖</button>
             <button class="tab" data-tab="ml-tab" onclick="showTabDirect('ml-tab')">ML Training 🧠</button>
+            <button class="tab" data-tab="progressive-ml-tab" onclick="showTabDirect('progressive-ml-tab')">Progressive ML 🚀</button>
+            <button class="tab" data-tab="data-management-tab" onclick="showTabDirect('data-management-tab')">Data Management 📊</button>
             <button class="tab" data-tab="financial-tab" onclick="showTabDirect('financial-tab')">Finance 💰</button>
             <button class="tab" data-tab="geopolitics-tab" onclick="showTabDirect('geopolitics-tab')">Geopolitics 🌍</button>
             <button class="tab" data-tab="watchlist-tab" onclick="showTabDirect('watchlist-tab')">Watchlist ⭐</button>
@@ -831,6 +833,225 @@
                         <div id="prediction-results" style="min-height: 100px; background: rgba(255,255,255,0.03); border-radius: 8px; padding: 15px; border: 1px solid rgba(255,255,255,0.1);">
                             <p style="opacity: 0.6; text-align: center;">Select a symbol and click "Get Prediction" to see ML predictions</p>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progressive ML Tab -->
+        <div id="progressive-ml-tab" class="tab-content">
+            <div class="section">
+                <h3>🚀 Progressive ML Training System</h3>
+                
+                <!-- Progressive ML Status Section -->
+                <div class="ai-grid" style="margin-bottom: 20px;">
+                    <div class="ai-card">
+                        <h4>🤖 Progressive ML Status</h4>
+                        <div id="progressive-ml-status-display">Loading Progressive ML status...</div>
+                    </div>
+                    <div class="ai-card">
+                        <h4>🧠 Available Models</h4>
+                        <div id="progressive-models-display">Loading models info...</div>
+                    </div>
+                    <div class="ai-card">
+                        <h4>📊 Training Status</h4>
+                        <div id="progressive-training-status-display">Loading training status...</div>
+                    </div>
+                </div>
+
+                <!-- Progressive Training Interface -->
+                <div class="settings-container">
+                    <div class="settings-group">
+                        <h4>🎯 Progressive Model Training</h4>
+                        <div class="setting-item">
+                            <label for="progressive-symbol">Stock Symbol:</label>
+                            <input type="text" id="progressive-symbol" placeholder="e.g., AAPL" value="AAPL" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0;">
+                        </div>
+                        <div class="setting-item">
+                            <label for="progressive-model-types">Model Types:</label>
+                            <select id="progressive-model-types" multiple style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; height: 80px;">
+                                <option value="lstm" selected>LSTM (Long Short-Term Memory)</option>
+                                <option value="gru">GRU (Gated Recurrent Unit)</option>
+                                <option value="cnn_lstm">CNN-LSTM (Convolutional + LSTM)</option>
+                                <option value="transformer">Transformer</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label for="progressive-mode">Training Mode:</label>
+                            <select id="progressive-mode" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0;">
+                                <option value="progressive" selected>Progressive (Multi-horizon)</option>
+                                <option value="unified">Unified (Single model)</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <button onclick="getProgressivePrediction()" style="flex: 1; background: #8b5cf6; border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer;">
+                                🔮 Get Progressive Prediction
+                            </button>
+                            <button onclick="startProgressiveTraining()" style="flex: 1; background: #f59e0b; border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer;">
+                                🚀 Start Progressive Training
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h4>📈 Progressive Prediction Results</h4>
+                        <div id="progressive-prediction-results" style="min-height: 150px; background: rgba(255,255,255,0.03); border-radius: 8px; padding: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                            <p style="opacity: 0.6; text-align: center;">Select a symbol and click "Get Progressive Prediction" to see advanced ML predictions with multiple time horizons</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h4>🏋️ Training Progress</h4>
+                        <div id="progressive-training-results" style="min-height: 100px; background: rgba(255,255,255,0.03); border-radius: 8px; padding: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                            <p style="opacity: 0.6; text-align: center;">Training results will appear here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Management Tab -->
+        <div id="data-management-tab" class="tab-content">
+            <div class="section">
+                <h3>📊 Data Management & Download Status</h3>
+                
+                <!-- Status Overview -->
+                <div class="ai-grid" style="margin-bottom: 20px;">
+                    <div class="ai-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+                        <h4><i class="fas fa-download"></i> הורדות יומיות</h4>
+                        <div style="font-size: 2em; font-weight: bold;" id="daily-downloads-count">-</div>
+                        <small>מהיום</small>
+                    </div>
+                    <div class="ai-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white;">
+                        <h4><i class="fas fa-chart-bar"></i> נתוני פנדמנטל</h4>
+                        <div style="font-size: 2em; font-weight: bold;" id="fundamental-updates-count">-</div>
+                        <small>השבוע</small>
+                    </div>
+                    <div class="ai-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <h4><i class="fas fa-exclamation-triangle"></i> שגיאות</h4>
+                        <div style="font-size: 2em; font-weight: bold;" id="errors-count">-</div>
+                        <small>24 שעות</small>
+                    </div>
+                    <div class="ai-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%); color: white;">
+                        <h4><i class="fas fa-clock"></i> ריצה אחרונה</h4>
+                        <div style="font-size: 1.2em; font-weight: bold;" id="last-run-time">-</div>
+                        <small>הורדת נתונים</small>
+                    </div>
+                </div>
+
+                <!-- Jobs Schedule -->
+                <div class="ai-card" style="background: rgba(255, 255, 255, 0.05); margin-bottom: 20px;">
+                    <h4>⏰ לוח זמנים אוטומטי</h4>
+                    <div style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 15px;">
+                        <table style="width: 100%; color: #e2e8f0;">
+                            <thead style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <tr>
+                                    <th style="text-align: right; padding: 10px;">משימה</th>
+                                    <th style="text-align: right; padding: 10px;">תדירות</th>
+                                    <th style="text-align: right; padding: 10px;">ריצה אחרונה</th>
+                                    <th style="text-align: right; padding: 10px;">ריצה הבאה</th>
+                                    <th style="text-align: right; padding: 10px;">סטטוס</th>
+                                    <th style="text-align: right; padding: 10px;">פעולות</th>
+                                </tr>
+                            </thead>
+                            <tbody id="jobs-schedule-table">
+                                <tr>
+                                    <td style="padding: 10px;">
+                                        <strong>הורדת מחירים יומית</strong><br>
+                                        <small style="opacity: 0.7;">daily_scan.py</small>
+                                    </td>
+                                    <td style="padding: 10px;">
+                                        <span style="background: #3182ce; padding: 3px 10px; border-radius: 15px; font-size: 0.8em;">יומי 17:10</span>
+                                    </td>
+                                    <td style="padding: 10px;" id="daily-last-run">טוען...</td>
+                                    <td style="padding: 10px;" id="daily-next-run">טוען...</td>
+                                    <td style="padding: 10px;" id="daily-status">טוען...</td>
+                                    <td style="padding: 10px;">
+                                        <button onclick="runDataJob('daily')" style="background: #38a169; color: white; border: none; padding: 5px 15px; border-radius: 20px; font-size: 0.8em; margin-right: 5px;">
+                                            <i class="fas fa-play"></i> הרץ עכשיו
+                                        </button>
+                                        <button onclick="viewDataLogs('daily')" style="background: #4a5568; color: white; border: none; padding: 5px 15px; border-radius: 20px; font-size: 0.8em;">
+                                            <i class="fas fa-file-alt"></i> לוגים
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px;">
+                                        <strong>עדכון נתוני פנדמנטל</strong><br>
+                                        <small style="opacity: 0.7;">run_weekly_fundamentals.py</small>
+                                    </td>
+                                    <td style="padding: 10px;">
+                                        <span style="background: #d69e2e; padding: 3px 10px; border-radius: 15px; font-size: 0.8em;">שבועי א' 02:00</span>
+                                    </td>
+                                    <td style="padding: 10px;" id="weekly-last-run">טוען...</td>
+                                    <td style="padding: 10px;" id="weekly-next-run">טוען...</td>
+                                    <td style="padding: 10px;" id="weekly-status">טוען...</td>
+                                    <td style="padding: 10px;">
+                                        <button onclick="runDataJob('weekly')" style="background: #38a169; color: white; border: none; padding: 5px 15px; border-radius: 20px; font-size: 0.8em; margin-right: 5px;">
+                                            <i class="fas fa-play"></i> הרץ עכשיו
+                                        </button>
+                                        <button onclick="viewDataLogs('weekly')" style="background: #4a5568; color: white; border: none; padding: 5px 15px; border-radius: 20px; font-size: 0.8em;">
+                                            <i class="fas fa-file-alt"></i> לוגים
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="ai-grid" style="margin-bottom: 20px;">
+                    <div class="ai-card">
+                        <h4>🚀 פעולות מהירות</h4>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <button onclick="runAllDataJobs()" style="background: #38a169; color: white; border: none; padding: 10px 20px; border-radius: 25px; font-weight: bold;">
+                                <i class="fas fa-play-circle"></i> הרץ את כל המשימות
+                            </button>
+                            <button onclick="refreshDataStatus()" style="background: #3182ce; color: white; border: none; padding: 10px 20px; border-radius: 25px; font-weight: bold;">
+                                <i class="fas fa-sync"></i> רענן סטטוס
+                            </button>
+                            <button onclick="downloadDataLogs()" style="background: #4a5568; color: white; border: none; padding: 10px 20px; border-radius: 25px; font-weight: bold;">
+                                <i class="fas fa-download"></i> הורד לוגים
+                            </button>
+                        </div>
+                    </div>
+                    <div class="ai-card">
+                        <h4>🔧 בריאות המערכת</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: center;">
+                            <div>
+                                <div style="font-size: 2em; margin-bottom: 5px;" id="db-health-icon">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <small>Database</small>
+                            </div>
+                            <div>
+                                <div style="font-size: 2em; margin-bottom: 5px;" id="scheduler-health-icon">
+                                    <i class="fas fa-tasks"></i>
+                                </div>
+                                <small>Scheduler</small>
+                            </div>
+                            <div>
+                                <div style="font-size: 2em; margin-bottom: 5px;" id="api-health-icon">
+                                    <i class="fas fa-network-wired"></i>
+                                </div>
+                                <small>API</small>
+                            </div>
+                            <div>
+                                <div style="font-size: 2em; margin-bottom: 5px;" id="storage-health-icon">
+                                    <i class="fas fa-hdd"></i>
+                                </div>
+                                <small>Storage</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Logs -->
+                <div class="ai-card">
+                    <h4>📋 לוגים אחרונים</h4>
+                    <div style="background: #2d3748; color: #a0aec0; font-family: 'Courier New', monospace; font-size: 0.85rem; border-radius: 10px; padding: 15px; max-height: 300px; overflow-y: auto;" id="recent-logs">
+                        <div style="color: #63b3ed;">[16:00:01] 🔄 מתחבר ללוגים...</div>
                     </div>
                 </div>
             </div>
@@ -1526,6 +1747,390 @@
             }
         } catch (error) {
             intelligenceDiv.innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Market intelligence unavailable</p>';
+        }
+    }
+
+    // Data Management Functions
+    async function loadDataManagementStatus() {
+        try {
+            const response = await fetch('/api/data-management/status');
+            const data = await response.json();
+            
+            // Update metrics
+            document.getElementById('daily-downloads-count').textContent = data.daily_downloads || '0';
+            document.getElementById('fundamental-updates-count').textContent = data.weekly_updates || '0';
+            document.getElementById('errors-count').textContent = data.error_count || '0';
+            document.getElementById('last-run-time').textContent = data.last_run ? 
+                new Date(data.last_run).toLocaleString('he-IL', {
+                    day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+                }) : 'אף פעם';
+            
+            // Update jobs table
+            if (data.jobs) {
+                const dailyJob = data.jobs.find(j => j.id === 'daily_data');
+                const weeklyJob = data.jobs.find(j => j.id === 'weekly_fundamentals');
+                
+                if (dailyJob) {
+                    document.getElementById('daily-last-run').textContent = 
+                        dailyJob.last_run ? new Date(dailyJob.last_run).toLocaleString('he-IL') : 'אף פעם';
+                    document.getElementById('daily-next-run').textContent = 
+                        dailyJob.next_run ? new Date(dailyJob.next_run).toLocaleString('he-IL') : 'לא מתוזמן';
+                    document.getElementById('daily-status').innerHTML = getDataStatusBadge(dailyJob.status);
+                }
+                
+                if (weeklyJob) {
+                    document.getElementById('weekly-last-run').textContent = 
+                        weeklyJob.last_run ? new Date(weeklyJob.last_run).toLocaleString('he-IL') : 'אף פעם';
+                    document.getElementById('weekly-next-run').textContent = 
+                        weeklyJob.next_run ? new Date(weeklyJob.next_run).toLocaleString('he-IL') : 'לא מתוזמן';
+                    document.getElementById('weekly-status').innerHTML = getDataStatusBadge(weeklyJob.status);
+                }
+            }
+            
+            // Update system health
+            updateSystemHealth();
+            
+        } catch (error) {
+            console.error('Error loading data management status:', error);
+            addDataLog('❌ שגיאה בטעינת סטטוס: ' + error.message, 'error');
+        }
+    }
+
+    function getDataStatusBadge(status) {
+        const badges = {
+            'running': '<span style="background: #3182ce; color: white; padding: 3px 10px; border-radius: 15px; font-size: 0.8em;">רץ</span>',
+            'success': '<span style="background: #38a169; color: white; padding: 3px 10px; border-radius: 15px; font-size: 0.8em;">הושלם</span>',
+            'error': '<span style="background: #e53e3e; color: white; padding: 3px 10px; border-radius: 15px; font-size: 0.8em;">שגיאה</span>',
+            'scheduled': '<span style="background: #4a5568; color: white; padding: 3px 10px; border-radius: 15px; font-size: 0.8em;">מתוזמן</span>',
+            'stopped': '<span style="background: #718096; color: white; padding: 3px 10px; border-radius: 15px; font-size: 0.8em;">עצור</span>'
+        };
+        return badges[status] || '<span style="background: #718096; color: white; padding: 3px 10px; border-radius: 15px; font-size: 0.8em;">לא ידוע</span>';
+    }
+
+    async function runDataJob(jobType) {
+        try {
+            addDataLog(`🚀 מתחיל הרצת משימה: ${jobType}`, 'info');
+            
+            const response = await fetch(`/api/data-management/run-job/${jobType}`, {
+                method: 'POST'
+            });
+            const result = await response.json();
+            
+            if (result.success) {
+                addDataLog(`✅ משימה התחילה בהצלחה: ${jobType}`, 'success');
+            } else {
+                addDataLog(`❌ כשל בהתחלת משימה: ${result.error}`, 'error');
+            }
+            
+            // Refresh status after 2 seconds
+            setTimeout(loadDataManagementStatus, 2000);
+            
+        } catch (error) {
+            addDataLog(`❌ שגיאה בהרצת משימה: ${error.message}`, 'error');
+        }
+    }
+
+    async function runAllDataJobs() {
+        addDataLog('🚀 מתחיל הרצת כל המשימות...', 'info');
+        
+        await runDataJob('daily');
+        await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
+        await runDataJob('weekly');
+    }
+
+    function refreshDataStatus() {
+        addDataLog('🔄 רענון סטטוס...', 'info');
+        loadDataManagementStatus();
+        addDataLog('✅ סטטוס עודכן', 'success');
+    }
+
+    async function updateSystemHealth() {
+        try {
+            const response = await fetch('/api/system/health');
+            const health = await response.json();
+            
+            updateHealthIcon('db-health-icon', health.database);
+            updateHealthIcon('scheduler-health-icon', health.scheduler);
+            updateHealthIcon('api-health-icon', health.api);
+            updateHealthIcon('storage-health-icon', health.storage);
+            
+        } catch (error) {
+            console.error('Error updating system health:', error);
+        }
+    }
+
+    function updateHealthIcon(iconId, status) {
+        const icon = document.getElementById(iconId);
+        if (!icon) return;
+        
+        if (status === true || status === 'healthy') {
+            icon.style.color = '#38a169'; // Green
+        } else if (status === 'warning') {
+            icon.style.color = '#d69e2e'; // Yellow
+        } else {
+            icon.style.color = '#e53e3e'; // Red
+        }
+    }
+
+    function addDataLog(message, level = 'info') {
+        const container = document.getElementById('recent-logs');
+        if (!container) return;
+        
+        const timestamp = new Date().toLocaleTimeString('he-IL');
+        const logColors = {
+            'success': '#68d391',
+            'error': '#fc8181', 
+            'warning': '#f6e05e',
+            'info': '#63b3ed'
+        };
+        
+        const logEntry = document.createElement('div');
+        logEntry.style.color = logColors[level] || logColors.info;
+        logEntry.innerHTML = `<span style="opacity: 0.7;">[${timestamp}]</span> ${message}`;
+        
+        container.appendChild(logEntry);
+        container.scrollTop = container.scrollHeight;
+        
+        // Keep only last 50 log entries
+        while (container.children.length > 50) {
+            container.removeChild(container.firstChild);
+        }
+    }
+
+    function viewDataLogs(jobType) {
+        window.open(`/api/data-management/logs/${jobType}`, '_blank');
+    }
+
+    function downloadDataLogs() {
+        const link = document.createElement('a');
+        link.href = '/api/data-management/logs/download';
+        link.download = `logs_${new Date().toISOString().split('T')[0]}.zip`;
+        link.click();
+    }
+
+    // Load data management status when the tab is shown
+    function initDataManagement() {
+        if (document.getElementById('data-management-tab').style.display !== 'none') {
+            loadDataManagementStatus();
+            // Refresh every 30 seconds
+            setInterval(() => {
+                if (document.getElementById('data-management-tab').style.display !== 'none') {
+                    loadDataManagementStatus();
+                }
+            }, 30000);
+        }
+    }
+
+    // Hook into the tab switching function
+    const originalShowTabDirect = window.showTabDirect;
+    window.showTabDirect = function(tabId) {
+        originalShowTabDirect(tabId);
+        if (tabId === 'data-management-tab') {
+            setTimeout(initDataManagement, 100); // Small delay to ensure tab is visible
+        } else if (tabId === 'progressive-ml-tab') {
+            setTimeout(initProgressiveML, 100); // Initialize Progressive ML tab
+        }
+    };
+
+    // Progressive ML Functions
+    async function initProgressiveML() {
+        await loadProgressiveMLStatus();
+        await loadProgressiveModels();
+        await loadProgressiveTrainingStatus();
+    }
+
+    async function loadProgressiveMLStatus() {
+        try {
+            const response = await fetch('/api/ml/progressive/status');
+            const data = await response.json();
+            
+            const statusDisplay = document.getElementById('progressive-ml-status-display');
+            if (data.status === 'available') {
+                statusDisplay.innerHTML = `
+                    <div style="color: #10b981;">✅ Progressive ML System Online</div>
+                    <div style="font-size: 0.85em; margin-top: 5px;">
+                        📊 Data Loader: ${data.data_loader ? '✅' : '❌'}<br>
+                        🏋️ Trainer: ${data.trainer ? '✅' : '❌'}<br>
+                        🔮 Predictor: ${data.predictor ? '✅' : '❌'}<br>
+                        🎯 Training: ${data.training?.status || 'Unknown'}
+                    </div>
+                `;
+            } else {
+                statusDisplay.innerHTML = '<div style="color: #ef4444;">❌ Progressive ML System Unavailable</div>';
+            }
+        } catch (error) {
+            console.error('Error loading Progressive ML status:', error);
+            document.getElementById('progressive-ml-status-display').innerHTML = '<div style="color: #ef4444;">❌ Error loading status</div>';
+        }
+    }
+
+    async function loadProgressiveModels() {
+        try {
+            const response = await fetch('/api/ml/progressive/models');
+            const data = await response.json();
+            
+            const modelsDisplay = document.getElementById('progressive-models-display');
+            modelsDisplay.innerHTML = `
+                <div style="font-size: 0.85em;">
+                    <div><strong>Available Models:</strong></div>
+                    ${data.available_models.map(model => `<div>• ${model.toUpperCase()}</div>`).join('')}
+                    <div style="margin-top: 8px;"><strong>Training Modes:</strong></div>
+                    ${data.available_modes.map(mode => `<div>• ${mode}</div>`).join('')}
+                    <div style="margin-top: 8px;"><strong>Models Directory:</strong></div>
+                    <div>📁 ${data.models_saved?.directory || 'N/A'} ${data.models_saved?.found ? '✅' : '❌'}</div>
+                </div>
+            `;
+        } catch (error) {
+            console.error('Error loading Progressive models:', error);
+            document.getElementById('progressive-models-display').innerHTML = '<div style="color: #ef4444;">❌ Error loading models</div>';
+        }
+    }
+
+    async function loadProgressiveTrainingStatus() {
+        try {
+            const response = await fetch('/api/ml/progressive/training/status');
+            const data = await response.json();
+            
+            const statusDisplay = document.getElementById('progressive-training-status-display');
+            statusDisplay.innerHTML = `
+                <div style="font-size: 0.85em;">
+                    <div><strong>Status:</strong> ${data.training_status?.status || 'Unknown'}</div>
+                    <div><strong>Training:</strong> ${data.training_status?.is_training ? '🔄 Active' : '⏸️ Idle'}</div>
+                    <div><strong>Trainer:</strong> ${data.training_status?.trainer_available ? '✅ Ready' : '❌ Not Ready'}</div>
+                </div>
+            `;
+        } catch (error) {
+            console.error('Error loading Progressive training status:', error);
+            document.getElementById('progressive-training-status-display').innerHTML = '<div style="color: #ef4444;">❌ Error loading training status</div>';
+        }
+    }
+
+    async function getProgressivePrediction() {
+        const symbol = document.getElementById('progressive-symbol').value.toUpperCase();
+        const mode = document.getElementById('progressive-mode').value;
+        
+        if (!symbol) {
+            alert('Please enter a stock symbol');
+            return;
+        }
+
+        const resultsDiv = document.getElementById('progressive-prediction-results');
+        resultsDiv.innerHTML = '<div style="text-align: center;">🔄 Getting progressive predictions...</div>';
+
+        try {
+            const response = await fetch(`/api/ml/progressive/predict/${symbol}?mode=${mode}`, {
+                method: 'POST'
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.status === 'success' && data.predictions) {
+                displayProgressivePredictions(data.predictions, symbol, mode);
+            } else {
+                resultsDiv.innerHTML = '<div style="color: #ef4444;">❌ No predictions available</div>';
+            }
+        } catch (error) {
+            console.error('Error getting progressive prediction:', error);
+            resultsDiv.innerHTML = `<div style="color: #ef4444;">❌ Error: ${error.message}</div>`;
+        }
+    }
+
+    function displayProgressivePredictions(predictions, symbol, mode) {
+        const resultsDiv = document.getElementById('progressive-prediction-results');
+        
+        let html = `<div><strong>🔮 Progressive Predictions for ${symbol} (${mode} mode)</strong></div>`;
+        
+        if (predictions.summary) {
+            html += `<div style="margin: 10px 0; padding: 10px; background: rgba(59,130,246,0.1); border-radius: 6px;">
+                <strong>📊 Summary:</strong><br>
+                ${predictions.summary}
+            </div>`;
+        }
+        
+        if (predictions.ensemble_predictions) {
+            html += '<div style="margin: 10px 0;"><strong>🧠 Model Predictions:</strong></div>';
+            Object.entries(predictions.ensemble_predictions).forEach(([horizon, preds]) => {
+                html += `<div style="margin: 5px 0; padding: 8px; background: rgba(255,255,255,0.05); border-radius: 4px;">
+                    <strong>${horizon} days:</strong> ${JSON.stringify(preds, null, 2)}
+                </div>`;
+            });
+        }
+        
+        if (predictions.sentiment) {
+            html += `<div style="margin: 10px 0; padding: 10px; background: rgba(139,92,246,0.1); border-radius: 6px;">
+                <strong>💭 Sentiment:</strong> ${predictions.sentiment.overall || 'N/A'}
+            </div>`;
+        }
+        
+        if (predictions.risk_metrics) {
+            html += `<div style="margin: 10px 0; padding: 10px; background: rgba(239,68,68,0.1); border-radius: 6px;">
+                <strong>⚠️ Risk Metrics:</strong><br>
+                ${JSON.stringify(predictions.risk_metrics, null, 2)}
+            </div>`;
+        }
+        
+        resultsDiv.innerHTML = html;
+    }
+
+    async function startProgressiveTraining() {
+        const symbol = document.getElementById('progressive-symbol').value.toUpperCase();
+        const mode = document.getElementById('progressive-mode').value;
+        const modelSelect = document.getElementById('progressive-model-types');
+        const selectedModels = Array.from(modelSelect.selectedOptions).map(option => option.value);
+        
+        if (!symbol) {
+            alert('Please enter a stock symbol');
+            return;
+        }
+        
+        if (selectedModels.length === 0) {
+            alert('Please select at least one model type');
+            return;
+        }
+
+        const resultsDiv = document.getElementById('progressive-training-results');
+        resultsDiv.innerHTML = '<div style="text-align: center;">🚀 Starting progressive training...</div>';
+
+        try {
+            const response = await fetch(`/api/ml/progressive/train?symbol=${symbol}&model_types=${selectedModels.join(',')}&mode=${mode}`, {
+                method: 'POST'
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.status === 'training_completed') {
+                let html = `<div style="color: #10b981;"><strong>✅ Training Completed for ${symbol}</strong></div>`;
+                html += `<div style="margin: 10px 0; font-size: 0.9em;">
+                    📊 Mode: ${data.mode}<br>
+                    🧠 Models: ${data.model_types.join(', ')}<br>
+                    ⏰ Completed: ${new Date(data.timestamp).toLocaleString()}
+                </div>`;
+                
+                if (data.training_result) {
+                    html += `<div style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 6px;">
+                        <strong>📈 Training Results:</strong><br>
+                        <pre style="font-size: 0.8em; overflow-x: auto;">${JSON.stringify(data.training_result, null, 2)}</pre>
+                    </div>`;
+                }
+                
+                resultsDiv.innerHTML = html;
+                
+                // Refresh status displays
+                await loadProgressiveTrainingStatus();
+            } else {
+                resultsDiv.innerHTML = '<div style="color: #ef4444;">❌ Training failed or status unknown</div>';
+            }
+        } catch (error) {
+            console.error('Error starting progressive training:', error);
+            resultsDiv.innerHTML = `<div style="color: #ef4444;">❌ Error: ${error.message}</div>`;
         }
     }
 
