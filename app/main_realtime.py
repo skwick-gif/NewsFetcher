@@ -1451,10 +1451,10 @@ async def get_ai_status():
 
 @app.get("/api/ai/comprehensive-analysis/{symbol}", tags=["AI"])
 async def get_comprehensive_analysis(symbol: str):
-    """Get comprehensive AI analysis for a symbol"""
+    """Get comprehensive AI analysis for a symbol using Perplexity AI"""
     try:
         from financial.market_data import financial_provider
-        import random
+        from smart.perplexity_finance import perplexity_analyzer
         
         # Get real market data first
         stock_data = await financial_provider.get_stock_data(symbol)
@@ -1465,74 +1465,64 @@ async def get_comprehensive_analysis(symbol: str):
                 "symbol": symbol
             }
         
-        logger.info(f"📊 AI Analysis for {symbol}: price=${stock_data.get('price')}, change={stock_data.get('change_percent')}")
-        
-        # Extract real price data
         current_price = float(stock_data.get('price', 100.0))
-        change_percent_str = str(stock_data.get('change_percent', '0'))
+        logger.info(f"🤖 Starting AI analysis for {symbol}: price=${current_price}")
         
-        # Handle change_percent parsing more carefully
-        if isinstance(stock_data.get('change_percent'), (int, float)):
-            change_percent_value = float(stock_data.get('change_percent'))
-            change_percent = f"{change_percent_value:+.2f}%"
+        # Get real AI analysis from Perplexity
+        ai_result = await perplexity_analyzer.analyze_stock(symbol, current_price)
+        
+        if ai_result["status"] == "success":
+            analysis = ai_result["ai_analysis"]
+            
+            return {
+                "status": "success",
+                "symbol": symbol,
+                "current_price": current_price,
+                "analysis": analysis,
+                "prediction": analysis.get("prediction", {}),
+                "ai_metadata": {
+                    "model": "sonar-reasoning-pro",
+                    "citations": ai_result.get("citations", []),
+                    "search_results_count": len(ai_result.get("search_results", [])),
+                    "cost": ai_result.get("cost", {}),
+                    "raw_response_length": len(ai_result.get("raw_response", ""))
+                },
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            }
         else:
-            change_percent = str(stock_data.get('change_percent', '0%'))
-            # Extract numeric value for calculations
-            try:
-                change_percent_value = float(change_percent.replace('%', '').replace('+', ''))
-            except:
-                change_percent_value = 0.0
-        
-        # Generate realistic technical levels based on current price
-        support_level = round(current_price * (0.85 + random.uniform(0, 0.1)), 2)
-        resistance_level = round(current_price * (1.05 + random.uniform(0, 0.15)), 2)
-        target_price = round(current_price * (1.02 + random.uniform(-0.1, 0.2)), 2)
-        
-        # Generate realistic analysis based on actual data
-        is_positive = change_percent_value >= 0
-        trend = "bullish" if change_percent_value > 2 else "bearish" if change_percent_value < -2 else "neutral"
-        direction = "up" if change_percent_value > 0.5 else "down" if change_percent_value < -0.5 else "sideways"
-        confidence = 0.6 + random.uniform(0, 0.3) if is_positive else 0.4 + random.uniform(0, 0.4)
-        
-        return {
-            "status": "success",
-            "symbol": symbol,
-            "analysis": {
-                "technical": {
-                    "trend": trend,
-                    "support_level": support_level,
-                    "resistance_level": resistance_level,
-                    "rsi": round(30 + random.uniform(0, 40), 1),
-                    "macd_signal": "buy" if is_positive else "sell" if not is_positive else "hold"
+            # Fallback to demo data if AI fails
+            logger.warning(f"⚠️ AI analysis failed for {symbol}, using fallback")
+            return {
+                "status": "success",
+                "symbol": symbol,
+                "current_price": current_price,
+                "analysis": {
+                    "technical": {
+                        "trend": "neutral",
+                        "support_level": round(current_price * 0.90, 2),
+                        "resistance_level": round(current_price * 1.10, 2),
+                        "rsi": 50,
+                        "macd_signal": "hold"
+                    },
+                    "prediction": {
+                        "direction": "sideways",
+                        "confidence": 0.6,
+                        "target_price": current_price,
+                        "time_horizon": "1_month"
+                    }
                 },
-                "fundamental": {
-                    "pe_ratio": round(10 + random.uniform(0, 30), 1),
-                    "debt_to_equity": round(random.uniform(0.1, 1.5), 2),
-                    "revenue_growth": change_percent,
-                    "profit_margin": f"{round(8 + random.uniform(0, 20), 1)}%"
+                "prediction": {
+                    "direction": "sideways",
+                    "confidence": 0.6,
+                    "target_price": current_price,
+                    "time_horizon": "1_month"
                 },
-                "sentiment": {
-                    "news_sentiment": round(0.3 + random.uniform(0, 0.6), 2),
-                    "social_sentiment": round(0.2 + random.uniform(0, 0.7), 2),
-                    "analyst_rating": "buy" if is_positive else "hold",
-                    "price_target": target_price
+                "ai_metadata": {
+                    "model": "fallback",
+                    "error": ai_result.get("message", "AI analysis unavailable")
                 },
-                "risk_assessment": {
-                    "volatility": "low" if abs(float(change_percent.replace('%', ''))) < 1 else "moderate" if abs(float(change_percent.replace('%', ''))) < 5 else "high",
-                    "liquidity": "high",
-                    "beta": round(0.5 + random.uniform(0, 1.5), 2),
-                    "risk_score": round(0.2 + random.uniform(0, 0.6), 2)
-                }
-            },
-            "prediction": {
-                "direction": direction,
-                "confidence": round(confidence, 2),
-                "target_price": target_price,
-                "time_horizon": "1_month"
-            },
-            "current_price": current_price,
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        }
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            }
         
     except Exception as e:
         logger.error(f"Failed to get comprehensive analysis for {symbol}: {e}")
