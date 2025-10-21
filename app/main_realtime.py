@@ -24,6 +24,13 @@ import yaml
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# Set up logging FIRST
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
 # Import our components
 from scheduler_bg.scheduler import get_scheduler, MarketPulseScheduler
 from smart.keywords_engine import FinancialKeywordsEngine
@@ -55,13 +62,6 @@ try:
 except Exception as e:
     logger.warning(f"Templates not available: {e}")
     TEMPLATES_AVAILABLE = False
-
-# Set up logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
 
 # Global components initialization
 financial_provider = None

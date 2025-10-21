@@ -494,6 +494,10 @@
             <button class="tab" data-tab="settings-tab" onclick="showTabDirect('settings-tab')">Settings ⚙️</button>
             <button class="tab" data-tab="articles-tab" onclick="showTabDirect('articles-tab')">Articles 📄</button>
             <button class="tab" data-tab="ai-tab" onclick="showTabDirect('ai-tab')">AI Analysis 🤖</button>
+            <button class="tab" data-tab="ml-tab" onclick="showTabDirect('ml-tab')">ML Training 🧠</button>
+            <button class="tab" data-tab="financial-tab" onclick="showTabDirect('financial-tab')">Finance 💰</button>
+            <button class="tab" data-tab="geopolitics-tab" onclick="showTabDirect('geopolitics-tab')">Geopolitics 🌍</button>
+            <button class="tab" data-tab="watchlist-tab" onclick="showTabDirect('watchlist-tab')">Watchlist ⭐</button>
             <button class="tab active" data-tab="overview-tab" onclick="showTabDirect('overview-tab')">Overview 📊</button>
         </div>
         
@@ -792,6 +796,175 @@
             </div>
         </div>
 
+        <!-- ML Training Tab -->
+        <div id="ml-tab" class="tab-content">
+            <div class="section">
+                <h3>🧠 Machine Learning Training & Predictions</h3>
+                
+                <!-- ML Status Section -->
+                <div class="ai-grid" style="margin-bottom: 20px;">
+                    <div class="ai-card">
+                        <h4>🤖 ML System Status</h4>
+                        <div id="ml-status-display">Loading ML status...</div>
+                    </div>
+                    <div class="ai-card">
+                        <h4>📊 Training Statistics</h4>
+                        <div id="training-stats-display">Loading training stats...</div>
+                    </div>
+                </div>
+
+                <!-- Symbol Analysis & Training -->
+                <div class="settings-container">
+                    <div class="settings-group">
+                        <h4>🎯 Symbol Analysis & Training</h4>
+                        <div class="setting-item">
+                            <label for="ml-symbol">Stock Symbol:</label>
+                            <input type="text" id="ml-symbol" placeholder="e.g., AAPL" value="AAPL" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0;">
+                        </div>
+                        <div class="setting-item">
+                            <label for="training-days">Training Period (days):</label>
+                            <input type="number" id="training-days" min="30" max="3650" value="365">
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <button onclick="getPrediction()" style="flex: 1; background: #10b981; border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer;">
+                                🔮 Get Prediction
+                            </button>
+                            <button onclick="trainModel()" style="flex: 1; background: #3b82f6; border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer;">
+                                🏋️ Train Model
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h4>📈 Prediction Results</h4>
+                        <div id="prediction-results" style="min-height: 100px; background: rgba(255,255,255,0.03); border-radius: 8px; padding: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                            <p style="opacity: 0.6; text-align: center;">Select a symbol and click "Get Prediction" to see ML predictions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Data Tab -->
+        <div id="financial-tab" class="tab-content">
+            <div class="section">
+                <h3>💰 Enhanced Financial Analytics</h3>
+                
+                <!-- Sector Performance -->
+                <div class="ai-grid" style="margin-bottom: 20px;">
+                    <div class="ai-card">
+                        <h4>📊 Sector Performance</h4>
+                        <div id="sector-performance-display">Loading sector data...</div>
+                    </div>
+                    <div class="ai-card">
+                        <h4>💹 Market Sentiment</h4>
+                        <div id="market-sentiment-detailed">Loading sentiment analysis...</div>
+                    </div>
+                </div>
+
+                <!-- Symbol-specific Analysis -->
+                <div class="settings-container">
+                    <div class="settings-group">
+                        <h4>🎯 Symbol Analysis</h4>
+                        <div class="setting-item">
+                            <label for="financial-symbol">Stock Symbol:</label>
+                            <input type="text" id="financial-symbol" placeholder="e.g., AAPL" value="AAPL" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0;">
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <button onclick="getMarketData()" style="flex: 1; background: #10b981; border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer;">
+                                📈 Market Data
+                            </button>
+                            <button onclick="getSentiment()" style="flex: 1; background: #8b5cf6; border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer;">
+                                💭 Sentiment
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h4>📊 Analysis Results</h4>
+                        <div id="financial-results" style="min-height: 150px; background: rgba(255,255,255,0.03); border-radius: 8px; padding: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                            <p style="opacity: 0.6; text-align: center;">Enter a symbol and select analysis type</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Geopolitics Tab -->
+        <div id="geopolitics-tab" class="tab-content">
+            <div class="section">
+                <h3>🌍 Geopolitical Risk Analysis</h3>
+                
+                <div class="ai-grid" style="margin-bottom: 20px;">
+                    <div class="ai-card">
+                        <h4>⚠️ Risk Assessment</h4>
+                        <div id="risk-assessment-display">Loading risk analysis...</div>
+                    </div>
+                    <div class="ai-card">
+                        <h4>🌐 Global Factors</h4>
+                        <div id="global-factors-display">Loading global factors...</div>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h4>📋 Risk Factors & Recommendations</h4>
+                    <div id="geopolitical-details" style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                        <p style="opacity: 0.6; text-align: center;">Loading detailed geopolitical analysis...</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px; text-align: center;">
+                    <button onclick="loadGeopoliticalData()" style="background: #ef4444; border: none; padding: 12px 24px; border-radius: 8px; color: white; cursor: pointer; font-weight: 600;">
+                        🔄 Refresh Risk Analysis
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Watchlist Tab -->
+        <div id="watchlist-tab" class="tab-content">
+            <div class="section">
+                <h3>⭐ Investment Watchlist</h3>
+                
+                <div class="settings-container" style="margin-bottom: 20px;">
+                    <div class="settings-group">
+                        <h4>➕ Add to Watchlist</h4>
+                        <div class="setting-item">
+                            <label for="watchlist-symbol">Stock Symbol:</label>
+                            <input type="text" id="watchlist-symbol" placeholder="e.g., GOOGL" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0;">
+                        </div>
+                        <button onclick="addToWatchlist()" style="width: 100%; background: #10b981; border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer; margin-top: 10px;">
+                            ⭐ Add Symbol
+                        </button>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h4>⚙️ Watchlist Settings</h4>
+                        <div class="setting-item checkbox-setting">
+                            <input type="checkbox" id="auto-refresh-watchlist" checked>
+                            <label for="auto-refresh-watchlist">Auto-refresh watchlist</label>
+                        </div>
+                        <div class="setting-item checkbox-setting">
+                            <input type="checkbox" id="price-alerts" checked>
+                            <label for="price-alerts">Price change alerts</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ai-card">
+                    <h4>📊 My Watchlist</h4>
+                    <div id="watchlist-display">
+                        <p style="opacity: 0.6; text-align: center;">Loading watchlist...</p>
+                    </div>
+                    <div style="margin-top: 15px; text-align: center;">
+                        <button onclick="loadWatchlist()" style="background: #3b82f6; border: none; padding: 8px 16px; border-radius: 6px; color: white; cursor: pointer;">
+                            🔄 Refresh Watchlist
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div style="text-align: center; margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 10px;">
             <p style="font-size: 0.8em; opacity: 0.6;">
                 <strong>Architecture:</strong> FastAPI • PostgreSQL • Redis • Qdrant • Celery 🏗️<br>
@@ -837,6 +1010,307 @@
     
     // Make function globally available
     window.showTabDirect = showTabDirect;
+
+    // ===============================
+    // NEW FUNCTIONALITY FOR ENHANCED FEATURES
+    // ===============================
+
+    // ML Functions
+    async function getPrediction() {
+        const symbol = document.getElementById('ml-symbol').value.toUpperCase();
+        if (!symbol) {
+            alert('Please enter a stock symbol');
+            return;
+        }
+        
+        const resultsDiv = document.getElementById('prediction-results');
+        resultsDiv.innerHTML = '<p style="text-align: center;">🔄 Getting ML prediction...</p>';
+        
+        try {
+            const response = await fetch(`/api/ml/predictions/${symbol}`);
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                resultsDiv.innerHTML = `
+                    <h5 style="color: #3b82f6; margin-bottom: 10px;">🔮 ML Prediction for ${symbol}</h5>
+                    <div style="background: rgba(16, 185, 129, 0.1); border-radius: 6px; padding: 10px; margin-bottom: 10px;">
+                        <strong>Direction:</strong> ${data.predictions?.direction || 'N/A'}<br>
+                        <strong>Confidence:</strong> ${data.predictions?.confidence || 'N/A'}<br>
+                        <strong>Target Price:</strong> $${data.predictions?.target_price || 'N/A'}
+                    </div>
+                    <small style="opacity: 0.7;">Generated: ${new Date().toLocaleString()}</small>
+                `;
+            } else {
+                resultsDiv.innerHTML = `<p style="color: #ef4444; text-align: center;">❌ ${data.message || 'Failed to get prediction'}</p>`;
+            }
+        } catch (error) {
+            resultsDiv.innerHTML = `<p style="color: #ef4444; text-align: center;">❌ Error: ${error.message}</p>`;
+        }
+    }
+
+    async function trainModel() {
+        const symbol = document.getElementById('ml-symbol').value.toUpperCase();
+        const days = document.getElementById('training-days').value;
+        
+        if (!symbol) {
+            alert('Please enter a stock symbol');
+            return;
+        }
+        
+        const resultsDiv = document.getElementById('prediction-results');
+        resultsDiv.innerHTML = '<p style="text-align: center;">🏋️ Training model... This may take a while...</p>';
+        
+        try {
+            const response = await fetch(`/api/ml/train/${symbol}?days_back=${days}`, {
+                method: 'POST'
+            });
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                resultsDiv.innerHTML = `
+                    <h5 style="color: #10b981; margin-bottom: 10px;">✅ Training Completed for ${symbol}</h5>
+                    <div style="background: rgba(16, 185, 129, 0.1); border-radius: 6px; padding: 10px;">
+                        <strong>Training Period:</strong> ${days} days<br>
+                        <strong>Status:</strong> ${data.training_result?.status || 'Completed'}<br>
+                        <strong>Model Performance:</strong> ${data.training_result?.accuracy || 'N/A'}
+                    </div>
+                `;
+            } else {
+                resultsDiv.innerHTML = `<p style="color: #ef4444; text-align: center;">❌ Training failed: ${data.message}</p>`;
+            }
+        } catch (error) {
+            resultsDiv.innerHTML = `<p style="color: #ef4444; text-align: center;">❌ Error: ${error.message}</p>`;
+        }
+    }
+
+    // Financial Functions
+    async function getMarketData() {
+        const symbol = document.getElementById('financial-symbol').value.toUpperCase();
+        if (!symbol) {
+            alert('Please enter a stock symbol');
+            return;
+        }
+        
+        const resultsDiv = document.getElementById('financial-results');
+        resultsDiv.innerHTML = '<p style="text-align: center;">📈 Loading market data...</p>';
+        
+        try {
+            const response = await fetch(`/api/market/${symbol}`);
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                const marketData = data.data;
+                resultsDiv.innerHTML = `
+                    <h5 style="color: #10b981; margin-bottom: 10px;">📈 Market Data for ${symbol}</h5>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div style="background: rgba(59, 130, 246, 0.1); border-radius: 6px; padding: 10px;">
+                            <strong>Price:</strong> $${marketData.price}<br>
+                            <strong>Change:</strong> ${marketData.change} (${marketData.change_percent})
+                        </div>
+                        <div style="background: rgba(139, 92, 246, 0.1); border-radius: 6px; padding: 10px;">
+                            <strong>Volume:</strong> ${marketData.volume?.toLocaleString()}<br>
+                            <strong>Range:</strong> $${marketData.low} - $${marketData.high}
+                        </div>
+                    </div>
+                `;
+            } else {
+                resultsDiv.innerHTML = `<p style="color: #ef4444; text-align: center;">❌ Failed to load data</p>`;
+            }
+        } catch (error) {
+            resultsDiv.innerHTML = `<p style="color: #ef4444; text-align: center;">❌ Error: ${error.message}</p>`;
+        }
+    }
+
+    async function getSentiment() {
+        const symbol = document.getElementById('financial-symbol').value.toUpperCase();
+        if (!symbol) {
+            alert('Please enter a stock symbol');
+            return;
+        }
+        
+        const resultsDiv = document.getElementById('financial-results');
+        resultsDiv.innerHTML = '<p style="text-align: center;">💭 Analyzing sentiment...</p>';
+        
+        try {
+            const response = await fetch(`/api/sentiment/${symbol}`);
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                const sentiment = data.sentiment;
+                resultsDiv.innerHTML = `
+                    <h5 style="color: #8b5cf6; margin-bottom: 10px;">💭 Sentiment Analysis for ${symbol}</h5>
+                    <div style="background: rgba(139, 92, 246, 0.1); border-radius: 6px; padding: 10px;">
+                        <strong>Overall Score:</strong> ${sentiment.overall_score}<br>
+                        <strong>Positive:</strong> ${(sentiment.positive * 100).toFixed(1)}%<br>
+                        <strong>Negative:</strong> ${(sentiment.negative * 100).toFixed(1)}%<br>
+                        <strong>Volume:</strong> ${sentiment.volume} mentions<br>
+                        <strong>Trending:</strong> ${sentiment.trending ? '🔥 Yes' : '📊 Normal'}
+                    </div>
+                `;
+            } else {
+                resultsDiv.innerHTML = `<p style="color: #ef4444; text-align: center;">❌ Failed to analyze sentiment</p>`;
+            }
+        } catch (error) {
+            resultsDiv.innerHTML = `<p style="color: #ef4444; text-align: center;">❌ Error: ${error.message}</p>`;
+        }
+    }
+
+    // Geopolitical Functions
+    async function loadGeopoliticalData() {
+        const riskDiv = document.getElementById('risk-assessment-display');
+        const factorsDiv = document.getElementById('global-factors-display');
+        const detailsDiv = document.getElementById('geopolitical-details');
+        
+        riskDiv.innerHTML = '🔄 Loading...';
+        factorsDiv.innerHTML = '🔄 Loading...';
+        detailsDiv.innerHTML = '<p style="text-align: center;">🔄 Loading detailed analysis...</p>';
+        
+        try {
+            const response = await fetch('/api/financial/geopolitical-risks');
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                const riskData = data.data;
+                
+                // Update risk assessment
+                riskDiv.innerHTML = `
+                    <div style="text-align: center;">
+                        <div style="font-size: 2em; margin-bottom: 5px;">⚠️</div>
+                        <strong>Risk Level: ${riskData.overall_risk_level}</strong><br>
+                        <span style="font-size: 1.2em; color: #ffd700;">Score: ${riskData.risk_score}</span>
+                    </div>
+                `;
+                
+                // Update global factors
+                factorsDiv.innerHTML = `
+                    <div style="font-size: 0.9em;">
+                        <strong>Active Factors:</strong><br>
+                        ${riskData.factors?.length || 0} regions monitored<br>
+                        Next update: ${new Date(riskData.next_update).toLocaleTimeString()}
+                    </div>
+                `;
+                
+                // Update detailed analysis
+                let factorsHtml = '';
+                if (riskData.factors) {
+                    factorsHtml = riskData.factors.map(factor => `
+                        <div style="background: rgba(239, 68, 68, 0.1); border-radius: 6px; padding: 10px; margin-bottom: 10px;">
+                            <strong>${factor.region}</strong> - ${factor.risk_type}<br>
+                            <span style="color: #ffd700;">Level: ${factor.level}</span> | 
+                            <span style="color: #10b981;">Impact: ${factor.impact}</span><br>
+                            <small>${factor.description}</small>
+                        </div>
+                    `).join('');
+                }
+                
+                let recommendationsHtml = '';
+                if (riskData.recommendations) {
+                    recommendationsHtml = `
+                        <h5 style="color: #3b82f6; margin: 15px 0 10px;">📋 Recommendations:</h5>
+                        ${riskData.recommendations.map(rec => `<div style="color: #10b981;">• ${rec}</div>`).join('')}
+                    `;
+                }
+                
+                detailsDiv.innerHTML = factorsHtml + recommendationsHtml;
+            } else {
+                riskDiv.innerHTML = '❌ Error';
+                factorsDiv.innerHTML = '❌ Error';
+                detailsDiv.innerHTML = '<p style="color: #ef4444; text-align: center;">Failed to load geopolitical data</p>';
+            }
+        } catch (error) {
+            riskDiv.innerHTML = '❌ Error';
+            factorsDiv.innerHTML = '❌ Error';
+            detailsDiv.innerHTML = `<p style="color: #ef4444; text-align: center;">Error: ${error.message}</p>`;
+        }
+    }
+
+    // Watchlist Functions
+    async function loadWatchlist() {
+        const watchlistDiv = document.getElementById('watchlist-display');
+        watchlistDiv.innerHTML = '<p style="text-align: center;">🔄 Loading watchlist...</p>';
+        
+        try {
+            const response = await fetch('/api/watchlist');
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                if (data.watchlist && data.watchlist.length > 0) {
+                    const watchlistHtml = data.watchlist.map(stock => `
+                        <div style="background: rgba(255,255,255,0.05); border-radius: 6px; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong style="color: #3b82f6;">${stock.symbol}</strong><br>
+                                <small>${stock.name}</small>
+                            </div>
+                            <div style="text-align: right;">
+                                <div>$${stock.price}</div>
+                                <div style="color: ${stock.change.startsWith('+') ? '#10b981' : '#ef4444'};">${stock.change}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                    
+                    watchlistDiv.innerHTML = watchlistHtml;
+                } else {
+                    watchlistDiv.innerHTML = '<p style="opacity: 0.6; text-align: center;">No stocks in watchlist</p>';
+                }
+            } else {
+                watchlistDiv.innerHTML = '<p style="color: #ef4444; text-align: center;">Failed to load watchlist</p>';
+            }
+        } catch (error) {
+            watchlistDiv.innerHTML = `<p style="color: #ef4444; text-align: center;">Error: ${error.message}</p>`;
+        }
+    }
+
+    async function addToWatchlist() {
+        const symbol = document.getElementById('watchlist-symbol').value.toUpperCase();
+        if (!symbol) {
+            alert('Please enter a stock symbol');
+            return;
+        }
+        
+        // For now, just add to UI - in real implementation would call API
+        alert(`Added ${symbol} to watchlist! (Demo - would call API in production)`);
+        document.getElementById('watchlist-symbol').value = '';
+        loadWatchlist(); // Refresh the list
+    }
+
+    // Auto-load data when tabs are opened
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load ML status
+        fetch('/api/ml/status').then(r => r.json()).then(data => {
+            document.getElementById('ml-status-display').innerHTML = 
+                data.components ? `
+                    <div style="font-size: 0.9em;">
+                        <strong>ML Trainer:</strong> ${data.components.ml_trainer?.status || 'N/A'}<br>
+                        <strong>Models:</strong> ${data.performance?.models_active || 0} active<br>
+                        <strong>Accuracy:</strong> ${data.performance?.accuracy || 'N/A'}
+                    </div>
+                ` : 'ML system information unavailable';
+        }).catch(() => {
+            document.getElementById('ml-status-display').innerHTML = 'Failed to load ML status';
+        });
+
+        // Load sector performance
+        fetch('/api/financial/sector-performance').then(r => r.json()).then(data => {
+            if (data.status === 'success' && data.data) {
+                const sectors = Object.entries(data.data).map(([name, info]) => 
+                    `<div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>${name}:</span>
+                        <span style="color: ${info.change.startsWith('+') ? '#10b981' : '#ef4444'};">${info.change}</span>
+                    </div>`
+                ).join('');
+                document.getElementById('sector-performance-display').innerHTML = sectors;
+            }
+        }).catch(() => {
+            document.getElementById('sector-performance-display').innerHTML = 'Failed to load sector data';
+        });
+
+        // Load geopolitical data
+        loadGeopoliticalData();
+        
+        // Load watchlist
+        loadWatchlist();
+    });
+
     </script>
 </body>
 </html>
