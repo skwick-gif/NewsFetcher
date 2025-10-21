@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'development-key'
 
 # FastAPI Backend URL
-FASTAPI_BACKEND = os.getenv('FASTAPI_BACKEND', 'http://localhost:8000')
+FASTAPI_BACKEND = os.getenv('FASTAPI_BACKEND', 'http://localhost:8005')
 
 def proxy_to_backend(endpoint, method='GET', **kwargs):
     """
@@ -309,6 +309,15 @@ def api_test_alert():
 def legacy_market_data():
     """Legacy endpoint - redirects to new API"""
     return proxy_to_backend('/api/financial/market-indices')
+
+@app.route('/api/ai/debug-prompt/<symbol>')
+def ai_debug_prompt(symbol):
+    """AI debug prompt proxy"""
+    try:
+        response = requests.get(f"{BACKEND_URL}/api/ai/debug-prompt/{symbol}")
+        return jsonify(response.json())
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/api/ai/market-intelligence')
 def ai_market_intelligence():

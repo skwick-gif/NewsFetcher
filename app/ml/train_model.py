@@ -91,7 +91,7 @@ class LSTMModel:
         return model
     
     def train(self, X_train, y_train, X_val, y_val, epochs=100, batch_size=32, 
-              checkpoint_dir='app/app/ml/models/checkpoints', initial_epoch=0):
+              checkpoint_dir='app/ml/models/checkpoints', initial_epoch=0):
         """Train LSTM model"""
         checkpoint_dir = Path(checkpoint_dir)
         checkpoint_dir.mkdir(parents=True, exist_ok=True)
@@ -225,7 +225,7 @@ class TransformerModel:
         return model
     
     def train(self, X_train, y_train, X_val, y_val, epochs=100, batch_size=32,
-              checkpoint_dir='app/app/ml/models/checkpoints', initial_epoch=0):
+              checkpoint_dir='app/ml/models/checkpoints', initial_epoch=0):
         """Train Transformer model"""
         checkpoint_dir = Path(checkpoint_dir)
         checkpoint_dir.mkdir(parents=True, exist_ok=True)
@@ -336,7 +336,7 @@ class CNNModel:
         return model
     
     def train(self, X_train, y_train, X_val, y_val, epochs=100, batch_size=32,
-              checkpoint_dir='app/app/ml/models/checkpoints', initial_epoch=0):
+              checkpoint_dir='app/ml/models/checkpoints', initial_epoch=0):
         """Train CNN model"""
         checkpoint_dir = Path(checkpoint_dir)
         checkpoint_dir.mkdir(parents=True, exist_ok=True)
@@ -638,7 +638,7 @@ def main(batch_size=32, resume_training=True, max_epochs=100):
     logger.info("="*70 + "\n")
     
     # Create models directory
-    models_dir = Path('app/app/ml/models')
+    models_dir = Path('app/ml/models')
     models_dir.mkdir(parents=True, exist_ok=True)
     
     # Create checkpoints directory
@@ -704,15 +704,24 @@ def main(batch_size=32, resume_training=True, max_epochs=100):
     lstm_model = LSTMModel(sequence_length, n_features)
     lstm_initial_epoch = 0
     
-    # Check for existing checkpoint
+    # Check for existing checkpoint or final model
     if resume_training:
-        latest_checkpoint, latest_epoch = find_latest_checkpoint(checkpoint_dir, 'lstm')
-        if latest_checkpoint and lstm_model.load_checkpoint(latest_checkpoint):
-            lstm_initial_epoch = latest_epoch + 1
-            logger.info(f"🔄 Resuming LSTM training from epoch {lstm_initial_epoch}")
-        else:
-            lstm_model.build_model()
-            logger.info("🆕 Starting LSTM training from scratch")
+        # First check for existing final model
+        final_lstm_path = Path('ml/models/lstm_model.keras')
+        if final_lstm_path.exists():
+            if lstm_model.load_checkpoint(final_lstm_path):
+                lstm_initial_epoch = max_epochs  # Skip training if final model exists
+                logger.info(f"✅ Found existing LSTM model at {final_lstm_path}, skipping training")
+        
+        # If no final model, check for checkpoints
+        if lstm_initial_epoch == 0:
+            latest_checkpoint, latest_epoch = find_latest_checkpoint(checkpoint_dir, 'lstm')
+            if latest_checkpoint and lstm_model.load_checkpoint(latest_checkpoint):
+                lstm_initial_epoch = latest_epoch + 1
+                logger.info(f"🔄 Resuming LSTM training from epoch {lstm_initial_epoch}")
+            else:
+                lstm_model.build_model()
+                logger.info("🆕 Starting LSTM training from scratch")
     else:
         lstm_model.build_model()
         logger.info("🆕 Starting LSTM training from scratch")
@@ -746,15 +755,24 @@ def main(batch_size=32, resume_training=True, max_epochs=100):
     transformer_model = TransformerModel(sequence_length, n_features)
     transformer_initial_epoch = 0
     
-    # Check for existing checkpoint
+    # Check for existing checkpoint or final model
     if resume_training:
-        latest_checkpoint, latest_epoch = find_latest_checkpoint(checkpoint_dir, 'transformer')
-        if latest_checkpoint and transformer_model.load_checkpoint(latest_checkpoint):
-            transformer_initial_epoch = latest_epoch + 1
-            logger.info(f"🔄 Resuming Transformer training from epoch {transformer_initial_epoch}")
-        else:
-            transformer_model.build_model()
-            logger.info("🆕 Starting Transformer training from scratch")
+        # First check for existing final model
+        final_transformer_path = Path('ml/models/transformer_model.keras')
+        if final_transformer_path.exists():
+            if transformer_model.load_checkpoint(final_transformer_path):
+                transformer_initial_epoch = max_epochs  # Skip training if final model exists
+                logger.info(f"✅ Found existing Transformer model at {final_transformer_path}, skipping training")
+        
+        # If no final model, check for checkpoints
+        if transformer_initial_epoch == 0:
+            latest_checkpoint, latest_epoch = find_latest_checkpoint(checkpoint_dir, 'transformer')
+            if latest_checkpoint and transformer_model.load_checkpoint(latest_checkpoint):
+                transformer_initial_epoch = latest_epoch + 1
+                logger.info(f"🔄 Resuming Transformer training from epoch {transformer_initial_epoch}")
+            else:
+                transformer_model.build_model()
+                logger.info("🆕 Starting Transformer training from scratch")
     else:
         transformer_model.build_model()
         logger.info("🆕 Starting Transformer training from scratch")
@@ -788,15 +806,24 @@ def main(batch_size=32, resume_training=True, max_epochs=100):
     cnn_model = CNNModel(sequence_length, n_features)
     cnn_initial_epoch = 0
     
-    # Check for existing checkpoint
+    # Check for existing checkpoint or final model
     if resume_training:
-        latest_checkpoint, latest_epoch = find_latest_checkpoint(checkpoint_dir, 'cnn')
-        if latest_checkpoint and cnn_model.load_checkpoint(latest_checkpoint):
-            cnn_initial_epoch = latest_epoch + 1
-            logger.info(f"🔄 Resuming CNN training from epoch {cnn_initial_epoch}")
-        else:
-            cnn_model.build_model()
-            logger.info("🆕 Starting CNN training from scratch")
+        # First check for existing final model
+        final_cnn_path = Path('ml/models/cnn_model.keras')
+        if final_cnn_path.exists():
+            if cnn_model.load_checkpoint(final_cnn_path):
+                cnn_initial_epoch = max_epochs  # Skip training if final model exists
+                logger.info(f"✅ Found existing CNN model at {final_cnn_path}, skipping training")
+        
+        # If no final model, check for checkpoints
+        if cnn_initial_epoch == 0:
+            latest_checkpoint, latest_epoch = find_latest_checkpoint(checkpoint_dir, 'cnn')
+            if latest_checkpoint and cnn_model.load_checkpoint(latest_checkpoint):
+                cnn_initial_epoch = latest_epoch + 1
+                logger.info(f"🔄 Resuming CNN training from epoch {cnn_initial_epoch}")
+            else:
+                cnn_model.build_model()
+                logger.info("🆕 Starting CNN training from scratch")
     else:
         cnn_model.build_model()
         logger.info("🆕 Starting CNN training from scratch")

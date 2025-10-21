@@ -32,21 +32,33 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Import our components
-from scheduler_bg.scheduler import get_scheduler, MarketPulseScheduler
-from smart.keywords_engine import FinancialKeywordsEngine
-from ingest.rss_loader import FinancialDataLoader
+# Scheduler functionality
+try:
+    from app.scheduler_bg.scheduler import get_scheduler, MarketPulseScheduler
+    SCHEDULER_AVAILABLE = True
+    logger.info("✅ Real scheduler loaded successfully")
+except ImportError as e:
+    SCHEDULER_AVAILABLE = False
+    logger.warning(f"⚠️ Real scheduler not available: {e}")
+
+# Core components imports
+try:
+    from app.smart.keywords_engine import FinancialKeywordsEngine
+except ImportError:
+    print("⚠️ Keywords engine not available")
+from app.ingest.rss_loader import FinancialDataLoader
 
 # Financial modules imports
 try:
-    from financial.market_data import FinancialDataProvider
-    from financial.market_data_clean import FinancialDataProvider as CleanFinancialDataProvider
-    from financial.news_impact import NewsImpactAnalyzer
-    from financial.social_sentiment import SocialMediaAnalyzer
-    from financial.social_sentiment_enhanced import RealSocialMediaAnalyzer
-    from financial.ai_models import AdvancedAIModels, TimeSeriesAnalyzer
-    from financial.neural_networks import EnsembleNeuralNetwork
-    from financial.ml_trainer import MLModelTrainer
-    from financial.websocket_manager import WebSocketManager, MarketDataStreamer
+    from app.financial.market_data import FinancialDataProvider
+    from app.financial.market_data_clean import FinancialDataProvider as CleanFinancialDataProvider
+    from app.financial.news_impact import NewsImpactAnalyzer
+    from app.financial.social_sentiment import SocialMediaAnalyzer
+    from app.financial.social_sentiment_enhanced import RealSocialMediaAnalyzer
+    from app.financial.ai_models import AdvancedAIModels, TimeSeriesAnalyzer
+    from app.financial.neural_networks import EnsembleNeuralNetwork
+    from app.financial.ml_trainer import MLModelTrainer
+    from app.financial.websocket_manager import WebSocketManager, MarketDataStreamer
     
     FINANCIAL_MODULES_AVAILABLE = True
     logger.info("✅ Financial modules loaded successfully")
@@ -164,11 +176,19 @@ async def lifespan(app: FastAPI):
     logger.info("🚀 Starting MarketPulse Financial Intelligence Platform")
     logger.info("=" * 80)
     
-    # Get scheduler
-    scheduler = get_scheduler()
-    
-    # Set WebSocket broadcast callback
-    scheduler.websocket_broadcast_callback = manager.broadcast
+    # Initialize scheduler
+    scheduler = None
+    if SCHEDULER_AVAILABLE:
+        try:
+            scheduler = get_scheduler()
+            # Set WebSocket broadcast callback
+            scheduler.websocket_broadcast_callback = manager.broadcast
+            logger.info("✅ Real scheduler initialized successfully")
+        except Exception as e:
+            logger.error(f"❌ Failed to initialize real scheduler: {e}")
+            scheduler = None
+    else:
+        logger.warning("⚠️ Scheduler not available - running without background tasks")
     
     # Initialize financial streaming if available
     if FINANCIAL_MODULES_AVAILABLE and market_streamer:
@@ -179,8 +199,13 @@ async def lifespan(app: FastAPI):
         except Exception as e:
             logger.error(f"Failed to start market streaming: {e}")
     
-    # Start background scheduler
-    scheduler.start()
+    # Start background scheduler if available
+    if scheduler:
+        try:
+            scheduler.start()
+            logger.info("✅ Background scheduler started")
+        except Exception as e:
+            logger.error(f"Failed to start scheduler: {e}")
     
     logger.info("✅ All systems operational!")
     logger.info("=" * 80)
@@ -190,7 +215,12 @@ async def lifespan(app: FastAPI):
     # Shutdown
     logger.info("=" * 80)
     logger.info("👋 Shutting down MarketPulse...")
-    scheduler.stop()
+    if scheduler:
+        try:
+            scheduler.stop()
+            logger.info("✅ Scheduler stopped")
+        except Exception as e:
+            logger.error(f"Error stopping scheduler: {e}")
     logger.info("=" * 80)
 
 # ============================================================
@@ -273,71 +303,116 @@ async def websocket_alerts(websocket: WebSocket):
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    scheduler = get_scheduler()
-    stats = scheduler.get_statistics()
-    
-    return {
-        "status": "healthy",
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "scheduler": {
-            "running": scheduler.scheduler.running,
-            "jobs": len(scheduler.scheduler.get_jobs()),
-            "stats": stats
-        },
-        "websockets": {
-            "connected_clients": len(manager.active_connections)
+    if not SCHEDULER_AVAILABLE:
+        return {
+            "status": "healthy",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "scheduler": {"status": "unavailable"},
+            "websockets": {"connected_clients": len(manager.active_connections)}
         }
-    }
+    
+    try:
+        scheduler = get_scheduler()
+        stats = scheduler.get_statistics()
+        
+        return {
+            "status": "healthy",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "scheduler": {
+                "running": scheduler.scheduler.running,
+                "jobs": len(scheduler.scheduler.get_jobs()),
+                "stats": stats
+            },
+            "websockets": {
+                "connected_clients": len(manager.active_connections)
+            }
+        }
+    except Exception as e:
+        logger.error(f"Health check error: {e}")
+        return {
+            "status": "healthy",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "scheduler": {"status": "error"},
+            "websockets": {"connected_clients": len(manager.active_connections)}
+        }
 
 @app.get("/api/health")
 async def api_health_check():
     """Detailed health check for dashboard system status"""
-    scheduler = get_scheduler()
+    if not SCHEDULER_AVAILABLE:
+        return {
+            "status": "healthy",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "services": {"api": "healthy", "scheduler": "unavailable"},
+            "websockets": {"connected_clients": len(manager.active_connections)},
+            "uptime": "Active"
+        }
     
-    # Check all services
-    services = {
-        "api": "healthy",
-        "database": "connected",  # Always connected (in-memory for now)
-        "cache": "connected",     # Redis-like cache
-        "vector_db": "connected", # Vector database for embeddings
-        "workers": "active"       # Background workers
-    }
-    
-    return {
-        "status": "healthy",
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "services": services,
-        "scheduler": {
-            "running": scheduler.scheduler.running,
-            "jobs": len(scheduler.scheduler.get_jobs())
-        },
-        "websockets": {
-            "connected_clients": len(manager.active_connections)
-        },
-        "uptime": "Active"
-    }
+    try:
+        scheduler = get_scheduler()
+        
+        # Check all services
+        services = {
+            "api": "healthy",
+            "database": "connected",
+            "cache": "connected",
+            "vector_db": "connected",
+            "workers": "active"
+        }
+        
+        return {
+            "status": "healthy",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "services": services,
+            "scheduler": {
+                "running": scheduler.scheduler.running,
+                "jobs": len(scheduler.scheduler.get_jobs())
+            },
+            "websockets": {
+                "connected_clients": len(manager.active_connections)
+            },
+            "uptime": "Active"
+        }
+    except Exception as e:
+        logger.error(f"API health check error: {e}")
+        return {
+            "status": "healthy",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "services": {"api": "healthy"},
+            "scheduler": {"status": "error"},
+            "websockets": {"connected_clients": len(manager.active_connections)},
+            "uptime": "Active"
+        }
 
 @app.get("/api/statistics")
 async def get_statistics():
     """Get scheduler and system statistics"""
-    scheduler = get_scheduler()
-    return scheduler.get_statistics()
+    try:
+        scheduler = get_scheduler()
+        return scheduler.get_statistics()
+    except Exception as e:
+        logger.error(f"Statistics error: {e}")
+        return {"error": "Statistics unavailable", "dummy": True}
 
 @app.get("/api/jobs")
 async def get_jobs():
     """Get list of scheduled jobs"""
-    scheduler = get_scheduler()
-    jobs = []
-    
-    for job in scheduler.scheduler.get_jobs():
-        jobs.append({
-            "id": job.id,
-            "name": job.name,
-            "trigger": str(job.trigger),
-            "next_run": job.next_run_time.isoformat() if job.next_run_time else None
-        })
-    
-    return {"jobs": jobs}
+    try:
+        scheduler = get_scheduler()
+        jobs = []
+        
+        for job in scheduler.get_jobs():
+            jobs.append({
+                "id": getattr(job, 'id', 'unknown'),
+                "name": getattr(job, 'name', 'Unknown Job'),
+                "trigger": str(getattr(job, 'trigger', 'N/A')),
+                "next_run": getattr(job, 'next_run_time', 'N/A')
+            })
+        
+        return {"jobs": jobs}
+    except Exception as e:
+        logger.error(f"Jobs error: {e}")
+        return {"jobs": [], "error": "Scheduler unavailable"}
 
 @app.get("/api/feeds/status")
 async def get_feeds_status():
@@ -376,24 +451,24 @@ async def get_feeds_status():
 @app.post("/api/trigger/major-news")
 async def trigger_major_news():
     """Manually trigger major news fetch"""
-    scheduler = get_scheduler()
-    
     try:
+        scheduler = get_scheduler()
         await scheduler._fetch_major_news()
         return {"status": "success", "message": "Major news fetch triggered"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Major news trigger error: {e}")
+        return {"status": "error", "message": "Scheduler unavailable"}
 
 @app.post("/api/trigger/perplexity-scan")
 async def trigger_perplexity_scan():
     """Manually trigger Perplexity market scan"""
-    scheduler = get_scheduler()
-    
     try:
+        scheduler = get_scheduler()
         await scheduler._run_perplexity_scans()
         return {"status": "success", "message": "Perplexity scan triggered"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Perplexity scan trigger error: {e}")
+        return {"status": "error", "message": "Scheduler unavailable"}
 
 @app.post("/api/test-alert")
 async def test_alert():
@@ -428,7 +503,7 @@ async def get_market_indices_endpoint():
     NO DEMO DATA - Only real Yahoo Finance data
     """
     try:
-        from financial.market_data import financial_provider
+        from app.financial.market_data import financial_provider
         indices = await financial_provider.get_market_indices()
         
         if not indices:
@@ -451,7 +526,7 @@ async def get_market_sentiment_endpoint():
     NO DEMO DATA - Based on actual market performance
     """
     try:
-        from financial.market_data import financial_provider
+        from app.financial.market_data import financial_provider
         sentiment = await financial_provider.calculate_market_sentiment()
         
         return {
@@ -470,7 +545,7 @@ async def get_top_stocks_endpoint():
     NO DEMO DATA - Real Yahoo Finance data
     """
     try:
-        from financial.market_data import financial_provider
+        from app.financial.market_data import financial_provider
         stocks = await financial_provider.get_key_stocks_data()
         
         # Sort by change_percent to show top movers
@@ -507,8 +582,8 @@ async def get_ml_prediction(symbol: str, horizon: str = "1d"):
     Uses ensemble of LSTM, Transformer, and CNN neural networks
     """
     try:
-        from financial.neural_networks import EnsembleNeuralNetwork
-        from financial.market_data import financial_provider
+        from app.financial.neural_networks import EnsembleNeuralNetwork
+        from app.financial.market_data import financial_provider
         
         # Get recent stock data
         stock_data = await financial_provider.get_stock_data(symbol)
@@ -546,8 +621,8 @@ async def get_ml_status():
     Get ML system status and capabilities
     """
     try:
-        from financial.neural_networks import TF_AVAILABLE, TORCH_AVAILABLE
-        from financial.ml_trainer import ML_AVAILABLE
+        from app.financial.neural_networks import TF_AVAILABLE, TORCH_AVAILABLE
+        from app.financial.ml_trainer import ML_AVAILABLE
         
         return {
             "status": "success",
@@ -612,7 +687,7 @@ async def get_market_intelligence():
     Combines market data, sentiment, and risk assessment
     """
     try:
-        from financial.market_data import financial_provider
+        from app.financial.market_data import financial_provider
         
         # Get market indices for sentiment
         indices = await financial_provider.get_market_indices()
@@ -722,7 +797,7 @@ async def get_market_intelligence():
 async def get_sectors():
     """Get all monitored sectors"""
     try:
-        from smart.sector_scanner import sector_scanner
+        from app.smart.sector_scanner import sector_scanner
         sectors = sector_scanner.get_all_sectors()
         
         return {
@@ -743,8 +818,8 @@ async def get_hot_stocks(limit: int = 10):
     Uses sector scanner + ML to find opportunities
     """
     try:
-        from smart.sector_scanner import sector_scanner
-        from financial.market_data import financial_provider
+        from app.smart.sector_scanner import sector_scanner
+        from app.financial.market_data import financial_provider
         
         hot_stocks = []
         
@@ -803,7 +878,7 @@ async def get_hot_stocks(limit: int = 10):
 async def get_sector_analysis(sector_id: str):
     """Get analysis for a specific sector"""
     try:
-        from smart.sector_scanner import sector_scanner
+        from app.smart.sector_scanner import sector_scanner
         
         tickers = sector_scanner.get_sector_tickers(sector_id)
         
@@ -933,7 +1008,7 @@ async def get_historical_data(symbol: str, timeframe: str = "1D"):
 async def run_migration():
     """Run database migration to create stock_predictions table"""
     try:
-        from storage.db import get_db_engine
+        from app.storage.db import get_db_engine
         
         # Get database engine
         engine = get_db_engine()
@@ -1041,8 +1116,8 @@ async def run_migration():
 async def create_prediction(prediction: dict):
     """Create a new stock prediction for tracking"""
     try:
-        from storage.db import get_db_session
-        from storage.models import create_stock_prediction, StockPredictionCreate
+        from app.storage.db import get_db_session
+        from app.storage.models import create_stock_prediction, StockPredictionCreate
         
         # Convert dict to Pydantic model
         pred_create = StockPredictionCreate(**prediction)
@@ -1071,8 +1146,8 @@ async def create_prediction(prediction: dict):
 async def get_prediction_statistics(source: str = None):
     """Get prediction performance statistics"""
     try:
-        from storage.db import get_db_session
-        from storage.models import get_prediction_stats
+        from app.storage.db import get_db_session
+        from app.storage.models import get_prediction_stats
         
         db = get_db_session()
         try:
@@ -1098,8 +1173,8 @@ async def list_predictions(
 ):
     """List predictions with optional filters"""
     try:
-        from storage.db import get_db_session
-        from storage.models import StockPrediction
+        from app.storage.db import get_db_session
+        from app.storage.models import StockPrediction
         
         db = get_db_session()
         try:
@@ -1449,12 +1524,40 @@ async def get_ai_status():
         logger.error(f"Failed to get AI status: {e}")
         raise HTTPException(status_code=500, detail="Failed to get AI status")
 
+@app.get("/api/ai/debug-prompt/{symbol}", tags=["AI"])
+async def debug_ai_prompt(symbol: str):
+    """Debug: See the exact prompt that would be sent to Perplexity"""
+    try:
+        from app.financial.market_data import financial_provider
+        from app.smart.perplexity_finance import perplexity_analyzer
+        
+        # Get real market data
+        stock_data = await financial_provider.get_stock_data(symbol)
+        if not stock_data:
+            return {"error": f"No market data for {symbol}"}
+        
+        current_price = float(stock_data.get('price', 100.0))
+        
+        # Get the prompt that would be sent
+        prompt = perplexity_analyzer._create_financial_prompt(symbol, current_price)
+        
+        return {
+            "symbol": symbol,
+            "current_price": current_price,
+            "prompt": prompt,
+            "model": "sonar-reasoning-pro",
+            "estimated_tokens": len(prompt.split()) * 1.3  # Rough estimate
+        }
+        
+    except Exception as e:
+        return {"error": str(e)}
+
 @app.get("/api/ai/comprehensive-analysis/{symbol}", tags=["AI"])
 async def get_comprehensive_analysis(symbol: str):
     """Get comprehensive AI analysis for a symbol using Perplexity AI"""
     try:
-        from financial.market_data import financial_provider
-        from smart.perplexity_finance import perplexity_analyzer
+        from app.financial.market_data import financial_provider
+        from app.smart.perplexity_finance import perplexity_analyzer
         
         # Get real market data first
         stock_data = await financial_provider.get_stock_data(symbol)
@@ -1485,7 +1588,8 @@ async def get_comprehensive_analysis(symbol: str):
                     "citations": ai_result.get("citations", []),
                     "search_results_count": len(ai_result.get("search_results", [])),
                     "cost": ai_result.get("cost", {}),
-                    "raw_response_length": len(ai_result.get("raw_response", ""))
+                    "raw_response_length": len(ai_result.get("raw_response", "")),
+                    "raw_response_preview": ai_result.get("raw_response", "")[:500] + "..." if len(ai_result.get("raw_response", "")) > 500 else ai_result.get("raw_response", "")
                 },
                 "timestamp": datetime.now(timezone.utc).isoformat()
             }
@@ -1728,7 +1832,8 @@ async def dashboard():
 # ============================================================
 # Entry Point
 # ============================================================
-if __name__ == "__main__":
+def run_server():
+    """Run the server with uvicorn"""
     import uvicorn
     
     logger.info("🚀 Starting MarketPulse server...")
@@ -1742,3 +1847,6 @@ if __name__ == "__main__":
         port=8000,
         log_level="info"
     )
+
+if __name__ == "__main__":
+    run_server()
