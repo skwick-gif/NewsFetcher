@@ -310,6 +310,33 @@ def legacy_market_data():
     """Legacy endpoint - redirects to new API"""
     return proxy_to_backend('/api/financial/market-indices')
 
+@app.route('/api/ai/market-intelligence')
+def ai_market_intelligence():
+    """AI market intelligence proxy"""
+    try:
+        response = requests.get(f"{BACKEND_URL}/api/ai/market-intelligence")
+        return jsonify(response.json())
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/ai/comprehensive-analysis/<symbol>')
+def ai_comprehensive_analysis(symbol):
+    """AI comprehensive analysis proxy"""
+    try:
+        response = requests.get(f"{BACKEND_URL}/api/ai/comprehensive-analysis/{symbol}")
+        return jsonify(response.json())
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/ai/status')
+def ai_status():
+    """AI status proxy"""
+    try:
+        response = requests.get(f"{BACKEND_URL}/api/ai/status")
+        return jsonify(response.json())
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 if __name__ == '__main__':
     print("🚀 Starting MarketPulse Dashboard Server...")
     print("📊 Dashboard will be available at: http://localhost:5000")
