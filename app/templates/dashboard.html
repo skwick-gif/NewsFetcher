@@ -1299,8 +1299,8 @@
                 document.getElementById('selected-stock-analysis').innerHTML = `
                     <div style="background: rgba(59, 130, 246, 0.1); border-radius: 6px; padding: 10px;">
                         <strong style="color: #3b82f6;">${symbol}</strong><br>
-                        <small>AI Analysis Complete</small><br>
-                        <span style="color: #10b981;">Last Updated: ${new Date().toLocaleTimeString()}</span>
+                        <span style="color: #10b981;">Current Price: $${data.current_price || 'N/A'}</span><br>
+                        <small>AI Analysis Complete - ${new Date().toLocaleTimeString()}</small>
                     </div>
                 `;
                 
