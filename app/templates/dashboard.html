@@ -13,7 +13,8 @@
     <script src="/static/js/modules/ml-scanner.js?v=20251020" defer></script>
     <script src="/static/js/modules/settings-manager.js?v=20251020" defer></script>
     <script src="/static/js/modules/websocket-client.js?v=20251020" defer></script>
-    <script src="/static/js/main.js?v=20251020" defer></script>
+    <!-- DISABLED: Old main.js conflicts with new AI Analysis - use inline functions instead -->
+    <!-- <script src="/static/js/main.js?v=20251020" defer></script> -->
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -960,9 +961,9 @@
     </div>
     
     <script>
-    // Direct tab switching function for debugging
-    function showTabDirect(tabName) {
-        console.log('🔄 Direct tab switch to:', tabName);
+    // Tab Management Functions (unified from main.js)
+    function showTab(tabName) {
+        console.log('🔄 Switching to tab:', tabName);
         
         // Hide all tab content
         document.querySelectorAll('.tab-content').forEach(content => {
@@ -992,6 +993,16 @@
             console.error('❌ Tab button not found for:', tabName);
         }
     }
+
+    // Direct tab switching function for debugging
+    function showTabDirect(tabName) {
+        console.log('🔄 Direct tab switch to:', tabName);
+        showTab(tabName);
+    }
+
+    // Make functions globally available
+    window.showTab = showTab;
+    window.showTabDirect = showTabDirect;
     
     // Make function globally available
     window.showTabDirect = showTabDirect;
