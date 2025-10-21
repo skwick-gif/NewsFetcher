@@ -60,21 +60,30 @@ class PerplexityFinanceAnalyzer:
             }
             
             logger.info(f"🤖 Sending {symbol} analysis request to Perplexity...")
+            logger.info(f"📤 PROMPT SENT:\n{prompt}")
+            logger.info(f"🔧 REQUEST DATA: {json.dumps(data, indent=2)}")
             
             response = requests.post(
                 self.base_url, 
                 json=data, 
                 headers=headers, 
-                timeout=30
+                timeout=60
             )
+            
+            logger.info(f"📥 RESPONSE STATUS: {response.status_code}")
             
             if response.status_code == 200:
                 result = response.json()
                 ai_content = result['choices'][0]['message']['content']
                 
+                logger.info(f"✅ PERPLEXITY RESPONSE:\n{ai_content}")
+                logger.info(f"📊 CITATIONS: {len(result.get('citations', []))} sources")
+                logger.info(f"🔍 SEARCH RESULTS: {len(result.get('search_results', []))} results")
+                
                 # Parse the AI response into structured data
                 parsed_analysis = self._parse_ai_response(ai_content, symbol, current_price)
                 
+                logger.info(f"🎯 PARSED ANALYSIS: {json.dumps(parsed_analysis, indent=2)}")
                 logger.info(f"✅ AI analysis completed for {symbol}")
                 return {
                     "status": "success",
@@ -105,53 +114,72 @@ class PerplexityFinanceAnalyzer:
     def _create_financial_prompt(self, symbol: str, current_price: float) -> str:
         """Create comprehensive financial analysis prompt"""
         return f"""
-You are an expert financial analyst. Provide a comprehensive analysis of {symbol} stock currently trading at ${current_price}.
+Analyze the stock {symbol} using all accessible financial data within the Perplexity API. 
+Include current and historical price performance, financial metrics, SEC filings, analyst sentiment, and relevant macroeconomic indicators. 
+Incorporate market volatility (VIX), sector trends, and interest rate environment into the evaluation.
 
-Please analyze and provide specific data for:
+Current trading price: ${current_price}
 
-1. **Technical Analysis**:
-   - Current trend direction (bullish/bearish/neutral)
-   - Support and resistance levels (specific prices)
-   - RSI indicator interpretation
-   - MACD signal (buy/sell/hold)
-   - Key technical indicators
+IMPORTANT: Please structure your response in the following format, providing specific numerical data and clear reasoning:
 
-2. **Fundamental Analysis**:
-   - P/E ratio and valuation metrics
-   - Debt-to-equity ratio
-   - Recent revenue growth trends
-   - Profit margins and financial health
-   - Competitive position in sector
+**TECHNICAL ANALYSIS**
+Trend: [bullish/bearish/neutral] - [reasoning with specific indicators]
+Support Level: $[price] - [basis for this level]
+Resistance Level: $[price] - [basis for this level]
+RSI: [value] - [interpretation]
+MACD Signal: [buy/sell/hold] - [current values and reasoning]
+Volume Analysis: [description of recent volume patterns and momentum]
 
-3. **Sentiment & News Analysis**:
-   - Recent news sentiment (positive/negative/neutral)
-   - Social media sentiment trends
-   - Analyst ratings and price targets
-   - Market buzz and investor sentiment
+**FUNDAMENTAL ANALYSIS**
+P/E Ratio: [value] vs Sector Average: [value]
+Price-to-Book: [value] - [valuation assessment]
+Debt-to-Equity: [value] - [financial health assessment]
+Revenue Growth: [quarterly %] (latest quarter), [annual %] (year-over-year)
+Profit Margins: Gross [%], Operating [%], Net [%] - [trend analysis]
+Free Cash Flow: $[amount] - [cash position strength]
+ROE: [%], ROA: [%] - [efficiency analysis]
 
-4. **Risk Assessment**:
-   - Volatility analysis (low/moderate/high)
-   - Beta coefficient if available
-   - Key risk factors and threats
-   - Liquidity assessment
+**MARKET CONTEXT & MACROECONOMIC FACTORS**
+Interest Rate Impact: [analysis of current environment effect]
+Sector Performance: [relative to broader market with %]
+VIX Impact: [current level and volatility considerations]
+Economic Indicators: [relevant sector-specific factors]
+Currency Impact: [if applicable for international exposure]
 
-5. **AI Prediction**:
-   - Direction forecast (up/down/sideways)
-   - Confidence level (0-100%)
-   - Target price estimate
-   - Time horizon (1 month outlook)
+**SENTIMENT & NEWS ANALYSIS**
+News Sentiment: [positive/negative/neutral] - [recent developments]
+Analyst Ratings: [consensus rating and average price target]
+Social Media Sentiment: [trend analysis]
+Insider Activity: [recent trading patterns if available]
+Institutional Changes: [ownership trends]
 
-Please search for the most recent financial data and news about {symbol}. Focus on actionable insights and specific numerical data where possible.
+**RISK ASSESSMENT**
+Volatility: Beta [value], 30-day volatility [%]
+Business Risks: [key operational and market risks]
+Regulatory Risks: [industry-specific considerations]
+Liquidity: [trading volume and market depth]
+Overall Risk: [low/moderate/high] - [explanation]
 
-Format your response with clear sections and specific values that can be used for investment decisions.
+**INVESTMENT RECOMMENDATION**
+Direction: [up/down/sideways] with [probability %]
+Confidence Level: [0-100%] - [basis for confidence]
+Target Price (1-month): $[price] - [rationale and method]
+Key Catalysts: [upcoming events/factors that could move stock]
+Stop-Loss: $[price], Take-Profit: $[price] - [if applicable]
+
+Please search for the most recent SEC filings, earnings reports, analyst notes, and relevant news about {symbol}. 
+Provide specific numerical values wherever possible and cite your data sources.
+Use the most current data available and ensure all analysis is actionable for investment decisions.
 """
     
     def _parse_ai_response(self, ai_content: str, symbol: str, current_price: float) -> Dict:
         """
         Parse AI response into structured financial data
-        This extracts key information from the AI's natural language response
+        Enhanced parser for the new structured format
         """
         try:
+            import re
+            
             # Initialize default structure
             analysis = {
                 "technical": {
@@ -187,65 +215,96 @@ Format your response with clear sections and specific values that can be used fo
                 }
             }
             
-            # Try to extract specific information using basic text parsing
-            content_lower = ai_content.lower()
+            # Parse structured response sections
+            content = ai_content.upper()
             
-            # Extract trend
-            if "bullish" in content_lower or "uptrend" in content_lower:
-                analysis["technical"]["trend"] = "bullish"
-                analysis["prediction"]["direction"] = "up"
-            elif "bearish" in content_lower or "downtrend" in content_lower:
-                analysis["technical"]["trend"] = "bearish" 
-                analysis["prediction"]["direction"] = "down"
-            
-            # Extract sentiment
-            if "positive" in content_lower and "sentiment" in content_lower:
-                analysis["sentiment"]["news_sentiment"] = 0.7
-            elif "negative" in content_lower and "sentiment" in content_lower:
-                analysis["sentiment"]["news_sentiment"] = 0.3
+            # Extract Technical Analysis
+            tech_section = self._extract_section(ai_content, "TECHNICAL ANALYSIS")
+            if tech_section:
+                # Trend
+                if "BULLISH" in tech_section:
+                    analysis["technical"]["trend"] = "bullish"
+                    analysis["prediction"]["direction"] = "up"
+                elif "BEARISH" in tech_section:
+                    analysis["technical"]["trend"] = "bearish"
+                    analysis["prediction"]["direction"] = "down"
                 
-            # Extract analyst rating
-            if "buy" in content_lower and ("rating" in content_lower or "recommend" in content_lower):
-                analysis["sentiment"]["analyst_rating"] = "buy"
-            elif "sell" in content_lower and ("rating" in content_lower or "recommend" in content_lower):
-                analysis["sentiment"]["analyst_rating"] = "sell"
-            
-            # Extract volatility
-            if "high volatility" in content_lower or "volatile" in content_lower:
-                analysis["risk_assessment"]["volatility"] = "high"
-                analysis["risk_assessment"]["risk_score"] = 0.7
-            elif "low volatility" in content_lower or "stable" in content_lower:
-                analysis["risk_assessment"]["volatility"] = "low"
-                analysis["risk_assessment"]["risk_score"] = 0.3
-            
-            # Try to extract numerical values (basic regex patterns)
-            import re
-            
-            # Look for support/resistance levels
-            price_pattern = r'\$?(\d+\.?\d*)'
-            support_matches = re.findall(rf'support.*?{price_pattern}', content_lower)
-            if support_matches:
-                try:
-                    analysis["technical"]["support_level"] = float(support_matches[0])
-                except:
-                    pass
+                # Extract numerical values
+                support = self._extract_price(tech_section, r"SUPPORT LEVEL:\s*\$?(\d+\.?\d*)")
+                if support:
+                    analysis["technical"]["support_level"] = support
                     
-            resistance_matches = re.findall(rf'resistance.*?{price_pattern}', content_lower)
-            if resistance_matches:
-                try:
-                    analysis["technical"]["resistance_level"] = float(resistance_matches[0])
-                except:
-                    pass
+                resistance = self._extract_price(tech_section, r"RESISTANCE LEVEL:\s*\$?(\d+\.?\d*)")
+                if resistance:
+                    analysis["technical"]["resistance_level"] = resistance
+                    
+                rsi = self._extract_number(tech_section, r"RSI:\s*(\d+\.?\d*)")
+                if rsi:
+                    analysis["technical"]["rsi"] = rsi
+                    
+                if "BUY" in tech_section:
+                    analysis["technical"]["macd_signal"] = "buy"
+                elif "SELL" in tech_section:
+                    analysis["technical"]["macd_signal"] = "sell"
             
-            # Look for target price
-            target_matches = re.findall(rf'target.*?{price_pattern}', content_lower)
-            if target_matches:
-                try:
-                    target_price = float(target_matches[0])
-                    analysis["sentiment"]["price_target"] = target_price
-                    analysis["prediction"]["target_price"] = target_price
-                except:
-                    pass
+            # Extract Fundamental Analysis
+            fund_section = self._extract_section(ai_content, "FUNDAMENTAL ANALYSIS")
+            if fund_section:
+                pe_ratio = self._extract_number(fund_section, r"P/E RATIO:\s*(\d+\.?\d*)")
+                if pe_ratio:
+                    analysis["fundamental"]["pe_ratio"] = pe_ratio
+                    
+                debt_eq = self._extract_number(fund_section, r"DEBT-TO-EQUITY:\s*(\d+\.?\d*)")
+                if debt_eq:
+                    analysis["fundamental"]["debt_to_equity"] = debt_eq
+                    
+                revenue_growth = self._extract_number(fund_section, r"REVENUE GROWTH:\s*(\d+\.?\d*)%?")
+                if revenue_growth:
+                    analysis["fundamental"]["revenue_growth"] = f"{revenue_growth}%"
+            
+            # Extract Investment Recommendation
+            rec_section = self._extract_section(ai_content, "INVESTMENT RECOMMENDATION")
+            if rec_section:
+                if "UP" in rec_section:
+                    analysis["prediction"]["direction"] = "up"
+                elif "DOWN" in rec_section:
+                    analysis["prediction"]["direction"] = "down"
+                    
+                confidence = self._extract_number(rec_section, r"CONFIDENCE LEVEL:\s*(\d+\.?\d*)%?")
+                if confidence:
+                    analysis["prediction"]["confidence"] = confidence / 100
+                    
+                target = self._extract_price(rec_section, r"TARGET PRICE.*?\$?(\d+\.?\d*)")
+                if target:
+                    analysis["prediction"]["target_price"] = target
+                    analysis["sentiment"]["price_target"] = target
+            
+            # Extract Risk Assessment
+            risk_section = self._extract_section(ai_content, "RISK ASSESSMENT")
+            if risk_section:
+                if "HIGH" in risk_section and "RISK" in risk_section:
+                    analysis["risk_assessment"]["volatility"] = "high"
+                    analysis["risk_assessment"]["risk_score"] = 0.8
+                elif "LOW" in risk_section and "RISK" in risk_section:
+                    analysis["risk_assessment"]["volatility"] = "low"
+                    analysis["risk_assessment"]["risk_score"] = 0.3
+                    
+                beta = self._extract_number(risk_section, r"BETA\s*(\d+\.?\d*)")
+                if beta:
+                    analysis["risk_assessment"]["beta"] = beta
+            
+            # Extract Sentiment
+            sent_section = self._extract_section(ai_content, "SENTIMENT & NEWS ANALYSIS")
+            if sent_section:
+                if "POSITIVE" in sent_section:
+                    analysis["sentiment"]["news_sentiment"] = 0.7
+                elif "NEGATIVE" in sent_section:
+                    analysis["sentiment"]["news_sentiment"] = 0.3
+                    
+                if "BUY" in sent_section and "RATING" in sent_section:
+                    analysis["sentiment"]["analyst_rating"] = "buy"
+                elif "SELL" in sent_section and "RATING" in sent_section:
+                    analysis["sentiment"]["analyst_rating"] = "sell"
             
             return analysis
             
@@ -268,6 +327,39 @@ Format your response with clear sections and specific values that can be used fo
                 },
                 "error": "Failed to parse AI response"
             }
+    
+    def _extract_section(self, content: str, section_name: str) -> str:
+        """Extract a specific section from the structured response"""
+        try:
+            import re
+            # Look for section header followed by content until next section or end
+            pattern = rf'\*\*{section_name}\*\*(.*?)(?=\*\*[A-Z\s&]+\*\*|$)'
+            match = re.search(pattern, content, re.DOTALL | re.IGNORECASE)
+            return match.group(1).strip() if match else ""
+        except:
+            return ""
+    
+    def _extract_price(self, text: str, pattern: str) -> float:
+        """Extract price value from text using regex pattern"""
+        try:
+            import re
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match:
+                return float(match.group(1))
+        except:
+            pass
+        return None
+    
+    def _extract_number(self, text: str, pattern: str) -> float:
+        """Extract numerical value from text using regex pattern"""
+        try:
+            import re
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match:
+                return float(match.group(1))
+        except:
+            pass
+        return None
 
 # Create global instance
 perplexity_analyzer = PerplexityFinanceAnalyzer()

@@ -603,9 +603,14 @@
                         <div class="stock-selector">
                             <input type="text" id="ai-stock-input" placeholder="Enter stock symbol (e.g., AAPL)" 
                                    style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em; text-transform: uppercase;">
-                            <button onclick="analyzeStock()" style="width: 100%; margin-top: 8px; background: #3b82f6; border: none; border-radius: 6px; padding: 8px; color: white; cursor: pointer; font-size: 0.85em;">
-                                🔍 Analyze Stock
-                            </button>
+                            <div style="display: flex; gap: 5px; margin-top: 8px;">
+                                <button onclick="analyzeStock()" style="flex: 1; background: #3b82f6; border: none; border-radius: 6px; padding: 8px; color: white; cursor: pointer; font-size: 0.85em;">
+                                    🔍 Analyze Stock
+                                </button>
+                                <button onclick="debugPrompt()" style="flex: 1; background: #f59e0b; border: none; border-radius: 6px; padding: 8px; color: white; cursor: pointer; font-size: 0.85em;">
+                                    🐛 Debug Prompt
+                                </button>
+                            </div>
                         </div>
                         <div id="selected-stock-analysis" style="margin-top: 15px;">
                             <p style="text-align: center; opacity: 0.6;">Enter a stock symbol above for comprehensive AI analysis</p>
@@ -1295,12 +1300,20 @@
                 const analysis = data.analysis;
                 const prediction = data.prediction;
                 
-                // Update stock info
+                // Update stock info with metadata
+                const metadata = data.ai_metadata || {};
                 document.getElementById('selected-stock-analysis').innerHTML = `
                     <div style="background: rgba(59, 130, 246, 0.1); border-radius: 6px; padding: 10px;">
                         <strong style="color: #3b82f6;">${symbol}</strong><br>
                         <span style="color: #10b981;">Current Price: $${data.current_price || 'N/A'}</span><br>
-                        <small>AI Analysis Complete - ${new Date().toLocaleTimeString()}</small>
+                        <small>🤖 AI Model: ${metadata.model || 'N/A'}</small><br>
+                        <small>📊 Sources: ${metadata.search_results_count || 0} | Cost: $${(metadata.cost?.total_cost || 0).toFixed(4)}</small><br>
+                        <small>📝 Response: ${metadata.raw_response_length || 0} chars | ${new Date().toLocaleTimeString()}</small>
+                        ${metadata.raw_response_preview ? `
+                        <details style="margin-top: 8px;">
+                            <summary style="cursor: pointer; color: #3b82f6; font-size: 0.8em;">📄 View AI Response Preview</summary>
+                            <pre style="white-space: pre-wrap; margin-top: 8px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 4px; font-size: 0.75em; max-height: 200px; overflow-y: auto;">${metadata.raw_response_preview}</pre>
+                        </details>` : ''}
                     </div>
                 `;
                 
@@ -1366,6 +1379,54 @@
             document.getElementById('ai-comprehensive-results').innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Connection error</p>';
             document.getElementById('ai-technical-results').innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Network error</p>';
             document.getElementById('ai-risk-factors').innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Service unavailable</p>';
+        }
+    }
+    
+    // Debug function to see the prompt
+    window.debugPrompt = async function() {
+        const symbol = document.getElementById('ai-stock-input').value.trim().toUpperCase();
+        if (!symbol) {
+            alert('Please enter a stock symbol');
+            return;
+        }
+        
+        try {
+            console.log('🐛 Fetching debug info for:', symbol);
+            const response = await fetch(`/api/ai/debug-prompt/${symbol}`);
+            const data = await response.json();
+            
+            if (!data.error) {
+                console.log('🎯 PROMPT THAT WILL BE SENT TO PERPLEXITY:');
+                console.log('═'.repeat(60));
+                console.log(data.prompt);
+                console.log('═'.repeat(60));
+                console.log(`📊 Symbol: ${data.symbol}`);
+                console.log(`💰 Current Price: $${data.current_price}`);
+                console.log(`🤖 Model: ${data.model}`);
+                console.log(`📝 Estimated Tokens: ${Math.round(data.estimated_tokens)}`);
+                
+                // Show in UI too
+                document.getElementById('selected-stock-analysis').innerHTML = `
+                    <div style="background: rgba(245, 158, 11, 0.1); border-radius: 6px; padding: 10px; font-family: monospace; font-size: 0.8em;">
+                        <strong style="color: #f59e0b;">🐛 DEBUG INFO for ${symbol}</strong><br>
+                        <strong>Price:</strong> $${data.current_price}<br>
+                        <strong>Model:</strong> ${data.model}<br>
+                        <strong>Est. Tokens:</strong> ${Math.round(data.estimated_tokens)}<br>
+                        <details style="margin-top: 10px;">
+                            <summary style="cursor: pointer; color: #f59e0b;">📝 View Full Prompt</summary>
+                            <pre style="white-space: pre-wrap; margin-top: 10px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 4px; max-height: 300px; overflow-y: auto;">${data.prompt}</pre>
+                        </details>
+                    </div>
+                `;
+                
+                alert(`Debug info logged to console! Check the browser console (F12) for full prompt details.`);
+            } else {
+                console.error('❌ Debug error:', data.error);
+                alert('Error getting debug info: ' + data.error);
+            }
+        } catch (error) {
+            console.error('❌ Debug request failed:', error);
+            alert('Failed to get debug info: ' + error.message);
         }
     }
     

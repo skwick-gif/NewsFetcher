@@ -17,9 +17,9 @@ from apscheduler.triggers.interval import IntervalTrigger
 import yaml
 
 # Import our components
-from ingest.rss_loader import FinancialDataLoader
-from smart.keywords_engine import FinancialKeywordsEngine, analyze_articles_batch
-from financial.perplexity_analyzer import PerplexityFinancialAnalyzer
+from app.ingest.rss_loader import FinancialDataLoader
+from app.smart.keywords_engine import FinancialKeywordsEngine, analyze_articles_batch
+from app.smart.perplexity_finance import PerplexityFinanceAnalyzer
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ class MarketPulseScheduler:
         # Initialize components
         self.data_loader = FinancialDataLoader(config_path)
         self.keywords_engine = FinancialKeywordsEngine()
-        self.perplexity = PerplexityFinancialAnalyzer()
+        self.perplexity = PerplexityFinanceAnalyzer()
         
         # Statistics tracking
         self.stats = {
