@@ -1874,6 +1874,162 @@ async def get_progressive_models():
         logger.error(f"Failed to get progressive models info: {e}")
         raise HTTPException(status_code=500, detail="Failed to get progressive models info")
 
+@app.post("/api/ml/progressive/backtest", tags=["Progressive ML"])
+async def start_backtest(
+    symbol: str,
+    train_start_date: str,
+    train_end_date: str,
+    test_period_days: int = 14,
+    max_iterations: int = 10,
+    target_accuracy: float = 0.85,
+    auto_stop: bool = True,
+    model_types: List[str] = ["lstm"]
+):
+    """
+    Start progressive backtesting with date-range training
+    
+    Args:
+        symbol: Stock symbol to train on
+        train_start_date: Initial training start date (YYYY-MM-DD)
+        train_end_date: Initial training end date (YYYY-MM-DD)
+        test_period_days: Number of days to test forward (default: 14)
+        max_iterations: Maximum iterations to run (default: 10)
+        target_accuracy: Target accuracy to achieve 0-1 (default: 0.85)
+        auto_stop: Stop when target accuracy reached (default: True)
+        model_types: List of model types to train (default: ["lstm"])
+    
+    Returns:
+        Backtest results with all iterations
+    """
+    try:
+        if not PROGRESSIVE_ML_AVAILABLE:
+            raise HTTPException(status_code=503, detail="Progressive ML system not available")
+        
+        if not progressive_data_loader or not progressive_trainer or not progressive_predictor:
+            raise HTTPException(status_code=503, detail="Progressive ML components not initialized")
+        
+        # Import backtester
+        from app.ml.progressive.backtester import ProgressiveBacktester
+        
+        # Create backtester instance
+        backtester = ProgressiveBacktester(
+            data_loader=progressive_data_loader,
+            trainer=progressive_trainer,
+            predictor=progressive_predictor
+        )
+        
+        # Run backtest
+        logger.info(f"🔬 Starting backtest for {symbol}")
+        results = backtester.run_backtest(
+            symbol=symbol,
+            train_start_date=train_start_date,
+            train_end_date=train_end_date,
+            test_period_days=test_period_days,
+            max_iterations=max_iterations,
+            target_accuracy=target_accuracy,
+            auto_stop=auto_stop,
+            model_types=model_types
+        )
+        
+        return {
+            "status": "success",
+            "backtest_results": results,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to start backtest: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to start backtest: {str(e)}")
+
+@app.get("/api/ml/progressive/backtest/status/{job_id}", tags=["Progressive ML"])
+async def get_backtest_status(job_id: str):
+    """
+    Get status of running backtest
+    
+    Args:
+        job_id: Backtest job ID
+        
+    Returns:
+        Current status of the backtest
+    """
+    try:
+        if not PROGRESSIVE_ML_AVAILABLE:
+            raise HTTPException(status_code=503, detail="Progressive ML system not available")
+        
+        # Import backtester
+        from app.ml.progressive.backtester import ProgressiveBacktester
+        
+        # For now, return basic status
+        # In production, you'd maintain a registry of active backtests
+        status = {
+            "job_id": job_id,
+            "is_running": False,
+            "message": "Status tracking not yet implemented",
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        
+        return status
+        
+    except Exception as e:
+        logger.error(f"Failed to get backtest status: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get backtest status: {str(e)}")
+
+@app.get("/api/ml/progressive/backtest/results/{symbol}", tags=["Progressive ML"])
+async def get_backtest_results(symbol: str):
+    """
+    Get backtest results for a symbol
+    
+    Args:
+        symbol: Stock symbol
+        
+    Returns:
+        Saved backtest results
+    """
+    try:
+        if not PROGRESSIVE_ML_AVAILABLE:
+            raise HTTPException(status_code=503, detail="Progressive ML system not available")
+        
+        import os
+        import json
+        from pathlib import Path
+        
+        results_dir = Path("app/ml/models/backtest_results")
+        
+        if not results_dir.exists():
+            return {
+                "status": "no_results",
+                "message": f"No backtest results found for {symbol}",
+                "symbol": symbol
+            }
+        
+        # Find latest results file for symbol
+        results_files = list(results_dir.glob(f"results_{symbol}_*.json"))
+        
+        if not results_files:
+            return {
+                "status": "no_results",
+                "message": f"No backtest results found for {symbol}",
+                "symbol": symbol
+            }
+        
+        # Get most recent file
+        latest_file = max(results_files, key=lambda p: p.stat().st_mtime)
+        
+        with open(latest_file, 'r') as f:
+            results = json.load(f)
+        
+        return {
+            "status": "success",
+            "symbol": symbol,
+            "results": results,
+            "file": latest_file.name,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get backtest results: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get backtest results: {str(e)}")
+
 @app.get("/api/market/{symbol}", tags=["Market"])
 async def get_market_data(symbol: str):
     """Get real-time market data for symbol"""

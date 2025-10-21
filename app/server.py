@@ -163,6 +163,35 @@ def api_progressive_predict(symbol):
     mode = request.args.get('mode', 'progressive')
     return proxy_to_backend(f'/api/ml/progressive/predict/{symbol}?mode={mode}', method='POST')
 
+@app.route('/api/ml/progressive/backtest', methods=['POST'])
+def api_progressive_backtest():
+    """Proxy to FastAPI: Start progressive backtesting"""
+    data = request.get_json()
+    symbol = data.get('symbol')
+    train_start_date = data.get('train_start_date')
+    train_end_date = data.get('train_end_date')
+    test_period_days = data.get('test_period_days', 14)
+    max_iterations = data.get('max_iterations', 10)
+    target_accuracy = data.get('target_accuracy', 0.85)
+    auto_stop = data.get('auto_stop', True)
+    model_types = data.get('model_types', ['lstm'])
+    
+    url = f'/api/ml/progressive/backtest?symbol={symbol}&train_start_date={train_start_date}&train_end_date={train_end_date}&test_period_days={test_period_days}&max_iterations={max_iterations}&target_accuracy={target_accuracy}&auto_stop={auto_stop}'
+    for model_type in model_types:
+        url += f'&model_types={model_type}'
+    
+    return proxy_to_backend(url, method='POST')
+
+@app.route('/api/ml/progressive/backtest/status/<job_id>')
+def api_progressive_backtest_status(job_id):
+    """Proxy to FastAPI: Get backtest status"""
+    return proxy_to_backend(f'/api/ml/progressive/backtest/status/{job_id}')
+
+@app.route('/api/ml/progressive/backtest/results/<symbol>')
+def api_progressive_backtest_results(symbol):
+    """Proxy to FastAPI: Get backtest results"""
+    return proxy_to_backend(f'/api/ml/progressive/backtest/results/{symbol}')
+
 # ===========================
 # Enhanced Financial API Proxies (NEW)
 # ===========================
