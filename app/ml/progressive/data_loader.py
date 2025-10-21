@@ -47,7 +47,10 @@ class ProgressiveDataLoader:
                  horizons: List[int] = [1, 7, 30],
                  use_fundamentals: bool = True,
                  use_technical_indicators: bool = True,
-                 validation_split: float = 0.2):
+                 validation_split: float = 0.2,
+                 train_start_date: Optional[str] = None,
+                 train_end_date: Optional[str] = None,
+                 test_period_days: int = 14):
         """
         Initialize Progressive Data Loader
         
@@ -58,6 +61,9 @@ class ProgressiveDataLoader:
             use_fundamentals: Include fundamental data from JSON files
             use_technical_indicators: Calculate technical indicators
             validation_split: Fraction of data for validation
+            train_start_date: Optional start date for training data (YYYY-MM-DD)
+            train_end_date: Optional end date for training data (YYYY-MM-DD)
+            test_period_days: Number of days for testing period (default: 14)
         """
         self.stock_data_dir = Path(stock_data_dir)
         self.sequence_length = sequence_length
@@ -65,6 +71,11 @@ class ProgressiveDataLoader:
         self.use_fundamentals = use_fundamentals
         self.use_technical_indicators = use_technical_indicators
         self.validation_split = validation_split
+        
+        # Backtesting parameters
+        self.train_start_date = train_start_date
+        self.train_end_date = train_end_date
+        self.test_period_days = test_period_days
         
         # Feature cache for efficiency
         self._feature_cache = {}
@@ -75,6 +86,9 @@ class ProgressiveDataLoader:
         logger.info(f"   📈 Sequence length: {self.sequence_length} days")
         logger.info(f"   📋 Fundamentals: {'✅' if use_fundamentals else '❌'}")
         logger.info(f"   🔧 Technical indicators: {'✅' if use_technical_indicators else '❌'}")
+        if train_start_date or train_end_date:
+            logger.info(f"   📅 Date range: {train_start_date or 'START'} → {train_end_date or 'END'}")
+            logger.info(f"   🧪 Test period: {test_period_days} days")
     
     def load_stock_data(self, symbol: str) -> Optional[pd.DataFrame]:
         """Load CSV price data for a symbol"""
@@ -96,6 +110,15 @@ class ProgressiveDataLoader:
             
             # Sort by date
             df = df.sort_index()
+            
+            # Filter by date range if specified
+            if self.train_start_date:
+                df = df[df.index >= self.train_start_date]
+                logger.info(f"   📅 Filtered from {self.train_start_date}")
+            
+            if self.train_end_date:
+                df = df[df.index <= self.train_end_date]
+                logger.info(f"   📅 Filtered until {self.train_end_date}")
             
             # Basic data validation
             if len(df) < self.sequence_length + max(self.horizons) + 10:
@@ -512,6 +535,84 @@ class ProgressiveDataLoader:
             logger.info(f"📊 {key}: Train={split_idx}, Val={len(X) - split_idx}")
         
         return split_data
+    
+    def split_by_date(self, df: pd.DataFrame, split_date: str) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        """
+        Split DataFrame by date instead of random split
+        
+        Args:
+            df: DataFrame with DateTimeIndex
+            split_date: Date string (YYYY-MM-DD) to split on
+            
+        Returns:
+            Tuple of (train_df, test_df)
+        """
+        try:
+            split_date_parsed = pd.to_datetime(split_date)
+            
+            # Validate date is within DataFrame range
+            if split_date_parsed < df.index.min():
+                logger.warning(f"⚠️ Split date {split_date} is before data start {df.index.min().date()}")
+                return df, pd.DataFrame()
+            
+            if split_date_parsed > df.index.max():
+                logger.warning(f"⚠️ Split date {split_date} is after data end {df.index.max().date()}")
+                return df, pd.DataFrame()
+            
+            # Split data
+            train_df = df[df.index < split_date_parsed]
+            test_df = df[df.index >= split_date_parsed]
+            
+            logger.info(f"📊 Split by date {split_date}:")
+            logger.info(f"   Train: {len(train_df)} samples ({train_df.index[0].date()} to {train_df.index[-1].date()})")
+            logger.info(f"   Test:  {len(test_df)} samples ({test_df.index[0].date()} to {test_df.index[-1].date()})")
+            
+            return train_df, test_df
+            
+        except Exception as e:
+            logger.error(f"❌ Error splitting by date: {e}")
+            # Fall back to regular split
+            split_idx = int(len(df) * 0.8)
+            return df[:split_idx], df[split_idx:]
+    
+    def validate_date_range(self, start_date: Optional[str] = None, end_date: Optional[str] = None) -> bool:
+        """
+        Validate that date range is logical
+        
+        Args:
+            start_date: Start date string (YYYY-MM-DD)
+            end_date: End date string (YYYY-MM-DD)
+            
+        Returns:
+            True if valid, False otherwise
+        """
+        try:
+            if start_date and end_date:
+                start = pd.to_datetime(start_date)
+                end = pd.to_datetime(end_date)
+                
+                if start >= end:
+                    logger.error(f"❌ Start date {start_date} must be before end date {end_date}")
+                    return False
+                
+                if end > pd.Timestamp.now():
+                    logger.warning(f"⚠️ End date {end_date} is in the future")
+                    return False
+                
+                # Check minimum data requirements
+                days_diff = (end - start).days
+                min_days = self.sequence_length + max(self.horizons) + 30
+                
+                if days_diff < min_days:
+                    logger.error(f"❌ Date range too short. Need at least {min_days} days, got {days_diff}")
+                    return False
+            
+            logger.info(f"✅ Date range validation passed")
+            return True
+            
+        except Exception as e:
+            logger.error(f"❌ Date validation error: {e}")
+            return False
 
 
 def test_progressive_dataloader():
