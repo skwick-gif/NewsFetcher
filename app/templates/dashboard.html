@@ -793,155 +793,167 @@
             <div class="section">
                 <h3>🚀 Progressive ML Training System</h3>
                 
-                <!-- Progressive ML Status Section -->
+                <!-- Row 1: Status Cards in Single Row -->
                 <div class="ai-grid" style="margin-bottom: 20px;">
-                    <div class="ai-card">
+                    <div class="ai-card" style="grid-column: auto;">
                         <h4>🤖 Progressive ML Status</h4>
                         <div id="progressive-ml-status-display">Loading Progressive ML status...</div>
                     </div>
-                    <div class="ai-card">
+                    <div class="ai-card" style="grid-column: auto;">
                         <h4>🧠 Available Models</h4>
                         <div id="progressive-models-display">Loading models info...</div>
                     </div>
-                    <div class="ai-card">
+                    <div class="ai-card" style="grid-column: auto;">
                         <h4>📊 Training Status</h4>
                         <div id="progressive-training-status-display">Loading training status...</div>
                     </div>
                 </div>
 
-                <!-- Progressive Training Interface -->
-                <div class="settings-container">
-                    <div class="settings-group">
-                        <h4>🎯 Progressive Model Training</h4>
-                        <div class="setting-item">
-                            <label for="progressive-symbol">Stock Symbol:</label>
-                            <input type="text" id="progressive-symbol" placeholder="e.g., AAPL, TSLA, MSFT, GOOGL, AMZN" value="AAPL" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0;">
-                            <small style="opacity: 0.7; font-size: 0.85em;">💡 Enter any stock symbol from your stock_data folder</small>
+                <!-- Row 2: Advanced Backtesting (Full Width, Parameters in Row) -->
+                <div style="background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(59,130,246,0.1)); border: 1px solid rgba(139,92,246,0.3); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                    <h4 style="color: #ffd700; margin-bottom: 15px; font-size: 1.1em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">🔬 Advanced Backtesting Training</h4>
+                    <p style="font-size: 0.9em; opacity: 0.8; margin-bottom: 15px;">Train with expanding date windows and automatic accuracy improvement</p>
+                    
+                    <!-- Parameters Grid - All in Row including buttons -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; align-items: end;">
+                        <div>
+                            <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Start Date:</label>
+                            <input type="date" id="backtest-start-date" value="2024-01-01" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
                         </div>
-                        <div class="setting-item">
-                            <label for="progressive-model-types">Model Types:</label>
-                            <select id="progressive-model-types" multiple style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; height: 80px;">
-                                <option value="lstm" selected>LSTM (Long Short-Term Memory)</option>
-                                <option value="gru">GRU (Gated Recurrent Unit)</option>
-                                <option value="cnn_lstm">CNN-LSTM (Convolutional + LSTM)</option>
-                                <option value="transformer">Transformer</option>
-                            </select>
+                        
+                        <div>
+                            <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">End Date:</label>
+                            <input type="date" id="backtest-end-date" value="2025-10-07" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
                         </div>
-                        <div class="setting-item">
-                            <label for="progressive-mode">Training Mode:</label>
-                            <select id="progressive-mode" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0;">
-                                <option value="progressive" selected>Progressive (Multi-horizon)</option>
-                                <option value="unified">Unified (Single model)</option>
-                            </select>
+                        
+                        <div>
+                            <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Test Period:</label>
+                            <input type="number" id="backtest-test-period" value="14" min="1" max="365" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
                         </div>
-                        <div style="display: flex; gap: 10px; margin-top: 10px;">
-                            <button onclick="getProgressivePrediction()" style="flex: 1; background: #8b5cf6; border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer;">
-                                🔮 Get Progressive Prediction
+                        
+                        <div>
+                            <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Iterations:</label>
+                            <input type="number" id="backtest-max-iterations" value="10" min="1" max="50" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+                        </div>
+                        
+                        <div>
+                            <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Target: <span id="accuracy-display" style="font-weight: bold; color: #10b981;">85%</span></label>
+                            <input type="range" id="backtest-target-accuracy" min="50" max="100" value="85" style="width: 100%;">
+                        </div>
+                        
+                        <div>
+                            <label style="font-size: 0.75em; color: #cbd5e0; display: flex; align-items: center; cursor: pointer; padding: 8px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                                <input type="checkbox" id="backtest-auto-stop" checked style="width: 16px; height: 16px; margin-left: 5px; accent-color: #3b82f6;">
+                                Auto-stop
+                            </label>
+                        </div>
+                        
+                        <div>
+                            <button onclick="startBacktesting()" style="width: 100%; background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer; font-weight: bold; font-size: 0.85em;">
+                                🔬 Start
                             </button>
-                            <button onclick="startProgressiveTraining()" style="flex: 1; background: #f59e0b; border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer;">
-                                🚀 Start Progressive Training
+                        </div>
+                        
+                        <div>
+                            <button onclick="stopBacktesting()" style="width: 100%; background: #ef4444; border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer; font-size: 0.85em;">
+                                ⏹ Stop
                             </button>
                         </div>
                     </div>
                     
-                    <div class="settings-group">
-                        <h4>📈 Progressive Prediction Results</h4>
-                        <div id="progressive-prediction-results" style="min-height: 150px; background: rgba(255,255,255,0.03); border-radius: 8px; padding: 15px; border: 1px solid rgba(255,255,255,0.1);">
-                            <p style="opacity: 0.6; text-align: center;">Select a symbol and click "Get Progressive Prediction" to see advanced ML predictions with multiple time horizons</p>
+                    <!-- Progress Display -->
+                    <div id="backtest-progress" style="margin-top: 20px; display: none;">
+                        <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px; margin-bottom: 10px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span id="backtest-status-text">Starting backtest...</span>
+                                <span id="backtest-iteration-text">Iteration 0/10</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.1); border-radius: 10px; height: 10px; overflow: hidden;">
+                                <div id="backtest-progress-fill" style="background: linear-gradient(90deg, #10b981, #3b82f6); height: 100%; width: 0%; transition: width 0.3s;"></div>
+                            </div>
                         </div>
                     </div>
+                    
+                    <!-- Results Table -->
+                    <div id="backtest-results-container" style="margin-top: 20px; display: none;">
+                        <h5 style="margin-bottom: 10px;">📊 Backtest Results</h5>
+                        <div style="overflow-x: auto; background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px;">
+                            <table style="width: 100%; color: #e2e8f0; font-size: 0.9em;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                        <th style="padding: 8px; text-align: left;">#</th>
+                                        <th style="padding: 8px; text-align: left;">Train Until</th>
+                                        <th style="padding: 8px; text-align: left;">Accuracy</th>
+                                        <th style="padding: 8px; text-align: left;">Loss</th>
+                                        <th style="padding: 8px; text-align: left;">Time</th>
+                                        <th style="padding: 8px; text-align: left;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="backtest-results-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Chart -->
+                    <div id="backtest-chart-container" style="margin-top: 20px; display: none;">
+                        <canvas id="backtest-chart"></canvas>
+                    </div>
+                </div>
 
-                    <div class="settings-group">
-                        <h4>🏋️ Training Progress</h4>
+                <!-- Row 3: Progressive Training Interface (2 Boxes) -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                    <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px;">
+                        <h4 style="color: #ffd700; margin-bottom: 12px; font-size: 1em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px;">🎯 Progressive Model Training</h4>
+                        
+                        <!-- All inputs in one row -->
+                        <div style="display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 10px; margin-bottom: 10px; align-items: start;">
+                            <div>
+                                <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Stock Symbol:</label>
+                                <input type="text" id="progressive-symbol" placeholder="AAPL" value="AAPL" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.9em;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Model Types:</label>
+                                <select id="progressive-model-types" multiple style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 6px 8px; color: #e2e8f0; height: 60px; font-size: 0.85em;">
+                                    <option value="lstm" selected>LSTM</option>
+                                    <option value="gru">GRU</option>
+                                    <option value="cnn_lstm">CNN-LSTM</option>
+                                    <option value="transformer">Transformer</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Training Mode:</label>
+                                <select id="progressive-mode" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+                                    <option value="progressive" selected>Progressive</option>
+                                    <option value="unified">Unified</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <small style="opacity: 0.7; font-size: 0.8em; display: block; margin-bottom: 10px;">💡 Enter any stock symbol from your stock_data folder</small>
+                        
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="getProgressivePrediction()" style="flex: 1; background: #8b5cf6; border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer; font-weight: 600; font-size: 0.85em;">
+                                🔮 Get Prediction
+                            </button>
+                            <button onclick="startProgressiveTraining()" style="flex: 1; background: #f59e0b; border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer; font-weight: 600; font-size: 0.85em;">
+                                🚀 Start Training
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px;">
+                        <h4 style="color: #ffd700; margin-bottom: 12px; font-size: 1em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px;">🏋️ Training Progress</h4>
                         <div id="progressive-training-results" style="min-height: 100px; background: rgba(255,255,255,0.03); border-radius: 8px; padding: 15px; border: 1px solid rgba(255,255,255,0.1);">
-                            <p style="opacity: 0.6; text-align: center;">Training results will appear here</p>
+                            <p style="opacity: 0.6; text-align: center; font-size: 0.9em;">Training results will appear here</p>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Advanced Backtesting Section -->
-                    <div class="settings-group" style="margin-top: 20px; background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(59,130,246,0.1)); border: 1px solid rgba(139,92,246,0.3); border-radius: 12px; padding: 20px;">
-                        <h4>🔬 Advanced Backtesting Training</h4>
-                        <p style="font-size: 0.9em; opacity: 0.8; margin-bottom: 15px;">Train with expanding date windows and automatic accuracy improvement</p>
-                        
-                        <div class="setting-item">
-                            <label for="backtest-start-date" title="תאריך התחלת האימון - צריך מינימום 90 ימים של נתונים לפניו">Training Start Date:</label>
-                            <input type="date" id="backtest-start-date" value="2024-01-01" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0;">
-                        </div>
-                        
-                        <div class="setting-item">
-                            <label for="backtest-end-date" title="תאריך סיום האימון הראשוני - יורחב בכל איטרציה">Training End Date:</label>
-                            <input type="date" id="backtest-end-date" value="2025-10-07" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0;">
-                        </div>
-                        
-                        <div class="setting-item">
-                            <label for="backtest-test-period" title="כמה ימים לבדוק אחרי כל אימון">Test Period (days):</label>
-                            <input type="number" id="backtest-test-period" value="14" min="1" max="365" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; width: 100px;">
-                        </div>
-                        
-                        <div class="setting-item">
-                            <label for="backtest-max-iterations" title="מקסימום איטרציות אימון">Max Iterations:</label>
-                            <input type="number" id="backtest-max-iterations" value="10" min="1" max="50" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; width: 100px;">
-                        </div>
-                        
-                        <div class="setting-item">
-                            <label for="backtest-target-accuracy" title="דיוק יעד להשגה (0-100%)">Target Accuracy (%):</label>
-                            <input type="range" id="backtest-target-accuracy" min="50" max="100" value="85" style="width: 200px;">
-                            <span id="accuracy-display" style="margin-right: 10px; font-weight: bold; color: #10b981;">85%</span>
-                        </div>
-                        
-                        <div class="setting-item">
-                            <label>
-                                <input type="checkbox" id="backtest-auto-stop" checked style="margin-left: 5px;">
-                                Auto-stop when target reached
-                            </label>
-                        </div>
-                        
-                        <div style="display: flex; gap: 10px; margin-top: 15px;">
-                            <button onclick="startBacktesting()" style="flex: 1; background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 12px; border-radius: 6px; color: white; cursor: pointer; font-weight: bold;">
-                                🔬 Start Backtesting
-                            </button>
-                            <button onclick="stopBacktesting()" style="flex: 0.3; background: #ef4444; border: none; padding: 12px; border-radius: 6px; color: white; cursor: pointer;">
-                                ⏹ Stop
-                            </button>
-                        </div>
-                        
-                        <!-- Progress Display -->
-                        <div id="backtest-progress" style="margin-top: 20px; display: none;">
-                            <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px; margin-bottom: 10px;">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                                    <span id="backtest-status-text">Starting backtest...</span>
-                                    <span id="backtest-iteration-text">Iteration 0/10</span>
-                                </div>
-                                <div style="background: rgba(255,255,255,0.1); border-radius: 10px; height: 10px; overflow: hidden;">
-                                    <div id="backtest-progress-fill" style="background: linear-gradient(90deg, #10b981, #3b82f6); height: 100%; width: 0%; transition: width 0.3s;"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Results Table -->
-                        <div id="backtest-results-container" style="margin-top: 20px; display: none;">
-                            <h5 style="margin-bottom: 10px;">📊 Backtest Results</h5>
-                            <div style="overflow-x: auto; background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px;">
-                                <table style="width: 100%; color: #e2e8f0; font-size: 0.9em;">
-                                    <thead>
-                                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                                            <th style="padding: 8px; text-align: left;">#</th>
-                                            <th style="padding: 8px; text-align: left;">Train Until</th>
-                                            <th style="padding: 8px; text-align: left;">Accuracy</th>
-                                            <th style="padding: 8px; text-align: left;">Loss</th>
-                                            <th style="padding: 8px; text-align: left;">Time</th>
-                                            <th style="padding: 8px; text-align: left;">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="backtest-results-tbody"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                        
-                        <!-- Chart -->
-                        <div id="backtest-chart-container" style="margin-top: 20px; display: none;">
-                            <canvas id="backtest-chart"></canvas>
-                        </div>
+                <!-- Prediction Results (Full Width) -->
+                <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px;">
+                    <h4 style="color: #ffd700; margin-bottom: 12px; font-size: 1em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px;">📈 Progressive Prediction Results</h4>
+                    <div id="progressive-prediction-results" style="min-height: 150px; background: rgba(255,255,255,0.03); border-radius: 8px; padding: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                        <p style="opacity: 0.6; text-align: center; font-size: 0.9em;">Select a symbol and click "Get Progressive Prediction" to see advanced ML predictions with multiple time horizons</p>
                     </div>
                 </div>
             </div>
@@ -1855,6 +1867,10 @@
             
             if (result.success) {
                 addDataLog(`✅ משימה התחילה בהצלחה: ${jobType}`, 'success');
+                addDataLog(`📋 Job ID: ${result.job_id}`, 'info');
+                
+                // Start polling for job logs
+                pollJobStatus(result.job_id);
             } else {
                 addDataLog(`❌ כשל בהתחלת משימה: ${result.error}`, 'error');
             }
@@ -1865,6 +1881,54 @@
         } catch (error) {
             addDataLog(`❌ שגיאה בהרצת משימה: ${error.message}`, 'error');
         }
+    }
+
+    let pollInterval = null;
+    
+    async function pollJobStatus(jobId) {
+        // Clear any existing polling
+        if (pollInterval) {
+            clearInterval(pollInterval);
+        }
+        
+        let lastLogCount = 0;
+        
+        pollInterval = setInterval(async () => {
+            try {
+                const response = await fetch(`/api/data-management/job-status/${jobId}`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const logs = data.logs || [];
+                    
+                    // Only show new logs
+                    if (logs.length > lastLogCount) {
+                        for (let i = lastLogCount; i < logs.length; i++) {
+                            const log = logs[i];
+                            let level = 'info';
+                            if (log.message.includes('✅') || log.message.includes('SUCCESS')) {
+                                level = 'success';
+                            } else if (log.message.includes('❌') || log.message.includes('ERROR')) {
+                                level = 'error';
+                            } else if (log.message.includes('⚠️') || log.message.includes('WARNING')) {
+                                level = 'warning';
+                            }
+                            addDataLog(log.message, level);
+                        }
+                        lastLogCount = logs.length;
+                    }
+                    
+                    // Stop polling if job is completed
+                    if (data.job.status === 'completed' || data.job.status === 'failed' || data.job.status === 'error') {
+                        clearInterval(pollInterval);
+                        pollInterval = null;
+                        loadDataManagementStatus();
+                    }
+                }
+            } catch (error) {
+                console.error('Error polling job status:', error);
+            }
+        }, 2000); // Poll every 2 seconds
     }
 
     async function runAllDataJobs() {
@@ -2008,13 +2072,17 @@
             
             const modelsDisplay = document.getElementById('progressive-models-display');
             modelsDisplay.innerHTML = `
-                <div style="font-size: 0.85em;">
-                    <div><strong>Available Models:</strong></div>
-                    ${data.available_models.map(model => `<div>• ${model.toUpperCase()}</div>`).join('')}
-                    <div style="margin-top: 8px;"><strong>Training Modes:</strong></div>
-                    ${data.available_modes.map(mode => `<div>• ${mode}</div>`).join('')}
-                    <div style="margin-top: 8px;"><strong>Models Directory:</strong></div>
-                    <div>📁 ${data.models_saved?.directory || 'N/A'} ${data.models_saved?.found ? '✅' : '❌'}</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.85em;">
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;">Available Models:</div>
+                        ${data.available_models.map(model => `<div style="line-height: 1.4;">• ${model.toUpperCase()}</div>`).join('')}
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;">Training Modes:</div>
+                        ${data.available_modes.map(mode => `<div style="line-height: 1.4;">• ${mode}</div>`).join('')}
+                        <div style="font-weight: 600; margin-top: 8px; margin-bottom: 4px;">Models Directory:</div>
+                        <div style="line-height: 1.4;">📁 ${data.models_saved?.directory || 'N/A'} ${data.models_saved?.found ? '✅' : '❌'}</div>
+                    </div>
                 </div>
             `;
         } catch (error) {

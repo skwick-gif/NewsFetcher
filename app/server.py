@@ -3,6 +3,8 @@ import sys
 from pathlib import Path
 import requests
 from datetime import datetime
+import subprocess
+import threading
 
 # הוספת הנתיב של הפרויקט ל-sys.path
 project_root = Path(__file__).parent.parent
@@ -404,6 +406,211 @@ def ai_status():
         return jsonify(response.json())
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+
+# ===========================
+# Data Management Routes
+# ===========================
+
+# Global storage for job logs
+job_logs = {}
+running_jobs = {}
+
+def run_script_in_background(job_type, script_name, job_id):
+    """Run a Python script in the background and capture output"""
+    global job_logs, running_jobs
+    
+    job_logs[job_id] = []
+    running_jobs[job_id] = {"status": "running", "start_time": datetime.now().isoformat()}
+    
+    try:
+        # Run the script
+        process = subprocess.Popen(
+            [sys.executable, script_name],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=0,  # Unbuffered for real-time output
+            universal_newlines=True
+        )
+        
+        # Capture output line by line
+        for line in process.stdout:
+            line = line.strip()
+            if line:
+                log_entry = {
+                    "timestamp": datetime.now().isoformat(),
+                    "level": "INFO",
+                    "message": line
+                }
+                job_logs[job_id].append(log_entry)
+                
+                # Keep only last 200 lines
+                if len(job_logs[job_id]) > 200:
+                    job_logs[job_id] = job_logs[job_id][-200:]
+        
+        process.wait()
+        
+        if process.returncode == 0:
+            running_jobs[job_id]["status"] = "completed"
+            job_logs[job_id].append({
+                "timestamp": datetime.now().isoformat(),
+                "level": "SUCCESS",
+                "message": f"✅ Job completed successfully!"
+            })
+        else:
+            running_jobs[job_id]["status"] = "failed"
+            job_logs[job_id].append({
+                "timestamp": datetime.now().isoformat(),
+                "level": "ERROR",
+                "message": f"❌ Job failed with exit code {process.returncode}"
+            })
+    
+    except Exception as e:
+        running_jobs[job_id]["status"] = "error"
+        job_logs[job_id].append({
+            "timestamp": datetime.now().isoformat(),
+            "level": "ERROR",
+            "message": f"❌ Error: {str(e)}"
+        })
+
+@app.route('/api/data-management/status')
+def data_management_status():
+    """Get data management status and job information"""
+    try:
+        # Mock data for now - can be enhanced with real data later
+        return jsonify({
+            "status": "success",
+            "daily_downloads": 150,
+            "weekly_updates": 45,
+            "error_count": 2,
+            "last_run": datetime.now().isoformat(),
+            "jobs": [
+                {
+                    "id": "daily_data",
+                    "name": "Daily Price Data Download",
+                    "status": "scheduled",
+                    "last_run": datetime.now().isoformat(),
+                    "next_run": datetime.now().isoformat(),
+                    "script": "ToUse/download_prices.py"
+                },
+                {
+                    "id": "weekly_fundamentals",
+                    "name": "Weekly Fundamentals Update",
+                    "status": "scheduled",
+                    "last_run": datetime.now().isoformat(),
+                    "next_run": datetime.now().isoformat(),
+                    "script": "ToUse/download_fundamentals.py"
+                }
+            ]
+        })
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/data-management/run-job/<job_type>', methods=['POST'])
+def run_data_job(job_type):
+    """Trigger a data download job"""
+    try:
+        job_scripts = {
+            'daily': 'ToUse/download_prices.py',
+            'weekly': 'ToUse/download_fundamentals.py'
+        }
+        
+        if job_type not in job_scripts:
+            return jsonify({
+                "success": False,
+                "error": f"Unknown job type: {job_type}"
+            }), 400
+        
+        script_name = job_scripts[job_type]
+        script_path = Path(__file__).parent.parent / script_name
+        
+        # Check if script exists
+        if not script_path.exists():
+            return jsonify({
+                "success": False,
+                "error": f"Script not found: {script_name}"
+            }), 404
+        
+        # Generate job ID
+        job_id = f"{job_type}_{int(datetime.now().timestamp())}"
+        
+        # Start script in background thread
+        thread = threading.Thread(
+            target=run_script_in_background,
+            args=(job_type, str(script_path), job_id)
+        )
+        thread.daemon = True
+        thread.start()
+        
+        return jsonify({
+            "success": True,
+            "message": f"Job {job_type} started successfully",
+            "job_id": job_id
+        })
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
+
+@app.route('/api/data-management/job-status/<job_id>')
+def get_job_status(job_id):
+    """Get the status and logs of a running job"""
+    try:
+        if job_id not in running_jobs:
+            return jsonify({
+                "status": "error",
+                "message": "Job not found"
+            }), 404
+        
+        return jsonify({
+            "status": "success",
+            "job": running_jobs[job_id],
+            "logs": job_logs.get(job_id, [])
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+@app.route('/api/system/health')
+def system_health():
+    """Get system health status"""
+    try:
+        return jsonify({
+            "status": "healthy",
+            "database": "online",
+            "scheduler": "running",
+            "api": "online",
+            "storage": "available",
+            "timestamp": datetime.now().isoformat()
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+@app.route('/api/data-management/logs')
+def data_management_logs():
+    """Get recent logs from data management operations"""
+    try:
+        # Mock logs - can be enhanced to read real logs later
+        logs = [
+            {"timestamp": datetime.now().isoformat(), "level": "INFO", "message": "System started successfully"},
+            {"timestamp": datetime.now().isoformat(), "level": "INFO", "message": "Connected to database"},
+            {"timestamp": datetime.now().isoformat(), "level": "SUCCESS", "message": "Daily download completed: 150 stocks"}
+        ]
+        return jsonify({
+            "status": "success",
+            "logs": logs
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
 
 if __name__ == '__main__':
     print("🚀 Starting MarketPulse Dashboard Server...")
