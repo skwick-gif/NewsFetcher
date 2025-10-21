@@ -2461,6 +2461,29 @@
         });
     }
 
+    // Initialize Market Data Manager
+    let marketDataManager;
+    
+    document.addEventListener('DOMContentLoaded', async function() {
+        console.log('🚀 Initializing Market Data Manager...');
+        
+        if (typeof MarketDataManager !== 'undefined') {
+            marketDataManager = new MarketDataManager();
+            await marketDataManager.init();
+            
+            // Update market intelligence
+            await marketDataManager.updateMarketIntelligence();
+            await marketDataManager.updateGeopoliticalRisks();
+            
+            // Start periodic updates (every 30 seconds)
+            marketDataManager.startPeriodicUpdates(30000);
+            
+            console.log('✅ Market Data Manager ready and running');
+        } else {
+            console.error('❌ MarketDataManager not loaded - check market-data.js');
+        }
+    });
+
     </script>
 </body>
 </html>
