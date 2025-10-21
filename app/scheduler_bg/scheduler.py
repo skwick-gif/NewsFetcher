@@ -159,7 +159,32 @@ class MarketPulseScheduler:
             replace_existing=True
         )
         
-        logger.info("✅ All schedules configured")
+        # ============================================================
+        # STOCK DATA DOWNLOADS - Daily at 5:10 PM (after market close)
+        # ============================================================
+        from apscheduler.triggers.cron import CronTrigger
+        self.scheduler.add_job(
+            self._run_daily_stock_scan,
+            trigger=CronTrigger(hour=17, minute=10),  # 5:10 PM daily
+            id="daily_stock_scan",
+            name="Daily Stock Data Download",
+            replace_existing=True,
+            max_instances=1
+        )
+        
+        # ============================================================
+        # FUNDAMENTAL DATA - Weekly on Sunday at 2:00 AM
+        # ============================================================
+        self.scheduler.add_job(
+            self._run_weekly_fundamentals,
+            trigger=CronTrigger(day_of_week=6, hour=2, minute=0),  # Sunday 2:00 AM
+            id="weekly_fundamentals",
+            name="Weekly Fundamentals Update", 
+            replace_existing=True,
+            max_instances=1
+        )
+        
+        logger.info("✅ All schedules configured (including stock data downloads)")
     
     async def _fetch_major_news(self):
         """Fetch major financial news (Tier 1)"""
@@ -464,10 +489,66 @@ Source: {source}
         self.scheduler.shutdown()
         logger.info("⏹️  MarketPulse scheduler stopped")
     
+    async def _run_daily_stock_scan(self):
+        """Run daily stock data download (17:10 daily)"""
+        try:
+            logger.info("📈 Starting daily stock data scan...")
+            
+            import subprocess
+            import sys
+            import os
+            
+            # Get project root directory
+            project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+            
+            # Run daily_scan.py
+            result = subprocess.run([
+                sys.executable, "daily_scan.py"
+            ], capture_output=True, text=True, cwd=project_root)
+            
+            if result.returncode == 0:
+                logger.info("✅ Daily stock scan completed successfully")
+                self.stats["total_stock_scans"] = self.stats.get("total_stock_scans", 0) + 1
+            else:
+                logger.error(f"❌ Daily stock scan failed: {result.stderr}")
+                raise Exception(f"Stock scan failed: {result.stderr}")
+            
+        except Exception as e:
+            logger.error(f"❌ Daily stock scan task failed: {e}")
+    
+    async def _run_weekly_fundamentals(self):
+        """Run weekly fundamentals update (Sunday 2:00 AM)"""
+        try:
+            logger.info("📊 Starting weekly fundamentals update...")
+            
+            import subprocess
+            import sys
+            import os
+            
+            # Get project root directory  
+            project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+            
+            # Run weekly fundamentals script
+            result = subprocess.run([
+                sys.executable, "ToUse/run_weekly_fundamentals.py"
+            ], capture_output=True, text=True, cwd=project_root)
+            
+            if result.returncode == 0:
+                logger.info("✅ Weekly fundamentals update completed successfully")
+                self.stats["total_fundamental_updates"] = self.stats.get("total_fundamental_updates", 0) + 1
+            else:
+                logger.error(f"❌ Weekly fundamentals update failed: {result.stderr}")
+                raise Exception(f"Fundamentals update failed: {result.stderr}")
+                
+        except Exception as e:
+            logger.error(f"❌ Weekly fundamentals task failed: {e}")
+    
     def get_statistics(self) -> Dict[str, Any]:
         """Get current statistics"""
         return {
             **self.stats,
+            "total_stock_scans": self.stats.get("total_stock_scans", 0),
+            "total_fundamental_updates": self.stats.get("total_fundamental_updates", 0),
             "jobs": [
                 {
                     "id": job.id,

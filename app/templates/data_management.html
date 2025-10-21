@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ניהול הורדת נתונים - MarketPulse</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .status-success { color: #28a745; }
+        .status-warning { color: #ffc107; }
+        .status-danger { color: #dc3545; }
+        .status-info { color: #17a2b8; }
+        
+        .job-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid #dee2e6;
+        }
+        
+        .job-card.running {
+            border-left-color: #007bff;
+            background-color: #f8f9fa;
+        }
+        
+        .job-card.success {
+            border-left-color: #28a745;
+        }
+        
+        .job-card.error {
+            border-left-color: #dc3545;
+        }
+        
+        .log-viewer {
+            background-color: #2d3748;
+            color: #a0aec0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            border-radius: 0.375rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .log-success { color: #68d391; }
+        .log-error { color: #fc8181; }
+        .log-warning { color: #f6e05e; }
+        .log-info { color: #63b3ed; }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .metric-card-green {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .metric-card-orange {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        .metric-card-red {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%);
+        }
+        
+        .schedule-table {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .btn-action {
+            padding: 0.4rem 1rem;
+            border-radius: 25px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-run {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+        }
+        
+        .btn-run:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-stop {
+            background: linear-gradient(45deg, #dc3545, #fd7e14);
+            color: white;
+        }
+        
+        .btn-stop:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+        }
+        
+        .navbar-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="fas fa-chart-line me-2"></i>
+                MarketPulse - ניהול נתונים
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-light text-dark me-3">
+                    <i class="fas fa-clock me-1"></i>
+                    <span id="current-time"></span>
+                </span>
+                <a href="/" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-home me-1"></i>
+                    דף הבית
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <!-- Status Overview -->
+        <div class="row mb-4">
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card metric-card metric-card-green h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-database fa-2x mb-3"></i>
+                        <h5 class="card-title mb-2">הורדות יומיות</h5>
+                        <h3 class="mb-0" id="daily-downloads">-</h3>
+                        <small>מהיום</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card metric-card metric-card-orange h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-chart-bar fa-2x mb-3"></i>
+                        <h5 class="card-title mb-2">נתוני פנדמנטל</h5>
+                        <h3 class="mb-0" id="fundamental-updates">-</h3>
+                        <small>השבוע</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card metric-card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                        <h5 class="card-title mb-2">שגיאות</h5>
+                        <h3 class="mb-0" id="error-count">-</h3>
+                        <small>24 שעות</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card metric-card metric-card-red h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-clock fa-2x mb-3"></i>
+                        <h5 class="card-title mb-2">ריצה אחרונה</h5>
+                        <h6 class="mb-0" id="last-run">-</h6>
+                        <small>הורדת נתונים</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Jobs Schedule & Control -->
+        <div class="row mb-4">
+            <div class="col-xl-8 mb-3">
+                <div class="card schedule-table">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-calendar-alt me-2"></i>
+                            לוח זמנים אוטומטי
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>משימה</th>
+                                        <th>תדירות</th>
+                                        <th>ריצה אחרונה</th>
+                                        <th>ריצה הבאה</th>
+                                        <th>סטטוס</th>
+                                        <th>פעולות</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="jobs-table">
+                                    <tr>
+                                        <td>
+                                            <strong>הורדת מחירים יומית</strong><br>
+                                            <small class="text-muted">daily_scan.py</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">יומי 17:10</span>
+                                        </td>
+                                        <td id="daily-last-run">טוען...</td>
+                                        <td id="daily-next-run">טוען...</td>
+                                        <td id="daily-status">טוען...</td>
+                                        <td>
+                                            <button class="btn btn-action btn-run btn-sm me-2" onclick="runJob('daily')">
+                                                <i class="fas fa-play"></i> הרץ עכשיו
+                                            </button>
+                                            <button class="btn btn-action btn-stop btn-sm" onclick="viewLogs('daily')">
+                                                <i class="fas fa-file-alt"></i> לוגים
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>עדכון נתוני פנדמנטל</strong><br>
+                                            <small class="text-muted">run_weekly_fundamentals.py</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-warning">שבועי א' 02:00</span>
+                                        </td>
+                                        <td id="weekly-last-run">טוען...</td>
+                                        <td id="weekly-next-run">טוען...</td>
+                                        <td id="weekly-status">טוען...</td>
+                                        <td>
+                                            <button class="btn btn-action btn-run btn-sm me-2" onclick="runJob('weekly')">
+                                                <i class="fas fa-play"></i> הרץ עכשיו
+                                            </button>
+                                            <button class="btn btn-action btn-stop btn-sm" onclick="viewLogs('weekly')">
+                                                <i class="fas fa-file-alt"></i> לוגים
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-4 mb-3">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-cogs me-2"></i>
+                            פעולות מהירות
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-success" onclick="runAllJobs()">
+                                <i class="fas fa-play-circle me-2"></i>
+                                הרץ את כל המשימות
+                            </button>
+                            <button class="btn btn-info" onclick="checkStatus()">
+                                <i class="fas fa-sync me-2"></i>
+                                רענן סטטוס
+                            </button>
+                            <button class="btn btn-warning" onclick="viewSystemHealth()">
+                                <i class="fas fa-heartbeat me-2"></i>
+                                בריאות המערכת
+                            </button>
+                            <button class="btn btn-secondary" onclick="downloadLogs()">
+                                <i class="fas fa-download me-2"></i>
+                                הורד לוגים
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- System Health Mini Dashboard -->
+                <div class="card mt-3">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0">
+                            <i class="fas fa-server me-2"></i>
+                            בריאות המערכת
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="mb-2">
+                                    <i class="fas fa-database fa-lg" id="db-status-icon"></i>
+                                </div>
+                                <small>Database</small>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-2">
+                                    <i class="fas fa-network-wired fa-lg" id="api-status-icon"></i>
+                                </div>
+                                <small>API</small>
+                            </div>
+                        </div>
+                        <div class="row text-center mt-2">
+                            <div class="col-6">
+                                <div class="mb-2">
+                                    <i class="fas fa-tasks fa-lg" id="scheduler-status-icon"></i>
+                                </div>
+                                <small>Scheduler</small>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-2">
+                                    <i class="fas fa-hdd fa-lg" id="storage-status-icon"></i>
+                                </div>
+                                <small>Storage</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity & Logs -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-terminal me-2"></i>
+                            לוגים בזמן אמת
+                        </h5>
+                        <div>
+                            <button class="btn btn-outline-light btn-sm" onclick="clearLogs()">
+                                <i class="fas fa-eraser me-1"></i>
+                                נקה
+                            </button>
+                            <button class="btn btn-outline-light btn-sm" onclick="toggleAutoRefresh()">
+                                <i class="fas fa-sync me-1"></i>
+                                <span id="auto-refresh-text">רענון אוטומטי</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="log-viewer p-3" id="log-container">
+                            <div class="log-info">🔄 מתחבר ללוגים...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let autoRefresh = true;
+        let logSocket = null;
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
+            
+            loadInitialData();
+            setupWebSocket();
+            
+            if (autoRefresh) {
+                setInterval(refreshData, 30000); // Refresh every 30 seconds
+            }
+        });
+        
+        function updateCurrentTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = 
+                now.toLocaleString('he-IL', {
+                    timeZone: 'Asia/Jerusalem',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+        }
+        
+        async function loadInitialData() {
+            try {
+                // Load scheduler status
+                const response = await fetch('/api/data-management/status');
+                const data = await response.json();
+                
+                updateDashboard(data);
+                updateSystemHealth();
+                
+            } catch (error) {
+                console.error('Error loading initial data:', error);
+                addLogEntry('❌ שגיאה בטעינת נתונים ראשוניים: ' + error.message, 'error');
+            }
+        }
+        
+        function updateDashboard(data) {
+            // Update metrics
+            document.getElementById('daily-downloads').textContent = data.daily_downloads || '0';
+            document.getElementById('fundamental-updates').textContent = data.weekly_updates || '0';
+            document.getElementById('error-count').textContent = data.error_count || '0';
+            document.getElementById('last-run').textContent = data.last_run || 'לעולם לא';
+            
+            // Update jobs table
+            if (data.jobs) {
+                updateJobsTable(data.jobs);
+            }
+        }
+        
+        function updateJobsTable(jobs) {
+            const dailyJob = jobs.find(j => j.id === 'daily_data');
+            const weeklyJob = jobs.find(j => j.id === 'weekly_fundamentals');
+            
+            if (dailyJob) {
+                document.getElementById('daily-last-run').textContent = 
+                    dailyJob.last_run ? new Date(dailyJob.last_run).toLocaleString('he-IL') : 'אף פעם';
+                document.getElementById('daily-next-run').textContent = 
+                    dailyJob.next_run ? new Date(dailyJob.next_run).toLocaleString('he-IL') : 'לא מתוזמן';
+                document.getElementById('daily-status').innerHTML = getStatusBadge(dailyJob.status);
+            }
+            
+            if (weeklyJob) {
+                document.getElementById('weekly-last-run').textContent = 
+                    weeklyJob.last_run ? new Date(weeklyJob.last_run).toLocaleString('he-IL') : 'אף פעם';
+                document.getElementById('weekly-next-run').textContent = 
+                    weeklyJob.next_run ? new Date(weeklyJob.next_run).toLocaleString('he-IL') : 'לא מתוזמן';
+                document.getElementById('weekly-status').innerHTML = getStatusBadge(weeklyJob.status);
+            }
+        }
+        
+        function getStatusBadge(status) {
+            const badges = {
+                'running': '<span class="badge bg-primary">רץ</span>',
+                'success': '<span class="badge bg-success">הושלם</span>',
+                'error': '<span class="badge bg-danger">שגיאה</span>',
+                'scheduled': '<span class="badge bg-info">מתוזמן</span>',
+                'stopped': '<span class="badge bg-secondary">עצור</span>'
+            };
+            return badges[status] || '<span class="badge bg-secondary">לא ידוע</span>';
+        }
+        
+        async function runJob(jobType) {
+            try {
+                addLogEntry(`🚀 מתחיל הרצת משימה: ${jobType}`, 'info');
+                
+                const response = await fetch(`/api/data-management/run-job/${jobType}`, {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    addLogEntry(`✅ משימה התחילה בהצלחה: ${jobType}`, 'success');
+                } else {
+                    addLogEntry(`❌ כשל בהתחלת משימה: ${result.error}`, 'error');
+                }
+                
+                // Refresh status
+                setTimeout(refreshData, 2000);
+                
+            } catch (error) {
+                addLogEntry(`❌ שגיאה בהרצת משימה: ${error.message}`, 'error');
+            }
+        }
+        
+        async function runAllJobs() {
+            addLogEntry('🚀 מתחיל הרצת כל המשימות...', 'info');
+            
+            await runJob('daily');
+            await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
+            await runJob('weekly');
+        }
+        
+        async function checkStatus() {
+            addLogEntry('🔄 רענון סטטוס...', 'info');
+            await loadInitialData();
+            addLogEntry('✅ סטטוס עודכן', 'success');
+        }
+        
+        async function updateSystemHealth() {
+            try {
+                const response = await fetch('/api/system/health');
+                const health = await response.json();
+                
+                updateHealthIcon('db-status-icon', health.database);
+                updateHealthIcon('api-status-icon', health.api);
+                updateHealthIcon('scheduler-status-icon', health.scheduler);
+                updateHealthIcon('storage-status-icon', health.storage);
+                
+            } catch (error) {
+                console.error('Error updating system health:', error);
+            }
+        }
+        
+        function updateHealthIcon(iconId, status) {
+            const icon = document.getElementById(iconId);
+            icon.className = icon.className.replace(/text-\w+/, '');
+            
+            if (status === true || status === 'healthy') {
+                icon.classList.add('text-success');
+            } else if (status === 'warning') {
+                icon.classList.add('text-warning');
+            } else {
+                icon.classList.add('text-danger');
+            }
+        }
+        
+        function setupWebSocket() {
+            try {
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const wsUrl = `${protocol}//${window.location.host}/ws/data-management`;
+                
+                logSocket = new WebSocket(wsUrl);
+                
+                logSocket.onopen = function() {
+                    addLogEntry('🔗 מחובר ללוגים בזמן אמת', 'success');
+                };
+                
+                logSocket.onmessage = function(event) {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'log') {
+                        addLogEntry(data.message, data.level);
+                    } else if (data.type === 'status_update') {
+                        updateDashboard(data.data);
+                    }
+                };
+                
+                logSocket.onclose = function() {
+                    addLogEntry('❌ חיבור ללוגים נותק', 'error');
+                    // Try to reconnect after 5 seconds
+                    setTimeout(setupWebSocket, 5000);
+                };
+                
+            } catch (error) {
+                addLogEntry('❌ שגיאה בחיבור WebSocket: ' + error.message, 'error');
+            }
+        }
+        
+        function addLogEntry(message, level = 'info') {
+            const container = document.getElementById('log-container');
+            const timestamp = new Date().toLocaleTimeString('he-IL');
+            const logClass = `log-${level}`;
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = logClass;
+            logEntry.innerHTML = `<span class="text-muted">[${timestamp}]</span> ${message}`;
+            
+            container.appendChild(logEntry);
+            container.scrollTop = container.scrollHeight;
+            
+            // Keep only last 100 log entries
+            while (container.children.length > 100) {
+                container.removeChild(container.firstChild);
+            }
+        }
+        
+        function clearLogs() {
+            document.getElementById('log-container').innerHTML = 
+                '<div class="log-info">📝 לוגים נוקו</div>';
+        }
+        
+        function toggleAutoRefresh() {
+            autoRefresh = !autoRefresh;
+            const text = document.getElementById('auto-refresh-text');
+            text.textContent = autoRefresh ? 'רענון אוטומטי פעיל' : 'רענון אוטומטי לא פעיל';
+        }
+        
+        function refreshData() {
+            if (autoRefresh) {
+                loadInitialData();
+            }
+        }
+        
+        function viewLogs(jobType) {
+            // Open logs in new window or modal
+            window.open(`/api/data-management/logs/${jobType}`, '_blank');
+        }
+        
+        function viewSystemHealth() {
+            // Could open detailed system health page
+            addLogEntry('🔧 בריאות המערכת - פיתוח בתהליך', 'info');
+            updateSystemHealth();
+        }
+        
+        function downloadLogs() {
+            const link = document.createElement('a');
+            link.href = '/api/data-management/logs/download';
+            link.download = `logs_${new Date().toISOString().split('T')[0]}.zip`;
+            link.click();
+        }
+    </script>
+</body>
+</html>
