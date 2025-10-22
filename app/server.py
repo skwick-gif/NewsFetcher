@@ -305,6 +305,11 @@ def api_progressive_training_status():
     """Proxy to FastAPI: Progressive ML training status"""
     return proxy_to_backend('/api/ml/progressive/training/status')
 
+@app.route('/api/ml/progressive/training/status/<job_id>')
+def api_progressive_training_job_status(job_id):
+    """Proxy to FastAPI: Progressive ML training job status"""
+    return proxy_to_backend(f'/api/ml/progressive/training/status/{job_id}')
+
 @app.route('/api/ml/progressive/train', methods=['POST'])
 def api_progressive_train():
     """Proxy to FastAPI: Start Progressive ML training"""

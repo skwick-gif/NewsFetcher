@@ -1958,14 +1958,42 @@ async def run_training_job(job_id: str, symbol: str, model_types: List[str], mod
 async def get_training_job_status(job_id: str):
     """Get status of specific training job"""
     try:
-        if job_id not in training_jobs:
-            raise HTTPException(status_code=404, detail=f"Training job {job_id} not found")
+        if job_id in training_jobs:
+            # Return job data directly (frontend expects status, progress, etc. at root level)
+            job_data = training_jobs[job_id].copy()
+            job_data["timestamp"] = datetime.now(timezone.utc).isoformat()
+            return job_data
         
-        # Return job data directly (frontend expects status, progress, etc. at root level)
-        job_data = training_jobs[job_id].copy()
-        job_data["timestamp"] = datetime.now(timezone.utc).isoformat()
+        # Fallback: try to infer status from file system if job not in memory
+        # Extract symbol from job_id (format: train_SYMBOL_hash)
+        parts = job_id.split('_')
+        if len(parts) >= 3 and parts[0] == 'train':
+            symbol = parts[1]
+            
+            # Check if model files exist for this symbol
+            import os
+            from pathlib import Path
+            models_dir = Path("app/ml/models")
+            model_files = list(models_dir.glob(f"*{symbol}*"))
+            
+            if model_files:
+                # Files exist, assume training completed
+                return {
+                    "status": "completed",
+                    "progress": 100,
+                    "current_step": "Training completed (inferred from files)",
+                    "eta_seconds": 0,
+                    "symbol": symbol,
+                    "job_id": job_id,
+                    "result": {
+                        "message": f"Training completed. Found {len(model_files)} model files.",
+                        "files": [f.name for f in model_files[:3]]  # Show first 3 files
+                    },
+                    "timestamp": datetime.now(timezone.utc).isoformat()
+                }
         
-        return job_data
+        # No job in memory and no files found
+        raise HTTPException(status_code=404, detail=f"Training job {job_id} not found")
         
     except HTTPException:
         raise
