@@ -11,7 +11,7 @@
     <script src="/static/js/modules/chart-manager.js?v=20251020" defer></script>
     <script src="/static/js/modules/alerts-manager.js?v=20251020" defer></script>
     <script src="/static/js/modules/ml-scanner.js?v=20251020" defer></script>
-    <script src="/static/js/modules/settings-manager.js?v=20251020" defer></script>
+    
     <script src="/static/js/modules/websocket-client.js?v=20251020" defer></script>
     <!-- DISABLED: Old main.js conflicts with new AI Analysis - use inline functions instead -->
     <!-- <script src="/static/js/main.js?v=20251020" defer></script> -->
@@ -1781,18 +1781,23 @@
 
     // Auto-load data when tabs are opened
     document.addEventListener('DOMContentLoaded', function() {
-        // Load ML status
+        // Load ML status (guard missing element to avoid errors)
         fetch('/api/ml/status').then(r => r.json()).then(data => {
-            document.getElementById('ml-status-display').innerHTML = 
-                data.components ? `
+            const el = document.getElementById('ml-status-display');
+            if (el) {
+                el.innerHTML = data.components ? `
                     <div style="font-size: 0.9em;">
                         <strong>ML Trainer:</strong> ${data.components.ml_trainer?.status || 'N/A'}<br>
                         <strong>Models:</strong> ${data.performance?.models_active || 0} active<br>
                         <strong>Accuracy:</strong> ${data.performance?.accuracy || 'N/A'}
                     </div>
                 ` : 'ML system information unavailable';
+            }
         }).catch(() => {
-            document.getElementById('ml-status-display').innerHTML = 'Failed to load ML status';
+            const el = document.getElementById('ml-status-display');
+            if (el) {
+                el.innerHTML = 'Failed to load ML status';
+            }
         });
 
         // Load sector performance
@@ -2911,6 +2916,33 @@
         }
     }
     
+    // Settings import handler (replaces legacy main.js handler)
+    function handleSettingsImport(input) {
+        try {
+            const file = input && input.files && input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const settings = JSON.parse(e.target.result);
+                    // Persist and apply
+                    localStorage.setItem('marketpulse_settings', JSON.stringify(settings));
+                    if (window.settingsManager && typeof window.settingsManager.applySettingsToForm === 'function') {
+                        window.settingsManager.settings = settings;
+                        window.settingsManager.applySettingsToForm();
+                    }
+                    alert('✅ Settings imported successfully');
+                } catch (err) {
+                    console.error('Error importing settings:', err);
+                    alert('❌ Invalid settings file');
+                }
+            };
+            reader.readAsText(file);
+        } catch (err) {
+            console.error('Error handling settings import:', err);
+        }
+    }
+
     // Initialize settings manager
     window.settingsManager = new SettingsManager();
 
