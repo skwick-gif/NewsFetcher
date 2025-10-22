@@ -1781,24 +1781,64 @@
 
     // Auto-load data when tabs are opened
     document.addEventListener('DOMContentLoaded', function() {
-        // Load ML status (guard missing element to avoid errors)
-        fetch('/api/ml/status').then(r => r.json()).then(data => {
-            const el = document.getElementById('ml-status-display');
-            if (el) {
-                el.innerHTML = data.components ? `
-                    <div style="font-size: 0.9em;">
-                        <strong>ML Trainer:</strong> ${data.components.ml_trainer?.status || 'N/A'}<br>
-                        <strong>Models:</strong> ${data.performance?.models_active || 0} active<br>
-                        <strong>Accuracy:</strong> ${data.performance?.accuracy || 'N/A'}
-                    </div>
-                ` : 'ML system information unavailable';
-            }
-        }).catch(() => {
-            const el = document.getElementById('ml-status-display');
-            if (el) {
-                el.innerHTML = 'Failed to load ML status';
-            }
-        });
+        // Load ML status and render into Overview tiles and Progressive box
+        fetch('/api/ml/status')
+            .then(r => r.json())
+            .then(data => {
+                const trainer = data?.components?.ml_trainer?.status || 'N/A';
+                const models = data?.performance?.models_active ?? 0;
+                const accuracy = data?.performance?.accuracy ?? 'N/A';
+
+                // Overview: AI Models Status grid
+                const grid = document.getElementById('ai-models-status');
+                if (grid) {
+                    grid.innerHTML = `
+                        <div class="status-item">
+                            <div class="status-icon">🧠</div>
+                            <div class="status-label">${trainer}</div>
+                            <div class="status-name">ML Trainer</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-icon">📦</div>
+                            <div class="status-label">${models}</div>
+                            <div class="status-name">Active Models</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-icon">🎯</div>
+                            <div class="status-label">${accuracy}</div>
+                            <div class="status-name">Avg. Accuracy</div>
+                        </div>
+                    `;
+                }
+
+                // Progressive ML box summary (optional)
+                const prog = document.getElementById('progressive-ml-status-display');
+                if (prog) {
+                    prog.innerHTML = `
+                        <div style="font-size: 0.9em;">
+                            <strong>ML Trainer:</strong> ${trainer}<br>
+                            <strong>Models:</strong> ${models} active<br>
+                            <strong>Accuracy:</strong> ${accuracy}
+                        </div>
+                    `;
+                }
+            })
+            .catch(() => {
+                const grid = document.getElementById('ai-models-status');
+                if (grid) {
+                    grid.innerHTML = `
+                        <div class="status-item">
+                            <div class="status-icon">❌</div>
+                            <div class="status-label">Error</div>
+                            <div class="status-name">ML Status</div>
+                        </div>
+                    `;
+                }
+                const prog = document.getElementById('progressive-ml-status-display');
+                if (prog) {
+                    prog.innerHTML = '<div style="color: #ef4444;">❌ Failed to load ML status</div>';
+                }
+            });
 
         // Load sector performance
         fetch('/api/financial/sector-performance').then(r => r.json()).then(data => {
