@@ -363,49 +363,11 @@ def api_test_alert():
     return proxy_to_backend('/api/test-alert', method='POST')
 
 # ===========================
-# Legacy Routes (for backward compatibility)
+# Legacy Routes (removed)
 # ===========================
-
-@app.route('/api/market-data')
-def legacy_market_data():
-    """Legacy endpoint - redirects to new API"""
-    return proxy_to_backend('/api/financial/market-indices')
-
-@app.route('/api/ai/debug-prompt/<symbol>')
-def ai_debug_prompt(symbol):
-    """AI debug prompt proxy"""
-    try:
-        response = requests.get(f"{BACKEND_URL}/api/ai/debug-prompt/{symbol}")
-        return jsonify(response.json())
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
-
-@app.route('/api/ai/market-intelligence')
-def ai_market_intelligence():
-    """AI market intelligence proxy"""
-    try:
-        response = requests.get(f"{BACKEND_URL}/api/ai/market-intelligence")
-        return jsonify(response.json())
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
-
-@app.route('/api/ai/comprehensive-analysis/<symbol>')
-def ai_comprehensive_analysis(symbol):
-    """AI comprehensive analysis proxy"""
-    try:
-        response = requests.get(f"{BACKEND_URL}/api/ai/comprehensive-analysis/{symbol}")
-        return jsonify(response.json())
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
-
-@app.route('/api/ai/status')
-def ai_status():
-    """AI status proxy"""
-    try:
-        response = requests.get(f"{BACKEND_URL}/api/ai/status")
-        return jsonify(response.json())
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+# Note: Legacy routes using BACKEND_URL were removed to prevent NameError and
+# duplicated endpoints. All clients should use the standardized proxies above
+# which forward to FASTAPI_BACKEND.
 
 # ===========================
 # Data Management Routes

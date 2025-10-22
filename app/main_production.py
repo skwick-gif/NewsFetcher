@@ -1,7 +1,15 @@
 """
-Production FastAPI application for Tariff Radar
-Simplified main.py with corrected imports for Docker deployment
+DEPRECATED/ARCHIVED MODULE
+This file is no longer in active use. Please use `main_realtime.py` instead.
+
+If you see import/runtime attempts of this module, update your run scripts,
+Dockerfile, and docker-compose to point at `main_realtime:app`.
 """
+
+# Hard stop to prevent accidental usage in any environment
+raise ImportError(
+    "main_production.py is archived and must not be used. Use app/main_realtime.py (uvicorn app.main_realtime:app)."
+)
 import logging
 import os
 import sys

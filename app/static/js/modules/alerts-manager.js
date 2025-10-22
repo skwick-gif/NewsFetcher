@@ -28,12 +28,21 @@ class AlertsManager {
             const response = await fetch('/api/stats');
             const data = await response.json();
 
-            if (data.metrics) {
-                this.updateStatElement('total-articles', data.metrics.articles_total || 0);
-                this.updateStatElement('articles-24h', data.metrics.articles_last_24h || 0);
-                this.updateStatElement('high-priority-count', data.metrics.articles_high_score || 0);
-                this.updateStatElement('medium-priority-count', data.metrics.articles_medium_score || 0);
-                this.updateStatElement('sources-count', data.metrics.sources_monitored || 0);
+            // Support both legacy {metrics: {...}} and new {status:'success', data:{...}}
+            const metrics = data.metrics || (data.data ? {
+                articles_total: data.data.articles?.total_processed,
+                articles_last_24h: data.data.articles?.today,
+                articles_high_score: data.data.alerts?.active,
+                articles_medium_score: data.data.alerts?.resolved,
+                sources_monitored: data.data.monitoring?.feeds_monitored
+            } : null);
+
+            if (metrics) {
+                this.updateStatElement('total-articles', metrics.articles_total ?? 0);
+                this.updateStatElement('articles-24h', metrics.articles_last_24h ?? 0);
+                this.updateStatElement('high-priority-count', metrics.articles_high_score ?? 0);
+                this.updateStatElement('medium-priority-count', metrics.articles_medium_score ?? 0);
+                this.updateStatElement('sources-count', metrics.sources_monitored ?? 0);
 
                 console.log('✅ Stats updated');
             }

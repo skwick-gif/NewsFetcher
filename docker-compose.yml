@@ -97,7 +97,7 @@ services:
       - ./app:/app
       - ./config.yaml:/app/config.yaml
       - ./logs:/app/logs
-    command: uvicorn main_production:app --host 0.0.0.0 --port 8000
+  command: uvicorn main_realtime:app --host 0.0.0.0 --port 8000
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
