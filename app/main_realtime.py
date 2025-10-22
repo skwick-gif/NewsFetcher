@@ -1336,10 +1336,52 @@ async def get_recent_articles(limit: int = Query(20, ge=1, le=100)):
                     }
                 ]
             }
-        
-        # TODO: Implement real article fetching
-        articles = []  # real_data_loader.get_recent_articles(limit)
-        
+        # REAL data path: fetch RSS and enrich with keyword analysis
+        fetched = await real_data_loader.fetch_all_rss_feeds(tier="major_news")
+        articles = []
+
+        # Use keyword analyzer if available
+        use_keywords = keyword_analyzer is not None
+
+        for idx, art in enumerate(fetched[:limit]):
+            score = 0.0
+            llm_relevant = False
+            llm_tags = []
+
+            if use_keywords:
+                try:
+                    ka = keyword_analyzer.analyze_article(art)
+                    # Map keyword_score (-3..+3 typical) to 0..1 range for UI
+                    raw = float(ka.get("keyword_score", 0.0))
+                    norm = (raw + 3.0) / 6.0
+                    score = max(0.0, min(1.0, norm))
+                    # Basic relevance decision
+                    llm_relevant = score >= 0.4
+                    # Build tags from top categories or alert level
+                    if ka.get("alert_level") and ka["alert_level"] != "none":
+                        llm_tags.append(f"alert:{ka['alert_level']}")
+                    if ka.get("sentiment"):
+                        llm_tags.append(f"sentiment:{ka['sentiment']}")
+                except Exception as e:
+                    logger.warning(f"Keyword analysis failed: {e}")
+
+            articles.append({
+                "id": art.get("id", f"rss_{idx}"),
+                "title": art.get("title", ""),
+                "content": art.get("content", ""),
+                "url": art.get("url", ""),
+                "source": art.get("source_name", art.get("source", "rss")),
+                # UI expects 'published' or 'timestamp'
+                "published": art.get("published_at") or art.get("fetched_at"),
+                "timestamp": art.get("published_at") or art.get("fetched_at"),
+                # Scoring fields expected by UI
+                "score": round(score, 2),
+                "llm_checked": use_keywords,
+                "llm_relevant": llm_relevant,
+                "llm_summary": None,
+                "llm_tags": llm_tags
+            })
+
         return {
             "status": "success",
             "count": len(articles),
