@@ -16,39 +16,41 @@ Features:
 - Both regression (price prediction) and classification (direction prediction)
 - Ensemble predictions with confidence scoring
 - Model checkpointing and resumption
+- PyTorch CUDA GPU acceleration
 """
 
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers, models, callbacks
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
 import numpy as np
 from typing import Dict, List, Tuple, Optional, Union
 import logging
 from pathlib import Path
 import json
 import pickle
+import math
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Set TensorFlow GPU configuration
-try:
-    # Try to configure GPU
-    physical_devices = tf.config.list_physical_devices('GPU')
-    if physical_devices:
-        tf.config.experimental.set_memory_growth(physical_devices[0], True)
-        logger.info(f"✅ GPU configured: {physical_devices[0]}")
-    else:
-        logger.info("ℹ️ Running on CPU (no GPU detected)")
-except Exception as e:
-    logger.warning(f"⚠️ GPU configuration warning: {e}")
+# Set PyTorch device and GPU configuration
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+logger.info(f"🚀 Using device: {device}")
+
+if torch.cuda.is_available():
+    logger.info(f"✅ GPU: {torch.cuda.get_device_name(0)}")
+    logger.info(f"   CUDA Version: {torch.version.cuda}")
+    logger.info(f"   Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
+else:
+    logger.info("ℹ️ Running on CPU (no GPU detected)")
 
 
-class LSTMModel:
-    """LSTM model for sequential pattern recognition"""
+class LSTMModel(nn.Module):
+    """PyTorch LSTM model for sequential pattern recognition"""
     
     def __init__(self, 
-                 input_shape: Tuple[int, int],
+                 input_size: int,
+                 sequence_length: int,
                  horizons: List[int] = [1, 7, 30],
                  mode: str = "progressive",
                  model_params: Dict = None):
@@ -56,12 +58,16 @@ class LSTMModel:
         Initialize LSTM Model
         
         Args:
-            input_shape: (sequence_length, num_features)
+            input_size: Number of input features
+            sequence_length: Length of input sequences
             horizons: Prediction horizons [1, 7, 30]
             mode: "progressive" or "unified"
             model_params: Model hyperparameters
         """
-        self.input_shape = input_shape
+        super(LSTMModel, self).__init__()
+        
+        self.input_size = input_size
+        self.sequence_length = sequence_length
         self.horizons = horizons
         self.mode = mode
         
@@ -69,186 +75,193 @@ class LSTMModel:
         self.params = {
             'lstm_units': [128, 64, 32],
             'dropout_rate': 0.3,
-            'l2_regularization': 0.001,
             'learning_rate': 0.001,
-            'activation': 'tanh'
+            'num_layers': 3
         }
         
         if model_params:
             self.params.update(model_params)
         
-        self.models = {}
-        self._build_models()
+        self.device = device
+        self._build_layers()
+        
+        # Move model to device
+        self.to(self.device)
         
         logger.info(f"🧠 LSTM Model initialized ({mode} mode)")
-        logger.info(f"   📊 Input shape: {input_shape}")
+        logger.info(f"   📊 Input size: {input_size}, Sequence length: {sequence_length}")
         logger.info(f"   ⏰ Horizons: {horizons}")
+        logger.info(f"   🎯 Device: {self.device}")
     
-    def _build_models(self):
-        """Build LSTM models based on mode"""
+    def _build_layers(self):
+        """Build LSTM layers"""
+        lstm_units = self.params['lstm_units']
+        dropout_rate = self.params['dropout_rate']
+        num_layers = self.params['num_layers']
+        
+        # LSTM layers
+        self.lstm_layers = nn.ModuleList()
+        
+        # First LSTM layer
+        self.lstm_layers.append(
+            nn.LSTM(
+                input_size=self.input_size,
+                hidden_size=lstm_units[0],
+                num_layers=1,
+                batch_first=True,
+                dropout=0 if num_layers == 1 else dropout_rate
+            )
+        )
+        
+        # Additional LSTM layers
+        for i in range(1, len(lstm_units)):
+            self.lstm_layers.append(
+                nn.LSTM(
+                    input_size=lstm_units[i-1],
+                    hidden_size=lstm_units[i],
+                    num_layers=1,
+                    batch_first=True,
+                    dropout=0 if i == len(lstm_units)-1 else dropout_rate
+                )
+            )
+        
+        # Dropout layer
+        self.dropout = nn.Dropout(dropout_rate)
+        
+        # Output layers based on mode
         if self.mode == "progressive":
-            # Separate model for each horizon
+            # Separate output layer for each horizon
+            self.output_layers = nn.ModuleDict()
             for horizon in self.horizons:
-                self.models[f'{horizon}d'] = self._build_single_horizon_model(horizon)
+                self.output_layers[f'{horizon}d'] = nn.Sequential(
+                    nn.Linear(lstm_units[-1], 64),
+                    nn.ReLU(),
+                    nn.Dropout(dropout_rate),
+                    nn.Linear(64, 1)  # Single output for each horizon
+                )
         else:
-            # Single unified model for all horizons
-            self.models['unified'] = self._build_unified_model()
+            # Unified output for all horizons
+            self.output_layer = nn.Sequential(
+                nn.Linear(lstm_units[-1], 64),
+                nn.ReLU(),
+                nn.Dropout(dropout_rate),
+                nn.Linear(64, len(self.horizons))  # Output for all horizons
+            )
     
-    def _build_single_horizon_model(self, horizon: int) -> keras.Model:
-        """Build LSTM model for single horizon"""
+    def forward(self, x, horizon=None):
+        """Forward pass"""
+        # x shape: (batch_size, sequence_length, input_size)
         
-        # Input layer
-        inputs = keras.Input(shape=self.input_shape, name=f'input_{horizon}d')
+        # Pass through LSTM layers
+        hidden = x
+        for lstm in self.lstm_layers:
+            hidden, _ = lstm(hidden)
+            hidden = self.dropout(hidden)
         
-        # LSTM layers with dropout
-        x = inputs
-        for i, units in enumerate(self.params['lstm_units']):
-            return_sequences = i < len(self.params['lstm_units']) - 1
-            x = layers.LSTM(
-                units,
-                return_sequences=return_sequences,
-                dropout=self.params['dropout_rate'],
-                recurrent_dropout=self.params['dropout_rate'],
-                kernel_regularizer=keras.regularizers.l2(self.params['l2_regularization']),
-                name=f'lstm_{i+1}_{horizon}d'
-            )(x)
+        # Take the last timestep
+        hidden = hidden[:, -1, :]  # (batch_size, hidden_size)
         
-        # Additional dense layers
-        x = layers.Dense(64, activation='relu', name=f'dense1_{horizon}d')(x)
-        x = layers.Dropout(self.params['dropout_rate'])(x)
-        x = layers.Dense(32, activation='relu', name=f'dense2_{horizon}d')(x)
-        x = layers.Dropout(self.params['dropout_rate'])(x)
-        
-        # Dual outputs: regression and classification
-        regression_output = layers.Dense(1, activation='linear', name=f'price_pred_{horizon}d')(x)
-        classification_output = layers.Dense(1, activation='sigmoid', name=f'direction_pred_{horizon}d')(x)
-        
-        model = keras.Model(
-            inputs=inputs,
-            outputs=[regression_output, classification_output],
-            name=f'LSTM_{horizon}d'
-        )
-        
-        # Compile with dual loss
-        model.compile(
-            optimizer=keras.optimizers.Adam(learning_rate=self.params['learning_rate']),
-            loss={
-                f'price_pred_{horizon}d': 'mse',
-                f'direction_pred_{horizon}d': 'binary_crossentropy'
-            },
-            loss_weights={
-                f'price_pred_{horizon}d': 1.0,
-                f'direction_pred_{horizon}d': 2.0  # Higher weight for direction
-            },
-            metrics={
-                f'price_pred_{horizon}d': ['mae'],
-                f'direction_pred_{horizon}d': ['accuracy']
-            }
-        )
-        
-        return model
-    
-    def _build_unified_model(self) -> keras.Model:
-        """Build unified LSTM model for all horizons"""
-        
-        # Input layer
-        inputs = keras.Input(shape=self.input_shape, name='unified_input')
-        
-        # Shared LSTM layers
-        x = inputs
-        for i, units in enumerate(self.params['lstm_units']):
-            return_sequences = i < len(self.params['lstm_units']) - 1
-            x = layers.LSTM(
-                units,
-                return_sequences=return_sequences,
-                dropout=self.params['dropout_rate'],
-                recurrent_dropout=self.params['dropout_rate'],
-                kernel_regularizer=keras.regularizers.l2(self.params['l2_regularization']),
-                name=f'shared_lstm_{i+1}'
-            )(x)
-        
-        # Shared dense layer
-        shared_dense = layers.Dense(64, activation='relu', name='shared_dense')(x)
-        shared_dropout = layers.Dropout(self.params['dropout_rate'])(shared_dense)
-        
-        # Separate heads for each horizon
-        regression_outputs = []
-        classification_outputs = []
-        
-        for horizon in self.horizons:
-            # Horizon-specific dense layers
-            horizon_dense = layers.Dense(32, activation='relu', name=f'dense_{horizon}d')(shared_dropout)
-            horizon_dropout = layers.Dropout(self.params['dropout_rate'])(horizon_dense)
-            
-            # Outputs for this horizon
-            reg_out = layers.Dense(1, activation='linear', name=f'price_pred_{horizon}d')(horizon_dropout)
-            clf_out = layers.Dense(1, activation='sigmoid', name=f'direction_pred_{horizon}d')(horizon_dropout)
-            
-            regression_outputs.append(reg_out)
-            classification_outputs.append(clf_out)
-        
-        all_outputs = regression_outputs + classification_outputs
-        
-        model = keras.Model(
-            inputs=inputs,
-            outputs=all_outputs,
-            name='LSTM_Unified'
-        )
-        
-        # Compile with multiple losses
-        loss_dict = {}
-        loss_weights_dict = {}
-        metrics_dict = {}
-        
-        for i, horizon in enumerate(self.horizons):
-            # Regression
-            loss_dict[f'price_pred_{horizon}d'] = 'mse'
-            loss_weights_dict[f'price_pred_{horizon}d'] = 1.0
-            metrics_dict[f'price_pred_{horizon}d'] = ['mae']
-            
-            # Classification
-            loss_dict[f'direction_pred_{horizon}d'] = 'binary_crossentropy'
-            loss_weights_dict[f'direction_pred_{horizon}d'] = 2.0
-            metrics_dict[f'direction_pred_{horizon}d'] = ['accuracy']
-        
-        model.compile(
-            optimizer=keras.optimizers.Adam(learning_rate=self.params['learning_rate']),
-            loss=loss_dict,
-            loss_weights=loss_weights_dict,
-            metrics=metrics_dict
-        )
-        
-        return model
-    
-    def get_model(self, horizon: Union[str, int] = None) -> keras.Model:
-        """Get specific model"""
         if self.mode == "progressive":
             if horizon is None:
-                raise ValueError("Horizon must be specified for progressive mode")
-            key = f'{horizon}d' if isinstance(horizon, int) else horizon
-            return self.models.get(key)
+                raise ValueError("horizon must be specified for progressive mode")
+            return self.output_layers[f'{horizon}d'](hidden)
         else:
-            return self.models['unified']
+            return self.output_layer(hidden)
+
+
     
-    def summary(self):
-        """Print model summaries"""
-        for name, model in self.models.items():
-            print(f"\n📊 {name.upper()} MODEL SUMMARY:")
-            print("=" * 60)
-            model.summary()
+    def get_optimizer(self):
+        """Get PyTorch optimizer"""
+        return torch.optim.Adam(self.parameters(), lr=self.params['learning_rate'])
+    
+    def get_loss_fn(self):
+        """Get loss function"""
+        return nn.MSELoss()
 
 
-class TransformerModel:
+class MultiHeadAttention(nn.Module):
+    """Multi-head attention mechanism for Transformer"""
+    
+    def __init__(self, embed_dim, num_heads, dropout=0.1):
+        super(MultiHeadAttention, self).__init__()
+        self.embed_dim = embed_dim
+        self.num_heads = num_heads
+        self.head_dim = embed_dim // num_heads
+        
+        assert self.head_dim * num_heads == embed_dim, "embed_dim must be divisible by num_heads"
+        
+        self.query = nn.Linear(embed_dim, embed_dim)
+        self.key = nn.Linear(embed_dim, embed_dim)
+        self.value = nn.Linear(embed_dim, embed_dim)
+        self.out = nn.Linear(embed_dim, embed_dim)
+        self.dropout = nn.Dropout(dropout)
+        
+    def forward(self, x):
+        batch_size, seq_len, embed_dim = x.size()
+        
+        # Linear transformations
+        Q = self.query(x).view(batch_size, seq_len, self.num_heads, self.head_dim).transpose(1, 2)
+        K = self.key(x).view(batch_size, seq_len, self.num_heads, self.head_dim).transpose(1, 2)
+        V = self.value(x).view(batch_size, seq_len, self.num_heads, self.head_dim).transpose(1, 2)
+        
+        # Attention
+        scores = torch.matmul(Q, K.transpose(-2, -1)) / math.sqrt(self.head_dim)
+        attention_weights = F.softmax(scores, dim=-1)
+        attention_weights = self.dropout(attention_weights)
+        
+        # Apply attention to values
+        attended = torch.matmul(attention_weights, V)
+        
+        # Concatenate heads
+        attended = attended.transpose(1, 2).contiguous().view(batch_size, seq_len, embed_dim)
+        
+        return self.out(attended)
+
+
+class TransformerBlock(nn.Module):
+    """Transformer block with self-attention and feed-forward"""
+    
+    def __init__(self, embed_dim, num_heads, ff_dim, dropout=0.1):
+        super(TransformerBlock, self).__init__()
+        self.attention = MultiHeadAttention(embed_dim, num_heads, dropout)
+        self.norm1 = nn.LayerNorm(embed_dim)
+        self.norm2 = nn.LayerNorm(embed_dim)
+        
+        self.feed_forward = nn.Sequential(
+            nn.Linear(embed_dim, ff_dim),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(ff_dim, embed_dim)
+        )
+        
+        self.dropout = nn.Dropout(dropout)
+        
+    def forward(self, x):
+        # Self-attention with residual connection
+        attn_out = self.attention(x)
+        x = self.norm1(x + self.dropout(attn_out))
+        
+        # Feed-forward with residual connection
+        ff_out = self.feed_forward(x)
+        x = self.norm2(x + self.dropout(ff_out))
+        
+        return x
+
+
+class TransformerModel(nn.Module):
     """Transformer model with attention mechanism"""
     
     def __init__(self, 
-                 input_shape: Tuple[int, int],
+                 input_size: int,
+                 sequence_length: int,
                  horizons: List[int] = [1, 7, 30],
                  mode: str = "progressive",
                  model_params: Dict = None):
         """Initialize Transformer Model"""
+        super(TransformerModel, self).__init__()
         
-        self.input_shape = input_shape
+        self.input_size = input_size
+        self.sequence_length = sequence_length
         self.horizons = horizons
         self.mode = mode
         
@@ -257,7 +270,7 @@ class TransformerModel:
             'num_heads': 8,
             'ff_dim': 256,
             'num_transformer_blocks': 2,
-            'mlp_units': [128, 64],
+            'embed_dim': 128,
             'dropout_rate': 0.1,
             'learning_rate': 0.0001
         }
@@ -265,90 +278,213 @@ class TransformerModel:
         if model_params:
             self.params.update(model_params)
         
-        self.models = {}
-        self._build_models()
+        self.device = device
+        self._build_layers()
         
-        logger.info(f"🎭 Transformer Model initialized ({mode} mode)")
+        # Move model to device
+        self.to(self.device)
+        
+        logger.info(f"🎯 Transformer Model initialized ({mode} mode)")
+        logger.info(f"   📊 Input size: {input_size}, Sequence length: {sequence_length}")
+        logger.info(f"   ⏰ Horizons: {horizons}")
+        logger.info(f"   🎯 Device: {self.device}")
     
-    def _build_models(self):
-        """Build Transformer models"""
-        if self.mode == "progressive":
-            for horizon in self.horizons:
-                self.models[f'{horizon}d'] = self._build_single_horizon_model(horizon)
-        else:
-            self.models['unified'] = self._build_unified_model()
-    
-    def _transformer_encoder(self, inputs, head_size, num_heads, ff_dim, dropout=0):
-        """Transformer encoder block"""
-        # Multi-head self-attention
-        attention_layer = layers.MultiHeadAttention(
-            num_heads=num_heads, key_dim=head_size, dropout=dropout
-        )
-        attention_output = attention_layer(inputs, inputs)
-        attention_output = layers.Dropout(dropout)(attention_output)
-        attention_output = layers.LayerNormalization(epsilon=1e-6)(inputs + attention_output)
+    def _build_layers(self):
+        """Build Transformer layers"""
+        embed_dim = self.params['embed_dim']
+        num_heads = self.params['num_heads']
+        ff_dim = self.params['ff_dim']
+        num_blocks = self.params['num_transformer_blocks']
+        dropout_rate = self.params['dropout_rate']
         
-        # Feed-forward network
-        ffn = keras.Sequential([
-            layers.Dense(ff_dim, activation="relu"),
-            layers.Dense(inputs.shape[-1]),
-        ])
-        ffn_output = ffn(attention_output)
-        ffn_output = layers.Dropout(dropout)(ffn_output)
-        return layers.LayerNormalization(epsilon=1e-6)(attention_output + ffn_output)
-    
-    def _build_single_horizon_model(self, horizon: int) -> keras.Model:
-        """Build Transformer model for single horizon"""
+        # Input projection
+        self.input_projection = nn.Linear(self.input_size, embed_dim)
         
-        inputs = keras.Input(shape=self.input_shape)
-        
-        # Positional encoding (simple version)
-        positions = tf.range(start=0, limit=self.input_shape[0], delta=1)
-        positions = tf.cast(positions, tf.float32)
-        position_embedding = layers.Embedding(
-            input_dim=self.input_shape[0], output_dim=self.input_shape[1]
-        )(positions)
-        
-        x = inputs + position_embedding
+        # Positional encoding
+        self.pos_encoding = nn.Parameter(torch.randn(1, self.sequence_length, embed_dim))
         
         # Transformer blocks
-        head_size = self.input_shape[1] // self.params['num_heads']
-        for _ in range(self.params['num_transformer_blocks']):
-            x = self._transformer_encoder(
-                x, head_size, self.params['num_heads'], 
-                self.params['ff_dim'], self.params['dropout_rate']
-            )
+        self.transformer_blocks = nn.ModuleList([
+            TransformerBlock(embed_dim, num_heads, ff_dim, dropout_rate)
+            for _ in range(num_blocks)
+        ])
         
         # Global average pooling
-        x = layers.GlobalAveragePooling1D()(x)
+        self.global_pool = nn.AdaptiveAvgPool1d(1)
         
-        # MLP layers
-        for units in self.params['mlp_units']:
-            x = layers.Dense(units, activation="relu")(x)
-            x = layers.Dropout(self.params['dropout_rate'])(x)
+        # Output layers based on mode
+        if self.mode == "progressive":
+            # Separate output layer for each horizon
+            self.output_layers = nn.ModuleDict()
+            for horizon in self.horizons:
+                self.output_layers[f'{horizon}d'] = nn.Sequential(
+                    nn.Linear(embed_dim, 64),
+                    nn.ReLU(),
+                    nn.Dropout(dropout_rate),
+                    nn.Linear(64, 1)
+                )
+        else:
+            # Unified output for all horizons
+            self.output_layer = nn.Sequential(
+                nn.Linear(embed_dim, 64),
+                nn.ReLU(),
+                nn.Dropout(dropout_rate),
+                nn.Linear(64, len(self.horizons))
+            )
+    
+    def forward(self, x, horizon=None):
+        """Forward pass"""
+        # x shape: (batch_size, sequence_length, input_size)
         
-        # Dual outputs
-        regression_output = layers.Dense(1, activation='linear', name=f'price_pred_{horizon}d')(x)
-        classification_output = layers.Dense(1, activation='sigmoid', name=f'direction_pred_{horizon}d')(x)
+        # Input projection
+        x = self.input_projection(x)
         
-        model = keras.Model(inputs=inputs, outputs=[regression_output, classification_output])
+        # Add positional encoding
+        x = x + self.pos_encoding
         
-        # Compile
-        model.compile(
-            optimizer=keras.optimizers.Adam(learning_rate=self.params['learning_rate']),
-            loss=['mse', 'binary_crossentropy'],
-            loss_weights=[1.0, 2.0],
-            metrics=[['mae'], ['accuracy']]
+        # Pass through transformer blocks
+        for transformer_block in self.transformer_blocks:
+            x = transformer_block(x)
+        
+        # Global average pooling over sequence dimension
+        x = x.transpose(1, 2)  # (batch_size, embed_dim, sequence_length)
+        x = self.global_pool(x).squeeze(-1)  # (batch_size, embed_dim)
+        
+        # Output
+        if self.mode == "progressive":
+            if horizon is None:
+                raise ValueError("horizon must be specified for progressive mode")
+            return self.output_layers[f'{horizon}d'](x)
+        else:
+            return self.output_layer(x)
+    
+    def get_optimizer(self):
+        """Get PyTorch optimizer"""
+        return torch.optim.Adam(self.parameters(), lr=self.params['learning_rate'])
+    
+    def get_loss_fn(self):
+        """Get loss function"""
+        return nn.MSELoss()
+
+
+class CNNModel(nn.Module):
+    """CNN model for feature extraction"""
+    
+    def __init__(self, 
+                 input_size: int,
+                 sequence_length: int,
+                 horizons: List[int] = [1, 7, 30],
+                 mode: str = "progressive",
+                 model_params: Dict = None):
+        """Initialize CNN Model"""
+        super(CNNModel, self).__init__()
+        
+        self.input_size = input_size
+        self.sequence_length = sequence_length
+        self.horizons = horizons
+        self.mode = mode
+        
+        # Default parameters
+        self.params = {
+            'filters': [64, 128, 64],
+            'kernel_sizes': [3, 3, 3],
+            'dropout_rate': 0.3,
+            'learning_rate': 0.001
+        }
+        
+        if model_params:
+            self.params.update(model_params)
+        
+        self.device = device
+        self._build_layers()
+        
+        # Move model to device
+        self.to(self.device)
+        
+        logger.info(f"🔍 CNN Model initialized ({mode} mode)")
+        logger.info(f"   📊 Input size: {input_size}, Sequence length: {sequence_length}")
+        logger.info(f"   ⏰ Horizons: {horizons}")
+        logger.info(f"   🎯 Device: {self.device}")
+    
+    def _build_layers(self):
+        """Build CNN layers"""
+        filters = self.params['filters']
+        kernel_sizes = self.params['kernel_sizes']
+        dropout_rate = self.params['dropout_rate']
+        
+        # Conv1D layers
+        self.conv_layers = nn.ModuleList()
+        
+        # First conv layer
+        self.conv_layers.append(
+            nn.Sequential(
+                nn.Conv1d(self.input_size, filters[0], kernel_size=kernel_sizes[0], padding=1),
+                nn.ReLU(),
+                nn.Dropout(dropout_rate)
+            )
         )
         
-        return model
-    
-    def _build_unified_model(self) -> keras.Model:
-        """Build unified Transformer model"""
-        # Similar to LSTM but with Transformer layers
-        # Implementation similar to unified LSTM but with transformer_encoder calls
+        # Additional conv layers
+        for i in range(1, len(filters)):
+            self.conv_layers.append(
+                nn.Sequential(
+                    nn.Conv1d(filters[i-1], filters[i], kernel_size=kernel_sizes[i], padding=1),
+                    nn.ReLU(),
+                    nn.Dropout(dropout_rate)
+                )
+            )
         
-        inputs = keras.Input(shape=self.input_shape)
+        # Global max pooling
+        self.global_pool = nn.AdaptiveMaxPool1d(1)
+        
+        # Output layers based on mode
+        if self.mode == "progressive":
+            # Separate output layer for each horizon
+            self.output_layers = nn.ModuleDict()
+            for horizon in self.horizons:
+                self.output_layers[f'{horizon}d'] = nn.Sequential(
+                    nn.Linear(filters[-1], 64),
+                    nn.ReLU(),
+                    nn.Dropout(dropout_rate),
+                    nn.Linear(64, 1)
+                )
+        else:
+            # Unified output for all horizons
+            self.output_layer = nn.Sequential(
+                nn.Linear(filters[-1], 64),
+                nn.ReLU(),
+                nn.Dropout(dropout_rate),
+                nn.Linear(64, len(self.horizons))
+            )
+    
+    def forward(self, x, horizon=None):
+        """Forward pass"""
+        # x shape: (batch_size, sequence_length, input_size)
+        # Conv1D expects: (batch_size, input_size, sequence_length)
+        x = x.transpose(1, 2)
+        
+        # Pass through conv layers
+        for conv_layer in self.conv_layers:
+            x = conv_layer(x)
+        
+        # Global max pooling
+        x = self.global_pool(x).squeeze(-1)  # (batch_size, filters[-1])
+        
+        # Output
+        if self.mode == "progressive":
+            if horizon is None:
+                raise ValueError("horizon must be specified for progressive mode")
+            return self.output_layers[f'{horizon}d'](x)
+        else:
+            return self.output_layer(x)
+    
+    def get_optimizer(self):
+        """Get PyTorch optimizer"""
+        return torch.optim.Adam(self.parameters(), lr=self.params['learning_rate'])
+    
+    def get_loss_fn(self):
+        """Get loss function"""
+        return nn.MSELoss()
         
         # Positional encoding
         positions = tf.range(start=0, limit=self.input_shape[0], delta=1)
@@ -386,371 +522,101 @@ class TransformerModel:
         model = keras.Model(inputs=inputs, outputs=regression_outputs + classification_outputs)
         
         # Compile with multi-task losses
-        loss_dict = {}
-        loss_weights_dict = {}
-        metrics_dict = {}
-        
-        for horizon in self.horizons:
-            loss_dict[f'price_pred_{horizon}d'] = 'mse'
-            loss_weights_dict[f'price_pred_{horizon}d'] = 1.0
-            metrics_dict[f'price_pred_{horizon}d'] = ['mae']
-            
-            loss_dict[f'direction_pred_{horizon}d'] = 'binary_crossentropy'
-            loss_weights_dict[f'direction_pred_{horizon}d'] = 2.0
-            metrics_dict[f'direction_pred_{horizon}d'] = ['accuracy']
-        
-        model.compile(
-            optimizer=keras.optimizers.Adam(learning_rate=self.params['learning_rate']),
-            loss=loss_dict,
-            loss_weights=loss_weights_dict,
-            metrics=metrics_dict
+# Legacy wrapper classes for backward compatibility
+class ProgressiveModels:
+    """Legacy wrapper for backward compatibility"""
+    
+    @staticmethod
+    def create_lstm(input_shape, horizons, mode, **params):
+        """Create LSTM model (legacy)"""
+        sequence_length, input_size = input_shape
+        return LSTMModel(
+            input_size=input_size,
+            sequence_length=sequence_length,
+            horizons=horizons,
+            mode=mode,
+            model_params=params
         )
-        
-        return model
     
-    def get_model(self, horizon: Union[str, int] = None) -> keras.Model:
-        """Get specific model"""
-        if self.mode == "progressive":
-            key = f'{horizon}d' if isinstance(horizon, int) else horizon
-            return self.models.get(key)
-        else:
-            return self.models['unified']
-
-
-class CNNModel:
-    """CNN model for feature extraction from time series"""
-    
-    def __init__(self, 
-                 input_shape: Tuple[int, int],
-                 horizons: List[int] = [1, 7, 30],
-                 mode: str = "progressive",
-                 model_params: Dict = None):
-        """Initialize CNN Model"""
-        
-        self.input_shape = input_shape
-        self.horizons = horizons
-        self.mode = mode
-        
-        # Default parameters
-        self.params = {
-            'filters': [64, 128, 64],
-            'kernel_sizes': [3, 3, 3],
-            'pool_sizes': [2, 2, 2],
-            'dense_units': [128, 64],
-            'dropout_rate': 0.3,
-            'learning_rate': 0.001
-        }
-        
-        if model_params:
-            self.params.update(model_params)
-        
-        self.models = {}
-        self._build_models()
-        
-        logger.info(f"🔍 CNN Model initialized ({mode} mode)")
-    
-    def _build_models(self):
-        """Build CNN models"""
-        if self.mode == "progressive":
-            for horizon in self.horizons:
-                self.models[f'{horizon}d'] = self._build_single_horizon_model(horizon)
-        else:
-            self.models['unified'] = self._build_unified_model()
-    
-    def _build_single_horizon_model(self, horizon: int) -> keras.Model:
-        """Build CNN model for single horizon"""
-        
-        inputs = keras.Input(shape=self.input_shape)
-        
-        # Reshape for Conv1D if needed
-        x = layers.Reshape((self.input_shape[0], self.input_shape[1]))(inputs)
-        
-        # Convolutional layers
-        for i, (filters, kernel_size, pool_size) in enumerate(zip(
-            self.params['filters'], 
-            self.params['kernel_sizes'], 
-            self.params['pool_sizes']
-        )):
-            x = layers.Conv1D(
-                filters=filters,
-                kernel_size=kernel_size,
-                activation='relu',
-                padding='same',
-                name=f'conv1d_{i+1}_{horizon}d'
-            )(x)
-            x = layers.MaxPooling1D(pool_size=pool_size)(x)
-            x = layers.Dropout(self.params['dropout_rate'])(x)
-        
-        # Flatten and dense layers
-        x = layers.GlobalMaxPooling1D()(x)
-        
-        for units in self.params['dense_units']:
-            x = layers.Dense(units, activation='relu')(x)
-            x = layers.Dropout(self.params['dropout_rate'])(x)
-        
-        # Dual outputs
-        regression_output = layers.Dense(1, activation='linear', name=f'price_pred_{horizon}d')(x)
-        classification_output = layers.Dense(1, activation='sigmoid', name=f'direction_pred_{horizon}d')(x)
-        
-        model = keras.Model(inputs=inputs, outputs=[regression_output, classification_output])
-        
-        model.compile(
-            optimizer=keras.optimizers.Adam(learning_rate=self.params['learning_rate']),
-            loss=['mse', 'binary_crossentropy'],
-            loss_weights=[1.0, 2.0],
-            metrics=[['mae'], ['accuracy']]
+    @staticmethod
+    def create_transformer(input_shape, horizons, mode, **params):
+        """Create Transformer model (legacy)"""
+        sequence_length, input_size = input_shape
+        return TransformerModel(
+            input_size=input_size,
+            sequence_length=sequence_length,
+            horizons=horizons,
+            mode=mode,
+            model_params=params
         )
-        
-        return model
     
-    def _build_unified_model(self) -> keras.Model:
-        """Build unified CNN model"""
-        inputs = keras.Input(shape=self.input_shape)
-        
-        x = layers.Reshape((self.input_shape[0], self.input_shape[1]))(inputs)
-        
-        # Shared convolutional layers
-        for i, (filters, kernel_size, pool_size) in enumerate(zip(
-            self.params['filters'], 
-            self.params['kernel_sizes'], 
-            self.params['pool_sizes']
-        )):
-            x = layers.Conv1D(filters=filters, kernel_size=kernel_size, activation='relu', padding='same')(x)
-            x = layers.MaxPooling1D(pool_size=pool_size)(x)
-            x = layers.Dropout(self.params['dropout_rate'])(x)
-        
-        x = layers.GlobalMaxPooling1D()(x)
-        shared_dense = layers.Dense(128, activation='relu')(x)
-        
-        # Multi-horizon outputs
-        regression_outputs = []
-        classification_outputs = []
-        
-        for horizon in self.horizons:
-            horizon_dense = layers.Dense(64, activation='relu')(shared_dense)
-            horizon_dropout = layers.Dropout(self.params['dropout_rate'])(horizon_dense)
-            
-            reg_out = layers.Dense(1, activation='linear', name=f'price_pred_{horizon}d')(horizon_dropout)
-            clf_out = layers.Dense(1, activation='sigmoid', name=f'direction_pred_{horizon}d')(horizon_dropout)
-            
-            regression_outputs.append(reg_out)
-            classification_outputs.append(clf_out)
-        
-        model = keras.Model(inputs=inputs, outputs=regression_outputs + classification_outputs)
-        
-        # Multi-task compilation
-        loss_dict = {}
-        loss_weights_dict = {}
-        metrics_dict = {}
-        
-        for horizon in self.horizons:
-            loss_dict[f'price_pred_{horizon}d'] = 'mse'
-            loss_weights_dict[f'price_pred_{horizon}d'] = 1.0
-            metrics_dict[f'price_pred_{horizon}d'] = ['mae']
-            
-            loss_dict[f'direction_pred_{horizon}d'] = 'binary_crossentropy'
-            loss_weights_dict[f'direction_pred_{horizon}d'] = 2.0
-            metrics_dict[f'direction_pred_{horizon}d'] = ['accuracy']
-        
-        model.compile(
-            optimizer=keras.optimizers.Adam(learning_rate=self.params['learning_rate']),
-            loss=loss_dict,
-            loss_weights=loss_weights_dict,
-            metrics=metrics_dict
+    @staticmethod
+    def create_cnn(input_shape, horizons, mode, **params):
+        """Create CNN model (legacy)"""
+        sequence_length, input_size = input_shape
+        return CNNModel(
+            input_size=input_size,
+            sequence_length=sequence_length,
+            horizons=horizons,
+            mode=mode,
+            model_params=params
         )
-        
-        return model
-    
-    def get_model(self, horizon: Union[str, int] = None) -> keras.Model:
-        """Get specific model"""
-        if self.mode == "progressive":
-            key = f'{horizon}d' if isinstance(horizon, int) else horizon
-            return self.models.get(key)
-        else:
-            return self.models['unified']
 
 
 class EnsembleModel:
-    """Ensemble model combining LSTM, Transformer, and CNN"""
+    """Ensemble model combining multiple PyTorch models"""
     
-    def __init__(self, 
-                 input_shape: Tuple[int, int],
-                 horizons: List[int] = [1, 7, 30],
-                 mode: str = "progressive"):
-        """Initialize Ensemble Model"""
+    def __init__(self, models: Dict[str, nn.Module], weights: Dict[str, float] = None):
+        """
+        Initialize ensemble model
         
-        self.input_shape = input_shape
-        self.horizons = horizons
-        self.mode = mode
+        Args:
+            models: Dictionary of model_name -> model
+            weights: Dictionary of model_name -> weight (defaults to equal weights)
+        """
+        self.models = models
+        self.device = device
         
-        # Initialize individual models
-        self.lstm_model = LSTMModel(input_shape, horizons, mode)
-        self.transformer_model = TransformerModel(input_shape, horizons, mode)
-        self.cnn_model = CNNModel(input_shape, horizons, mode)
-        
-        # Ensemble weights (can be learned or fixed)
-        self.ensemble_weights = {
-            'lstm': 0.4,
-            'transformer': 0.35,
-            'cnn': 0.25
-        }
-        
-        logger.info(f"🎯 Ensemble Model initialized ({mode} mode)")
-        logger.info(f"   ⚖️ Weights: LSTM={self.ensemble_weights['lstm']}, "
-                   f"Transformer={self.ensemble_weights['transformer']}, "
-                   f"CNN={self.ensemble_weights['cnn']}")
-    
-    def predict_ensemble(self, X: np.ndarray, horizon: Union[str, int] = None) -> Dict:
-        """Make ensemble predictions"""
-        
-        # Get predictions from individual models
-        lstm_pred = self.lstm_model.get_model(horizon).predict(X, verbose=0)
-        transformer_pred = self.transformer_model.get_model(horizon).predict(X, verbose=0)
-        cnn_pred = self.cnn_model.get_model(horizon).predict(X, verbose=0)
-        
-        # Handle different output formats
-        if isinstance(lstm_pred, list):
-            # Dual output (regression, classification)
-            lstm_reg, lstm_clf = lstm_pred[0], lstm_pred[1]
-            transformer_reg, transformer_clf = transformer_pred[0], transformer_pred[1]
-            cnn_reg, cnn_clf = cnn_pred[0], cnn_pred[1]
+        # Default equal weights
+        if weights is None:
+            num_models = len(models)
+            self.weights = {name: 1.0/num_models for name in models.keys()}
         else:
-            # Single output
-            lstm_reg = lstm_pred
-            transformer_reg = transformer_pred
-            cnn_reg = cnn_pred
-            lstm_clf = transformer_clf = cnn_clf = None
+            self.weights = weights
         
-        # Ensemble regression predictions
-        ensemble_reg = (
-            self.ensemble_weights['lstm'] * lstm_reg +
-            self.ensemble_weights['transformer'] * transformer_reg +
-            self.ensemble_weights['cnn'] * cnn_reg
-        )
+        # Move all models to device
+        for model in self.models.values():
+            model.to(self.device)
         
-        # Ensemble classification predictions (if available)
-        ensemble_clf = None
-        if lstm_clf is not None:
-            ensemble_clf = (
-                self.ensemble_weights['lstm'] * lstm_clf +
-                self.ensemble_weights['transformer'] * transformer_clf +
-                self.ensemble_weights['cnn'] * cnn_clf
-            )
+        logger.info(f"🎭 Ensemble model initialized with {len(models)} models")
+    
+    def predict(self, x: torch.Tensor, horizon: int = None) -> torch.Tensor:
+        """Make ensemble prediction"""
+        predictions = []
         
-        # Calculate confidence based on prediction agreement
-        predictions_reg = [lstm_reg.flatten(), transformer_reg.flatten(), cnn_reg.flatten()]
-        reg_std = np.std(predictions_reg, axis=0)
-        confidence = np.maximum(0, 1 - (reg_std * 5))  # Higher agreement = higher confidence
+        for model_name, model in self.models.items():
+            model.eval()
+            with torch.no_grad():
+                if hasattr(model, 'mode') and model.mode == "progressive":
+                    pred = model(x, horizon=horizon)
+                else:
+                    pred = model(x)
+                
+                # Weight the prediction
+                weighted_pred = pred * self.weights[model_name]
+                predictions.append(weighted_pred)
         
-        return {
-            'ensemble_regression': ensemble_reg,
-            'ensemble_classification': ensemble_clf,
-            'confidence': confidence,
-            'individual_predictions': {
-                'lstm': {'regression': lstm_reg, 'classification': lstm_clf},
-                'transformer': {'regression': transformer_reg, 'classification': transformer_clf},
-                'cnn': {'regression': cnn_reg, 'classification': cnn_clf}
-            }
-        }
+        # Average weighted predictions
+        ensemble_pred = torch.stack(predictions).sum(dim=0)
+        return ensemble_pred
     
-    def get_individual_model(self, model_type: str, horizon: Union[str, int] = None):
-        """Get individual model"""
-        if model_type == 'lstm':
-            return self.lstm_model.get_model(horizon)
-        elif model_type == 'transformer':
-            return self.transformer_model.get_model(horizon)
-        elif model_type == 'cnn':
-            return self.cnn_model.get_model(horizon)
-        else:
-            raise ValueError(f"Unknown model type: {model_type}")
-
-
-# Convenience class for easy model creation
-class ProgressiveModels:
-    """Factory class for creating Progressive ML models"""
-    
-    @staticmethod
-    def create_lstm(input_shape, horizons=[1, 7, 30], mode="progressive", **kwargs):
-        """Create LSTM model"""
-        return LSTMModel(input_shape, horizons, mode, kwargs)
-    
-    @staticmethod
-    def create_transformer(input_shape, horizons=[1, 7, 30], mode="progressive", **kwargs):
-        """Create Transformer model"""
-        return TransformerModel(input_shape, horizons, mode, kwargs)
-    
-    @staticmethod
-    def create_cnn(input_shape, horizons=[1, 7, 30], mode="progressive", **kwargs):
-        """Create CNN model"""
-        return CNNModel(input_shape, horizons, mode, kwargs)
-    
-    @staticmethod
-    def create_ensemble(input_shape, horizons=[1, 7, 30], mode="progressive"):
-        """Create Ensemble model"""
-        return EnsembleModel(input_shape, horizons, mode)
+    def to(self, device):
+        """Move ensemble to device"""
+        self.device = device
+        for model in self.models.values():
+            model.to(device)
+        return self
 
 
 # Alias for backward compatibility
 UnifiedModel = ProgressiveModels
-
-
-def test_progressive_models():
-    """Test Progressive Models"""
-    print("🧪 Testing Progressive Models...")
-    
-    # Test data shape (like our AAPL data)
-    input_shape = (60, 44)  # 60 days, 44 features
-    horizons = [1, 7, 30]
-    
-    print(f"\n📊 Input shape: {input_shape}")
-    print(f"⏰ Horizons: {horizons}")
-    
-    # Test Progressive mode
-    print("\n🔄 Testing Progressive Mode...")
-    
-    lstm_prog = ProgressiveModels.create_lstm(input_shape, horizons, "progressive")
-    print(f"✅ LSTM Progressive: {len(lstm_prog.models)} models")
-    
-    transformer_prog = ProgressiveModels.create_transformer(input_shape, horizons, "progressive") 
-    print(f"✅ Transformer Progressive: {len(transformer_prog.models)} models")
-    
-    cnn_prog = ProgressiveModels.create_cnn(input_shape, horizons, "progressive")
-    print(f"✅ CNN Progressive: {len(cnn_prog.models)} models")
-    
-    # Test Unified mode
-    print("\n🔗 Testing Unified Mode...")
-    
-    lstm_unified = ProgressiveModels.create_lstm(input_shape, horizons, "unified")
-    print(f"✅ LSTM Unified: {len(lstm_unified.models)} models")
-    
-    transformer_unified = ProgressiveModels.create_transformer(input_shape, horizons, "unified")
-    print(f"✅ Transformer Unified: {len(transformer_unified.models)} models")
-    
-    cnn_unified = ProgressiveModels.create_cnn(input_shape, horizons, "unified")
-    print(f"✅ CNN Unified: {len(cnn_unified.models)} models")
-    
-    # Test Ensemble
-    print("\n🎯 Testing Ensemble...")
-    ensemble = ProgressiveModels.create_ensemble(input_shape, horizons, "progressive")
-    print(f"✅ Ensemble created with 3 base models")
-    
-    # Test model retrieval
-    print("\n📋 Testing Model Retrieval...")
-    lstm_1d = lstm_prog.get_model(1)  # 1-day model
-    lstm_unified_model = lstm_unified.get_model()  # Unified model
-    
-    print(f"✅ LSTM 1d model: {lstm_1d.name if lstm_1d else 'None'}")
-    print(f"✅ LSTM Unified model: {lstm_unified_model.name if lstm_unified_model else 'None'}")
-    
-    # Show model structures
-    if lstm_1d:
-        print(f"\n📊 LSTM 1d Parameters: {lstm_1d.count_params():,}")
-    if lstm_unified_model:
-        print(f"📊 LSTM Unified Parameters: {lstm_unified_model.count_params():,}")
-    
-    print("\n✅ Progressive Models test completed successfully!")
-    return True
-
-
-if __name__ == "__main__":
-    test_progressive_models()
