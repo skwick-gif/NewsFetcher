@@ -19,8 +19,10 @@ langdetect==1.0.9
 qdrant-client==1.6.9
 numpy==1.25.2
 scikit-learn==1.3.2
---extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.5.0
+--extra-index-url https://download.pytorch.org/whl/cu126
+torch==2.9.0+cu126
+torchvision==0.20.0+cu126
+torchaudio==2.9.0+cu126
 sentence-transformers==3.3.1
 pyjwt==2.8.0
 passlib[bcrypt]==1.7.4
@@ -56,6 +58,5 @@ MarkupSafe==2.1.3
 click==8.1.7
 blinker==1.6.3
 
-# Deep Learning (optional - commented out for lighter deployment)
-# tensorflow==2.13.0
-# keras==2.13.1
+# Deep Learning with PyTorch CUDA
+tensorflow==2.20.0

@@ -15,6 +15,8 @@ Features:
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
+import torch
+import torch.nn as nn
 import numpy as np
 import pandas as pd
 from typing import Dict, List, Tuple, Optional, Union
@@ -27,7 +29,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 from .data_loader import ProgressiveDataLoader
-from .models import ProgressiveModels, EnsembleModel
+from .models import ProgressiveModels, EnsembleModel, LSTMModel, TransformerModel, CNNModel
 from .trainer import ProgressiveTrainer
 
 logging.basicConfig(level=logging.INFO)
@@ -158,7 +160,7 @@ class ProgressivePredictor:
                     logger.error(f"❌ Error loading {model_type} from directory: {e}")
             
             # FALLBACK: Try loading from flat files (checkpoint format)
-            # Files saved as: {model_type}_{symbol}_{horizon}_best.h5
+            # Files saved as: {model_type}_{symbol}_{horizon}_best.h5 OR {model_type}_{symbol}_{horizon}_best.pth
             if model_type not in loaded_models or not loaded_models.get(model_type):
                 try:
                     logger.info(f"   🔍 Trying flat file format for {model_type}_{symbol}...")
@@ -166,7 +168,19 @@ class ProgressivePredictor:
                     
                     for horizon in self.prediction_config['prediction_horizons']:
                         horizon_key = f'{horizon}d'
-                        # Try flat file naming: {model_type}_{symbol}_{horizon}_best.h5
+                        
+                        # Try PyTorch file first: {model_type}_{symbol}_{horizon}_best.pth
+                        pytorch_file = self.model_dir / f"{model_type}_{symbol}_{horizon_key}_best.pth"
+                        if pytorch_file.exists():
+                            try:
+                                model = self._load_pytorch_model(pytorch_file, model_type)
+                                model_dict[horizon_key] = model
+                                logger.info(f"   ✅ Loaded {model_type} {horizon_key} (PyTorch)")
+                                continue
+                            except Exception as load_err:
+                                logger.warning(f"   ⚠️ Failed to load PyTorch {model_type} {horizon_key}: {load_err}")
+                        
+                        # Try TensorFlow file: {model_type}_{symbol}_{horizon}_best.h5
                         flat_file = self.model_dir / f"{model_type}_{symbol}_{horizon_key}_best.h5"
                         
                         if flat_file.exists():
@@ -218,6 +232,57 @@ class ProgressivePredictor:
         
         return loaded_models
     
+    def _load_pytorch_model(self, model_path: Path, model_type: str):
+        """Load PyTorch model from checkpoint"""
+        try:
+            # Load checkpoint
+            checkpoint = torch.load(model_path, map_location='cpu')
+            
+            # Get model class and parameters
+            model_class_name = checkpoint.get('model_class', '')
+            model_params = checkpoint.get('model_params', {})
+            horizons = checkpoint.get('horizons', [1, 7, 30])
+            mode = checkpoint.get('mode', 'progressive')
+            
+            # Create model based on type
+            if model_type == 'lstm' and model_class_name == 'LSTMModel':
+                # Use saved parameters, they're more accurate than defaults
+                model = LSTMModel(
+                    input_size=model_params.get('input_size', 35),  # Use actual saved size
+                    sequence_length=model_params.get('sequence_length', 60),
+                    horizons=horizons,
+                    mode=mode,
+                    model_params=model_params
+                )
+            elif model_type == 'transformer' and model_class_name == 'TransformerModel':
+                model = TransformerModel(
+                    input_size=model_params.get('input_size', 35),  # Use actual saved size
+                    sequence_length=model_params.get('sequence_length', 60),
+                    horizons=horizons,
+                    mode=mode,
+                    model_params=model_params
+                )
+            elif model_type == 'cnn' and model_class_name == 'CNNModel':
+                model = CNNModel(
+                    input_size=model_params.get('input_size', 35),  # Use actual saved size
+                    sequence_length=model_params.get('sequence_length', 60),
+                    horizons=horizons,
+                    mode=mode,
+                    model_params=model_params
+                )
+            else:
+                raise ValueError(f"Unsupported PyTorch model type: {model_type} with class {model_class_name}")
+            
+            # Load model state
+            model.load_state_dict(checkpoint['model_state_dict'])
+            model.eval()
+            
+            return model
+            
+        except Exception as e:
+            logger.error(f"Failed to load PyTorch model {model_path}: {e}")
+            raise
+    
     def prepare_prediction_data(self, symbol: str, mode: str = "progressive") -> Dict:
         """Prepare data for prediction (last sequence)"""
         
@@ -265,22 +330,56 @@ class ProgressivePredictor:
         return prediction_data
     
     def predict_single_model(self, 
-                           model: keras.Model, 
+                           model, 
                            X: np.ndarray, 
                            horizon: str = "1d") -> Dict:
-        """Make prediction with single model"""
+        """Make prediction with single model (supports both TensorFlow and PyTorch)"""
         
         try:
-            # Get prediction
-            prediction = model.predict(X, verbose=0)
-            
-            # Handle dual output (regression, classification)
-            if isinstance(prediction, list) and len(prediction) == 2:
-                price_pred = float(prediction[0][0][0])  # First sample, first output
-                direction_pred = float(prediction[1][0][0])  # First sample, first output
+            # Check if it's a PyTorch model
+            if isinstance(model, nn.Module):
+                # PyTorch model
+                model.eval()
+                with torch.no_grad():
+                    # Convert to tensor and move to same device as model
+                    X_tensor = torch.FloatTensor(X)
+                    
+                    # Get model device
+                    model_device = next(model.parameters()).device
+                    X_tensor = X_tensor.to(model_device)
+                    
+                    # Get prediction - need to extract horizon number from horizon string
+                    horizon_num = int(horizon.replace('d', ''))
+                    prediction = model(X_tensor, horizon=horizon_num)
+                    
+                    # Handle different output formats
+                    if isinstance(prediction, tuple) and len(prediction) == 2:
+                        # Dual output (regression, classification)
+                        price_pred = float(prediction[0][0][0].item())
+                        direction_pred = float(prediction[1][0][0].item())
+                    elif isinstance(prediction, torch.Tensor):
+                        if prediction.dim() == 3 and prediction.size(-1) >= 2:
+                            # Multi-output format
+                            price_pred = float(prediction[0][0][0].item())
+                            direction_pred = float(prediction[0][0][1].item() if prediction.size(-1) > 1 else 0.5)
+                        else:
+                            # Single output
+                            price_pred = float(prediction[0][0].item())
+                            direction_pred = 0.5
+                    else:
+                        price_pred = float(prediction)
+                        direction_pred = 0.5
             else:
-                price_pred = float(prediction[0][0])
-                direction_pred = 0.5  # Default if no classification
+                # TensorFlow/Keras model
+                prediction = model.predict(X, verbose=0)
+                
+                # Handle dual output (regression, classification)
+                if isinstance(prediction, list) and len(prediction) == 2:
+                    price_pred = float(prediction[0][0][0])  # First sample, first output
+                    direction_pred = float(prediction[1][0][0])  # First sample, first output
+                else:
+                    price_pred = float(prediction[0][0])
+                    direction_pred = 0.5  # Default if no classification
             
             # Check for NaN values and replace with defaults
             if np.isnan(price_pred) or np.isinf(price_pred):

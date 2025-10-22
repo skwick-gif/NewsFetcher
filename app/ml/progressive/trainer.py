@@ -6,15 +6,18 @@ Advanced training orchestration for Progressive ML Training System
 Features:
 - Progressive training workflow (1→7→30 days)
 - Unified training for all horizons simultaneously
-- Model checkpointing and resumption
+- Model checkpointing and resumption with PyTorch
 - Advanced callbacks and monitoring
 - Training history tracking and visualization
 - Early stopping and learning rate scheduling
 - K-fold cross-validation support
+- CUDA GPU acceleration
 """
 
-import tensorflow as tf
-from tensorflow import keras
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
 import pandas as pd
 from typing import Dict, List, Tuple, Optional, Union, Any
@@ -31,6 +34,10 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, accuracy_sc
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Set device
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+logger.info(f"🚀 Trainer using device: {device}")
+
 # Optional imports
 try:
     import seaborn as sns
@@ -40,7 +47,7 @@ except ImportError:
     logger.warning("⚠️ Seaborn not available. Some visualizations may be limited.")
 
 from .data_loader import ProgressiveDataLoader
-from .models import ProgressiveModels, EnsembleModel
+from .models import LSTMModel, TransformerModel, CNNModel, EnsembleModel, ProgressiveModels
 
 
 class ProgressiveTrainer:
@@ -81,18 +88,21 @@ class ProgressiveTrainer:
         self.save_dir = Path(save_dir)
         self.save_dir.mkdir(parents=True, exist_ok=True)
         
+        self.device = device
+        
         # Default model configuration
         self.model_config = {
             'lstm_params': {
                 'lstm_units': [128, 64, 32],
                 'dropout_rate': 0.3,
-                'l2_regularization': 0.001,
-                'learning_rate': 0.001
+                'learning_rate': 0.001,
+                'num_layers': 3
             },
             'transformer_params': {
                 'num_heads': 8,
                 'ff_dim': 256,
                 'num_transformer_blocks': 2,
+                'embed_dim': 128,
                 'dropout_rate': 0.1,
                 'learning_rate': 0.0001
             },
@@ -224,50 +234,101 @@ class ProgressiveTrainer:
         
         return unified_data
     
-    def create_callbacks(self, model_name: str, horizon: str = None) -> List:
-        """Create training callbacks"""
+    def create_model(self, model_type: str, input_size: int, sequence_length: int, 
+                     horizons: List[int], mode: str = "progressive") -> nn.Module:
+        """Create PyTorch model"""
         
-        callbacks = []
+        if model_type == "lstm":
+            return LSTMModel(
+                input_size=input_size,
+                sequence_length=sequence_length,
+                horizons=horizons,
+                mode=mode,
+                model_params=self.model_config['lstm_params']
+            )
+        elif model_type == "transformer":
+            return TransformerModel(
+                input_size=input_size,
+                sequence_length=sequence_length,
+                horizons=horizons,
+                mode=mode,
+                model_params=self.model_config['transformer_params']
+            )
+        elif model_type == "cnn":
+            return CNNModel(
+                input_size=input_size,
+                sequence_length=sequence_length,
+                horizons=horizons,
+                mode=mode,
+                model_params=self.model_config['cnn_params']
+            )
+        else:
+            raise ValueError(f"Unknown model type: {model_type}")
+    
+    def save_model(self, model: nn.Module, model_name: str, horizon: str = None):
+        """Save PyTorch model"""
+        checkpoint_path = self.save_dir / f"{model_name}{'_'+horizon if horizon else ''}_best.pth"
+        torch.save({
+            'model_state_dict': model.state_dict(),
+            'model_class': model.__class__.__name__,
+            'model_params': model.params if hasattr(model, 'params') else {},
+            'horizons': model.horizons if hasattr(model, 'horizons') else [],
+            'mode': model.mode if hasattr(model, 'mode') else 'progressive'
+        }, checkpoint_path)
+        logger.info(f"💾 Model saved: {checkpoint_path}")
         
-        # Model checkpoint
-        checkpoint_path = self.save_dir / f"{model_name}{'_'+horizon if horizon else ''}_best.h5"
-        checkpoint = keras.callbacks.ModelCheckpoint(
-            filepath=str(checkpoint_path),
-            monitor=self.training_config['monitor'],
-            mode=self.training_config['mode'],
-            save_best_only=self.training_config['save_best_only'],
-            save_weights_only=False,
-            verbose=1
-        )
-        callbacks.append(checkpoint)
+    def load_model(self, model_name: str, horizon: str = None) -> nn.Module:
+        """Load PyTorch model"""
+        checkpoint_path = self.save_dir / f"{model_name}{'_'+horizon if horizon else ''}_best.pth"
         
-        # Early stopping
-        early_stopping = keras.callbacks.EarlyStopping(
-            monitor=self.training_config['monitor'],
-            patience=self.training_config['early_stopping_patience'],
-            mode=self.training_config['mode'],
-            restore_best_weights=True,
-            verbose=1
-        )
-        callbacks.append(early_stopping)
+        if not checkpoint_path.exists():
+            raise FileNotFoundError(f"Model not found: {checkpoint_path}")
         
-        # Reduce learning rate
-        reduce_lr = keras.callbacks.ReduceLROnPlateau(
-            monitor=self.training_config['monitor'],
-            factor=self.training_config['reduce_lr_factor'],
-            patience=self.training_config['reduce_lr_patience'],
-            mode=self.training_config['mode'],
-            min_lr=self.training_config['min_lr'],
-            verbose=1
-        )
-        callbacks.append(reduce_lr)
+        checkpoint = torch.load(checkpoint_path, map_location=self.device)
         
-        # CSV Logger
-        csv_path = self.save_dir / f"{model_name}{'_'+horizon if horizon else ''}_history.csv"
-        csv_logger = keras.callbacks.CSVLogger(str(csv_path))
-        callbacks.append(csv_logger)
+        # Create model based on saved class name
+        model_class = checkpoint['model_class']
+        if model_class == 'LSTMModel':
+            model = LSTMModel(
+                input_size=checkpoint.get('input_size', 20),
+                sequence_length=checkpoint.get('sequence_length', 60),
+                horizons=checkpoint.get('horizons', [1, 7, 30]),
+                mode=checkpoint.get('mode', 'progressive'),
+                model_params=checkpoint.get('model_params', {})
+            )
+        elif model_class == 'TransformerModel':
+            model = TransformerModel(
+                input_size=checkpoint.get('input_size', 20),
+                sequence_length=checkpoint.get('sequence_length', 60),
+                horizons=checkpoint.get('horizons', [1, 7, 30]),
+                mode=checkpoint.get('mode', 'progressive'),
+                model_params=checkpoint.get('model_params', {})
+            )
+        elif model_class == 'CNNModel':
+            model = CNNModel(
+                input_size=checkpoint.get('input_size', 20),
+                sequence_length=checkpoint.get('sequence_length', 60),
+                horizons=checkpoint.get('horizons', [1, 7, 30]),
+                mode=checkpoint.get('mode', 'progressive'),
+                model_params=checkpoint.get('model_params', {})
+            )
+        else:
+            raise ValueError(f"Unknown model class: {model_class}")
         
-        return callbacks
+        model.load_state_dict(checkpoint['model_state_dict'])
+        model.to(self.device)
+        logger.info(f"📥 Model loaded: {checkpoint_path}")
+        return model
+    
+    def early_stopping_check(self, current_loss: float, best_loss: float, patience_counter: int) -> Tuple[bool, int]:
+        """Check if training should stop early"""
+        if current_loss < best_loss:
+            return False, 0  # Continue training, reset patience
+        else:
+            patience_counter += 1
+            if patience_counter >= self.training_config['early_stopping_patience']:
+                return True, patience_counter  # Stop training
+            return False, patience_counter  # Continue training
     
     def train_progressive_models(self, symbol: str = "AAPL", model_types: List[str] = ['lstm']) -> Dict:
         """
@@ -286,7 +347,10 @@ class ProgressiveTrainer:
         
         # Prepare data
         data = self.prepare_progressive_data(symbol)
-        input_shape = data['1d']['X_train'].shape[1:]
+        
+        # Get input dimensions from first horizon
+        sample_X = data['1d']['X_train']
+        sequence_length, input_size = sample_X.shape[1], sample_X.shape[2]
         
         results = {}
         
@@ -295,95 +359,53 @@ class ProgressiveTrainer:
             
             model_results = {}
             
-            # Create model
-            if model_type == 'lstm':
-                model_creator = ProgressiveModels.create_lstm(
-                    input_shape, 
-                    self.data_loader.horizons, 
-                    'progressive',
-                    **self.model_config['lstm_params']
-                )
-            elif model_type == 'transformer':
-                model_creator = ProgressiveModels.create_transformer(
-                    input_shape,
-                    self.data_loader.horizons,
-                    'progressive', 
-                    **self.model_config['transformer_params']
-                )
-            elif model_type == 'cnn':
-                model_creator = ProgressiveModels.create_cnn(
-                    input_shape,
-                    self.data_loader.horizons,
-                    'progressive',
-                    **self.model_config['cnn_params']
-                )
-            else:
-                logger.warning(f"⚠️ Unknown model type: {model_type}")
-                continue
-            
             # Train each horizon progressively
             for horizon in self.data_loader.horizons:
                 horizon_key = f'{horizon}d'
                 
                 logger.info(f"   📈 Training {model_type} for {horizon_key}...")
                 
-                # Get model for this horizon
-                model = model_creator.get_model(horizon)
+                # Get data for this horizon
+                X_train = torch.FloatTensor(data[horizon_key]['X_train']).to(self.device)
+                X_val = torch.FloatTensor(data[horizon_key]['X_val']).to(self.device)
+                y_train = torch.FloatTensor(data[horizon_key]['y_reg_train']).to(self.device)
+                y_val = torch.FloatTensor(data[horizon_key]['y_reg_val']).to(self.device)
                 
-                # Prepare training data
-                X_train = data[horizon_key]['X_train']
-                X_val = data[horizon_key]['X_val']
-                y_reg_train = data[horizon_key]['y_reg_train']
-                y_reg_val = data[horizon_key]['y_reg_val']
-                y_clf_train = data[horizon_key]['y_clf_train']
-                y_clf_val = data[horizon_key]['y_clf_val']
-                
-                # Create callbacks
-                callbacks = self.create_callbacks(f"{model_type}_{symbol}", horizon_key)
-                
-                # Train model
-                start_time = time.time()
-                
-                history = model.fit(
-                    X_train,
-                    [y_reg_train, y_clf_train],
-                    validation_data=(X_val, [y_reg_val, y_clf_val]),
-                    epochs=self.training_config['epochs'],
-                    batch_size=self.training_config['batch_size'],
-                    callbacks=callbacks,
-                    verbose=self.training_config['verbose']
+                # Create model
+                model = self.create_model(
+                    model_type=model_type,
+                    input_size=input_size,
+                    sequence_length=sequence_length,
+                    horizons=[horizon],
+                    mode="progressive"
                 )
                 
-                training_time = time.time() - start_time
+                # Train model
+                history = self._train_single_model(
+                    model=model,
+                    X_train=X_train,
+                    y_train=y_train,
+                    X_val=X_val,
+                    y_val=y_val,
+                    model_name=f"{model_type}_{symbol}",
+                    horizon=horizon_key
+                )
                 
-                # Evaluate model
-                val_metrics = model.evaluate(X_val, [y_reg_val, y_clf_val], verbose=0)
-                
-                # Store results
                 model_results[horizon_key] = {
-                    'model': model,
-                    'history': history.history,
-                    'training_time': training_time,
-                    'val_metrics': val_metrics,
-                    'best_epoch': len(history.history['loss'])
+                    'history': history,
+                    'final_loss': history['val_loss'][-1] if history['val_loss'] else float('inf')
                 }
                 
-                logger.info(f"      ✅ {horizon_key} completed in {training_time:.1f}s")
-                logger.info(f"      📊 Val Loss: {val_metrics[0]:.4f}")
+                logger.info(f"   ✅ {model_type} {horizon_key} completed")
             
             results[model_type] = model_results
-            self.models[model_type] = model_creator
-        
-        # Store training history
-        self.training_history[f'progressive_{symbol}'] = results
         
         logger.info(f"✅ Progressive training completed for {symbol}")
-        
         return results
     
     def train_unified_models(self, symbol: str = "AAPL", model_types: List[str] = ['lstm']) -> Dict:
         """
-        Train models in unified mode (all horizons simultaneously)
+        Train unified models (all horizons simultaneously)
         
         Args:
             symbol: Stock symbol to train on
@@ -395,6 +417,162 @@ class ProgressiveTrainer:
         
         logger.info(f"🚀 Starting Unified Training for {symbol}")
         logger.info(f"📋 Model types: {model_types}")
+        
+        # Prepare data
+        data = self.prepare_unified_data(symbol)
+        
+        # Get input dimensions
+        X_train = data['X_train']
+        sequence_length, input_size = X_train.shape[1], X_train.shape[2]
+        
+        results = {}
+        
+        for model_type in model_types:
+            logger.info(f"\n🧠 Training unified {model_type.upper()} model...")
+            
+            # Convert to tensors
+            X_train_tensor = torch.FloatTensor(X_train).to(self.device)
+            X_val_tensor = torch.FloatTensor(data['X_val']).to(self.device)
+            
+            # For unified mode, we need all horizon targets
+            y_train_tensor = torch.FloatTensor(np.column_stack([
+                data['y_train'][f'price_pred_{h}d'] for h in self.data_loader.horizons
+            ])).to(self.device)
+            
+            y_val_tensor = torch.FloatTensor(np.column_stack([
+                data['y_val'][f'price_pred_{h}d'] for h in self.data_loader.horizons
+            ])).to(self.device)
+            
+            # Create unified model
+            model = self.create_model(
+                model_type=model_type,
+                input_size=input_size,
+                sequence_length=sequence_length,
+                horizons=self.data_loader.horizons,
+                mode="unified"
+            )
+            
+            # Train model
+            history = self._train_single_model(
+                model=model,
+                X_train=X_train_tensor,
+                y_train=y_train_tensor,
+                X_val=X_val_tensor,
+                y_val=y_val_tensor,
+                model_name=f"{model_type}_{symbol}",
+                horizon="unified"
+            )
+            
+            results[model_type] = {
+                'unified': {
+                    'history': history,
+                    'final_loss': history['val_loss'][-1] if history['val_loss'] else float('inf')
+                }
+            }
+            
+            logger.info(f"   ✅ Unified {model_type} completed")
+        
+        logger.info(f"✅ Unified training completed for {symbol}")
+        return results
+    
+    def _train_single_model(self, model: nn.Module, X_train: torch.Tensor, y_train: torch.Tensor,
+                           X_val: torch.Tensor, y_val: torch.Tensor, model_name: str, horizon: str) -> Dict:
+        """Train a single PyTorch model"""
+        
+        # Setup optimizer and loss function
+        optimizer = model.get_optimizer()
+        criterion = model.get_loss_fn()
+        
+        # Training parameters
+        epochs = self.training_config['epochs']
+        batch_size = self.training_config['batch_size']
+        
+        # Create data loaders
+        train_dataset = TensorDataset(X_train, y_train)
+        val_dataset = TensorDataset(X_val, y_val)
+        
+        train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+        val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+        
+        # Training history
+        history = {
+            'train_loss': [],
+            'val_loss': []
+        }
+        
+        best_val_loss = float('inf')
+        patience_counter = 0
+        
+        logger.info(f"   📊 Training on {len(X_train)} samples, validating on {len(X_val)} samples")
+        
+        for epoch in range(epochs):
+            # Training phase
+            model.train()
+            train_loss = 0.0
+            
+            for batch_X, batch_y in train_loader:
+                optimizer.zero_grad()
+                
+                if model.mode == "progressive":
+                    horizon_num = int(horizon.replace('d', ''))
+                    outputs = model(batch_X, horizon=horizon_num)
+                else:
+                    outputs = model(batch_X)
+                
+                loss = criterion(outputs.squeeze(), batch_y)
+                loss.backward()
+                optimizer.step()
+                
+                train_loss += loss.item()
+            
+            train_loss /= len(train_loader)
+            
+            # Validation phase
+            model.eval()
+            val_loss = 0.0
+            
+            with torch.no_grad():
+                for batch_X, batch_y in val_loader:
+                    if model.mode == "progressive":
+                        horizon_num = int(horizon.replace('d', ''))
+                        outputs = model(batch_X, horizon=horizon_num)
+                    else:
+                        outputs = model(batch_X)
+                    
+                    loss = criterion(outputs.squeeze(), batch_y)
+                    val_loss += loss.item()
+            
+            val_loss /= len(val_loader)
+            
+            # Update history
+            history['train_loss'].append(train_loss)
+            history['val_loss'].append(val_loss)
+            
+            # Check for improvement
+            if val_loss < best_val_loss:
+                best_val_loss = val_loss
+                patience_counter = 0
+                # Save best model
+                self.save_model(model, model_name, horizon)
+            else:
+                patience_counter += 1
+            
+            # Print progress
+            if (epoch + 1) % 10 == 0:
+                logger.info(f"      Epoch {epoch+1}/{epochs} - Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}")
+            
+            # Early stopping
+            if patience_counter >= self.training_config['early_stopping_patience']:
+                logger.info(f"      Early stopping at epoch {epoch+1}")
+                break
+        
+        # Save training history
+        history_path = self.save_dir / f"{model_name}{'_'+horizon if horizon else ''}_history.csv"
+        pd.DataFrame(history).to_csv(history_path, index=False)
+        
+        logger.info(f"      Final validation loss: {best_val_loss:.4f}")
+        
+        return history
         
         # Prepare data
         data = self.prepare_unified_data(symbol)
