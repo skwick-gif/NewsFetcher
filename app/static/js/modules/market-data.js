@@ -95,7 +95,20 @@ class MarketDataManager {
             const data = await response.json();
 
             if (data.status === 'success' && data.data) {
-                const sentiment = data.data;
+                const raw = data.data;
+                // Normalize to expected shape: { score: 0-100, label: string, emoji: string }
+                let score = raw.score ?? raw.sentiment_score ?? raw.overall_score ?? raw.value;
+                if (typeof score === 'number' && score <= 1) {
+                    // Convert 0-1 to percentage if needed
+                    score = score * 100;
+                }
+                if (typeof score !== 'number' || isNaN(score)) {
+                    score = 50; // safe default
+                }
+
+                const label = raw.label || (score >= 70 ? 'Bullish' : score <= 40 ? 'Bearish' : 'Neutral');
+                const emoji = raw.emoji || (score >= 70 ? '🚀' : score <= 40 ? '🔻' : '➡️');
+                const sentiment = { score, label, emoji };
 
                 // Update sentiment bar
                 const sentimentFill = document.getElementById('sentiment-fill');
@@ -161,7 +174,15 @@ class MarketDataManager {
             const data = await response.json();
 
             if (data.status === 'success' && data.data) {
-                const stocks = data.data.slice(0, 5); // Top 5
+                // Support both array and object shapes from backend
+                let stocks = [];
+                if (Array.isArray(data.data)) {
+                    stocks = data.data.slice(0, 5);
+                } else if (data.data.gainers || data.data.all_stocks) {
+                    const gainers = Array.isArray(data.data.gainers) ? data.data.gainers : [];
+                    const all = Array.isArray(data.data.all_stocks) ? data.data.all_stocks : [];
+                    stocks = (gainers.length ? gainers : all).slice(0, 5);
+                }
                 let container = document.getElementById('top-movers');
 
                 // Create container if it doesn't exist
@@ -170,7 +191,10 @@ class MarketDataManager {
                 }
 
                 if (container) {
-                    container.innerHTML = stocks.map(stock => `
+                    if (!stocks || stocks.length === 0) {
+                        container.innerHTML = `<p style=\"text-align: center; opacity: 0.6;\">No top movers available.</p>`;
+                    } else {
+                        container.innerHTML = stocks.map(stock => `
                         <div class="stock-ticker">
                             <div class="stock-symbol">${stock.symbol}</div>
                             <div class="stock-price">$${stock.price.toFixed(2)}</div>
@@ -179,6 +203,7 @@ class MarketDataManager {
                             </div>
                         </div>
                     `).join('');
+                    }
 
                     console.log(`✅ Trading insights updated (${stocks.length} stocks)`);
                 }
