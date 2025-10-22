@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Training Progress</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #eee;
+        }
+        .container {
+            background: #16213e;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        button {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #059669;
+        }
+        .progress-container {
+            margin-top: 20px;
+            display: none;
+        }
+        .progress-bar-bg {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            height: 30px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #10b981, #059669);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .info {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+        }
+        .label {
+            color: #9ca3af;
+            font-size: 0.9em;
+        }
+        .value {
+            color: #10b981;
+            font-weight: bold;
+        }
+        input {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            background: #0f3460;
+            color: white;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Training Progress Test</h1>
+        
+        <div>
+            <label for="symbol">Stock Symbol:</label>
+            <input type="text" id="symbol" value="AAPL" placeholder="Enter symbol">
+            
+            <button onclick="startTraining()">🚀 Start Training</button>
+        </div>
+        
+        <div id="progress-container" class="progress-container">
+            <div class="info">
+                <div class="label">Job ID:</div>
+                <div id="job-id" class="value">-</div>
+            </div>
+            
+            <div class="info">
+                <div class="label">Status:</div>
+                <div id="status" class="value">-</div>
+            </div>
+            
+            <div class="info">
+                <div class="label">Current Step:</div>
+                <div id="current-step" class="value">-</div>
+            </div>
+            
+            <div class="progress-bar-bg">
+                <div id="progress-bar" class="progress-bar">0%</div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between;">
+                <div class="info" style="flex: 1; margin-right: 10px;">
+                    <div class="label">Progress:</div>
+                    <div id="progress-text" class="value">0%</div>
+                </div>
+                <div class="info" style="flex: 1;">
+                    <div class="label">ETA:</div>
+                    <div id="eta" class="value">-</div>
+                </div>
+            </div>
+            
+            <div id="result" class="info" style="display: none; margin-top: 20px;">
+                <div class="label">Result:</div>
+                <pre id="result-json" style="overflow-x: auto; font-size: 0.8em;"></pre>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let pollingInterval = null;
+        
+        async function startTraining() {
+            const symbol = document.getElementById('symbol').value.toUpperCase();
+            if (!symbol) {
+                alert('Please enter a symbol');
+                return;
+            }
+            
+            // Show progress container
+            document.getElementById('progress-container').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+            
+            try {
+                const response = await fetch(`http://localhost:8000/api/ml/progressive/train?symbol=${symbol}&model_types=lstm&mode=progressive`, {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                console.log('Training started:', data);
+                
+                if (data.status === 'training_started' && data.job_id) {
+                    document.getElementById('job-id').textContent = data.job_id;
+                    
+                    // Start polling
+                    if (pollingInterval) clearInterval(pollingInterval);
+                    
+                    pollingInterval = setInterval(() => {
+                        pollProgress(data.job_id);
+                    }, 2000);
+                    
+                    // Poll immediately
+                    pollProgress(data.job_id);
+                } else {
+                    alert('Failed to start training');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error: ' + error.message);
+            }
+        }
+        
+        async function pollProgress(jobId) {
+            try {
+                const response = await fetch(`http://localhost:8000/api/ml/progressive/training/status/${jobId}`);
+                const data = await response.json();
+                
+                console.log('Progress:', data);
+                
+                // Update UI
+                document.getElementById('status').textContent = data.status || '-';
+                document.getElementById('current-step').textContent = data.current_step || '-';
+                
+                const progress = Math.round(data.progress || 0);
+                document.getElementById('progress-bar').style.width = progress + '%';
+                document.getElementById('progress-bar').textContent = progress + '%';
+                document.getElementById('progress-text').textContent = progress + '%';
+                
+                if (data.eta_seconds !== null && data.eta_seconds !== undefined) {
+                    const minutes = Math.floor(data.eta_seconds / 60);
+                    const seconds = Math.round(data.eta_seconds % 60);
+                    if (minutes > 0) {
+                        document.getElementById('eta').textContent = `${minutes}m ${seconds}s`;
+                    } else {
+                        document.getElementById('eta').textContent = `${seconds}s`;
+                    }
+                } else {
+                    document.getElementById('eta').textContent = 'Calculating...';
+                }
+                
+                // Check if completed
+                if (data.status === 'completed') {
+                    clearInterval(pollingInterval);
+                    document.getElementById('result').style.display = 'block';
+                    document.getElementById('result-json').textContent = JSON.stringify(data.result, null, 2);
+                } else if (data.status === 'failed') {
+                    clearInterval(pollingInterval);
+                    alert('Training failed: ' + data.error);
+                }
+                
+            } catch (error) {
+                console.error('Polling error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

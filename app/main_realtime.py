@@ -1746,59 +1746,207 @@ async def get_progressive_ml_status():
         logger.error(f"Failed to get Progressive ML status: {e}")
         raise HTTPException(status_code=500, detail="Failed to get Progressive ML status")
 
+# Global training jobs tracking
+training_jobs = {}
+
 @app.post("/api/ml/progressive/train", tags=["Progressive ML"])
 async def start_progressive_training(
-    symbol: str = "AAPL",
-    model_types: List[str] = ["lstm"],
-    mode: str = "progressive"
+    background_tasks: BackgroundTasks,
+    symbol: str = Query(..., description="Stock symbol to train"),
+    model_types: str = Query("lstm", description="Comma-separated model types"),
+    mode: str = Query("progressive", description="Training mode")
 ):
-    """Start progressive training for a stock symbol"""
+    """Start progressive training for a stock symbol (async with progress tracking)"""
     try:
         if not PROGRESSIVE_ML_AVAILABLE or not progressive_trainer:
             raise HTTPException(status_code=503, detail="Progressive ML trainer not available")
         
-        # Start training based on mode
+        # Parse model_types from comma-separated string to list
+        model_types_list = [mt.strip() for mt in model_types.split(',') if mt.strip()]
+        if not model_types_list:
+            model_types_list = ["lstm"]
+        
+        logger.info(f"🚀 Starting progressive training for {symbol}: {model_types_list}, mode={mode}")
+        
+        # Validate that stock data exists
+        from pathlib import Path
+        stock_file = Path(f"stock_data/{symbol}/{symbol}_price.csv")
+        if not stock_file.exists():
+            logger.warning(f"⚠️ Stock data not found for {symbol}: {stock_file}")
+            raise HTTPException(
+                status_code=404, 
+                detail=f"Stock data not found for {symbol}. Please ensure the ticker exists in stock_data folder."
+            )
+        
+        # Generate unique job ID
+        import uuid
+        job_id = f"train_{symbol}_{uuid.uuid4().hex[:8]}"
+        
+        # Initialize job tracking
+        training_jobs[job_id] = {
+            "job_id": job_id,
+            "symbol": symbol,
+            "model_types": model_types_list,
+            "mode": mode,
+            "status": "starting",
+            "progress": 0,
+            "current_step": "Initializing...",
+            "eta_seconds": None,
+            "start_time": datetime.now(timezone.utc).isoformat(),
+            "end_time": None,
+            "result": None,
+            "error": None
+        }
+        
+        # Start training in background
+        background_tasks.add_task(
+            run_training_job,
+            job_id=job_id,
+            symbol=symbol,
+            model_types=model_types_list,
+            mode=mode
+        )
+        
+        return {
+            "status": "training_started",
+            "job_id": job_id,
+            "symbol": symbol,
+            "model_types": model_types_list,
+            "mode": mode,
+            "message": "Training started in background. Use job_id to track progress.",
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Failed to start progressive training: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to start progressive training: {str(e)}")
+
+async def run_training_job(job_id: str, symbol: str, model_types: List[str], mode: str):
+    """Background task to run training with progress tracking"""
+    import time
+    import asyncio
+    
+    try:
+        training_jobs[job_id]["status"] = "running"
+        training_jobs[job_id]["progress"] = 10
+        training_jobs[job_id]["current_step"] = f"Loading data for {symbol}..."
+        
+        start_time = time.time()
+        
+        # Start a background task to update progress periodically
+        async def simulate_progress():
+            # Estimate: ~30 seconds per model per horizon (3 horizons = 90 sec per model)
+            estimated_duration = len(model_types) * 90  # seconds
+            update_interval = 3  # Update every 3 seconds
+            
+            for progress in range(15, 90, 5):  # 15% to 85%
+                await asyncio.sleep(update_interval)
+                
+                if training_jobs[job_id]["status"] != "running":
+                    break
+                
+                elapsed = time.time() - start_time
+                remaining = max(0, estimated_duration - elapsed)
+                
+                # Calculate which model we're on
+                model_progress = int((progress - 15) / 75 * len(model_types))
+                current_model = model_types[min(model_progress, len(model_types) - 1)]
+                
+                # Determine horizon based on progress within model
+                horizons = ['1d', '7d', '30d']
+                horizon_idx = int((progress % 25) / 8)  # Cycles through horizons
+                current_horizon = horizons[min(horizon_idx, 2)]
+                
+                training_jobs[job_id].update({
+                    "progress": progress,
+                    "current_step": f"Training {current_model.upper()} model ({current_horizon} horizon)...",
+                    "eta_seconds": int(remaining)
+                })
+        
+        # Start progress simulation
+        progress_task = asyncio.create_task(simulate_progress())
+        
+        # Update to training phase
+        training_jobs[job_id]["current_step"] = f"Training {len(model_types)} model(s) on 3 horizons..."
+        training_jobs[job_id]["progress"] = 15
+        
+        # Run actual training (blocking)
+        await asyncio.sleep(0.1)  # Small delay to ensure progress updates start
+        
         if mode == "progressive":
-            training_result = progressive_trainer.train_progressive_models(
+            result = progressive_trainer.train_progressive_models(
                 symbol=symbol,
                 model_types=model_types
             )
         else:
-            training_result = progressive_trainer.train_unified_models(
+            result = progressive_trainer.train_unified_models(
                 symbol=symbol,
                 model_types=model_types
             )
         
-        return {
-            "status": "training_completed",
-            "symbol": symbol,
-            "model_types": model_types,
-            "mode": mode,
-            "training_result": training_result,
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        }
+        # Cancel progress simulation
+        progress_task.cancel()
+        
+        # Complete
+        training_jobs[job_id].update({
+            "status": "completed",
+            "progress": 100,
+            "current_step": "✅ Training completed successfully!",
+            "end_time": datetime.now(timezone.utc).isoformat(),
+            "result": result,
+            "eta_seconds": 0
+        })
+        
+        logger.info(f"✅ Training job {job_id} completed successfully for {symbol}")
         
     except Exception as e:
-        logger.error(f"Failed to start progressive training: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to start progressive training: {str(e)}")
+        logger.error(f"❌ Training job {job_id} failed: {e}")
+        training_jobs[job_id].update({
+            "status": "failed",
+            "progress": 0,
+            "current_step": f"❌ Error: {str(e)}",
+            "end_time": datetime.now(timezone.utc).isoformat(),
+            "error": str(e),
+            "eta_seconds": 0
+        })
+
+@app.get("/api/ml/progressive/training/status/{job_id}", tags=["Progressive ML"])
+async def get_training_job_status(job_id: str):
+    """Get status of specific training job"""
+    try:
+        if job_id not in training_jobs:
+            raise HTTPException(status_code=404, detail=f"Training job {job_id} not found")
+        
+        # Return job data directly (frontend expects status, progress, etc. at root level)
+        job_data = training_jobs[job_id].copy()
+        job_data["timestamp"] = datetime.now(timezone.utc).isoformat()
+        
+        return job_data
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to get training status: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get training status")
 
 @app.get("/api/ml/progressive/training/status", tags=["Progressive ML"])
-async def get_training_status():
-    """Get current training status"""
+async def get_all_training_status():
+    """Get status of all training jobs"""
     try:
         if not PROGRESSIVE_ML_AVAILABLE or not progressive_trainer:
             raise HTTPException(status_code=503, detail="Progressive ML trainer not available")
         
-        # Simple training status since the original function doesn't exist
-        status = {
-            "is_training": False,
-            "status": "ready",
-            "trainer_available": True
-        }
+        # Return all jobs
+        active_jobs = [job for job in training_jobs.values() if job["status"] in ["starting", "running"]]
         
         return {
             "status": "success",
-            "training_status": status,
+            "trainer_available": True,
+            "is_training": len(active_jobs) > 0,
+            "active_jobs": active_jobs,
+            "total_jobs": len(training_jobs),
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
         
@@ -1813,8 +1961,12 @@ async def progressive_predict(symbol: str, mode: str = "progressive"):
         if not PROGRESSIVE_ML_AVAILABLE or not progressive_predictor:
             raise HTTPException(status_code=503, detail="Progressive ML predictor not available")
         
+        logger.info(f"🔮 Getting progressive predictions for {symbol} (mode={mode})")
+        
         # Get ensemble predictions
         predictions = progressive_predictor.predict_ensemble(symbol=symbol, mode=mode)
+        
+        logger.info(f"✅ Successfully got predictions for {symbol}")
         
         return {
             "status": "success",
@@ -1825,8 +1977,8 @@ async def progressive_predict(symbol: str, mode: str = "progressive"):
         }
         
     except Exception as e:
-        logger.error(f"Failed to get progressive predictions for {symbol}: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to get progressive predictions for {symbol}")
+        logger.error(f"❌ Failed to get progressive predictions for {symbol}: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to get progressive predictions: {str(e)}")
 
 @app.get("/api/ml/progressive/models", tags=["Progressive ML"])
 async def get_progressive_models():
