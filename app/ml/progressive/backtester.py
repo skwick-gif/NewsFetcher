@@ -56,11 +56,18 @@ class ProgressiveBacktester:
         self.trainer = trainer
         self.predictor = predictor
         
+        # Calculate absolute path for results directory
+        # __file__ = d:/Projects/NewsFetcher/app/ml/progressive/backtester.py
+        # .parent = progressive, .parent.parent = ml, .parent.parent.parent = app
+        # .parent.parent.parent.parent = NewsFetcher root
+        base_dir = Path(__file__).parent.parent.parent.parent  # Goes to NewsFetcher root
+        default_results_dir = str(base_dir / "app" / "ml" / "models" / "backtest_results")
+        
         # Default config
         self.config = {
             'save_all_models': True,
             'save_results': True,
-            'results_dir': 'app/ml/models/backtest_results',
+            'results_dir': default_results_dir,
             'verbose': True
         }
         

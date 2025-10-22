@@ -65,7 +65,14 @@ class ProgressiveDataLoader:
             train_end_date: Optional end date for training data (YYYY-MM-DD)
             test_period_days: Number of days for testing period (default: 14)
         """
-        self.stock_data_dir = Path(stock_data_dir)
+        # Handle relative path - if running from app/ dir, go up one level
+        stock_path = Path(stock_data_dir)
+        if not stock_path.is_absolute():
+            # Check if running from app/ subdirectory
+            if Path.cwd().name == 'app' and not stock_path.exists():
+                stock_path = Path('..') / stock_data_dir
+        
+        self.stock_data_dir = stock_path
         self.sequence_length = sequence_length
         self.horizons = sorted(horizons)  # [1, 7, 30]
         self.use_fundamentals = use_fundamentals

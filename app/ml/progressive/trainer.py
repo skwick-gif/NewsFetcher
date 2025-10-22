@@ -54,7 +54,7 @@ class ProgressiveTrainer:
                  data_loader: ProgressiveDataLoader,
                  model_config: Dict = None,
                  training_config: Dict = None,
-                 save_dir: str = "app/ml/models"):
+                 save_dir: str = None):
         """
         Initialize Progressive Trainer
         
@@ -62,10 +62,22 @@ class ProgressiveTrainer:
             data_loader: ProgressiveDataLoader instance
             model_config: Model configuration parameters
             training_config: Training parameters and callbacks
-            save_dir: Directory to save models and checkpoints
+            save_dir: Directory to save models and checkpoints (absolute or relative)
+                     If None, uses absolute path to app/ml/models
         """
         
         self.data_loader = data_loader
+        
+        # Handle save_dir - use absolute path by default to avoid CWD issues
+        if save_dir is None:
+            # Calculate absolute path from this file's location
+            # __file__ = d:/Projects/NewsFetcher/app/ml/progressive/trainer.py
+            # .parent = progressive, .parent.parent = ml, .parent.parent.parent = app
+            # .parent.parent.parent.parent = NewsFetcher root
+            base_dir = Path(__file__).parent.parent.parent.parent  # Goes to NewsFetcher root
+            save_dir = str(base_dir / "app" / "ml" / "models")
+            logger.info(f"   Using default save_dir (absolute): {save_dir}")
+        
         self.save_dir = Path(save_dir)
         self.save_dir.mkdir(parents=True, exist_ok=True)
         

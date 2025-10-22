@@ -754,6 +754,54 @@
                         </div>
                     </div>
 
+                    <!-- Hot Stocks Scanner Settings -->
+                    <div class="settings-group">
+                        <h4>🔥 Hot Stocks Scanner</h4>
+                        <div class="setting-item">
+                            <label for="hotStocksReturnThreshold">Minimum expected return (%):</label>
+                            <input type="number" id="hotStocksReturnThreshold" min="0.1" max="10" step="0.1" value="1.0">
+                            <small style="color: #9ca3af; display: block; margin-top: 4px;">Stocks must exceed this % to be considered "hot"</small>
+                        </div>
+                        <div class="setting-item">
+                            <label for="hotStocksConfidenceThreshold">Minimum confidence score:</label>
+                            <input type="number" id="hotStocksConfidenceThreshold" min="0.1" max="1.0" step="0.05" value="0.55">
+                            <small style="color: #9ca3af; display: block; margin-top: 4px;">ML model confidence (0.0 - 1.0)</small>
+                        </div>
+                        <div class="setting-item">
+                            <label for="hotStocksLimit">Number of stocks to display:</label>
+                            <input type="number" id="hotStocksLimit" min="1" max="25" value="5">
+                        </div>
+                        <div class="setting-item checkbox-setting">
+                            <input type="checkbox" id="hotStocksAutoRefresh" checked>
+                            <label for="hotStocksAutoRefresh">Auto-refresh hot stocks</label>
+                        </div>
+                    </div>
+
+                    <!-- Progressive ML Training Settings -->
+                    <div class="settings-group">
+                        <h4>🚀 Progressive ML Training</h4>
+                        <div class="setting-item">
+                            <label for="trainingEpochs">Training epochs:</label>
+                            <input type="number" id="trainingEpochs" min="10" max="500" value="100">
+                            <small style="color: #9ca3af; display: block; margin-top: 4px;">More epochs = better accuracy but longer training</small>
+                        </div>
+                        <div class="setting-item">
+                            <label for="trainingBatchSize">Batch size:</label>
+                            <input type="number" id="trainingBatchSize" min="8" max="128" step="8" value="32">
+                            <small style="color: #9ca3af; display: block; margin-top: 4px;">Larger batches use more memory</small>
+                        </div>
+                        <div class="setting-item">
+                            <label for="trainingSequenceLength">Sequence length (days):</label>
+                            <input type="number" id="trainingSequenceLength" min="30" max="120" value="60">
+                            <small style="color: #9ca3af; display: block; margin-top: 4px;">Historical data window for predictions</small>
+                        </div>
+                        <div class="setting-item">
+                            <label for="trainingLearningRate">Learning rate:</label>
+                            <input type="number" id="trainingLearningRate" min="0.0001" max="0.01" step="0.0001" value="0.001">
+                            <small style="color: #9ca3af; display: block; margin-top: 4px;">Model optimization speed (0.0001 - 0.01)</small>
+                        </div>
+                    </div>
+
                     <!-- Notification Settings -->
                     <div class="settings-group">
                         <h4>🔔 Notifications</h4>
@@ -909,7 +957,7 @@
                         <div style="display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 10px; margin-bottom: 10px; align-items: start;">
                             <div>
                                 <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Stock Symbol:</label>
-                                <input type="text" id="progressive-symbol" placeholder="AAPL" value="AAPL" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.9em;">
+                                <input type="text" id="progressive-symbol" placeholder="Enter symbol (e.g., TSLA, NVDA)" value="" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.9em;">
                             </div>
                             <div>
                                 <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Model Types:</label>
@@ -2147,39 +2195,195 @@
     function displayProgressivePredictions(predictions, symbol, mode) {
         const resultsDiv = document.getElementById('progressive-prediction-results');
         
-        let html = `<div><strong>🔮 Progressive Predictions for ${symbol} (${mode} mode)</strong></div>`;
+        // Header
+        let html = `
+            <div style="text-align: center; margin-bottom: 20px; padding: 15px; background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(139,92,246,0.2)); border-radius: 12px; border: 2px solid rgba(59,130,246,0.3);">
+                <div style="font-size: 1.8em; font-weight: bold; color: #60a5fa;">📊 Progressive ML Predictions</div>
+                <div style="font-size: 1.3em; margin-top: 8px; color: #93c5fd;">${symbol}</div>
+            </div>
+        `;
         
-        if (predictions.summary) {
-            html += `<div style="margin: 10px 0; padding: 10px; background: rgba(59,130,246,0.1); border-radius: 6px;">
-                <strong>📊 Summary:</strong><br>
-                ${predictions.summary}
-            </div>`;
+        // Current Price
+        if (predictions.current_price) {
+            html += `
+                <div style="margin: 15px 0; padding: 20px; background: rgba(34,197,94,0.15); border-radius: 10px; border-left: 4px solid #22c55e;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <div style="font-size: 0.9em; color: #86efac; margin-bottom: 5px;">💵 Current Price</div>
+                            <div style="font-size: 2em; font-weight: bold; color: #22c55e;">$${predictions.current_price.toFixed(2)}</div>
+                        </div>
+                        <div style="text-align: right; color: #94a3b8; font-size: 0.85em;">
+                            📅 ${predictions.current_date || 'Latest'}
+                        </div>
+                    </div>
+                </div>
+            `;
         }
         
-        if (predictions.ensemble_predictions) {
-            html += '<div style="margin: 10px 0;"><strong>🧠 Model Predictions:</strong></div>';
-            Object.entries(predictions.ensemble_predictions).forEach(([horizon, preds]) => {
-                html += `<div style="margin: 5px 0; padding: 8px; background: rgba(255,255,255,0.05); border-radius: 4px;">
-                    <strong>${horizon} days:</strong> ${JSON.stringify(preds, null, 2)}
-                </div>`;
+        // Predictions for each horizon
+        if (predictions.predictions && Object.keys(predictions.predictions).length > 0) {
+            html += '<div style="margin: 20px 0;"><div style="font-size: 1.2em; font-weight: bold; color: #60a5fa; margin-bottom: 15px;">📈 Price Predictions</div>';
+            
+            const horizons = Object.keys(predictions.predictions).sort((a, b) => {
+                return parseInt(a) - parseInt(b);
             });
+            
+            horizons.forEach(horizonKey => {
+                const pred = predictions.predictions[horizonKey];
+                const priceChange = pred.price_change_pct * 100;
+                const isPositive = priceChange > 0;
+                const changeColor = isPositive ? '#22c55e' : '#ef4444';
+                const changeIcon = isPositive ? '📈' : '📉';
+                const signalColor = pred.signal === 'BUY' ? '#22c55e' : pred.signal === 'SELL' ? '#ef4444' : '#eab308';
+                
+                html += `
+                    <div style="margin: 12px 0; padding: 18px; background: rgba(30,41,59,0.5); border-radius: 10px; border: 1px solid rgba(71,85,105,0.5); transition: all 0.3s; cursor: pointer;" 
+                         onmouseover="this.style.background='rgba(30,41,59,0.8)'; this.style.borderColor='rgba(59,130,246,0.5)'" 
+                         onmouseout="this.style.background='rgba(30,41,59,0.5)'; this.style.borderColor='rgba(71,85,105,0.5)'">
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <div style="font-size: 1.1em; font-weight: bold; color: #60a5fa;">⏰ ${horizonKey.toUpperCase()}</div>
+                            <div style="padding: 6px 14px; background: ${signalColor}33; color: ${signalColor}; border-radius: 20px; font-weight: bold; font-size: 0.9em;">
+                                📡 ${pred.signal}
+                            </div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 12px;">
+                            
+                            <div style="padding: 12px; background: rgba(59,130,246,0.1); border-radius: 8px; border-left: 3px solid #3b82f6;">
+                                <div style="font-size: 0.85em; color: #93c5fd; margin-bottom: 4px;">🎯 Target Price</div>
+                                <div style="font-size: 1.5em; font-weight: bold; color: #60a5fa;">$${pred.target_price.toFixed(2)}</div>
+                            </div>
+                            
+                            <div style="padding: 12px; background: rgba(${isPositive ? '34,197,94' : '239,68,68'},0.1); border-radius: 8px; border-left: 3px solid ${changeColor};">
+                                <div style="font-size: 0.85em; color: ${changeColor}bb; margin-bottom: 4px;">${changeIcon} Price Change</div>
+                                <div style="font-size: 1.5em; font-weight: bold; color: ${changeColor};">${priceChange > 0 ? '+' : ''}${priceChange.toFixed(2)}%</div>
+                                <div style="font-size: 0.9em; color: ${changeColor}99; margin-top: 2px;">${pred.price_change_abs > 0 ? '+' : ''}$${pred.price_change_abs.toFixed(2)}</div>
+                            </div>
+                            
+                            <div style="padding: 12px; background: rgba(234,179,8,0.1); border-radius: 8px; border-left: 3px solid #eab308;">
+                                <div style="font-size: 0.85em; color: #fde047; margin-bottom: 4px;">🎲 Confidence</div>
+                                <div style="font-size: 1.5em; font-weight: bold; color: #facc15;">${(pred.confidence * 100).toFixed(1)}%</div>
+                                <div style="width: 100%; height: 6px; background: rgba(234,179,8,0.2); border-radius: 3px; margin-top: 6px; overflow: hidden;">
+                                    <div style="width: ${pred.confidence * 100}%; height: 100%; background: linear-gradient(90deg, #eab308, #facc15); border-radius: 3px;"></div>
+                                </div>
+                            </div>
+                            
+                            <div style="padding: 12px; background: rgba(168,85,247,0.1); border-radius: 8px; border-left: 3px solid #a855f7;">
+                                <div style="font-size: 0.85em; color: #c084fc; margin-bottom: 4px;">🔼 Direction</div>
+                                <div style="font-size: 1.3em; font-weight: bold; color: #a855f7;">${pred.direction}</div>
+                                <div style="font-size: 0.9em; color: #c084fc99; margin-top: 2px;">${(pred.direction_prob * 100).toFixed(1)}% probability</div>
+                            </div>
+                            
+                        </div>
+                        
+                        <div style="margin-top: 12px; padding: 10px; background: rgba(100,116,139,0.1); border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                            <div style="font-size: 0.85em; color: #94a3b8;">
+                                🤖 Based on <strong style="color: #cbd5e1;">${pred.num_models}</strong> model${pred.num_models > 1 ? 's' : ''}
+                            </div>
+                            <div style="font-size: 0.85em; color: #64748b;">
+                                📊 Agreement: ${(100 - pred.model_agreement_std * 100).toFixed(1)}%
+                            </div>
+                        </div>
+                        
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
         }
         
-        if (predictions.sentiment) {
-            html += `<div style="margin: 10px 0; padding: 10px; background: rgba(139,92,246,0.1); border-radius: 6px;">
-                <strong>💭 Sentiment:</strong> ${predictions.sentiment.overall || 'N/A'}
-            </div>`;
+        // Overall Sentiment
+        if (predictions.overall_sentiment) {
+            const sentiment = predictions.overall_sentiment;
+            const sentimentColor = sentiment.sentiment === 'BULLISH' ? '#22c55e' : 
+                                  sentiment.sentiment === 'BEARISH' ? '#ef4444' : '#eab308';
+            const sentimentIcon = sentiment.sentiment === 'BULLISH' ? '📈' : 
+                                 sentiment.sentiment === 'BEARISH' ? '📉' : '➡️';
+            
+            html += `
+                <div style="margin: 20px 0; padding: 20px; background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(168,85,247,0.15)); border-radius: 12px; border: 2px solid rgba(139,92,246,0.3);">
+                    <div style="font-size: 1.2em; font-weight: bold; color: #a78bfa; margin-bottom: 15px;">🎭 Overall Market Sentiment</div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;">
+                        
+                        <div style="padding: 12px; background: rgba(${sentimentColor === '#22c55e' ? '34,197,94' : sentimentColor === '#ef4444' ? '239,68,68' : '234,179,8'},0.15); border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.85em; color: #c4b5fd; margin-bottom: 6px;">Sentiment</div>
+                            <div style="font-size: 1.8em;">${sentimentIcon}</div>
+                            <div style="font-size: 1.2em; font-weight: bold; color: ${sentimentColor}; margin-top: 4px;">${sentiment.sentiment}</div>
+                        </div>
+                        
+                        <div style="padding: 12px; background: rgba(59,130,246,0.15); border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.85em; color: #c4b5fd; margin-bottom: 6px;">Strength</div>
+                            <div style="font-size: 1.5em; font-weight: bold; color: #60a5fa; margin-top: 10px;">${(sentiment.strength * 100).toFixed(2)}%</div>
+                        </div>
+                        
+                        <div style="padding: 12px; background: rgba(234,179,8,0.15); border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.85em; color: #c4b5fd; margin-bottom: 6px;">Confidence</div>
+                            <div style="font-size: 1.5em; font-weight: bold; color: #facc15; margin-top: 10px;">${(sentiment.confidence * 100).toFixed(1)}%</div>
+                        </div>
+                        
+                        <div style="padding: 12px; background: rgba(168,85,247,0.15); border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.85em; color: #c4b5fd; margin-bottom: 6px;">Avg Change</div>
+                            <div style="font-size: 1.5em; font-weight: bold; color: #a855f7; margin-top: 10px;">${(sentiment.avg_price_change * 100).toFixed(2)}%</div>
+                        </div>
+                        
+                    </div>
+                </div>
+            `;
         }
         
+        // Risk Metrics
         if (predictions.risk_metrics) {
-            html += `<div style="margin: 10px 0; padding: 10px; background: rgba(239,68,68,0.1); border-radius: 6px;">
-                <strong>⚠️ Risk Metrics:</strong><br>
-                ${JSON.stringify(predictions.risk_metrics, null, 2)}
-            </div>`;
+            const risk = predictions.risk_metrics;
+            const riskColor = risk.risk_level === 'HIGH' ? '#ef4444' : 
+                            risk.risk_level === 'MEDIUM' ? '#eab308' : '#22c55e';
+            
+            html += `
+                <div style="margin: 20px 0; padding: 20px; background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(251,146,60,0.1)); border-radius: 12px; border: 2px solid rgba(239,68,68,0.3);">
+                    <div style="font-size: 1.2em; font-weight: bold; color: #fca5a5; margin-bottom: 15px;">⚠️ Risk Analysis</div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+                        
+                        <div style="padding: 14px; background: rgba(${riskColor === '#22c55e' ? '34,197,94' : riskColor === '#ef4444' ? '239,68,68' : '234,179,8'},0.15); border-radius: 8px; text-align: center; border: 2px solid ${riskColor}44;">
+                            <div style="font-size: 0.85em; color: #fecaca; margin-bottom: 6px;">Risk Level</div>
+                            <div style="font-size: 1.8em; font-weight: bold; color: ${riskColor}; margin-top: 8px;">${risk.risk_level}</div>
+                        </div>
+                        
+                        <div style="padding: 14px; background: rgba(251,146,60,0.1); border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.85em; color: #fecaca; margin-bottom: 6px;">📊 Volatility</div>
+                            <div style="font-size: 1.4em; font-weight: bold; color: #fb923c; margin-top: 8px;">${(risk.volatility * 100).toFixed(2)}%</div>
+                        </div>
+                        
+                        <div style="padding: 14px; background: rgba(34,197,94,0.1); border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.85em; color: #fecaca; margin-bottom: 6px;">📈 Max Gain</div>
+                            <div style="font-size: 1.4em; font-weight: bold; color: #22c55e; margin-top: 8px;">+${(risk.max_gain * 100).toFixed(2)}%</div>
+                        </div>
+                        
+                        <div style="padding: 14px; background: rgba(239,68,68,0.1); border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.85em; color: #fecaca; margin-bottom: 6px;">📉 Max Loss</div>
+                            <div style="font-size: 1.4em; font-weight: bold; color: #ef4444; margin-top: 8px;">${(risk.max_loss * 100).toFixed(2)}%</div>
+                        </div>
+                        
+                        <div style="padding: 14px; background: rgba(59,130,246,0.1); border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.85em; color: #fecaca; margin-bottom: 6px;">⚖️ Risk/Reward</div>
+                            <div style="font-size: 1.4em; font-weight: bold; color: #3b82f6; margin-top: 8px;">${risk.risk_reward_ratio.toFixed(2)}</div>
+                        </div>
+                        
+                        <div style="padding: 14px; background: rgba(234,179,8,0.1); border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.85em; color: #fecaca; margin-bottom: 6px;">📏 Price Range</div>
+                            <div style="font-size: 1.4em; font-weight: bold; color: #eab308; margin-top: 8px;">$${risk.prediction_range.toFixed(2)}</div>
+                        </div>
+                        
+                    </div>
+                </div>
+            `;
         }
         
         resultsDiv.innerHTML = html;
     }
+
+    let trainingPollingInterval = null;
 
     async function startProgressiveTraining() {
         const symbol = document.getElementById('progressive-symbol').value.toUpperCase();
@@ -2211,25 +2415,23 @@
             
             const data = await response.json();
             
-            if (data.status === 'training_completed') {
-                let html = `<div style="color: #10b981;"><strong>✅ Training Completed for ${symbol}</strong></div>`;
-                html += `<div style="margin: 10px 0; font-size: 0.9em;">
-                    📊 Mode: ${data.mode}<br>
-                    🧠 Models: ${data.model_types.join(', ')}<br>
-                    ⏰ Completed: ${new Date(data.timestamp).toLocaleString()}
-                </div>`;
+            // New async training returns job_id immediately
+            if (data.status === 'training_started' && data.job_id) {
+                // Show progress bar
+                showTrainingProgress(data.job_id, symbol);
                 
-                if (data.training_result) {
-                    html += `<div style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 6px;">
-                        <strong>📈 Training Results:</strong><br>
-                        <pre style="font-size: 0.8em; overflow-x: auto;">${JSON.stringify(data.training_result, null, 2)}</pre>
-                    </div>`;
+                // Start polling for updates
+                if (trainingPollingInterval) {
+                    clearInterval(trainingPollingInterval);
                 }
                 
-                resultsDiv.innerHTML = html;
+                trainingPollingInterval = setInterval(async () => {
+                    await pollTrainingProgress(data.job_id, symbol);
+                }, 2000); // Poll every 2 seconds
                 
-                // Refresh status displays
-                await loadProgressiveTrainingStatus();
+            } else if (data.status === 'training_completed') {
+                // Old synchronous response (backward compatibility)
+                displayTrainingResults(data, symbol);
             } else {
                 resultsDiv.innerHTML = '<div style="color: #ef4444;">❌ Training failed or status unknown</div>';
             }
@@ -2237,6 +2439,111 @@
             console.error('Error starting progressive training:', error);
             resultsDiv.innerHTML = `<div style="color: #ef4444;">❌ Error: ${error.message}</div>`;
         }
+    }
+
+    function showTrainingProgress(jobId, symbol) {
+        const resultsDiv = document.getElementById('progressive-training-results');
+        resultsDiv.innerHTML = `
+            <div style="padding: 15px;">
+                <div style="color: #10b981; font-size: 1.1em; margin-bottom: 10px;">
+                    <strong>� Training ${symbol}</strong>
+                </div>
+                <div style="margin-bottom: 8px;">
+                    <div style="font-size: 0.9em; color: #9ca3af;" id="training-current-step">Initializing...</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); border-radius: 8px; height: 24px; overflow: hidden; margin-bottom: 8px;">
+                    <div id="training-progress-bar" style="background: linear-gradient(90deg, #10b981, #059669); height: 100%; width: 0%; transition: width 0.5s ease; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.85em; font-weight: bold;">
+                        0%
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.85em; color: #9ca3af;">
+                    <span id="training-progress-text">Progress: 0%</span>
+                    <span id="training-eta-text">Calculating ETA...</span>
+                </div>
+                <div style="margin-top: 10px; font-size: 0.8em; color: #6b7280;">
+                    Job ID: <code style="background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 3px;">${jobId}</code>
+                </div>
+            </div>
+        `;
+    }
+
+    async function pollTrainingProgress(jobId, symbol) {
+        try {
+            const response = await fetch(`/api/ml/progressive/training/status/${jobId}`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            // Update progress bar
+            const progressBar = document.getElementById('training-progress-bar');
+            const progressText = document.getElementById('training-progress-text');
+            const etaText = document.getElementById('training-eta-text');
+            const currentStepText = document.getElementById('training-current-step');
+            
+            if (progressBar && data.progress !== undefined) {
+                const progress = Math.round(data.progress);
+                progressBar.style.width = `${progress}%`;
+                progressBar.textContent = `${progress}%`;
+                progressText.textContent = `Progress: ${progress}%`;
+            }
+            
+            if (currentStepText && data.current_step) {
+                currentStepText.textContent = data.current_step;
+            }
+            
+            if (etaText && data.eta_seconds !== null && data.eta_seconds !== undefined) {
+                const minutes = Math.floor(data.eta_seconds / 60);
+                const seconds = Math.round(data.eta_seconds % 60);
+                if (minutes > 0) {
+                    etaText.textContent = `ETA: ${minutes}m ${seconds}s`;
+                } else {
+                    etaText.textContent = `ETA: ${seconds}s`;
+                }
+            } else if (etaText) {
+                etaText.textContent = 'Calculating ETA...';
+            }
+            
+            // Check if completed or failed
+            if (data.status === 'completed') {
+                clearInterval(trainingPollingInterval);
+                trainingPollingInterval = null;
+                displayTrainingResults(data, symbol);
+                await loadProgressiveTrainingStatus();
+            } else if (data.status === 'failed') {
+                clearInterval(trainingPollingInterval);
+                trainingPollingInterval = null;
+                const resultsDiv = document.getElementById('progressive-training-results');
+                resultsDiv.innerHTML = `<div style="color: #ef4444;">❌ Training failed: ${data.error || 'Unknown error'}</div>`;
+            }
+            
+        } catch (error) {
+            console.error('Error polling training progress:', error);
+            // Don't stop polling on temporary errors
+        }
+    }
+
+    function displayTrainingResults(data, symbol) {
+        const resultsDiv = document.getElementById('progressive-training-results');
+        let html = `<div style="color: #10b981;"><strong>✅ Training Completed for ${symbol}</strong></div>`;
+        
+        html += `<div style="margin: 10px 0; font-size: 0.9em;">`;
+        if (data.mode) html += `📊 Mode: ${data.mode}<br>`;
+        if (data.model_types) html += `🧠 Models: ${data.model_types.join(', ')}<br>`;
+        if (data.end_time) html += `⏰ Completed: ${new Date(data.end_time).toLocaleString()}<br>`;
+        html += `</div>`;
+        
+        const result = data.result || data.training_result;
+        if (result) {
+            html += `<div style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 6px;">
+                <strong>📈 Training Results:</strong><br>
+                <pre style="font-size: 0.8em; overflow-x: auto; max-height: 300px;">${JSON.stringify(result, null, 2)}</pre>
+            </div>`;
+        }
+        
+        resultsDiv.innerHTML = html;
     }
 
     // ============================================
@@ -2461,22 +2768,175 @@
         });
     }
 
+    // ============================================
+    // Settings Manager
+    // ============================================
+    
+    class SettingsManager {
+        constructor() {
+            this.storageKey = 'marketpulse_settings';
+            this.defaults = {
+                // Update Settings
+                updateInterval: 30,
+                autoRefresh: true,
+                enableWebSocket: true,
+                
+                // Display Settings
+                darkMode: true,
+                compactView: false,
+                showCharts: true,
+                
+                // AI & ML Settings
+                enableMLPredictions: true,
+                keywordThreshold: 0.3,
+                highScoreThreshold: 0.7,
+                
+                // Hot Stocks Scanner
+                hotStocksReturnThreshold: 1.0,
+                hotStocksConfidenceThreshold: 0.55,
+                hotStocksLimit: 5,
+                hotStocksAutoRefresh: true,
+                
+                // Progressive ML Training
+                trainingEpochs: 100,
+                trainingBatchSize: 32,
+                trainingSequenceLength: 60,
+                trainingLearningRate: 0.001,
+                
+                // Notification Settings
+                enableNotifications: false,
+                maxArticles: 50,
+                
+                // Debug
+                debugMode: false
+            };
+            
+            this.settings = this.loadSettings();
+        }
+        
+        loadSettings() {
+            try {
+                const stored = localStorage.getItem(this.storageKey);
+                if (stored) {
+                    return { ...this.defaults, ...JSON.parse(stored) };
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+            return { ...this.defaults };
+        }
+        
+        saveSettings() {
+            try {
+                // Collect all settings from form
+                const settings = {};
+                
+                for (const key in this.defaults) {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        if (element.type === 'checkbox') {
+                            settings[key] = element.checked;
+                        } else if (element.type === 'number') {
+                            settings[key] = parseFloat(element.value);
+                        } else {
+                            settings[key] = element.value;
+                        }
+                    }
+                }
+                
+                this.settings = settings;
+                localStorage.setItem(this.storageKey, JSON.stringify(settings));
+                
+                alert('✅ Settings saved successfully!');
+                console.log('💾 Settings saved:', settings);
+                
+                // Apply settings immediately
+                this.applySettings();
+                
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                alert('❌ Error saving settings');
+            }
+        }
+        
+        resetSettings() {
+            if (confirm('Reset all settings to defaults?')) {
+                this.settings = { ...this.defaults };
+                localStorage.removeItem(this.storageKey);
+                this.applySettingsToForm();
+                alert('✅ Settings reset to defaults');
+                console.log('🔄 Settings reset');
+            }
+        }
+        
+        applySettingsToForm() {
+            for (const key in this.settings) {
+                const element = document.getElementById(key);
+                if (element) {
+                    if (element.type === 'checkbox') {
+                        element.checked = this.settings[key];
+                    } else {
+                        element.value = this.settings[key];
+                    }
+                }
+            }
+        }
+        
+        applySettings() {
+            // Apply auto-refresh interval
+            if (window.marketDataManager && this.settings.autoRefresh) {
+                window.marketDataManager.startPeriodicUpdates(this.settings.updateInterval * 1000);
+            }
+            
+            // Apply other settings as needed
+            console.log('⚙️ Settings applied');
+        }
+        
+        exportSettings() {
+            const dataStr = JSON.stringify(this.settings, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'marketpulse_settings.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            console.log('📥 Settings exported');
+        }
+        
+        getSetting(key) {
+            return this.settings[key] !== undefined ? this.settings[key] : this.defaults[key];
+        }
+    }
+    
+    // Initialize settings manager
+    window.settingsManager = new SettingsManager();
+
     // Initialize Market Data Manager
     let marketDataManager;
     
     document.addEventListener('DOMContentLoaded', async function() {
         console.log('🚀 Initializing Market Data Manager...');
         
+        // Apply settings to form
+        window.settingsManager.applySettingsToForm();
+        
         if (typeof MarketDataManager !== 'undefined') {
             marketDataManager = new MarketDataManager();
+            window.marketDataManager = marketDataManager; // Make it globally accessible
             await marketDataManager.init();
             
             // Update market intelligence
             await marketDataManager.updateMarketIntelligence();
             await marketDataManager.updateGeopoliticalRisks();
             
-            // Start periodic updates (every 30 seconds)
-            marketDataManager.startPeriodicUpdates(30000);
+            // Start periodic updates (using settings)
+            const interval = window.settingsManager.getSetting('updateInterval') * 1000;
+            if (window.settingsManager.getSetting('autoRefresh')) {
+                marketDataManager.startPeriodicUpdates(interval);
+            }
             
             console.log('✅ Market Data Manager ready and running');
         } else {
