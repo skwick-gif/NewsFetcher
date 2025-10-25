@@ -83,3 +83,36 @@ notebooks/
 data/
 temp_data/
 stock_data/
+
+# ML artifacts (generated; safe to ignore)
+# App models outputs
+app/ml/models/backtests/
+app/ml/models/backtest_results/
+app/ml/models/checkpoints/
+app/ml/models/**/*.pth
+app/ml/models/**/*.pt
+app/ml/models/**/*.keras
+app/ml/models/**/*.h5
+app/ml/models/**/*.onnx
+app/ml/models/**/*.joblib
+app/ml/models/**/*.pkl
+app/ml/models/**/*.bin
+app/ml/models/**/*.ckpt
+app/ml/models/**/*_history.csv
+app/ml/models/run_*_summary_*.json
+
+# Top-level ML outputs (legacy paths)
+ml/logs/
+ml/models/**/*.pth
+ml/models/**/*.pt
+ml/models/**/*.keras
+ml/models/**/*.h5
+ml/models/**/*.onnx
+ml/models/**/*.joblib
+ml/models/**/*.pkl
+ml/models/**/*.bin
+ml/models/**/*.ckpt
+ml/models/**/*_history.csv
+
+# Additional logs inside app
+app/logs/
