@@ -68,6 +68,11 @@ def dashboard():
     """מציג את דשבורד MarketPulse הראשי"""
     return render_template('dashboard.html')
 
+@app.route('/docs/progressive-ml')
+def docs_progressive_ml():
+    """Serve the Progressive ML Guide (static HTML) from templates/docs."""
+    return render_template('docs/progressive_ml_guide.html')
+
 @app.route('/health')
 def health():
     """בדיקת תקינות השרת"""
