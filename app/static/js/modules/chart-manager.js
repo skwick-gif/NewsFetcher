@@ -9,6 +9,7 @@ class ChartManager {
         this.chart = null;
         this.currentSymbol = 'AAPL';  // Default symbol
         this.currentTimeframe = '1D';  // Default timeframe
+        this.currentType = 'line';     // 'line' or 'candlestick'
     }
 
     /**
@@ -21,74 +22,12 @@ class ChartManager {
             return;
         }
 
-        // Initialize Chart.js
-        this.chart = new Chart(ctx.getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Loading...',
-                    data: [],
-                    borderColor: '#10b981',
-                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: '#e2e8f0'
-                        }
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleColor: '#fff',
-                        bodyColor: '#fff',
-                        borderColor: '#10b981',
-                        borderWidth: 1
-                    }
-                },
-                scales: {
-                    x: {
-                        ticks: {
-                            color: '#a0aec0',
-                            maxRotation: 45,
-                            minRotation: 0
-                        },
-                        grid: {
-                            color: 'rgba(160, 174, 192, 0.2)'
-                        }
-                    },
-                    y: {
-                        ticks: {
-                            color: '#a0aec0',
-                            callback: function(value) {
-                                return '$' + value.toFixed(2);
-                            }
-                        },
-                        grid: {
-                            color: 'rgba(160, 174, 192, 0.2)'
-                        }
-                    }
-                },
-                interaction: {
-                    mode: 'nearest',
-                    axis: 'x',
-                    intersect: false
-                }
-            }
-        });
+        this._createChart(ctx.getContext('2d'));
 
         // Setup event listeners
         this.setupStockSelector();
         this.setupTimeframeButtons();
+        this.setupChartTypeToggle();
 
         // Load initial chart data
         await this.loadChartData(this.currentSymbol, this.currentTimeframe);
@@ -113,23 +52,7 @@ class ChartManager {
 
             if (result.status === 'success' && result.data) {
                 const data = result.data;
-
-                // Update chart data
-                this.chart.data.labels = data.labels;
-                this.chart.data.datasets[0].label = `${symbol} - ${timeframe}`;
-                this.chart.data.datasets[0].data = data.prices;
-
-                // Change color based on performance
-                if (data.is_positive) {
-                    this.chart.data.datasets[0].borderColor = '#10b981';  // Green
-                    this.chart.data.datasets[0].backgroundColor = 'rgba(16, 185, 129, 0.1)';
-                } else {
-                    this.chart.data.datasets[0].borderColor = '#ef4444';  // Red
-                    this.chart.data.datasets[0].backgroundColor = 'rgba(239, 68, 68, 0.1)';
-                }
-
-                this.chart.update();
-
+                this._refreshChartWithData(symbol, timeframe, data);
                 console.log(`✅ Loaded ${symbol} chart data (${data.data_points} points)`);
             } else {
                 console.error('❌ Failed to load chart data:', result);
@@ -228,6 +151,117 @@ class ChartManager {
      */
     refresh() {
         this.loadChartData(this.currentSymbol, this.currentTimeframe);
+    }
+
+    // ----- Helpers -----
+    _createChart(ctx) {
+        // Destroy existing if any
+        if (this.chart) { this.chart.destroy(); }
+        if (this.currentType === 'candlestick' && Chart?.registry?.getChart('candlestick')) {
+            // Financial plugin chart
+            this.chart = new Chart(ctx, {
+                type: 'candlestick',
+                data: {
+                    datasets: [{
+                        label: 'Loading...',
+                        data: [],
+                        borderColor: '#e5e7eb',
+                        color: { up: '#10b981', down: '#ef4444', unchanged: '#9ca3af' },
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#e2e8f0' } } },
+                    scales: {
+                        x: {
+                            ticks: { color: '#a0aec0' },
+                            grid: { color: 'rgba(160,174,192,0.2)' }
+                        },
+                        y: {
+                            ticks: { color: '#a0aec0' },
+                            grid: { color: 'rgba(160,174,192,0.2)' }
+                        }
+                    }
+                }
+            });
+        } else {
+            // Line chart
+            this.chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Loading...',
+                        data: [],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#e2e8f0' } },
+                        tooltip: {
+                            mode: 'index', intersect: false,
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#fff', bodyColor: '#fff',
+                            borderColor: '#10b981', borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#a0aec0' }, grid: { color: 'rgba(160,174,192,0.2)' } },
+                        y: { ticks: { color: '#a0aec0', callback: v => '$' + Number(v).toFixed(2) }, grid: { color: 'rgba(160,174,192,0.2)' } }
+                    },
+                    interaction: { mode: 'nearest', axis: 'x', intersect: false }
+                }
+            });
+        }
+    }
+
+    _refreshChartWithData(symbol, timeframe, data) {
+        if (this.currentType === 'candlestick' && this.chart.config.type === 'candlestick') {
+            // Expect data.ohlc: [{t, o,h,l,c}]
+            const ds = this.chart.data.datasets[0];
+            ds.label = `${symbol} - ${timeframe}`;
+            ds.data = (data.ohlc || []).map(d => ({ x: d.t, o: d.o, h: d.h, l: d.l, c: d.c }));
+            this.chart.update();
+        } else {
+            // Line mode uses labels + prices
+            this.chart.data.labels = data.labels;
+            const ds = this.chart.data.datasets[0];
+            ds.label = `${symbol} - ${timeframe}`;
+            ds.data = data.prices;
+            if (data.is_positive) {
+                ds.borderColor = '#10b981'; ds.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+            } else {
+                ds.borderColor = '#ef4444'; ds.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+            }
+            this.chart.update();
+        }
+    }
+
+    setupChartTypeToggle() {
+        const line = document.getElementById('chart-type-line');
+        const candle = document.getElementById('chart-type-candle');
+        const canvas = document.getElementById('priceChart');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const onChange = () => {
+            const newType = candle && candle.checked ? 'candlestick' : 'line';
+            if (newType !== this.currentType) {
+                this.currentType = newType;
+                this._createChart(ctx);
+                // reload to populate
+                this.loadChartData(this.currentSymbol, this.currentTimeframe);
+            }
+        };
+        if (line) line.addEventListener('change', onChange);
+        if (candle) candle.addEventListener('change', onChange);
     }
 }
 

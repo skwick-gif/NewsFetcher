@@ -135,23 +135,30 @@ class MLScanner {
                 
                 // Create grid layout with 3 stocks per row
                 const hotStocksHtml = hotStocks.map(stock => {
-                    const isPositive = stock.expected_return > 0;
+                    const isPositive = (stock.expected_return || 0) > 0;
                     const changeClass = isPositive ? 'change-positive' : 'change-negative';
                     const emoji = this.getRecommendationEmoji(stock.recommendation);
+                    const confPct = typeof stock.confidence === 'number' ? `${(stock.confidence * 100).toFixed(0)}%` : '--';
+                    const sl = stock?.risk_7d?.stop_loss;
+                    const tp = stock?.risk_7d?.take_profit;
+                    const rr = stock?.risk_7d?.rr;
+                    const basis = stock?.risk_7d?.basis;
+                    const riskLine = (sl && tp) ? `<div class="sltp-line" title="Basis: ${basis || '—'} | RR ${rr || '—'}">SL/TP → $${Number(sl).toFixed(2)} / $${Number(tp).toFixed(2)}</div>` : '';
                     
                     return `
                         <div class="hot-stock-card">
                             <div class="stock-header">
                                 <span class="stock-symbol">${stock.symbol}</span>
-                                <div class="stock-price">$${stock.current_price?.toFixed(2) || 'N/A'}</div>
+                                <div class="stock-price">$${(stock.current_price ?? 0).toFixed(2)}</div>
                             </div>
                             <div class="stock-return ${changeClass}">
-                                ${isPositive ? '+' : ''}${stock.expected_return?.toFixed(2)}%
+                                ${isPositive ? '+' : ''}${(stock.expected_return ?? 0).toFixed(2)}%
                             </div>
                             <div class="stock-details">
-                                <div>${emoji} ${stock.recommendation}</div>
+                                <div>${emoji} ${stock.recommendation || 'HOLD'} • ${confPct}</div>
+                                ${riskLine}
                                 <div style="font-size: 0.8em; opacity: 0.8;">
-                                    Score: ${stock.ml_score?.toFixed(1)} | ${(stock.confidence * 100)?.toFixed(0)}%
+                                    Score: ${stock.ml_score?.toFixed(1) ?? '--'}
                                 </div>
                             </div>
                         </div>

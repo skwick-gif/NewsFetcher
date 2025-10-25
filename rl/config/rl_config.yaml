@@ -1,0 +1,23 @@
+# RL config (stub)
+
+env:
+  window: 60
+  features: ["Close", "Volume"]
+  include_progressive: true
+  action_space: "discrete_3"  # flat, half long, full long
+  transaction_cost_bps: 5
+  slippage_bps: 5
+  reward:
+    lambda_drawdown: 0.0
+    lambda_turnover: 0.0
+
+training:
+  algorithm: "PPO"
+  total_timesteps: 1000000
+  eval_interval_steps: 100000
+  seed: 42
+
+paths:
+  data_dir: "stock_data"
+  models_dir: "rl/models"
+  market_calendar: "data/rl/calendars/market_calendar.csv"

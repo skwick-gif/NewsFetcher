@@ -102,6 +102,31 @@ class ProgressivePredictor:
         self.prediction_history = []
         self.performance_metrics = {}
         
+        # Optional confidence calibration (a*conf + b), temperature reserved for future
+        self._conf_cal = {'a': 1.0, 'b': 0.0, 'temperature': 1.0}
+
+        # Try to load calibration from champion meta if available
+        try:
+            meta_candidates = []
+            # model_dir/champion_meta.json
+            meta_candidates.append(self.model_dir / 'champion_meta.json')
+            # parent dir
+            meta_candidates.append(self.model_dir.parent / 'champion_meta.json')
+            for meta_path in meta_candidates:
+                if meta_path.exists():
+                    with open(meta_path, 'r', encoding='utf-8') as f:
+                        meta = json.load(f)
+                        cal = meta.get('confidence_calibration') or meta.get('calibration')
+                        if isinstance(cal, dict):
+                            a = float(cal.get('a', 1.0))
+                            b = float(cal.get('b', 0.0))
+                            t = float(cal.get('temperature', 1.0))
+                            self._conf_cal = {'a': a, 'b': b, 'temperature': t}
+                            logger.info(f"   🎛️ Loaded confidence calibration from {meta_path.name}: a={a}, b={b}, T={t}")
+                            break
+        except Exception as _e:
+            logger.debug(f"Calibration meta load skipped: {_e}")
+
         logger.info(f"🔮 Progressive Predictor initialized")
         logger.info(f"   📂 Model directory: {self.model_dir}")
         logger.info(f"   ⏰ Horizons: {self.prediction_config['prediction_horizons']}")
@@ -508,7 +533,14 @@ class ProgressivePredictor:
             # Probabilistic confidence from ensemble direction probability (distance from 0.5)
             prob_conf = float(max(0.0, min(1.0, abs(ensemble_direction_prob - 0.5) * 2.0)))
             # Combine (equal weights)
-            confidence = float(max(0.0, min(1.0, 0.5 * agreement_conf + 0.5 * prob_conf)))
+            confidence_raw = float(max(0.0, min(1.0, 0.5 * agreement_conf + 0.5 * prob_conf)))
+            # Apply optional linear calibration (identity if no meta)
+            try:
+                a = float(self._conf_cal.get('a', 1.0))
+                b = float(self._conf_cal.get('b', 0.0))
+                confidence = float(min(1.0, max(0.0, a * confidence_raw + b)))
+            except Exception:
+                confidence = confidence_raw
             
             # Calculate target price
             target_price = float(current_price * (1 + ensemble_price_change))

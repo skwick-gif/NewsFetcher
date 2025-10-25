@@ -6,6 +6,7 @@
     <title>MarketPulse Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
+    
     <!-- Load JavaScript modules with cache busting -->
     <script src="/static/js/modules/market-data.js?v=20251020" defer></script>
     <script src="/static/js/modules/chart-manager.js?v=20251020" defer></script>
@@ -629,6 +630,7 @@
                     <!-- Stock Input -->
                     <div class="ai-selector-card">
                         <h4>🤖 AI Stock Analysis</h4>
+                        
                         <div class="stock-selector">
                             <input type="text" id="ai-stock-input" placeholder="Enter stock symbol (e.g., AAPL)" 
                                    style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em; text-transform: uppercase;">
@@ -1717,19 +1719,34 @@
             
             if (data.status === 'success') {
                 if (data.watchlist && data.watchlist.length > 0) {
-                    const watchlistHtml = data.watchlist.map(stock => `
-                        <div style="background: rgba(255,255,255,0.05); border-radius: 6px; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <strong style="color: #3b82f6;">${stock.symbol}</strong><br>
-                                <small>${stock.name}</small>
+                    const watchlistHtml = data.watchlist.map(stock => {
+                        const confPct = typeof stock.confidence === 'number' ? `${(stock.confidence * 100).toFixed(0)}%` : '--';
+                        const isPos = (stock.expected_return || 0) > 0;
+                        const changeColor = stock.change?.startsWith('+') ? '#10b981' : '#ef4444';
+                        const sl = stock?.risk_7d?.stop_loss;
+                        const tp = stock?.risk_7d?.take_profit;
+                        const basis = stock?.risk_7d?.basis;
+                        const rr = stock?.risk_7d?.rr;
+                        const riskLine = (sl && tp) ? `<div style="font-size: 0.8em; opacity: 0.85;" title="Basis: ${basis || '—'} | RR ${rr || '—'}">SL/TP → $${Number(sl).toFixed(2)} / $${Number(tp).toFixed(2)}</div>` : '';
+                        const sig = stock.recommendation || 'HOLD';
+                        const ret = typeof stock.expected_return === 'number' ? `${isPos ? '+' : ''}${stock.expected_return.toFixed(2)}%` : '--';
+                        return `
+                            <div style="background: rgba(255,255,255,0.05); border-radius: 6px; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                                <div>
+                                    <strong style="color: #3b82f6;">${stock.symbol}</strong><br>
+                                    <small>${stock.name || ''}</small>
+                                </div>
+                                <div style="text-align: right; min-width: 200px;">
+                                    <div>$${(stock.price ?? 0).toFixed?.(2) || stock.price || '--'}</div>
+                                    <div style="color: ${changeColor};">${stock.change || ''}</div>
+                                </div>
+                                <div style="text-align: right; min-width: 260px;">
+                                    <div>${sig} • ${confPct} • ${ret}</div>
+                                    ${riskLine}
+                                </div>
                             </div>
-                            <div style="text-align: right;">
-                                <div>$${stock.price}</div>
-                                <div style="color: ${stock.change.startsWith('+') ? '#10b981' : '#ef4444'};">${stock.change}</div>
-                            </div>
-                        </div>
-                    `).join('');
-                    
+                        `;
+                    }).join('');
                     watchlistDiv.innerHTML = watchlistHtml;
                 } else {
                     watchlistDiv.innerHTML = '<p style="opacity: 0.6; text-align: center;">No stocks in watchlist</p>';

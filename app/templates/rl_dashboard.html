@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RL Dashboard</title>
+  <style>
+    body { background:#0b1220; color:#e2e8f0; font-family: Inter, system-ui; margin:0; }
+    .container { max-width: 1000px; margin: 20px auto; padding: 20px; }
+    .card { background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px; margin-bottom:16px; }
+    .row { display:flex; gap:16px; }
+    .row > .card { flex:1; }
+    .title { margin:0 0 12px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 class="title">RL Agent (Paper) — Preview</h2>
+    <div class="card">
+      <h3>Quick Simulation</h3>
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <label>Symbol</label>
+        <input id="rl-sym" placeholder="AAPL" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+  <label>Days</label>
+  <input id="rl-days" type="number" value="250" style="width:80px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+  <label>Start</label>
+  <input id="rl-start" type="date" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+  <label>End</label>
+  <input id="rl-end" type="date" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+  <label>Window</label>
+  <input id="rl-window" type="number" value="60" style="width:80px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+  <label>Policy</label>
+        <select id="rl-policy" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+          <option value="follow_trend">follow_trend</option>
+          <option value="buy_and_hold">buy_and_hold</option>
+          <option value="half_long">half_long</option>
+        </select>
+        <button onclick="runRLSim()" style="background:#3b82f6; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Run</button>
+      </div>
+      <div style="margin-top:8px;">
+        <canvas id="rl-chart" width="980" height="300" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:8px;"></canvas>
+      </div>
+      <div style="margin-top:6px; display:flex; gap:12px; align-items:center;">
+        <span style="opacity:0.85;">Chart Type:</span>
+        <label><input type="radio" name="rl-chart-type" id="rl-chart-type-line" value="line" checked> Line</label>
+        <label><input type="radio" name="rl-chart-type" id="rl-chart-type-candle" value="candlestick"> Candlestick</label>
+      </div>
+      <div id="rl-metrics" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap:10px; margin-top:10px;">
+        <div class="card"><div>Final Equity</div><strong id="m-final">—</strong></div>
+        <div class="card"><div>Total Return</div><strong id="m-ret">—</strong></div>
+        <div class="card"><div>Max Drawdown</div><strong id="m-dd">—</strong></div>
+        <div class="card"><div>Sharpe (approx)</div><strong id="m-sharpe">—</strong></div>
+        <div class="card"><div>Coverage</div><strong id="m-cov">—</strong></div>
+      </div>
+      <div class="card" style="margin-top:10px;">
+        <h4>Decisions</h4>
+        <div style="margin-bottom:8px; display:flex; gap:12px; align-items:center;">
+          <span style="opacity:0.8;">Show Horizons:</span>
+          <label><input type="checkbox" id="h-1d" /> 1d</label>
+          <label><input type="checkbox" id="h-7d" checked /> 7d</label>
+          <label><input type="checkbox" id="h-30d" /> 30d</label>
+        </div>
+        <div id="rl-decisions-table" style="max-height:220px; overflow:auto; font-size:0.9em;"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="card">
+        <h3>Status</h3>
+        <div id="rl-status">Idle</div>
+      </div>
+      <div class="card">
+        <h3>Positions</h3>
+        <div id="rl-positions">—</div>
+      </div>
+      <div class="card">
+        <h3>PnL</h3>
+        <div id="rl-pnl">—</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Train PPO (SB3)</h3>
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <label>Symbol</label>
+        <input id="ppo-sym" placeholder="AAPL" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label>Window</label>
+        <input id="ppo-window" type="number" value="60" style="width:80px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label>Start</label>
+        <input id="ppo-start" type="date" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label>End</label>
+        <input id="ppo-end" type="date" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label>Timesteps</label>
+        <input id="ppo-steps" type="number" value="100000" style="width:120px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <button onclick="startPPO()" style="background:#8b5cf6; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Train PPO</button>
+      </div>
+      <div id="ppo-status" style="margin-top:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;"></div>
+      <pre id="ppo-logs" style="max-height:200px; overflow:auto; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px; font-size:12px;"></pre>
+    </div>
+    <div class="card">
+      <h3>Recent Decisions</h3>
+      <div id="rl-decisions">—</div>
+    </div>
+  </div>
+  <script src="/static/js/rl.js"></script>
+  <script>
+    let _lastDecisions = [];
+    async function runRLSim(){
+      const sym = (document.getElementById('rl-sym').value || 'AAPL').toUpperCase();
+    const days = parseInt(document.getElementById('rl-days').value || '250', 10);
+    const policy = document.getElementById('rl-policy').value;
+    const windowSize = parseInt(document.getElementById('rl-window').value || '60', 10);
+    const sd = (document.getElementById('rl-start').value || '').trim();
+    const ed = (document.getElementById('rl-end').value || '').trim();
+    const params = new URLSearchParams({ symbol: sym, window: String(windowSize), policy });
+    if (sd && ed) { params.set('start_date', sd); params.set('end_date', ed); }
+    else { params.set('days', String(days)); }
+    const r = await fetch(`/api/rl/simulate?${params.toString()}`);
+    const j = await r.json();
+    if(j.status !== 'success'){ alert(j.message || 'Simulation failed'); return; }
+    window._lastSimData = j.data;
+    drawRL(j.data);
+      fillRLMetrics(j.data.metrics || {});
+      _lastDecisions = j.data.decisions || [];
+      renderRLDecisions(_lastDecisions);
+    }
+    function drawRLLine(data){
+      const c = document.getElementById('rl-chart');
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0,0,c.width,c.height);
+      const W=c.width,H=c.height, pad=30;
+      // Normalize price and equity to [0,1] for simple overlay
+      const prices = data.prices, equities = data.equities;
+      const minP = Math.min(...prices), maxP = Math.max(...prices);
+      const minE = Math.min(...equities), maxE = Math.max(...equities);
+      const n = prices.length;
+      function x(i){ return pad + (W-2*pad) * (i/(Math.max(1,n-1))); }
+      function y(norm){ return H - pad - (H-2*pad)*norm; }
+      function norm(v, lo, hi){ return (hi<=lo)?0.5: (v-lo)/(hi-lo); }
+      // axes
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+      ctx.strokeRect(pad, pad, W-2*pad, H-2*pad);
+      // price line (yellow)
+      ctx.beginPath(); ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 1.5;
+      for(let i=0;i<n;i++){
+        const nx = x(i), ny = y(norm(prices[i],minP,maxP));
+        if(i===0) ctx.moveTo(nx,ny); else ctx.lineTo(nx,ny);
+      }
+      ctx.stroke();
+      // equity line (green)
+      ctx.beginPath(); ctx.strokeStyle = '#10b981'; ctx.lineWidth = 1.5;
+      for(let i=0;i<n;i++){
+        const nx = x(i), ny = y(norm(equities[i],minE,maxE));
+        if(i===0) ctx.moveTo(nx,ny); else ctx.lineTo(nx,ny);
+      }
+      ctx.stroke();
+      // actions (markers)
+      const acts = data.actions || [];
+      for(let i=0;i<acts.length;i++){
+        const a = acts[i];
+        if(a===0||a===1||a===2){
+          const nx = x(i), ny = y(norm(prices[i],minP,maxP));
+          ctx.fillStyle = a===2? '#22c55e' : a===1? '#60a5fa' : '#ef4444';
+          ctx.fillRect(nx-1, ny-1, 2, 2);
+        }
+      }
+      // legend
+      ctx.fillStyle = '#e2e8f0'; ctx.font='12px system-ui';
+      ctx.fillText('Price', pad+6, pad+14);
+      ctx.fillStyle = '#ffd700'; ctx.fillRect(pad-2, pad+6, 4, 4);
+      ctx.fillStyle = '#e2e8f0'; ctx.fillText('Equity', pad+60, pad+14);
+      ctx.fillStyle = '#10b981'; ctx.fillRect(pad+50, pad+6, 4, 4);
+    }
+    function drawRLCandles(data){
+      const c = document.getElementById('rl-chart');
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0,0,c.width,c.height);
+      const W=c.width,H=c.height, pad=30;
+      const prices = data.prices || [];
+      const equities = data.equities || [];
+      const candles = data.ohlc || [];
+      const n = Math.max(prices.length, candles.length);
+      if(n===0){ return; }
+      // axes
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+      ctx.strokeRect(pad, pad, W-2*pad, H-2*pad);
+      // ranges
+      let minP=Infinity, maxP=-Infinity;
+      for(let i=0;i<candles.length;i++){
+        const cd = candles[i];
+        if(cd && typeof cd.h==='number' && typeof cd.l==='number'){
+          minP=Math.min(minP, cd.l); maxP=Math.max(maxP, cd.h);
+        }
+      }
+      if(!isFinite(minP) || !isFinite(maxP)){
+        // fallback to line if no ohlc
+        return drawRLLine(data);
+      }
+      const minE = Math.min(...equities), maxE = Math.max(...equities);
+      function x(i){ return pad + (W-2*pad) * (i/(Math.max(1,n-1))); }
+      function yv(v, lo, hi){ if(!(hi>lo)) return H/2; return H - pad - (H-2*pad)*((v-lo)/(hi-lo)); }
+      // draw candles
+      const bodyW = Math.max(2, Math.floor((W-2*pad)/Math.max(20,n)) - 1);
+      for(let i=0;i<candles.length;i++){
+        const cd = candles[i]; if(!cd || typeof cd.o!=='number') continue;
+        const nx = x(i);
+        const yH = yv(cd.h, minP, maxP);
+        const yL = yv(cd.l, minP, maxP);
+        const yO = yv(cd.o, minP, maxP);
+        const yC = yv(cd.c, minP, maxP);
+        const up = cd.c >= cd.o;
+        ctx.strokeStyle = 'rgba(226,232,240,0.8)';
+        // wick
+        ctx.beginPath(); ctx.moveTo(nx, yH); ctx.lineTo(nx, yL); ctx.stroke();
+        // body
+        const top = Math.min(yO,yC), h = Math.max(1, Math.abs(yO - yC));
+        ctx.fillStyle = up ? '#10b981' : '#ef4444';
+        ctx.fillRect(nx - bodyW/2, top, bodyW, h);
+      }
+      // overlay equity
+      if(equities.length>1 && isFinite(minE) && isFinite(maxE)){
+        ctx.beginPath(); ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1;
+        for(let i=0;i<equities.length;i++){
+          const nx = x(i), ny = yv(equities[i], minE, maxE);
+          if(i===0) ctx.moveTo(nx,ny); else ctx.lineTo(nx,ny);
+        }
+        ctx.stroke();
+      }
+      // legend
+      ctx.fillStyle = '#e2e8f0'; ctx.font='12px system-ui';
+      ctx.fillText('Candles', pad+6, pad+14);
+      ctx.fillStyle = '#10b981'; ctx.fillRect(pad-2, pad+6, 4, 4);
+      ctx.fillStyle = '#e2e8f0'; ctx.fillText('Equity', pad+70, pad+14);
+      ctx.fillStyle = '#94a3b8'; ctx.fillRect(pad+60, pad+6, 4, 4);
+    }
+    function drawRL(data){
+      const tLine = document.getElementById('rl-chart-type-line');
+      const type = (tLine && tLine.checked) ? 'line' : 'candlestick';
+      if(type==='candlestick') return drawRLCandles(data);
+      return drawRLLine(data);
+    }
+    // toggle events (attach immediately; DOM already loaded since script is at end)
+    (function attachRlChartTypeListeners(){
+      const l = document.getElementById('rl-chart-type-line');
+      const c = document.getElementById('rl-chart-type-candle');
+      const rerender = ()=>{ if(window._lastSimData) drawRL(window._lastSimData); };
+      if(l && !l._rlBound){ l.addEventListener('change', rerender); l._rlBound = true; }
+      if(c && !c._rlBound){ c.addEventListener('change', rerender); c._rlBound = true; }
+      // fallback: if elements not yet present, try once DOM is ready
+      if(!(l && c)){
+        window.addEventListener('DOMContentLoaded', attachRlChartTypeListeners, { once: true });
+      }
+    })();
+    function fillRLMetrics(m){
+      const fe = (m.final_equity!==undefined)? `$${m.final_equity.toFixed(2)}` : '—';
+      const tr = (m.total_return!==undefined)? `${(m.total_return*100).toFixed(2)}%` : '—';
+      const dd = (m.max_drawdown!==undefined)? `${(m.max_drawdown*100).toFixed(2)}%` : '—';
+      const sh = (m.sharpe!==undefined)? `${m.sharpe.toFixed(2)}` : '—';
+      document.getElementById('m-final').textContent = fe;
+      document.getElementById('m-ret').textContent = tr;
+      document.getElementById('m-dd').textContent = dd;
+  document.getElementById('m-sharpe').textContent = sh;
+  const cov = (typeof m.coverage_ratio === 'number') ? `${(m.coverage_ratio*100).toFixed(0)}%` : '—';
+  const covEl = document.getElementById('m-cov'); if (covEl) covEl.textContent = cov;
+    }
+    function _selectedHorizons(){
+      return {
+        h1: document.getElementById('h-1d')?.checked ?? false,
+        h7: document.getElementById('h-7d')?.checked ?? true,
+        h30: document.getElementById('h-30d')?.checked ?? false,
+      };
+    }
+    function renderRLDecisions(rows){
+      const el = document.getElementById('rl-decisions-table');
+      if(!rows || !rows.length){ el.textContent = '—'; return; }
+      const sel = _selectedHorizons();
+      const hasAny = rows.some(r => (
+        (sel.h1 && (r.prog_1d_er!==undefined || r.prog_1d_conf!==undefined || r.prog_1d_sig!==undefined || r.prog_1d_sl!==undefined || r.prog_1d_tp!==undefined)) ||
+        (sel.h7 && (r.prog_7d_er!==undefined || r.prog_7d_conf!==undefined || r.prog_7d_sig!==undefined || r.prog_7d_sl!==undefined || r.prog_7d_tp!==undefined)) ||
+        (sel.h30 && (r.prog_30d_er!==undefined || r.prog_30d_conf!==undefined || r.prog_30d_sig!==undefined || r.prog_30d_sl!==undefined || r.prog_30d_tp!==undefined))
+      ));
+      let html = '<table style="width:100%; border-collapse:collapse;">';
+      html += '<thead><tr style="text-align:left;">'
+            + '<th style="padding:6px;">Time</th>'
+            + '<th style="padding:6px;">Action</th>'
+            + '<th style="padding:6px;">Price</th>'
+            + '<th style="padding:6px;">Equity</th>'
+            + '<th style="padding:6px;">Pos</th>'
+            + (hasAny && sel.h1 ? '<th style="padding:6px;">Prog 1d ER</th><th style="padding:6px;">Prog 1d Conf</th><th style="padding:6px;">Prog 1d Sig</th><th style="padding:6px;">Prog 1d SL</th><th style="padding:6px;">Prog 1d TP</th>' : '')
+            + (hasAny && sel.h7 ? '<th style="padding:6px;">Prog 7d ER</th><th style="padding:6px;">Prog 7d Conf</th><th style="padding:6px;">Prog 7d Sig</th><th style="padding:6px;">Prog 7d SL</th><th style="padding:6px;">Prog 7d TP</th>' : '')
+            + (hasAny && sel.h30 ? '<th style="padding:6px;">Prog 30d ER</th><th style="padding:6px;">Prog 30d Conf</th><th style="padding:6px;">Prog 30d Sig</th><th style="padding:6px;">Prog 30d SL</th><th style="padding:6px;">Prog 30d TP</th>' : '')
+            + '</tr></thead><tbody>';
+      const label = (a)=> a===2? 'FULL LONG' : a===1? 'HALF LONG' : 'FLAT';
+      rows.forEach(r=>{
+        const er1 = (typeof r.prog_1d_er === 'number') ? (r.prog_1d_er*100).toFixed(2)+'%' : '';
+        const cf1 = (typeof r.prog_1d_conf === 'number') ? (r.prog_1d_conf*100).toFixed(0)+'%' : '';
+        const sg1 = (typeof r.prog_1d_sig === 'string') ? r.prog_1d_sig : '';
+        const er7 = (typeof r.prog_7d_er === 'number') ? (r.prog_7d_er*100).toFixed(2)+'%' : '';
+        const cf7 = (typeof r.prog_7d_conf === 'number') ? (r.prog_7d_conf*100).toFixed(0)+'%' : '';
+        const sg7 = (typeof r.prog_7d_sig === 'string') ? r.prog_7d_sig : '';
+        const er30 = (typeof r.prog_30d_er === 'number') ? (r.prog_30d_er*100).toFixed(2)+'%' : '';
+        const cf30 = (typeof r.prog_30d_conf === 'number') ? (r.prog_30d_conf*100).toFixed(0)+'%' : '';
+        const sg30 = (typeof r.prog_30d_sig === 'string') ? r.prog_30d_sig : '';
+        html += `<tr>
+          <td style="padding:6px; opacity:0.8;">${r.time}</td>
+          <td style="padding:6px;">${label(r.action)}</td>
+          <td style="padding:6px;">$${(r.price??0).toFixed(2)}</td>
+          <td style="padding:6px;">$${(r.equity??0).toFixed(2)}</td>
+          <td style="padding:6px;">${(((r.position_frac??0)*100).toFixed(0))}%</td>
+          ${sel.h1 && hasAny ? `<td style=\"padding:6px;\">${er1}</td><td style=\"padding:6px;\">${cf1}</td><td style=\"padding:6px;\">${sg1}</td><td style=\"padding:6px;\">${(typeof r.prog_1d_sl==='number')?('$'+r.prog_1d_sl.toFixed(2)) : ''}</td><td style=\"padding:6px;\">${(typeof r.prog_1d_tp==='number')?('$'+r.prog_1d_tp.toFixed(2)) : ''}</td>` : ''}
+          ${sel.h7 && hasAny ? `<td style=\"padding:6px;\">${er7}</td><td style=\"padding:6px;\">${cf7}</td><td style=\"padding:6px;\">${sg7}</td><td style=\"padding:6px;\">${(typeof r.prog_7d_sl==='number')?('$'+r.prog_7d_sl.toFixed(2)) : ''}</td><td style=\"padding:6px;\">${(typeof r.prog_7d_tp==='number')?('$'+r.prog_7d_tp.toFixed(2)) : ''}</td>` : ''}
+          ${sel.h30 && hasAny ? `<td style=\"padding:6px;\">${er30}</td><td style=\"padding:6px;\">${cf30}</td><td style=\"padding:6px;\">${sg30}</td><td style=\"padding:6px;\">${(typeof r.prog_30d_sl==='number')?('$'+r.prog_30d_sl.toFixed(2)) : ''}</td><td style=\"padding:6px;\">${(typeof r.prog_30d_tp==='number')?('$'+r.prog_30d_tp.toFixed(2)) : ''}</td>` : ''}
+        </tr>`;
+      });
+      html += '</tbody></table>';
+      el.innerHTML = html;
+    }
+    // re-render on horizon toggle (attach immediately, with DOMContentLoaded fallback)
+    (function attachRlHorizonListeners(){
+      let bound = 0;
+      ['h-1d','h-7d','h-30d'].forEach(id=>{
+        const el = document.getElementById(id);
+        if(el && !el._rlBound){ el.addEventListener('change', ()=> renderRLDecisions(_lastDecisions)); el._rlBound = true; bound++; }
+      });
+      if(bound === 0){
+        window.addEventListener('DOMContentLoaded', attachRlHorizonListeners, { once: true });
+      }
+    })();
+
+    // PPO train UI
+    let _ppoPoll = null;
+    async function startPPO(){
+      const sym = (document.getElementById('ppo-sym').value || '').toUpperCase();
+      if(!sym){ alert('Please enter a symbol'); return; }
+      const windowSize = parseInt(document.getElementById('ppo-window').value || '60', 10);
+      const steps = parseInt(document.getElementById('ppo-steps').value || '100000', 10);
+      const sd = (document.getElementById('ppo-start').value || '').trim();
+      const ed = (document.getElementById('ppo-end').value || '').trim();
+      const params = new URLSearchParams({ symbol: sym, window: String(windowSize), timesteps: String(steps) });
+      if(sd) params.set('start_date', sd);
+      if(ed) params.set('end_date', ed);
+      const resp = await fetch(`/api/rl/ppo/train?${params.toString()}`, { method: 'POST' });
+      const j = await resp.json();
+      if(j.status !== 'started'){ alert(j.detail || 'Failed to start PPO'); return; }
+      const jobId = j.job_id;
+      document.getElementById('ppo-status').textContent = `Job ${jobId} — running...`;
+      if(_ppoPoll) clearInterval(_ppoPoll);
+      _ppoPoll = setInterval(()=> pollPPO(jobId), 2000);
+      pollPPO(jobId);
+    }
+    async function pollPPO(jobId){
+      try{
+        const r = await fetch(`/api/rl/ppo/train/status/${jobId}`);
+        if(!r.ok){ throw new Error('Status not found'); }
+        const j = await r.json();
+        const st = j.status || 'unknown';
+        let line1 = `Job ${jobId} — ${st}`;
+        if(j.model_path){ line1 += ` — model: ${j.model_path}`; }
+        document.getElementById('ppo-status').textContent = line1;
+        const logs = (j.logs || []).join('\n');
+        document.getElementById('ppo-logs').textContent = logs;
+        if(st === 'completed' || st === 'failed'){
+          if(_ppoPoll){ clearInterval(_ppoPoll); _ppoPoll = null; }
+        }
+      }catch(e){
+        // stop polling on error
+        if(_ppoPoll){ clearInterval(_ppoPoll); _ppoPoll = null; }
+      }
+    }
+  </script>
+</body>
+</html>

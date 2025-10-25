@@ -53,6 +53,10 @@ praw==7.7.1
 discord.py==2.3.2
 pandas==2.0.3
 
+# RL training
+gymnasium==0.29.1
+stable-baselines3==2.3.2
+
 # Flask Dashboard dependencies
 Flask==2.3.3
 Werkzeug==2.3.7

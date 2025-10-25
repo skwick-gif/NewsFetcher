@@ -6,7 +6,7 @@ import logging
 import os
 import sys
 from datetime import datetime, timezone, timedelta
-from typing import Dict, Any, List, Set
+from typing import Dict, Any, List, Set, Optional
 import asyncio
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, BackgroundTasks, Query, Depends, Request
@@ -1032,7 +1032,7 @@ async def get_hot_stocks(limit: int = 10):
                 if ml_result.get('has_potential'):
                     stock_data = await financial_provider.get_stock_data(ticker)
                     
-                    hot_stocks.append({
+                    item = {
                         'symbol': ticker,
                         'name': stock_data.get('name', ticker) if stock_data else ticker,
                         'current_price': ml_result.get('current_price'),
@@ -1042,7 +1042,72 @@ async def get_hot_stocks(limit: int = 10):
                         'recommendation': ml_result.get('recommendation'),
                         'ml_score': ml_result.get('ml_score'),
                         'change_percent': stock_data.get('change_percent', 0) if stock_data else 0
-                    })
+                    }
+
+                    # Try to enrich with Progressive ML champion predictions (7d horizon) incl. SL/TP
+                    try:
+                        if PROGRESSIVE_ML_AVAILABLE:
+                            from app.ml.progressive.predictor import ProgressivePredictor as _Pred
+                            from app.ml.progressive.data_loader import ProgressiveDataLoader as _DL
+                            from pathlib import Path as _Path
+                            champions_root = _Path('app/ml/models/champions') / ticker
+                            if champions_root.exists():
+                                # Pick most recent champion directory
+                                dirs = [p for p in champions_root.iterdir() if p.is_dir()]
+                                dirs.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+                                if dirs:
+                                    champ_dir = str(dirs[0])
+                                    _loader = _DL(stock_data_dir=_Path('stock_data'))
+                                    _pred = _Pred(data_loader=_loader, model_dir=champ_dir)
+                                    _res = _pred.predict_ensemble(symbol=ticker, mode='progressive')
+                                    if _res and _res.get('predictions'):
+                                        p7 = _res['predictions'].get('7d') or _res['predictions'].get('1d')
+                                        if p7:
+                                            item['expected_return'] = float(p7.get('price_change_pct', 0.0) * 100.0)
+                                            item['confidence'] = float(p7.get('confidence', 0.0))
+                                            item['recommendation'] = p7.get('signal') or item.get('recommendation')
+                                            # Risk enrich (ATR or volatility)
+                                            try:
+                                                import pandas as __pd
+                                                ind_path = _Path('stock_data') / ticker / f"{ticker}_indicators.csv"
+                                                price_path = _Path('stock_data') / ticker / f"{ticker}_price.csv"
+                                                close_price = float(_res.get('current_price', 0.0))
+                                                atr_pct = None
+                                                if ind_path.exists():
+                                                    ind_df = __pd.read_csv(ind_path, index_col=0)
+                                                    if 'ATR_14' in ind_df.columns and close_price > 0:
+                                                        atr_val = float(__pd.to_numeric(ind_df['ATR_14'], errors='coerce').dropna().iloc[-1])
+                                                        atr_pct = max(0.001, min(0.2, atr_val / close_price))
+                                                if atr_pct is None and price_path.exists():
+                                                    dfp = __pd.read_csv(price_path, index_col=0)
+                                                    dfp['Close'] = __pd.to_numeric(dfp['Close'], errors='coerce')
+                                                    dfp = dfp.dropna(subset=['Close'])
+                                                    rets = dfp['Close'].pct_change().dropna()
+                                                    vol = float(rets.rolling(14).std().dropna().iloc[-1]) if len(rets) > 14 else float(rets.std())
+                                                    atr_pct = max(0.001, min(0.2, vol * 1.5))
+                                                rr = 2.0
+                                                risk_pct = max(0.005, min(0.2, atr_pct or 0.01))
+                                                reward_pct = max(0.01, min(0.4, risk_pct * rr))
+                                                change_pct = float(p7.get('price_change_pct', 0.0))
+                                                sl = close_price * (1 - risk_pct)
+                                                tp = close_price * (1 + reward_pct)
+                                                if change_pct < 0:
+                                                    sl = close_price * (1 + risk_pct)
+                                                    tp = close_price * (1 - reward_pct)
+                                                item['risk_7d'] = {
+                                                    'stop_loss': round(sl, 4),
+                                                    'take_profit': round(tp, 4),
+                                                    'stop_loss_pct': -risk_pct if change_pct >= 0 else risk_pct,
+                                                    'take_profit_pct': reward_pct if change_pct >= 0 else -reward_pct,
+                                                    'basis': 'ATR_14' if atr_pct is not None else 'volatility',
+                                                    'rr': rr
+                                                }
+                                            except Exception:
+                                                pass
+                    except Exception as _e:
+                        logger.debug(f"Hot-stocks enrich failed for {ticker}: {_e}")
+
+                    hot_stocks.append(item)
                     
             except Exception as e:
                 logger.warning(f"Error scanning {ticker}: {e}")
@@ -1119,16 +1184,39 @@ async def get_historical_data(symbol: str, timeframe: str = "1D"):
         if not stock_file.exists():
             raise HTTPException(status_code=404, detail=f"No local data found for {symbol}")
         
-        # Read CSV file
-        df = pd.read_csv(stock_file)
-        
-        # Ensure Date column exists and is datetime
-        if 'Date' not in df.columns:
-            raise HTTPException(status_code=500, detail=f"Invalid CSV format for {symbol}")
-        
-        # Convert to datetime and make timezone-naive
-        df['Date'] = pd.to_datetime(df['Date'], utc=True).dt.tz_localize(None)
-        df = df.sort_values('Date')
+        # Read CSV file (robust to index column and case-insensitive 'Date')
+        try:
+            df = pd.read_csv(stock_file)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to read CSV for {symbol}: {e}")
+
+        # Normalize date column
+        date_col = None
+        for cand in ['Date', 'date']:
+            if cand in df.columns:
+                date_col = cand
+                break
+        # If Date not found as a named column, try first column as Date
+        if date_col is None and df.shape[1] >= 1:
+            date_col = df.columns[0]
+
+        if date_col is None:
+            raise HTTPException(status_code=500, detail=f"Invalid CSV: missing Date column for {symbol}")
+
+        # Convert to datetime robustly and make timezone-naive
+        try:
+            # Prefer strict ISO-8601 when possible
+            df[date_col] = pd.to_datetime(df[date_col], format='ISO8601', utc=True)
+        except Exception:
+            try:
+                # Pandas >=2.0 supports mixed formats
+                df[date_col] = pd.to_datetime(df[date_col], format='mixed', utc=True)
+            except Exception:
+                # Fallback: let pandas infer; coerce invalids to NaT
+                df[date_col] = pd.to_datetime(df[date_col], errors='coerce', utc=True)
+        # Drop invalid and strip timezone
+        df[date_col] = df[date_col].dt.tz_localize(None)
+        df = df.dropna(subset=[date_col]).sort_values(date_col)
         
         # Map timeframe to number of days
         timeframe_days = {
@@ -1142,18 +1230,19 @@ async def get_historical_data(symbol: str, timeframe: str = "1D"):
         
         # Filter to last N days
         cutoff_date = datetime.now() - timedelta(days=days)
-        df_filtered = df[df['Date'] >= cutoff_date].copy()
+        df_filtered = df[df[date_col] >= cutoff_date].copy()
         
         if len(df_filtered) == 0:
             # If no data in timeframe, get last N rows
             df_filtered = df.tail(days)
-        
-        # Format data for chart
+
+        # Format data for chart (both line and candlestick)
         labels = []
         prices = []
-        
+        ohlc = []  # list of dicts: {t, o, h, l, c}
+
         for _, row in df_filtered.iterrows():
-            date = pd.to_datetime(row['Date'])
+            date = pd.to_datetime(row[date_col])
             if timeframe == "1D":
                 # For 1 day, show time if available, else show date
                 labels.append(date.strftime("%H:%M" if date.hour != 0 else "%m/%d"))
@@ -1161,7 +1250,36 @@ async def get_historical_data(symbol: str, timeframe: str = "1D"):
                 # For longer periods, show date
                 labels.append(date.strftime("%m/%d"))
             
-            prices.append(float(row['Close']))
+            # Handle different casings for Close
+            close_val = None
+            if 'Close' in df.columns:
+                close_val = row['Close']
+            elif 'close' in df.columns:
+                close_val = row['close']
+            else:
+                raise HTTPException(status_code=500, detail=f"Invalid CSV: missing Close column for {symbol}")
+            prices.append(float(close_val))
+
+            # Build OHLC if columns exist
+            def _get(colA, colB=None):
+                if colA in df.columns:
+                    return row[colA]
+                if colB and colB in df.columns:
+                    return row[colB]
+                return None
+            o = _get('Open', 'open')
+            h = _get('High', 'high')
+            l = _get('Low', 'low')
+            c = close_val
+            if o is not None and h is not None and l is not None and c is not None:
+                # Use ISO-8601 with Z to avoid client-side parser format errors
+                ohlc.append({
+                    "t": date.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "o": float(o),
+                    "h": float(h),
+                    "l": float(l),
+                    "c": float(c)
+                })
         
         # Calculate statistics
         current_price = prices[-1] if prices else 0
@@ -1178,6 +1296,7 @@ async def get_historical_data(symbol: str, timeframe: str = "1D"):
                 "timeframe": timeframe,
                 "labels": labels,
                 "prices": prices,
+                "ohlc": ohlc,
                 "current_price": round(current_price, 2),
                 "change": round(change, 2),
                 "change_percent": round(change_percent, 2),
@@ -1950,6 +2069,11 @@ async def run_training_job(job_id: str, symbol: str, model_types: List[str], mod
     """Background task to run training with progress tracking"""
     import time
     import asyncio
+    import sys
+    import subprocess
+    import threading
+    import uuid
+    from datetime import datetime
     
     # Explicitly disable Torch Dynamo before any training begins
     try:
@@ -3388,8 +3512,125 @@ async def get_social_sentiment(symbol: str):
 async def get_watchlist():
     """Get user watchlist with live data"""
     try:
-        # Live only: watchlist not implemented
-        raise HTTPException(status_code=501, detail="Watchlist not implemented")
+        from pathlib import Path as _Path
+        symbols: list[str] = []
+
+        # Prefer explicit watchlist file if exists
+        watchlist_file = _Path('app/data/watchlist.json')
+        if watchlist_file.exists():
+            try:
+                import json as _json
+                with open(watchlist_file, 'r', encoding='utf-8') as f:
+                    payload = _json.load(f)
+                    if isinstance(payload, dict) and isinstance(payload.get('symbols'), list):
+                        symbols = [s.upper() for s in payload['symbols'] if isinstance(s, str)]
+            except Exception:
+                symbols = []
+
+        # Otherwise, derive from available champions (top 10 most recent)
+        if not symbols:
+            champions_root = _Path('app/ml/models/champions')
+            if champions_root.exists():
+                try:
+                    syms = []
+                    for p in champions_root.iterdir():
+                        if p.is_dir():
+                            syms.append((p.name, p.stat().st_mtime))
+                    syms.sort(key=lambda x: x[1], reverse=True)
+                    symbols = [s for s, _ in syms[:10]]
+                except Exception:
+                    symbols = []
+
+        watchlist_items = []
+        for sym in symbols:
+            try:
+                stock_data = await financial_provider.get_stock_data(sym) if financial_provider else None
+                name = (stock_data or {}).get('name', sym)
+                price = None
+                change_str = '0.00%'
+                if stock_data:
+                    price = stock_data.get('price') or stock_data.get('current_price')
+                    chg = stock_data.get('change_percent')
+                    if isinstance(chg, (int, float)):
+                        sign = '+' if chg >= 0 else ''
+                        change_str = f"{sign}{chg:.2f}%"
+
+                item = {
+                    'symbol': sym,
+                    'name': name,
+                    'price': round(float(price), 2) if isinstance(price, (int, float)) else None,
+                    'change': change_str
+                }
+
+                # Enrich with Progressive ML champion prediction (7d) and SL/TP
+                try:
+                    if PROGRESSIVE_ML_AVAILABLE:
+                        from app.ml.progressive.predictor import ProgressivePredictor as _Pred
+                        from app.ml.progressive.data_loader import ProgressiveDataLoader as _DL
+                        champions_root = _Path('app/ml/models/champions') / sym
+                        if champions_root.exists():
+                            dirs = [p for p in champions_root.iterdir() if p.is_dir()]
+                            dirs.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+                            if dirs:
+                                champ_dir = str(dirs[0])
+                                _loader = _DL(stock_data_dir=_Path('stock_data'))
+                                _pred = _Pred(data_loader=_loader, model_dir=champ_dir)
+                                _res = _pred.predict_ensemble(symbol=sym, mode='progressive')
+                                if _res and _res.get('predictions'):
+                                    p7 = _res['predictions'].get('7d') or _res['predictions'].get('1d')
+                                    if p7:
+                                        item['expected_return'] = float(p7.get('price_change_pct', 0.0) * 100.0)
+                                        item['confidence'] = float(p7.get('confidence', 0.0))
+                                        item['recommendation'] = p7.get('signal')
+                                        # Risk enrich (ATR or volatility) similar to hot-stocks
+                                        try:
+                                            import pandas as __pd
+                                            ind_path = _Path('stock_data') / sym / f"{sym}_indicators.csv"
+                                            price_path = _Path('stock_data') / sym / f"{sym}_price.csv"
+                                            close_price = float(_res.get('current_price', 0.0))
+                                            atr_pct = None
+                                            if ind_path.exists():
+                                                ind_df = __pd.read_csv(ind_path, index_col=0)
+                                                if 'ATR_14' in ind_df.columns and close_price > 0:
+                                                    atr_val = float(__pd.to_numeric(ind_df['ATR_14'], errors='coerce').dropna().iloc[-1])
+                                                    atr_pct = max(0.001, min(0.2, atr_val / close_price))
+                                            if atr_pct is None and price_path.exists():
+                                                dfp = __pd.read_csv(price_path, index_col=0)
+                                                dfp['Close'] = __pd.to_numeric(dfp['Close'], errors='coerce')
+                                                dfp = dfp.dropna(subset=['Close'])
+                                                rets = dfp['Close'].pct_change().dropna()
+                                                vol = float(rets.rolling(14).std().dropna().iloc[-1]) if len(rets) > 14 else float(rets.std())
+                                                atr_pct = max(0.001, min(0.2, vol * 1.5))
+                                            rr = 2.0
+                                            risk_pct = max(0.005, min(0.2, atr_pct or 0.01))
+                                            reward_pct = max(0.01, min(0.4, risk_pct * rr))
+                                            change_pct = float(p7.get('price_change_pct', 0.0))
+                                            sl = close_price * (1 - risk_pct)
+                                            tp = close_price * (1 + reward_pct)
+                                            if change_pct < 0:
+                                                sl = close_price * (1 + risk_pct)
+                                                tp = close_price * (1 - reward_pct)
+                                            item['risk_7d'] = {
+                                                'stop_loss': round(sl, 4),
+                                                'take_profit': round(tp, 4),
+                                                'stop_loss_pct': -risk_pct if change_pct >= 0 else risk_pct,
+                                                'take_profit_pct': reward_pct if change_pct >= 0 else -reward_pct,
+                                                'basis': 'ATR_14' if atr_pct is not None else 'volatility',
+                                                'rr': rr
+                                            }
+                                        except Exception:
+                                            pass
+                except Exception as _we:
+                    logger.debug(f"Watchlist enrich failed for {sym}: {_we}")
+
+                watchlist_items.append(item)
+            except Exception as _ie:
+                logger.debug(f"Watchlist item build failed for {sym}: {_ie}")
+
+        return {
+            "status": "success",
+            "watchlist": watchlist_items
+        }
         
     except Exception as e:
         logger.error(f"Failed to get watchlist: {e}")
@@ -3731,6 +3972,164 @@ async def progressive_ml_guide():
             content="<h1>Guide file not found. Ensure app/templates/docs/progressive_ml_guide.html exists.</h1>",
             status_code=500
         )
+
+# ============================================================
+# RL Dashboard and Minimal API
+# ============================================================
+@app.get("/rl", response_class=HTMLResponse)
+async def rl_dashboard_page():
+    """Serve minimal RL dashboard page"""
+    from pathlib import Path
+
+    page_path = Path(__file__).parent / "templates" / "rl_dashboard.html"
+    try:
+        with open(page_path, "r", encoding="utf-8") as f:
+            html = f.read()
+        return HTMLResponse(content=html)
+    except FileNotFoundError:
+        return HTMLResponse(content="<h3>RL Dashboard</h3><p>Page not found.</p>", status_code=404)
+
+@app.get("/api/rl/status")
+async def rl_status():
+    """Minimal RL status placeholder (safe)."""
+    return {
+        "status": "idle",
+        "positions": [],
+        "pnl": 0.0,
+        "decisions": []
+    }
+
+@app.get("/api/rl/simulate")
+async def rl_simulate(symbol: str, days: int = 250, window: int = 60, policy: str = "follow_trend",
+                      start_date: Optional[str] = None, end_date: Optional[str] = None):
+    """Run a lightweight simulation on local stock_data for a symbol and return series for plotting."""
+    try:
+        from rl.simulation import run_simulation
+        # If explicit dates are provided, prefer them over days
+        sd = start_date if start_date else None
+        ed = end_date if end_date else None
+        use_days = None if (sd and ed) else max(30, int(days))
+        result = run_simulation(
+            symbol=symbol,
+            days=use_days,
+            window=max(10, int(window)),
+            policy=policy,
+            start_date=sd,
+            end_date=ed,
+        )
+        return {"status": "success", "data": result}
+    except FileNotFoundError as e:
+        return {"status": "error", "message": str(e)}
+    except ValueError as e:
+        # Surface validation issues (e.g., insufficient data/window) to the UI
+        return {"status": "error", "message": str(e)}
+    except Exception as e:
+        logger.error(f"RL simulate failed: {e}")
+        return {"status": "error", "message": f"Simulation failed: {str(e)}"}
+
+# ============================================================
+# RL PPO Training (SB3) — background job runner
+# ============================================================
+
+PPO_TRAIN_JOBS: Dict[str, Dict[str, Any]] = {}
+
+
+def _run_ppo_job(job_id: str, args: list[str], cwd: str) -> None:
+    """Run PPO training as a subprocess and track status/logs in PPO_TRAIN_JOBS."""
+    PPO_TRAIN_JOBS[job_id].update({
+        "status": "running",
+        "started_at": datetime.utcnow().isoformat() + "Z",
+        "logs": [],
+        "model_path": None,
+    })
+    try:
+        proc = subprocess.Popen(args, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+        PPO_TRAIN_JOBS[job_id]["pid"] = proc.pid
+        # stream logs
+        if proc.stdout is not None:
+            for line in proc.stdout:
+                line = line.rstrip("\n")
+                logs = PPO_TRAIN_JOBS[job_id].get("logs", [])
+                logs.append(line)
+                # keep only last 200 lines
+                PPO_TRAIN_JOBS[job_id]["logs"] = logs[-200:]
+                if "Saved PPO model to:" in line:
+                    # parse path
+                    try:
+                        path = line.split("Saved PPO model to:", 1)[1].strip()
+                        PPO_TRAIN_JOBS[job_id]["model_path"] = path
+                    except Exception:
+                        pass
+        ret = proc.wait()
+        PPO_TRAIN_JOBS[job_id]["ended_at"] = datetime.utcnow().isoformat() + "Z"
+        if ret == 0:
+            PPO_TRAIN_JOBS[job_id]["status"] = "completed"
+        else:
+            PPO_TRAIN_JOBS[job_id]["status"] = "failed"
+            PPO_TRAIN_JOBS[job_id]["returncode"] = ret
+    except Exception as e:
+        PPO_TRAIN_JOBS[job_id]["status"] = "failed"
+        PPO_TRAIN_JOBS[job_id]["error"] = str(e)
+        PPO_TRAIN_JOBS[job_id]["ended_at"] = datetime.utcnow().isoformat() + "Z"
+
+
+@app.post("/api/rl/ppo/train")
+async def rl_ppo_train(symbol: str, timesteps: int = 100000, window: int = 60,
+                       start_date: Optional[str] = None, end_date: Optional[str] = None,
+                       seed: int = 42):
+    """Start PPO training in background using SB3; returns a job_id."""
+    try:
+        # Build command
+        repo_root = Path(__file__).resolve().parents[1]
+        script = repo_root / "rl" / "training" / "train_ppo.py"
+        if not script.exists():
+            raise FileNotFoundError(f"train_ppo.py not found at {script}")
+        cmd = [sys.executable or "python", "-u", str(script), "--symbol", symbol, "--timesteps", str(int(timesteps)),
+               "--window", str(int(window)), "--seed", str(int(seed))]
+        if start_date:
+            cmd.extend(["--start", start_date])
+        if end_date:
+            cmd.extend(["--end", end_date])
+        job_id = uuid.uuid4().hex[:12]
+        PPO_TRAIN_JOBS[job_id] = {"status": "pending", "cmd": cmd}
+        t = threading.Thread(target=_run_ppo_job, args=(job_id, cmd, str(repo_root)), daemon=True)
+        t.start()
+        return {"status": "started", "job_id": job_id}
+    except Exception as e:
+        logger.error(f"Failed to start PPO training: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to start PPO training: {str(e)}")
+
+
+@app.get("/api/rl/ppo/train/status")
+async def rl_ppo_train_status_all():
+    """Return status of all PPO jobs (summary)."""
+    out = {}
+    for jid, info in PPO_TRAIN_JOBS.items():
+        out[jid] = {
+            "status": info.get("status"),
+            "started_at": info.get("started_at"),
+            "ended_at": info.get("ended_at"),
+            "model_path": info.get("model_path"),
+        }
+    return out
+
+
+@app.get("/api/rl/ppo/train/status/{job_id}")
+async def rl_ppo_train_status(job_id: str):
+    """Return detailed status of a specific PPO job, including last logs."""
+    info = PPO_TRAIN_JOBS.get(job_id)
+    if not info:
+        raise HTTPException(status_code=404, detail="job_id not found")
+    return {
+        "status": info.get("status"),
+        "started_at": info.get("started_at"),
+        "ended_at": info.get("ended_at"),
+        "model_path": info.get("model_path"),
+        "logs": info.get("logs", []),
+        "pid": info.get("pid"),
+        "returncode": info.get("returncode"),
+        "error": info.get("error"),
+    }
 
 # ============================================================
 # Entry Point

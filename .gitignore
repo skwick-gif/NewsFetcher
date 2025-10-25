@@ -116,3 +116,8 @@ ml/models/**/*_history.csv
 
 # Additional logs inside app
 app/logs/
+
+# RL/Research frameworks (ignore local FinRL workspace)
+FinRL/
+FINRL/
+finrl/
