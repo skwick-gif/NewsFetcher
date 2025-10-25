@@ -3010,6 +3010,13 @@ async def run_backtest_job(job_id: str, request: BacktestRequest):
                         for hk in ['1d', '7d', '30d']:
                             if hk in _preds.get('predictions', {}):
                                 p = _preds['predictions'][hk]
+                                # Mark if horizon hit safety cap (used by UI tooltip)
+                                try:
+                                    cap_map = {'1d': 0.10, '7d': 0.20, '30d': 0.40}
+                                    pc = float(p.get('price_change_pct', 0.0))
+                                    capped_flag = abs(pc) >= (cap_map.get(hk, 1.0) - 1e-6)
+                                except Exception:
+                                    capped_flag = False
                                 _compact['predictions'][hk] = {
                                     'target_price': p.get('target_price'),
                                     'price_change_pct': p.get('price_change_pct'),
@@ -3017,7 +3024,8 @@ async def run_backtest_job(job_id: str, request: BacktestRequest):
                                     'direction_prob': p.get('direction_prob'),
                                     'confidence': p.get('confidence'),
                                     'signal': p.get('signal'),
-                                    'risk': p.get('risk')
+                                    'risk': p.get('risk'),
+                                    'capped': capped_flag
                                 }
                         backtest_jobs[job_id]['current_predictions'] = _compact
                     except Exception as _pe:

@@ -3064,6 +3064,11 @@
                             '• %+ = Expected price change vs current price (capped per horizon to avoid outliers).',
                             'Caps: 1D ±10%, 7D ±20%, 30D ±40%.'
                         ];
+                        // If any horizon is capped, annotate in tooltip
+                        const cappedHorizons = ['1d','7d','30d'].filter(hk => cp.predictions[hk]?.capped).map(hk => hk.toUpperCase());
+                        if (cappedHorizons.length) {
+                            tipParts.push(`Capped: ${cappedHorizons.join(', ')}`);
+                        }
                         if (riskLines) {
                             tipParts.push('', 'Risk (per horizon):', riskLines);
                         }
@@ -3121,6 +3126,10 @@
                                     '• %+ = Expected price change vs current price (capped per horizon to avoid outliers).',
                                     'Caps: 1D ±10%, 7D ±20%, 30D ±40%.'
                                 ];
+                                const cappedHorizons = ['1d','7d','30d'].filter(hk => cp.predictions[hk]?.capped).map(hk => hk.toUpperCase());
+                                if (cappedHorizons.length) {
+                                    tipParts.push(`Capped: ${cappedHorizons.join(', ')}`);
+                                }
                                 if (riskLines) {
                                     tipParts.push('', 'Risk (per horizon):', riskLines);
                                 }
