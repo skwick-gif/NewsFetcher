@@ -12,9 +12,6 @@ Features:
 - Backtesting and performance evaluation
 """
 
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
 import torch
 import torch.nn as nn
 import numpy as np
@@ -25,15 +22,27 @@ from pathlib import Path
 import json
 import pickle
 from datetime import datetime, timedelta
+from fastapi import HTTPException
 import warnings
 warnings.filterwarnings('ignore')
 
-from .data_loader import ProgressiveDataLoader
-from .models import ProgressiveModels, EnsembleModel, LSTMModel, TransformerModel, CNNModel
-from .trainer import ProgressiveTrainer
-
+# Configure logger early
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# PyTorch-only path (TensorFlow/Keras removed)
+logger.info("🧠 Using PyTorch models only (TensorFlow/Keras support removed)")
+
+from .data_loader import ProgressiveDataLoader
+try:
+    from .models import ProgressiveModels, EnsembleModel, LSTMModel, TransformerModel, CNNModel
+    PYTORCH_MODELS_AVAILABLE = True
+except ImportError:
+    PYTORCH_MODELS_AVAILABLE = False
+    logger.warning("⚠️ PyTorch models not available - limited functionality")
+from .trainer import ProgressiveTrainer
+
+ # logger already configured above
 
 
 class ProgressivePredictor:
@@ -76,7 +85,7 @@ class ProgressivePredictor:
             'ensemble_weights': {
                 'lstm': 0.4,
                 'transformer': 0.35,
-                'cnn': 0.25
+                'cnn': 0.1
             },
             'confidence_threshold': 0.6,
             'uncertainty_methods': ['model_agreement', 'prediction_variance'],
@@ -106,125 +115,28 @@ class ProgressivePredictor:
         
         for model_type in model_types:
             model_key = f"{model_type}_{symbol}"
-            model_path = self.model_dir / model_key
-            
-            # Try loading from directory structure first
-            if model_path.exists() and model_path.is_dir():
-                try:
-                    # Load progressive models (separate for each horizon) - NEW FORMAT
-                    model_dict = {}
-                    
-                    for horizon in self.prediction_config['prediction_horizons']:
-                        horizon_key = f'{horizon}d'
-                        model_file = model_path / f"{horizon_key}.h5"
-                        
-                        if model_file.exists():
-                            try:
-                                # Load with custom objects for Keras 3 compatibility
-                                custom_objs = {
-                                    'mse': keras.losses.MeanSquaredError(),
-                                    'MultiHeadAttention': layers.MultiHeadAttention
-                                }
-                                model = keras.models.load_model(
-                                    str(model_file),
-                                    custom_objects=custom_objs
-                                )
-                                model_dict[horizon_key] = model
-                                logger.info(f"   ✅ Loaded {model_type} {horizon_key} (from directory)")
-                            except Exception as load_err:
-                                logger.warning(f"   ⚠️ Failed to load {model_type} {horizon_key}: {load_err}")
-                        else:
-                            logger.debug(f"   Model file not found: {model_file}")
-                    
-                    if model_dict:
-                        loaded_models[model_type] = model_dict
-                    
-                    # Also try to load unified model
-                    unified_file = model_path / "unified.h5"
-                    if unified_file.exists():
+            # Only support PyTorch checkpoint files: {model_type}_{symbol}_{horizon}_best.pth
+            try:
+                logger.info(f"   🔍 Looking for PyTorch checkpoints for {model_type}_{symbol}...")
+                model_dict = {}
+
+                for horizon in self.prediction_config['prediction_horizons']:
+                    horizon_key = f'{horizon}d'
+                    pytorch_file = self.model_dir / f"{model_type}_{symbol}_{horizon_key}_best.pth"
+                    if pytorch_file.exists():
                         try:
-                            custom_objs = {
-                                'mse': keras.losses.MeanSquaredError(),
-                                'MultiHeadAttention': layers.MultiHeadAttention
-                            }
-                            unified_model = keras.models.load_model(
-                                str(unified_file),
-                                custom_objects=custom_objs
-                            )
-                            loaded_models[f"{model_type}_unified"] = {'unified': unified_model}
-                            logger.info(f"   ✅ Loaded {model_type} unified")
-                        except Exception as unified_err:
-                            logger.warning(f"   ⚠️ Failed to load {model_type} unified: {unified_err}")
-                    
-                except Exception as e:
-                    logger.error(f"❌ Error loading {model_type} from directory: {e}")
-            
-            # FALLBACK: Try loading from flat files (checkpoint format)
-            # Files saved as: {model_type}_{symbol}_{horizon}_best.h5 OR {model_type}_{symbol}_{horizon}_best.pth
-            if model_type not in loaded_models or not loaded_models.get(model_type):
-                try:
-                    logger.info(f"   🔍 Trying flat file format for {model_type}_{symbol}...")
-                    model_dict = {}
-                    
-                    for horizon in self.prediction_config['prediction_horizons']:
-                        horizon_key = f'{horizon}d'
-                        
-                        # Try PyTorch file first: {model_type}_{symbol}_{horizon}_best.pth
-                        pytorch_file = self.model_dir / f"{model_type}_{symbol}_{horizon_key}_best.pth"
-                        if pytorch_file.exists():
-                            try:
-                                model = self._load_pytorch_model(pytorch_file, model_type)
-                                model_dict[horizon_key] = model
-                                logger.info(f"   ✅ Loaded {model_type} {horizon_key} (PyTorch)")
-                                continue
-                            except Exception as load_err:
-                                logger.warning(f"   ⚠️ Failed to load PyTorch {model_type} {horizon_key}: {load_err}")
-                        
-                        # Try TensorFlow file: {model_type}_{symbol}_{horizon}_best.h5
-                        flat_file = self.model_dir / f"{model_type}_{symbol}_{horizon_key}_best.h5"
-                        
-                        if flat_file.exists():
-                            try:
-                                custom_objs = {
-                                    'mse': keras.losses.MeanSquaredError(),
-                                    'MultiHeadAttention': layers.MultiHeadAttention
-                                }
-                                model = keras.models.load_model(
-                                    str(flat_file),
-                                    custom_objects=custom_objs
-                                )
-                                model_dict[horizon_key] = model
-                                logger.info(f"   ✅ Loaded {model_type} {horizon_key} (flat file)")
-                            except Exception as load_err:
-                                logger.warning(f"   ⚠️ Failed to load {model_type} {horizon_key}: {load_err}")
-                        else:
-                            logger.debug(f"   Flat file not found: {flat_file}")
-                    
-                    if model_dict:
-                        loaded_models[model_type] = model_dict
-                    
-                    # Try unified flat file
-                    unified_flat = self.model_dir / f"{model_type}_{symbol}_unified_best.h5"
-                    if unified_flat.exists():
-                        try:
-                            custom_objs = {
-                                'mse': keras.losses.MeanSquaredError(),
-                                'MultiHeadAttention': layers.MultiHeadAttention
-                            }
-                            unified_model = keras.models.load_model(
-                                str(unified_flat),
-                                custom_objects=custom_objs
-                            )
-                            loaded_models[f"{model_type}_unified"] = {'unified': unified_model}
-                            logger.info(f"   ✅ Loaded {model_type} unified (flat file)")
-                        except Exception as unified_err:
-                            logger.warning(f"   ⚠️ Failed to load {model_type} unified: {unified_err}")
-                    
-                except Exception as e:
-                    logger.error(f"❌ Error loading {model_type} from flat files: {e}")
-            
-            if model_type not in loaded_models and f"{model_type}_unified" not in loaded_models:
-                logger.warning(f"⚠️ No models found for {model_type}_{symbol} (tried directory and flat files)")
+                            model = self._load_pytorch_model(pytorch_file, model_type)
+                            model_dict[horizon_key] = model
+                            logger.info(f"   ✅ Loaded {model_type} {horizon_key} (PyTorch)")
+                        except Exception as load_err:
+                            logger.warning(f"   ⚠️ Failed to load PyTorch {model_type} {horizon_key}: {load_err}")
+
+                if model_dict:
+                    loaded_models[model_type] = model_dict
+                else:
+                    logger.warning(f"⚠️ No PyTorch checkpoints found for {model_type}_{symbol}")
+            except Exception as e:
+                logger.error(f"❌ Error loading {model_type} checkpoints: {e}")
         
         self.loaded_models[symbol] = loaded_models
         
@@ -234,6 +146,9 @@ class ProgressivePredictor:
     
     def _load_pytorch_model(self, model_path: Path, model_type: str):
         """Load PyTorch model from checkpoint"""
+        if not PYTORCH_MODELS_AVAILABLE:
+            raise ImportError(f"PyTorch models not available for {model_type}")
+        
         try:
             # Load checkpoint
             checkpoint = torch.load(model_path, map_location='cpu')
@@ -243,29 +158,34 @@ class ProgressivePredictor:
             model_params = checkpoint.get('model_params', {})
             horizons = checkpoint.get('horizons', [1, 7, 30])
             mode = checkpoint.get('mode', 'progressive')
+            # Prefer top-level persisted IO shapes; fallback to params; then conservative defaults
+            saved_input_size = checkpoint.get('input_size', None)
+            saved_sequence_length = checkpoint.get('sequence_length', None)
+            input_size = saved_input_size if isinstance(saved_input_size, int) and saved_input_size > 0 else model_params.get('input_size', 35)
+            sequence_length = saved_sequence_length if isinstance(saved_sequence_length, int) and saved_sequence_length > 0 else model_params.get('sequence_length', 60)
             
             # Create model based on type
             if model_type == 'lstm' and model_class_name == 'LSTMModel':
                 # Use saved parameters, they're more accurate than defaults
                 model = LSTMModel(
-                    input_size=model_params.get('input_size', 35),  # Use actual saved size
-                    sequence_length=model_params.get('sequence_length', 60),
+                    input_size=input_size,
+                    sequence_length=sequence_length,
                     horizons=horizons,
                     mode=mode,
                     model_params=model_params
                 )
             elif model_type == 'transformer' and model_class_name == 'TransformerModel':
                 model = TransformerModel(
-                    input_size=model_params.get('input_size', 35),  # Use actual saved size
-                    sequence_length=model_params.get('sequence_length', 60),
+                    input_size=input_size,
+                    sequence_length=sequence_length,
                     horizons=horizons,
                     mode=mode,
                     model_params=model_params
                 )
             elif model_type == 'cnn' and model_class_name == 'CNNModel':
                 model = CNNModel(
-                    input_size=model_params.get('input_size', 35),  # Use actual saved size
-                    sequence_length=model_params.get('sequence_length', 60),
+                    input_size=input_size,
+                    sequence_length=sequence_length,
                     horizons=horizons,
                     mode=mode,
                     model_params=model_params
@@ -288,8 +208,8 @@ class ProgressivePredictor:
         
         logger.info(f"📊 Preparing prediction data for {symbol} ({mode} mode)...")
         
-        # Get features
-        df = self.data_loader.prepare_features(symbol)
+        # Get features - use prediction mode to keep the latest data
+        df = self.data_loader.prepare_features(symbol, for_prediction=True)
         if df is None:
             raise ValueError(f"Could not prepare features for {symbol}")
         
@@ -333,11 +253,11 @@ class ProgressivePredictor:
                            model, 
                            X: np.ndarray, 
                            horizon: str = "1d") -> Dict:
-        """Make prediction with single model (supports both TensorFlow and PyTorch)"""
+        """Make prediction with single PyTorch model"""
         
         try:
             # Check if it's a PyTorch model
-            if isinstance(model, nn.Module):
+            if nn is not None and isinstance(model, nn.Module):
                 # PyTorch model
                 model.eval()
                 with torch.no_grad():
@@ -370,21 +290,17 @@ class ProgressivePredictor:
                         price_pred = float(prediction)
                         direction_pred = 0.5
             else:
-                # TensorFlow/Keras model
-                prediction = model.predict(X, verbose=0)
-                
-                # Handle dual output (regression, classification)
-                if isinstance(prediction, list) and len(prediction) == 2:
-                    price_pred = float(prediction[0][0][0])  # First sample, first output
-                    direction_pred = float(prediction[1][0][0])  # First sample, first output
-                else:
-                    price_pred = float(prediction[0][0])
-                    direction_pred = 0.5  # Default if no classification
+                raise TypeError("Only PyTorch models are supported")
             
             # Check for NaN values and replace with defaults
             if np.isnan(price_pred) or np.isinf(price_pred):
                 logger.warning(f"   ⚠️ NaN/Inf detected in price prediction for {horizon}, using 0.0")
                 price_pred = 0.0
+            # Extra safety: clamp predicted percentage return to [-1, 1]
+            try:
+                price_pred = float(max(-1.0, min(1.0, price_pred)))
+            except Exception:
+                pass
             
             if np.isnan(direction_pred) or np.isinf(direction_pred):
                 logger.warning(f"   ⚠️ NaN/Inf detected in direction prediction for {horizon}, using 0.5")
@@ -399,30 +315,125 @@ class ProgressivePredictor:
             }
             
         except Exception as e:
-            logger.error(f"❌ Error in single model prediction: {e}")
-            return {
-                'price_change_pct': 0.0,
-                'direction_prob': 0.5,
-                'direction': 'NEUTRAL',
-                'confidence': 0.0,
-                'horizon': horizon,
-                'error': str(e)
-            }
+            error_msg = str(e)
+            logger.error(f"❌ Error in single model prediction: {error_msg}")
+            
+            # Check if it's a feature mismatch error
+            if "incompatible" in error_msg.lower() and "shape" in error_msg.lower():
+                # Extract expected vs found shapes
+                if "expected shape=" in error_msg and "found shape=" in error_msg:
+                    raise Exception(f"Feature mismatch for {horizon}: The model was trained with different features. Please retrain the model with current data.")
+                else:
+                    raise Exception(f"Model input shape mismatch for {horizon}: {error_msg}")
+            else:
+                # Re-raise the original error
+                raise Exception(f"Model prediction failed for {horizon}: {error_msg}")
+    
+    def _read_best_val_loss(self, symbol: str, model_type: str, horizon_key: str) -> Optional[float]:
+        """Read best validation loss from saved training history CSV for weighting.
+        Returns None if not available or invalid.
+        """
+        try:
+            history_path = self.model_dir / f"{model_type}_{symbol}_{horizon_key}_history.csv"
+            if not history_path.exists():
+                return None
+            df_hist = pd.read_csv(history_path)
+            if 'val_loss' not in df_hist.columns or df_hist['val_loss'].empty:
+                return None
+            vals = pd.to_numeric(df_hist['val_loss'], errors='coerce').dropna()
+            if vals.empty:
+                return None
+            best_val = float(vals.min())
+            if np.isnan(best_val) or np.isinf(best_val):
+                return None
+            return best_val
+        except Exception as e:
+            logger.warning(f"   ⚠️ Failed reading {model_type} {horizon_key} history for weights: {e}")
+            return None
+
+    def _compute_model_weight(self, symbol: str, model_type: str, horizon_key: str) -> float:
+        """Compute performance-based ensemble weight via inverse best val_loss.
+        Falls back to configured base weight.
+        """
+        base_type = model_type.replace('_unified', '')
+        base_weight = float(self.prediction_config['ensemble_weights'].get(base_type, 0.33))
+        best_val = self._read_best_val_loss(symbol, model_type, horizon_key)
+        if best_val is None:
+            return base_weight
+        eps = 1e-8
+        try:
+            inv = 1.0 / max(best_val, eps)
+            # Bound pre-normalization weight to avoid dominance; 0.25x..2x of base
+            weight = base_weight * inv
+            low, high = base_weight * 0.25, base_weight * 2.0
+            return float(min(max(weight, low), high))
+        except Exception:
+            return base_weight
     
     def predict_ensemble(self, symbol: str, mode: str = "progressive") -> Dict:
         """Make ensemble predictions for all horizons"""
         
         logger.info(f"🎯 Making ensemble predictions for {symbol}...")
         
-        # Check if models are loaded
-        if symbol not in self.loaded_models or not self.loaded_models[symbol]:
-            logger.warning(f"⚠️ No models loaded for {symbol}. Loading now...")
-            self.load_models(symbol, ['lstm', 'transformer', 'cnn'])
-        
-        # Prepare prediction data
+        # Prepare prediction data first
         pred_data = self.prepare_prediction_data(symbol, mode)
         X = pred_data['X']
         current_price = pred_data['current_price']
+        
+        # Check if models are loaded
+        if symbol not in self.loaded_models or not self.loaded_models[symbol]:
+            logger.info(f"📥 Loading models for {symbol}...")
+            loaded = self.load_models(symbol, ['cnn', 'transformer', 'lstm'])
+            logger.info(f"📥 Load models returned: {len(loaded)} model types")
+        
+        # Count total available models
+        total_models = 0
+        if symbol in self.loaded_models and self.loaded_models[symbol]:
+            for model_type, models in self.loaded_models[symbol].items():
+                if models:
+                    total_models += len(models)
+        
+        # If still no models loaded, try alternative model types
+        if total_models == 0:
+            logger.warning(f"⚠️ No models loaded for {symbol}. Trying alternative model types...")
+            # Try loading any available models for this symbol
+            import os
+            model_files = [f for f in os.listdir(self.model_dir) if f.startswith(f"cnn_{symbol}_") or f.startswith(f"transformer_{symbol}_") or f.startswith(f"lstm_{symbol}_")]
+            logger.info(f"🔍 Found {len(model_files)} model files for {symbol}")
+            
+            if model_files:
+                # Try loading with specific available model types
+                available_types = set()
+                for f in model_files:
+                    if f.startswith(f"cnn_{symbol}_"):
+                        available_types.add('cnn')
+                    elif f.startswith(f"transformer_{symbol}_"):
+                        available_types.add('transformer')
+                    elif f.startswith(f"lstm_{symbol}_"):
+                        available_types.add('lstm')
+                
+                logger.info(f"🎯 Available model types for {symbol}: {list(available_types)}")
+                loaded = self.load_models(symbol, list(available_types))
+                
+                # Recount models
+                total_models = 0
+                if symbol in self.loaded_models and self.loaded_models[symbol]:
+                    for model_type, models in self.loaded_models[symbol].items():
+                        if models:
+                            total_models += len(models)
+        
+        # Only fall back to error if absolutely no models are available
+        if total_models == 0:
+            logger.error(f"❌ No models could be loaded for {symbol}. Available model files: {len([f for f in os.listdir(self.model_dir) if symbol in f])}")
+            available_symbols = set()
+            for f in os.listdir(self.model_dir):
+                if '_' in f and f.endswith(('.h5', '.pth')):
+                    parts = f.split('_')
+                    if len(parts) >= 2:
+                        available_symbols.add(parts[1])
+            raise HTTPException(status_code=404, detail=f"No trained models available for {symbol}. Available symbols: {sorted(list(available_symbols))[:10]}")
+        
+        logger.info(f"✅ Using {total_models} trained models for {symbol} predictions")
         
         ensemble_predictions = {}
         
@@ -443,11 +454,9 @@ class ProgressivePredictor:
                     
                     if 'error' not in pred:
                         model_predictions.append(pred)
-                        
-                        # Get model weight
-                        base_type = model_type.replace('_unified', '')
-                        weight = self.prediction_config['ensemble_weights'].get(base_type, 0.33)
-                        model_weights.append(weight)
+                        # Performance-based weight (fallback to base)
+                        weight = self._compute_model_weight(symbol, model_type, horizon_key)
+                        model_weights.append(float(weight))
             
             if not model_predictions:
                 logger.warning(f"   ⚠️ No valid predictions for {horizon_key}")
@@ -461,6 +470,18 @@ class ProgressivePredictor:
             # Calculate ensemble prediction (ensure all values are float)
             ensemble_price_change = float(sum(pred['price_change_pct'] * weight 
                                       for pred, weight in zip(model_predictions, model_weights)))
+            # Clamp ensemble to a reasonable band per horizon
+            # 1d: 10%, 7d: 20%, 30d: 40% (hard safety caps)
+            horizon_caps = {
+                '1d': 0.10,
+                '7d': 0.20,
+                '30d': 0.40
+            }
+            max_abs_return = horizon_caps.get(horizon_key, 0.5)
+            if np.isnan(ensemble_price_change) or np.isinf(ensemble_price_change):
+                ensemble_price_change = 0.0
+            else:
+                ensemble_price_change = float(np.clip(ensemble_price_change, -max_abs_return, max_abs_return))
             
             ensemble_direction_prob = float(sum(pred['direction_prob'] * weight 
                                         for pred, weight in zip(model_predictions, model_weights)))
@@ -474,7 +495,7 @@ class ProgressivePredictor:
                 logger.warning(f"   ⚠️ NaN/Inf in ensemble direction prob for {horizon_key}, using 0.5")
                 ensemble_direction_prob = 0.5
             
-            # Calculate confidence based on model agreement
+            # Calculate confidence based on model agreement and classifier certainty
             price_predictions = [pred['price_change_pct'] for pred in model_predictions]
             price_std = float(np.std(price_predictions)) if len(price_predictions) > 1 else 0.0
             
@@ -482,13 +503,26 @@ class ProgressivePredictor:
             if np.isnan(price_std) or np.isinf(price_std):
                 price_std = 0.0
             
-            # Lower std = higher confidence
-            confidence = float(max(0, 1 - (price_std * 10)))  # Scale factor for confidence
+            # Lower std => higher agreement confidence (clamped 0..1)
+            agreement_conf = float(max(0.0, min(1.0, 1.0 - (price_std * 10.0))))
+            # Probabilistic confidence from ensemble direction probability (distance from 0.5)
+            prob_conf = float(max(0.0, min(1.0, abs(ensemble_direction_prob - 0.5) * 2.0)))
+            # Combine (equal weights)
+            confidence = float(max(0.0, min(1.0, 0.5 * agreement_conf + 0.5 * prob_conf)))
             
             # Calculate target price
             target_price = float(current_price * (1 + ensemble_price_change))
             
-            # Generate trading signal
+            # Determine consistent direction
+            reg_direction = 'UP' if ensemble_price_change > 0 else ('DOWN' if ensemble_price_change < 0 else 'NEUTRAL')
+            thr = float(self.prediction_config.get('confidence_threshold', 0.6))
+            final_direction = reg_direction
+            if ensemble_direction_prob >= thr:
+                final_direction = 'UP'
+            elif ensemble_direction_prob <= (1.0 - thr):
+                final_direction = 'DOWN'
+
+            # Generate trading signal from regression magnitude
             signal_strength = float(abs(ensemble_price_change))
             if signal_strength > self.prediction_config['signal_threshold']:
                 if ensemble_price_change > 0:
@@ -497,6 +531,9 @@ class ProgressivePredictor:
                     signal = 'SELL'
             else:
                 signal = 'HOLD'
+            # Prevent contradictions between signal and direction
+            if (signal == 'BUY' and final_direction == 'DOWN') or (signal == 'SELL' and final_direction == 'UP'):
+                signal = 'HOLD'
             
             # Store ensemble prediction (ensure all numeric values are Python native types)
             ensemble_predictions[horizon_key] = {
@@ -504,7 +541,7 @@ class ProgressivePredictor:
                 'target_price': float(target_price),
                 'price_change_pct': float(ensemble_price_change),
                 'price_change_abs': float(target_price - current_price),
-                'direction': 'UP' if ensemble_direction_prob > 0.5 else 'DOWN',
+                'direction': final_direction if final_direction != 'NEUTRAL' else ('UP' if ensemble_direction_prob > 0.5 else 'DOWN'),
                 'direction_prob': float(ensemble_direction_prob),
                 'confidence': float(confidence),
                 'signal': signal,
@@ -531,12 +568,19 @@ class ProgressivePredictor:
             'generated_at': datetime.now().isoformat()
         }
         
+        # If no predictions were made (all horizons failed), raise error
+        if not ensemble_predictions:
+            logger.error(f"❌ No valid predictions made for {symbol} from {total_models} models")
+            raise HTTPException(status_code=500, detail=f"Failed to generate predictions for {symbol}")
+        
         # Store in history
         self.prediction_history.append(prediction_summary)
         
         logger.info(f"✅ Ensemble predictions completed for {symbol}")
         
         return prediction_summary
+    
+
     
     def _calculate_overall_sentiment(self, predictions: Dict) -> Dict:
         """Calculate overall market sentiment from all horizons"""
@@ -661,32 +705,8 @@ class ProgressivePredictor:
         """Evaluate prediction accuracy"""
         
         logger.info(f"📊 Evaluating predictions for {symbol} (last {days_back} days)...")
-        
-        # This would require historical predictions and actual outcomes
-        # For now, return placeholder structure
-        
-        evaluation = {
-            'symbol': symbol,
-            'evaluation_period': f"{days_back} days",
-            'total_predictions': len(self.prediction_history),
-            'accuracy_metrics': {
-                'direction_accuracy': 0.0,  # % correct directions
-                'price_mae': 0.0,  # Mean absolute error in price
-                'price_rmse': 0.0,  # Root mean square error
-                'confidence_correlation': 0.0  # Correlation between confidence and accuracy
-            },
-            'performance_by_horizon': {},
-            'trading_performance': {
-                'total_signals': 0,
-                'profitable_signals': 0,
-                'win_rate': 0.0,
-                'avg_return': 0.0
-            }
-        }
-        
-        logger.info(f"✅ Evaluation completed for {symbol}")
-        
-        return evaluation
+        # Live-only policy: no placeholder evaluation. Implement or remove.
+        raise NotImplementedError("Prediction evaluation requires historical datasets; placeholders are not allowed under live-only policy.")
     
     def get_prediction_summary(self, predictions: Dict) -> str:
         """Generate human-readable prediction summary"""
@@ -767,44 +787,10 @@ def test_progressive_predictor():
     loaded = predictor.load_models("AAPL", ['lstm'])
     print(f"✅ Model loading attempted: {len(loaded)} models loaded")
     
-    # Test prediction structure (without actual models)
-    print("\n🎯 Testing prediction structure...")
+    # Skip creating any dummy predictions under live-only policy
+    print("\n⏭️ Skipping dummy prediction structure test (live-only policy)")
     
-    # Create dummy prediction
-    dummy_prediction = {
-        'symbol': 'AAPL',
-        'current_price': 150.0,
-        'predictions': {
-            '1d': {
-                'current_price': 150.0,
-                'target_price': 151.5,
-                'price_change_pct': 0.01,
-                'confidence': 0.75,
-                'signal': 'BUY',
-                'signal_strength': 0.01,
-                'horizon_days': 1,
-                'timestamp': datetime.now().isoformat()
-            }
-        },
-        'overall_sentiment': {'sentiment': 'BULLISH', 'strength': 0.01, 'confidence': 0.75},
-        'risk_metrics': {
-            'risk_level': 'LOW', 
-            'volatility': 0.02,
-            'max_gain': 0.015,
-            'max_loss': -0.005
-        }
-    }
-    
-    # Test summary generation
-    summary = predictor.get_prediction_summary(dummy_prediction)
-    print("✅ Prediction summary generated:")
-    print(summary[:200] + "..." if len(summary) > 200 else summary)
-    
-    # Test trading signals
-    signals = predictor.get_trading_signals(dummy_prediction)
-    print(f"✅ Trading signals extracted: {len(signals)} signals")
-    
-    print("\n✅ Progressive Predictor test completed successfully!")
+    print("\n✅ Progressive Predictor test completed (no mock data used)")
     return True
 
 

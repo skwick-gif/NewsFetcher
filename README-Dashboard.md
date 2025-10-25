@@ -97,15 +97,15 @@ python server.py
 
 ### 🔧 **תכונות טכניות**
 
-#### **JavaScript Modules** (מתוכנן)
+#### **JavaScript Modules**
 ```javascript
 - market-data.js      // נתוני שוק
 - chart-manager.js    // ניהול גרפים
 - alerts-manager.js   // ניהול התראות
 - ml-scanner.js       // סורק AI
-- settings-manager.js // הגדרות
 - websocket-client.js // תקשורת בזמן אמת
-- main.js            // קובץ ראשי
+// orchestration מתבצע inline בתוך dashboard.html (אין main.js)
+// settings מנוהלות inline בתוך dashboard.html (אין settings-manager.js)
 ```
 
 #### **Chart.js Integration**

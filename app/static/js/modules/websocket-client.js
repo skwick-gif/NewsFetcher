@@ -7,7 +7,7 @@ class WebSocketClient {
     constructor() {
         this.alertsSocket = null;
         this.marketSocket = null;
-        this.aiAnalysisSocket = null;
+    this.aiAnalysisSocket = null; // AI analysis WS disabled until server endpoint exists
         this.isConnected = false;
         this.currentSymbol = 'AAPL';
         this.reconnectAttempts = 0;
@@ -45,9 +45,9 @@ class WebSocketClient {
             this.marketSocket = new WebSocket(`${protocol}//${host}/ws/market/${this.currentSymbol}`);
             this.setupMarketSocketHandlers();
 
-            // AI Analysis WebSocket
-            this.aiAnalysisSocket = new WebSocket(`${protocol}//${host}/ws/ai-analysis/${this.currentSymbol}`);
-            this.setupAIAnalysisSocketHandlers();
+            // AI Analysis WebSocket (disabled - endpoint not implemented server-side)
+            // this.aiAnalysisSocket = new WebSocket(`${protocol}//${host}/ws/ai-analysis/${this.currentSymbol}`);
+            // this.setupAIAnalysisSocketHandlers();
 
             this.isConnected = true;
             this.reconnectAttempts = 0;
@@ -177,8 +177,8 @@ class WebSocketClient {
                 }
             }
 
-            // Update last updated timestamp
-            const lastUpdated = document.querySelector('.last-updated');
+            // Update last updated timestamp (harmonized with dashboard id="last-update")
+            const lastUpdated = document.getElementById('last-update');
             if (lastUpdated) {
                 lastUpdated.textContent = `Last updated: ${new Date().toLocaleTimeString()} (Live)`;
                 lastUpdated.style.color = '#4CAF50';
@@ -244,10 +244,7 @@ class WebSocketClient {
             this.marketSocket = null;
         }
 
-        if (this.aiAnalysisSocket) {
-            this.aiAnalysisSocket.close();
-            this.aiAnalysisSocket = null;
-        }
+        // AI Analysis WebSocket is disabled; nothing to close
 
         this.isConnected = false;
         this.reconnectAttempts = 0;
@@ -283,9 +280,7 @@ class WebSocketClient {
             if (this.marketSocket) {
                 this.marketSocket.close();
             }
-            if (this.aiAnalysisSocket) {
-                this.aiAnalysisSocket.close();
-            }
+            // AI Analysis WebSocket disabled; no reconnect for this socket
 
             // Reconnect with new symbol
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -294,8 +289,7 @@ class WebSocketClient {
             this.marketSocket = new WebSocket(`${protocol}//${host}/ws/market/${symbol}`);
             this.setupMarketSocketHandlers();
 
-            this.aiAnalysisSocket = new WebSocket(`${protocol}//${host}/ws/ai-analysis/${symbol}`);
-            this.setupAIAnalysisSocketHandlers();
+            // AI Analysis WebSocket disabled; skip
 
             console.log(`✅ WebSocket connections updated for ${symbol}`);
         }
@@ -354,7 +348,7 @@ class WebSocketClient {
             connected: this.isConnected,
             alerts: this.alertsSocket?.readyState === WebSocket.OPEN,
             market: this.marketSocket?.readyState === WebSocket.OPEN,
-            aiAnalysis: this.aiAnalysisSocket?.readyState === WebSocket.OPEN,
+            aiAnalysis: false,
             currentSymbol: this.currentSymbol,
             reconnectAttempts: this.reconnectAttempts
         };

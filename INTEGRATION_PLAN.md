@@ -9,9 +9,8 @@
   - chart-manager.js  
   - alerts-manager.js
   - ml-scanner.js
-  - settings-manager.js
+  - [הוסר] settings-manager.js (הגדרות מנוהלות inline בתוך dashboard.html)
   - websocket-client.js
-  - main.js
 - ✅ Flask server בסיסי (server.py) עם endpoints דמה
 
 ### ✅ Backend (FastAPI)
@@ -38,7 +37,7 @@
 1. ✅ הוספת requests לכל ה-endpoints של main_production.py
 2. ✅ יצירת `/api/financial/*` routes ב-server.py
 3. ✅ יצירת `/api/ai/*` routes ב-server.py
-4. ✅ Error handling ו-fallback לנתונים דמה
+4. ✅ Error handling ללא fallback לנתוני דמה (Live-only)
 
 **קבצים לעדכן:**
 - `app/server.py` - הוספת 15-20 API routes
@@ -147,7 +146,7 @@
 4. ✅ notifications preferences
 
 **קבצים לעדכן:**
-- `app/static/js/modules/settings-manager.js`
+- אין קובץ נפרד; ההגדרות מנוהלות inline בתוך `app/templates/dashboard.html`
 
 ---
 
@@ -194,9 +193,9 @@ MarketPulse/
 │   │       │   ├── chart-manager.js      🔧 צריך עדכון
 │   │       │   ├── alerts-manager.js     🔧 צריך עדכון
 │   │       │   ├── ml-scanner.js         🔧 צריך עדכון
-│   │       │   ├── settings-manager.js   🔧 צריך עדכון
+│   │       │   ├── (אין settings-manager.js)   ✅ ההגדרות מנוהלות inline
 │   │       │   └── websocket-client.js   🔧 צריך עדכון
-│   │       └── main.js                   ✅ Orchestrator
+│   │       └── (אין main.js)            ✅ Orchestration מתבצע inline בתוך dashboard.html
 │   ├── server.py                         🔧 צריך הרחבה גדולה
 │   ├── main_production.py                ✅ FastAPI Backend
 │   ├── financial/

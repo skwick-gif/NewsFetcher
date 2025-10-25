@@ -1,67 +1,22 @@
 """
-Neural Network Models for Financial Prediction
-Advanced deep learning models for market analysis
+DISABLED - Neural Network Models contained dummy/mock predictions
+Real neural network models are handled by the Progressive ML system.
+All mock prediction functions have been removed.
 """
 
-import numpy as np
-import pandas as pd
-from typing import Dict, List, Optional, Tuple, Any
-from datetime import datetime, timedelta
 import logging
-import asyncio
-from dataclasses import dataclass
-import json
-
-# Deep learning libraries disabled for faster startup
-# Enable only when needed for production ML training
-TF_AVAILABLE = False
-TORCH_AVAILABLE = False
-
-# try:
-#     import tensorflow as tf
-#     from tensorflow import keras
-#     from tensorflow.keras import layers, models, optimizers, callbacks
-#     from tensorflow.keras.preprocessing.sequence import TimeseriesGenerator
-#     TF_AVAILABLE = True
-# except ImportError:
-#     TF_AVAILABLE = False
-
-# try:
-#     import torch
-#     import torch.nn as nn
-#     import torch.optim as optim
-#     from torch.utils.data import DataLoader, TensorDataset
-#     TORCH_AVAILABLE = True
-# except ImportError:
-#     TORCH_AVAILABLE = False
+from typing import Dict, Any
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
-@dataclass
-class NeuralNetworkPrediction:
-    """Neural network prediction result"""
-    symbol: str
-    model_type: str  # 'lstm', 'transformer', 'cnn', 'attention'
-    prediction: float
-    confidence: float
-    prediction_range: Tuple[float, float]  # (min, max) prediction interval
-    time_horizon: str
-    features_importance: Dict[str, float]
-    model_performance: Dict[str, float]
-    timestamp: datetime
+# All neural network classes DISABLED - contained dummy predictions
 
 class LSTMPredictor:
-    """LSTM-based price prediction model"""
-    
-    def __init__(self, sequence_length: int = 60, features_count: int = 14):
-        self.sequence_length = sequence_length
-        self.features_count = features_count
-        self.model = None
-        self.scaler = None
-        self.is_trained = False
-        
-        if TF_AVAILABLE:
-            self._build_model()
+    """DISABLED - contained mock predictions"""
+    def __init__(self, *args, **kwargs):
+        logger.warning("⚠️ LSTMPredictor is disabled - contained mock predictions")
+        raise NotImplementedError("Use Progressive ML system instead")
         
     def _build_model(self):
         """Build LSTM model architecture"""
@@ -205,15 +160,11 @@ class LSTMPredictor:
         )
 
 class TransformerPredictor:
-    """Transformer-based prediction model"""
+    """DISABLED - contained mock predictions"""
     
-    def __init__(self, sequence_length: int = 100, d_model: int = 64):
-        self.sequence_length = sequence_length
-        self.d_model = d_model
-        self.model = None
-        
-        if TF_AVAILABLE:
-            self._build_transformer()
+    def __init__(self, *args, **kwargs):
+        logger.warning("⚠️ TransformerPredictor is disabled - contained mock predictions")
+        raise NotImplementedError("Use Progressive ML system instead")
     
     def _build_transformer(self):
         """Build Transformer model for financial prediction"""
@@ -375,14 +326,11 @@ class TransformerPredictor:
         )
 
 class CNNPredictor:
-    """CNN-based pattern recognition for financial data"""
+    """DISABLED - contained mock predictions"""
     
-    def __init__(self, sequence_length: int = 50):
-        self.sequence_length = sequence_length
-        self.model = None
-        
-        if TF_AVAILABLE:
-            self._build_cnn()
+    def __init__(self, *args, **kwargs):
+        logger.warning("⚠️ CNNPredictor is disabled - contained mock predictions")
+        raise NotImplementedError("Use Progressive ML system instead")
     
     def _build_cnn(self):
         """Build CNN model for pattern recognition"""
@@ -548,19 +496,11 @@ class CNNPredictor:
         )
 
 class EnsembleNeuralNetwork:
-    """Ensemble of neural network models for robust predictions"""
+    """DISABLED - contained mock predictions"""
     
-    def __init__(self):
-        self.lstm_model = LSTMPredictor()
-        self.transformer_model = TransformerPredictor()
-        self.cnn_model = CNNPredictor()
-        
-        # Model weights for ensemble
-        self.model_weights = {
-            'lstm': 0.4,
-            'transformer': 0.35,
-            'cnn': 0.25
-        }
+    def __init__(self, *args, **kwargs):
+        logger.warning("⚠️ EnsembleNeuralNetwork is disabled - contained mock predictions")
+        raise NotImplementedError("Use Progressive ML system instead")
     
     async def predict(self, data: np.ndarray, symbol: str) -> Dict:
         """Make ensemble prediction using all neural network models"""

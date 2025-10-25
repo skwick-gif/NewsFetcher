@@ -50,6 +50,30 @@
             font-weight: 600;
             color: #10b981;
         }
+        /* WebSocket connection status */
+        .ws-controls { margin-top: 8px; display: flex; gap: 8px; justify-content: center; align-items: center; }
+        .ws-toggle-btn {
+            background: transparent;
+            color: #e2e8f0;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8em;
+            cursor: pointer;
+        }
+        .ws-toggle-btn.on { background: #10b981; color: #0b1220; border-color: #10b981; }
+        .ws-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.75em;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .ws-off { background: rgba(148,163,184,0.15); color: #cbd5e1; }
+        .ws-warn { background: rgba(234,179,8,0.15); color: #facc15; }
+        .ws-on { background: rgba(16,185,129,0.15); color: #10b981; }
         .market-header {
             background: rgba(16, 185, 129, 0.08);
             border: 1px solid rgba(16, 185, 129, 0.2);
@@ -450,6 +474,10 @@
             <p class="subtitle">Real-Time Financial Intelligence Platform</p>
             <p>Live market data • AI-powered analysis • Smart alerts • Stock insights</p>
             <div class="live-status">🚀 LIVE MARKET DATA</div>
+            <div class="ws-controls">
+                <button id="realtime-btn" class="ws-toggle-btn">⚪ Enable Real-time</button>
+                <span id="ws-status-badge" class="ws-badge ws-off">WS: OFF</span>
+            </div>
         </div>
 
         <div class="market-header">
@@ -605,7 +633,7 @@
                             <input type="text" id="ai-stock-input" placeholder="Enter stock symbol (e.g., AAPL)" 
                                    style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em; text-transform: uppercase;">
                             <div style="display: flex; gap: 5px; margin-top: 8px;">
-                                <button onclick="analyzeStock()" style="flex: 1; background: #3b82f6; border: none; border-radius: 6px; padding: 8px; color: white; cursor: pointer; font-size: 0.85em;">
+                                <button id="analyze-stock-btn" style="flex: 1; background: #3b82f6; border: none; border-radius: 6px; padding: 8px; color: white; cursor: pointer; font-size: 0.85em;">
                                     🔍 Analyze Stock
                                 </button>
                                 <button onclick="debugPrompt()" style="flex: 1; background: #f59e0b; border: none; border-radius: 6px; padding: 8px; color: white; cursor: pointer; font-size: 0.85em;">
@@ -859,7 +887,10 @@
 
                 <!-- Row 2: Advanced Backtesting (Full Width, Parameters in Row) -->
                 <div style="background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(59,130,246,0.1)); border: 1px solid rgba(139,92,246,0.3); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
-                    <h4 style="color: #ffd700; margin-bottom: 15px; font-size: 1.1em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">🔬 Advanced Backtesting Training</h4>
+                    <div style="display:flex; align-items:center; justify-content: space-between; gap: 10px;">
+                        <h4 style="color: #ffd700; margin-bottom: 15px; font-size: 1.1em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; flex:1;">🔬 Advanced Backtesting Training</h4>
+                        <a href="#" onclick="openBacktestExplainer(); return false;" style="color:#93c5fd; font-size:0.9em;">What does this mean?</a>
+                    </div>
                     <p style="font-size: 0.9em; opacity: 0.8; margin-bottom: 15px;">Train with expanding date windows and automatic accuracy improvement</p>
                     
                     <!-- Parameters Grid - All in Row including buttons -->
@@ -909,6 +940,47 @@
                         </div>
                     </div>
                     
+                    <!-- Indicator Parameters -->
+                    <div style="margin-top: 12px; background: rgba(0,0,0,0.25); border-radius: 8px; padding: 12px;">
+                        <details>
+                            <summary style="cursor: pointer; color: #cbd5e0;">🧩 Indicator Parameters (optional)</summary>
+                            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:10px; margin-top:10px;">
+                                <div>
+                                    <label style="font-size:0.8em; color:#cbd5e0; display:block; margin-bottom:4px;">RSI Period</label>
+                                    <input id="ind-rsi-period" type="number" min="2" max="200" value="14" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+                                </div>
+                                <div>
+                                    <label style="font-size:0.8em; color:#cbd5e0; display:block; margin-bottom:4px;">MACD Fast</label>
+                                    <input id="ind-macd-fast" type="number" min="2" max="200" value="12" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+                                </div>
+                                <div>
+                                    <label style="font-size:0.8em; color:#cbd5e0; display:block; margin-bottom:4px;">MACD Slow</label>
+                                    <input id="ind-macd-slow" type="number" min="3" max="400" value="26" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+                                </div>
+                                <div>
+                                    <label style="font-size:0.8em; color:#cbd5e0; display:block; margin-bottom:4px;">MACD Signal</label>
+                                    <input id="ind-macd-signal" type="number" min="2" max="200" value="9" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+                                </div>
+                                <div>
+                                    <label style="font-size:0.8em; color:#cbd5e0; display:block; margin-bottom:4px;">SMA Periods (CSV)</label>
+                                    <input id="ind-sma-periods" type="text" value="5,10,20,50" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+                                </div>
+                                <div>
+                                    <label style="font-size:0.8em; color:#cbd5e0; display:block; margin-bottom:4px;">EMA Periods (CSV)</label>
+                                    <input id="ind-ema-periods" type="text" value="5,10,20,50" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+                                </div>
+                                <div>
+                                    <label style="font-size:0.8em; color:#cbd5e0; display:block; margin-bottom:4px;">BB Period</label>
+                                    <input id="ind-bb-period" type="number" min="5" max="200" value="20" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+                                </div>
+                                <div>
+                                    <label style="font-size:0.8em; color:#cbd5e0; display:block; margin-bottom:4px;">BB Std Dev</label>
+                                    <input id="ind-bb-std" type="number" min="0.5" max="5" step="0.1" value="2" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+
                     <!-- Progress Display -->
                     <div id="backtest-progress" style="margin-top: 20px; display: none;">
                         <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px; margin-bottom: 10px;">
@@ -926,7 +998,7 @@
                     <div id="backtest-results-container" style="margin-top: 20px; display: none;">
                         <h5 style="margin-bottom: 10px;">📊 Backtest Results</h5>
                         <div style="overflow-x: auto; background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px;">
-                            <table style="width: 100%; color: #e2e8f0; font-size: 0.9em;">
+                            <table id="backtest-results-table" style="width: 100%; color: #e2e8f0; font-size: 0.9em;">
                                 <thead>
                                     <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
                                         <th style="padding: 8px; text-align: left;">#</th>
@@ -942,6 +1014,17 @@
                         </div>
                     </div>
                     
+                    <!-- Backtest History Panel -->
+                    <div id="backtest-history-container" style="margin-top: 20px; display: block;">
+                        <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:8px;">
+                            <h5 style="margin:0;">🕘 Backtest History</h5>
+                            <button onclick="loadBacktestHistory()" style="background:#4b5563; border:none; color:#fff; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:0.85em;">Refresh</button>
+                        </div>
+                        <div id="backtest-history-list" style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px; max-height:180px; overflow:auto;">
+                            <div style="opacity:0.7; font-size:0.9em;">No history yet. Run a backtest, then click Refresh.</div>
+                        </div>
+                    </div>
+
                     <!-- Chart -->
                     <div id="backtest-chart-container" style="margin-top: 20px; display: none;">
                         <canvas id="backtest-chart"></canvas>
@@ -963,7 +1046,6 @@
                                 <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Model Types:</label>
                                 <select id="progressive-model-types" multiple style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 6px 8px; color: #e2e8f0; height: 60px; font-size: 0.85em;">
                                     <option value="lstm" selected>LSTM</option>
-                                    <option value="gru">GRU</option>
                                     <option value="cnn_lstm">CNN-LSTM</option>
                                     <option value="transformer">Transformer</option>
                                 </select>
@@ -990,7 +1072,8 @@
                     </div>
                     
                     <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px;">
-                        <h4 style="color: #ffd700; margin-bottom: 12px; font-size: 1em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px;">🏋️ Training Progress</h4>
+                        <h4 style="color: #ffd700; margin-bottom: 6px; font-size: 1em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px;">🏋️ Training Progress</h4>
+                        <div style="margin-bottom: 6px; font-size: 0.8em; opacity: 0.7;">Progress is approximate and may jump to 100% when training completes.</div>
                         <div id="progressive-training-results" style="min-height: 100px; background: rgba(255,255,255,0.03); border-radius: 8px; padding: 15px; border: 1px solid rgba(255,255,255,0.1);">
                             <p style="opacity: 0.6; text-align: center; font-size: 0.9em;">Training results will appear here</p>
                         </div>
@@ -1283,6 +1366,22 @@
         </div>
     </div>
     
+    <!-- Backtest Explainer Modal -->
+    <div id="backtest-explainer-modal" style="display:none; position:fixed; inset:0; background: rgba(0,0,0,0.6); z-index:1000;">
+        <div style="max-width:700px; margin: 60px auto; background:#111827; color:#e5e7eb; border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h4 style="color:#ffd700; margin:0;">Backtest Results: What do these mean?</h4>
+                <button onclick="closeBacktestExplainer()" style="background:#374151; color:#fff; border:none; padding:6px 10px; border-radius:6px; cursor:pointer;">Close</button>
+            </div>
+            <div style="margin-top:10px; font-size:0.95em; line-height:1.5;">
+                <p><strong>Iteration:</strong> Each loop trains on an expanding window, then tests forward for the selected period.</p>
+                <p><strong>Accuracy:</strong> Direction accuracy on the test window. 80%+ is generally solid; 85%+ is strong.</p>
+                <p><strong>Loss:</strong> Validation loss from training; lower is better. We use the best checkpoint per horizon.</p>
+                <p><strong>Best:</strong> The iteration with the highest test accuracy. Consider using its checkpoint when deploying.</p>
+                <p style="opacity:0.85;">See the Backtest Guide in the docs folder (docs/BACKTEST_GUIDE.md) for deeper details, zero-accuracy causes, and tips.</p>
+            </div>
+        </div>
+    </div>
     <script>
     // Tab Management Functions (unified from main.js)
     function showTab(tabName) {
@@ -1451,24 +1550,61 @@
         resultsDiv.innerHTML = '<p style="text-align: center;">💭 Analyzing sentiment...</p>';
         
         try {
-            const response = await fetch(`/api/sentiment/${symbol}`);
-            const data = await response.json();
-            
-            if (data.status === 'success') {
-                const sentiment = data.sentiment;
-                resultsDiv.innerHTML = `
-                    <h5 style="color: #8b5cf6; margin-bottom: 10px;">💭 Sentiment Analysis for ${symbol}</h5>
+            // Fetch social sentiment
+            const [socialResp, newsResp] = await Promise.all([
+                fetch(`/api/sentiment/${symbol}`),
+                fetch(`/api/news/sentiment/${symbol}`)
+            ]);
+
+            const socialData = await socialResp.json();
+            const newsData = await newsResp.json();
+
+            let socialHtml = '';
+            if (socialData.status === 'success' && socialData.sentiment) {
+                const s = socialData.sentiment;
+                socialHtml = `
                     <div style="background: rgba(139, 92, 246, 0.1); border-radius: 6px; padding: 10px;">
-                        <strong>Overall Score:</strong> ${sentiment.overall_score}<br>
-                        <strong>Positive:</strong> ${(sentiment.positive * 100).toFixed(1)}%<br>
-                        <strong>Negative:</strong> ${(sentiment.negative * 100).toFixed(1)}%<br>
-                        <strong>Volume:</strong> ${sentiment.volume} mentions<br>
-                        <strong>Trending:</strong> ${sentiment.trending ? '🔥 Yes' : '📊 Normal'}
+                        <strong>Social Sentiment</strong><br>
+                        <strong>Overall Score:</strong> ${s.overall_score}<br>
+                        <strong>Positive:</strong> ${(s.positive * 100).toFixed(1)}% | 
+                        <strong>Negative:</strong> ${(s.negative * 100).toFixed(1)}%<br>
+                        <strong>Volume:</strong> ${s.volume} mentions | 
+                        <strong>Trending:</strong> ${s.trending ? '🔥 Yes' : '📊 Normal'}
                     </div>
                 `;
             } else {
-                resultsDiv.innerHTML = `<p style="color: #ef4444; text-align: center;">❌ Failed to analyze sentiment</p>`;
+                socialHtml = `<div style="background: rgba(139, 92, 246, 0.08); border-radius: 6px; padding: 10px;">Social sentiment unavailable</div>`;
             }
+
+            let newsHtml = '';
+            if (newsData.status === 'success') {
+                const rows = Array.isArray(newsData.data) ? newsData.data : [];
+                if (rows.length > 0) {
+                    const latest = rows[rows.length - 1];
+                    const score = typeof latest.sentiment_score === 'number' ? latest.sentiment_score.toFixed(3) : latest.sentiment_score;
+                    newsHtml = `
+                        <div style="background: rgba(16, 185, 129, 0.08); border-radius: 6px; padding: 10px; margin-top: 8px;">
+                            <strong>News Sentiment</strong><br>
+                            <strong>Latest Score:</strong> ${score} | 
+                            <strong>Articles:</strong> ${latest.article_count}
+                        </div>
+                    `;
+                } else {
+                    newsHtml = `
+                        <div style="background: rgba(16, 185, 129, 0.08); border-radius: 6px; padding: 10px; margin-top: 8px;">
+                            No sentiment data available
+                        </div>
+                    `;
+                }
+            } else {
+                newsHtml = `<div style="background: rgba(16, 185, 129, 0.08); border-radius: 6px; padding: 10px; margin-top: 8px;">News sentiment unavailable</div>`;
+            }
+
+            resultsDiv.innerHTML = `
+                <h5 style="color: #8b5cf6; margin-bottom: 10px;">💭 Sentiment Analysis for ${symbol}</h5>
+                ${socialHtml}
+                ${newsHtml}
+            `;
         } catch (error) {
             resultsDiv.innerHTML = `<p style="color: #ef4444; text-align: center;">❌ Error: ${error.message}</p>`;
         }
@@ -1592,113 +1728,7 @@
         loadWatchlist(); // Refresh the list
     }
 
-    // AI Analysis Functions
-    window.analyzeStock = async function() {
-        console.log('analyzeStock function called');
-        const symbol = document.getElementById('ai-stock-input').value.trim().toUpperCase();
-        console.log('Symbol entered:', symbol);
-        
-        if (!symbol) {
-            alert('Please enter a stock symbol');
-            return;
-        }
-        
-        // Update UI to show loading
-        document.getElementById('selected-stock-analysis').innerHTML = '<p style="text-align: center;">🤖 Analyzing ' + symbol + '...</p>';
-        document.getElementById('ai-comprehensive-results').innerHTML = '<p style="text-align: center;">🔄 Running AI analysis...</p>';
-        document.getElementById('ai-technical-results').innerHTML = '<p style="text-align: center;">📊 Processing technical data...</p>';
-        document.getElementById('ai-risk-factors').innerHTML = '<p style="text-align: center;">⚠️ Calculating risk factors...</p>';
-        
-        try {
-            // Get comprehensive AI analysis
-            const response = await fetch(`/api/ai/comprehensive-analysis/${symbol}`);
-            const data = await response.json();
-            
-            if (data.status === 'success') {
-                const analysis = data.analysis;
-                const prediction = data.prediction;
-                
-                // Update stock info with metadata
-                const metadata = data.ai_metadata || {};
-                document.getElementById('selected-stock-analysis').innerHTML = `
-                    <div style="background: rgba(59, 130, 246, 0.1); border-radius: 6px; padding: 10px;">
-                        <strong style="color: #3b82f6;">${symbol}</strong><br>
-                        <span style="color: #10b981;">Current Price: $${data.current_price || 'N/A'}</span><br>
-                        <small>🤖 AI Model: ${metadata.model || 'N/A'}</small><br>
-                        <small>📊 Sources: ${metadata.search_results_count || 0} | Cost: $${(metadata.cost?.total_cost || 0).toFixed(4)}</small><br>
-                        <small>📝 Response: ${metadata.raw_response_length || 0} chars | ${new Date().toLocaleTimeString()}</small>
-                        ${metadata.raw_response_preview ? `
-                        <details style="margin-top: 8px;">
-                            <summary style="cursor: pointer; color: #3b82f6; font-size: 0.8em;">📄 View AI Response Preview</summary>
-                            <pre style="white-space: pre-wrap; margin-top: 8px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 4px; font-size: 0.75em; max-height: 200px; overflow-y: auto;">${metadata.raw_response_preview}</pre>
-                        </details>` : ''}
-                    </div>
-                `;
-                
-                // Update comprehensive analysis
-                const directionColor = prediction.direction === 'up' ? '#10b981' : prediction.direction === 'down' ? '#ef4444' : '#f59e0b';
-                document.getElementById('ai-comprehensive-results').innerHTML = `
-                    <div class="prediction-item">
-                        <span class="prediction-label">Overall Prediction:</span>
-                        <span class="prediction-value" style="color: ${directionColor};">${prediction.direction.toUpperCase()}</span>
-                    </div>
-                    <div class="prediction-item">
-                        <span class="prediction-label">Confidence Level:</span>
-                        <span class="prediction-value">${(prediction.confidence * 100).toFixed(1)}%</span>
-                    </div>
-                    <div class="prediction-item">
-                        <span class="prediction-label">Target Price:</span>
-                        <span class="prediction-value">$${prediction.target_price}</span>
-                    </div>
-                `;
-                
-                // Update technical analysis
-                const technical = analysis.technical;
-                const trendColor = technical.trend === 'bullish' ? '#10b981' : technical.trend === 'bearish' ? '#ef4444' : '#f59e0b';
-                document.getElementById('ai-technical-results').innerHTML = `
-                    <div class="timeseries-metric">
-                        <span class="metric-name">Trend Direction:</span>
-                        <span class="metric-value" style="color: ${trendColor};">${technical.trend}</span>
-                    </div>
-                    <div class="timeseries-metric">
-                        <span class="metric-name">Support Level:</span>
-                        <span class="metric-value">$${technical.support_level}</span>
-                    </div>
-                    <div class="timeseries-metric">
-                        <span class="metric-name">Resistance Level:</span>
-                        <span class="metric-value">$${technical.resistance_level}</span>
-                    </div>
-                    <div class="timeseries-metric">
-                        <span class="metric-name">RSI Signal:</span>
-                        <span class="metric-value">${technical.macd_signal}</span>
-                    </div>
-                `;
-                
-                // Update risk assessment
-                const risk = analysis.risk_assessment;
-                updateRiskGauge(risk.risk_score);
-                document.getElementById('ai-risk-factors').innerHTML = `
-                    <div style="font-size: 0.9em;">
-                        <strong>Risk Level:</strong> ${risk.volatility}<br>
-                        <strong>Beta:</strong> ${risk.beta}<br>
-                        <strong>Liquidity:</strong> ${risk.liquidity}<br>
-                        <strong>Overall Score:</strong> ${(risk.risk_score * 100).toFixed(0)}%
-                    </div>
-                `;
-                
-            } else {
-                document.getElementById('selected-stock-analysis').innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Analysis failed</p>';
-                document.getElementById('ai-comprehensive-results').innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Failed to get AI analysis</p>';
-                document.getElementById('ai-technical-results').innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Technical analysis unavailable</p>';
-                document.getElementById('ai-risk-factors').innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Risk analysis failed</p>';
-            }
-        } catch (error) {
-            document.getElementById('selected-stock-analysis').innerHTML = `<p style="color: #ef4444; text-align: center;">❌ Error: ${error.message}</p>`;
-            document.getElementById('ai-comprehensive-results').innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Connection error</p>';
-            document.getElementById('ai-technical-results').innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Network error</p>';
-            document.getElementById('ai-risk-factors').innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Service unavailable</p>';
-        }
-    }
+    // AI Analysis handled by ml-scanner.js (module)
     
     // Debug function to see the prompt
     window.debugPrompt = async function() {
@@ -1873,14 +1903,18 @@
             const response = await fetch('/api/ai/market-intelligence');
             const data = await response.json();
             
-            if (data.status === 'success') {
+            if (data.status === 'success' && data.data) {
+                const intel = data.data;
+                const sentiment = intel.market_sentiment || {};
+                const risk = intel.risk_assessment || {};
+
                 intelligenceDiv.innerHTML = `
                     <div style="background: rgba(59, 130, 246, 0.1); border-radius: 8px; padding: 15px;">
                         <h4 style="color: #3b82f6; margin-bottom: 10px;">🧠 Market Intelligence</h4>
                         <div style="font-size: 0.9em;">
-                            <strong>Market Sentiment:</strong> ${data.sentiment || 'Analyzing...'}<br>
-                            <strong>Overall Trend:</strong> ${data.trend || 'Processing...'}<br>
-                            <strong>Risk Level:</strong> ${data.risk_level || 'Calculating...'}
+                            <strong>Market Sentiment:</strong> ${sentiment.interpretation || 'Analyzing...'}<br>
+                            <strong>Overall Trend:</strong> ${sentiment.trend || 'neutral'}<br>
+                            <strong>Risk Level:</strong> ${risk.overall_risk || 'Calculating...'}
                         </div>
                     </div>
                 `;
@@ -2190,11 +2224,14 @@
             const data = await response.json();
             
             const statusDisplay = document.getElementById('progressive-training-status-display');
+            const statusText = data.status || (data.trainer_available ? 'success' : 'unavailable');
+            const isTraining = !!(data.is_training);
+            const trainerReady = !!(data.trainer_available);
             statusDisplay.innerHTML = `
                 <div style="font-size: 0.85em;">
-                    <div><strong>Status:</strong> ${data.training_status?.status || 'Unknown'}</div>
-                    <div><strong>Training:</strong> ${data.training_status?.is_training ? '🔄 Active' : '⏸️ Idle'}</div>
-                    <div><strong>Trainer:</strong> ${data.training_status?.trainer_available ? '✅ Ready' : '❌ Not Ready'}</div>
+                    <div><strong>Status:</strong> ${statusText}</div>
+                    <div><strong>Training:</strong> ${isTraining ? '🔄 Active' : '⏸️ Idle'}</div>
+                    <div><strong>Trainer:</strong> ${trainerReady ? '✅ Ready' : '❌ Not Ready'}</div>
                 </div>
             `;
         } catch (error) {
@@ -2213,7 +2250,18 @@
         }
 
         const resultsDiv = document.getElementById('progressive-prediction-results');
-        resultsDiv.innerHTML = '<div style="text-align: center;">🔄 Getting progressive predictions...</div>';
+        resultsDiv.innerHTML = '<div style="text-align: center;">🔄 Preparing data (ensure)...</div>';
+
+        // Ensure symbol data exists and is fresh before prediction
+        try {
+            const ensureRes = await fetch(`/api/data/ensure/${symbol}`);
+            const ensureJson = await ensureRes.json();
+            const ensureHtml = renderEnsureSummary(ensureJson, symbol);
+            resultsDiv.innerHTML = ensureHtml + '<div style="text-align: center; margin-top:8px;">🔄 Getting progressive predictions...</div>';
+        } catch (e) {
+            // Non-fatal for prediction; show warning and continue
+            resultsDiv.innerHTML = `<div style="background:#3b82f61a;border:1px solid #3b82f655;color:#93c5fd;padding:8px;border-radius:6px;">⚠️ Ensure step warning: ${e?.message || e}</div>`;
+        }
 
         try {
             const response = await fetch(`/api/ml/progressive/predict/${symbol}?mode=${mode}`, {
@@ -2226,10 +2274,13 @@
             
             const data = await response.json();
             
+            console.log('API Response:', data); // Debug log
+            
             if (data.status === 'success' && data.predictions) {
                 displayProgressivePredictions(data.predictions, symbol, mode);
             } else {
-                resultsDiv.innerHTML = '<div style="color: #ef4444;">❌ No predictions available</div>';
+                console.error('API returned error or no predictions:', data);
+                resultsDiv.innerHTML = `<div style="color: #ef4444;">❌ API Error: ${data.message || 'No predictions available'}</div>`;
             }
         } catch (error) {
             console.error('Error getting progressive prediction:', error);
@@ -2240,6 +2291,20 @@
     function displayProgressivePredictions(predictions, symbol, mode) {
         const resultsDiv = document.getElementById('progressive-prediction-results');
         
+        // Check if predictions object exists
+        if (!predictions) {
+            resultsDiv.innerHTML = '<div style="color: #ef4444;">❌ No prediction data available</div>';
+            return;
+        }
+        
+        console.log('Processing predictions:', predictions); // Debug log
+        
+        // Check if we have the expected structure
+        if (typeof predictions !== 'object') {
+            resultsDiv.innerHTML = '<div style="color: #ef4444;">❌ Invalid prediction data format</div>';
+            return;
+        }
+        
         // Header
         let html = `
             <div style="text-align: center; margin-bottom: 20px; padding: 15px; background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(139,92,246,0.2)); border-radius: 12px; border: 2px solid rgba(59,130,246,0.3);">
@@ -2249,7 +2314,7 @@
         `;
         
         // Current Price
-        if (predictions.current_price) {
+        if (predictions.current_price !== undefined && predictions.current_price !== null && !isNaN(predictions.current_price)) {
             html += `
                 <div style="margin: 15px 0; padding: 20px; background: rgba(34,197,94,0.15); border-radius: 10px; border-left: 4px solid #22c55e;">
                     <div style="display: flex; align-items: center; justify-content: space-between;">
@@ -2260,6 +2325,16 @@
                         <div style="text-align: right; color: #94a3b8; font-size: 0.85em;">
                             📅 ${predictions.current_date || 'Latest'}
                         </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            console.warn('Current price not available or invalid:', predictions.current_price);
+            html += `
+                <div style="margin: 15px 0; padding: 20px; background: rgba(239,68,68,0.15); border-radius: 10px; border-left: 4px solid #ef4444;">
+                    <div>
+                        <div style="font-size: 0.9em; color: #fca5a5; margin-bottom: 5px;">⚠️ Current Price</div>
+                        <div style="font-size: 1.5em; font-weight: bold; color: #ef4444;">Price data unavailable</div>
                     </div>
                 </div>
             `;
@@ -2275,7 +2350,20 @@
             
             horizons.forEach(horizonKey => {
                 const pred = predictions.predictions[horizonKey];
-                const priceChange = pred.price_change_pct * 100;
+                if (!pred || typeof pred !== 'object') {
+                    console.warn(`Skipping invalid prediction for ${horizonKey}:`, pred);
+                    return; // Skip if prediction data is missing or invalid
+                }
+                
+                // Ensure numeric values are valid numbers
+                const priceChange = (typeof pred.price_change_pct === 'number' && !isNaN(pred.price_change_pct)) ? pred.price_change_pct : 0;
+                const targetPrice = (typeof pred.target_price === 'number' && !isNaN(pred.target_price)) ? pred.target_price : 0;
+                const priceChangeAbs = (typeof pred.price_change_abs === 'number' && !isNaN(pred.price_change_abs)) ? pred.price_change_abs : 0;
+                const confidence = (typeof pred.confidence === 'number' && !isNaN(pred.confidence)) ? pred.confidence : 0;
+                const directionProb = (typeof pred.direction_prob === 'number' && !isNaN(pred.direction_prob)) ? pred.direction_prob : 0.5;
+                const numModels = (typeof pred.num_models === 'number' && !isNaN(pred.num_models)) ? pred.num_models : 0;
+                const modelAgreement = (typeof pred.model_agreement_std === 'number' && !isNaN(pred.model_agreement_std)) ? pred.model_agreement_std : 0;
+                
                 const isPositive = priceChange > 0;
                 const changeColor = isPositive ? '#22c55e' : '#ef4444';
                 const changeIcon = isPositive ? '📈' : '📉';
@@ -2289,7 +2377,7 @@
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                             <div style="font-size: 1.1em; font-weight: bold; color: #60a5fa;">⏰ ${horizonKey.toUpperCase()}</div>
                             <div style="padding: 6px 14px; background: ${signalColor}33; color: ${signalColor}; border-radius: 20px; font-weight: bold; font-size: 0.9em;">
-                                📡 ${pred.signal}
+                                📡 ${pred.signal || 'HOLD'}
                             </div>
                         </div>
                         
@@ -2297,37 +2385,37 @@
                             
                             <div style="padding: 12px; background: rgba(59,130,246,0.1); border-radius: 8px; border-left: 3px solid #3b82f6;">
                                 <div style="font-size: 0.85em; color: #93c5fd; margin-bottom: 4px;">🎯 Target Price</div>
-                                <div style="font-size: 1.5em; font-weight: bold; color: #60a5fa;">$${pred.target_price.toFixed(2)}</div>
+                                <div style="font-size: 1.5em; font-weight: bold; color: #60a5fa;">$${targetPrice.toFixed(2)}</div>
                             </div>
                             
                             <div style="padding: 12px; background: rgba(${isPositive ? '34,197,94' : '239,68,68'},0.1); border-radius: 8px; border-left: 3px solid ${changeColor};">
                                 <div style="font-size: 0.85em; color: ${changeColor}bb; margin-bottom: 4px;">${changeIcon} Price Change</div>
-                                <div style="font-size: 1.5em; font-weight: bold; color: ${changeColor};">${priceChange > 0 ? '+' : ''}${priceChange.toFixed(2)}%</div>
-                                <div style="font-size: 0.9em; color: ${changeColor}99; margin-top: 2px;">${pred.price_change_abs > 0 ? '+' : ''}$${pred.price_change_abs.toFixed(2)}</div>
+                                <div style="font-size: 1.5em; font-weight: bold; color: ${changeColor};">${priceChange > 0 ? '+' : ''}${(priceChange * 100).toFixed(2)}%</div>
+                                <div style="font-size: 0.9em; color: ${changeColor}99; margin-top: 2px;">${priceChangeAbs > 0 ? '+' : ''}$${priceChangeAbs.toFixed(2)}</div>
                             </div>
                             
                             <div style="padding: 12px; background: rgba(234,179,8,0.1); border-radius: 8px; border-left: 3px solid #eab308;">
                                 <div style="font-size: 0.85em; color: #fde047; margin-bottom: 4px;">🎲 Confidence</div>
-                                <div style="font-size: 1.5em; font-weight: bold; color: #facc15;">${(pred.confidence * 100).toFixed(1)}%</div>
+                                <div style="font-size: 1.5em; font-weight: bold; color: #facc15;">${(confidence * 100).toFixed(1)}%</div>
                                 <div style="width: 100%; height: 6px; background: rgba(234,179,8,0.2); border-radius: 3px; margin-top: 6px; overflow: hidden;">
-                                    <div style="width: ${pred.confidence * 100}%; height: 100%; background: linear-gradient(90deg, #eab308, #facc15); border-radius: 3px;"></div>
+                                    <div style="width: ${(confidence * 100)}%; height: 100%; background: linear-gradient(90deg, #eab308, #facc15); border-radius: 3px;"></div>
                                 </div>
                             </div>
                             
                             <div style="padding: 12px; background: rgba(168,85,247,0.1); border-radius: 8px; border-left: 3px solid #a855f7;">
                                 <div style="font-size: 0.85em; color: #c084fc; margin-bottom: 4px;">🔼 Direction</div>
-                                <div style="font-size: 1.3em; font-weight: bold; color: #a855f7;">${pred.direction}</div>
-                                <div style="font-size: 0.9em; color: #c084fc99; margin-top: 2px;">${(pred.direction_prob * 100).toFixed(1)}% probability</div>
+                                <div style="font-size: 1.3em; font-weight: bold; color: #a855f7;">${pred.direction || 'NEUTRAL'}</div>
+                                <div style="font-size: 0.9em; color: #c084fc99; margin-top: 2px;">${(directionProb * 100).toFixed(1)}% probability</div>
                             </div>
                             
                         </div>
                         
                         <div style="margin-top: 12px; padding: 10px; background: rgba(100,116,139,0.1); border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
                             <div style="font-size: 0.85em; color: #94a3b8;">
-                                🤖 Based on <strong style="color: #cbd5e1;">${pred.num_models}</strong> model${pred.num_models > 1 ? 's' : ''}
+                                🤖 Based on <strong style="color: #cbd5e1;">${numModels}</strong> model${numModels > 1 ? 's' : ''}
                             </div>
                             <div style="font-size: 0.85em; color: #64748b;">
-                                📊 Agreement: ${(100 - pred.model_agreement_std * 100).toFixed(1)}%
+                                📊 Agreement: ${(modelAgreement * 100).toFixed(1)}%
                             </div>
                         </div>
                         
@@ -2339,12 +2427,17 @@
         }
         
         // Overall Sentiment
-        if (predictions.overall_sentiment) {
+        if (predictions.overall_sentiment && typeof predictions.overall_sentiment === 'object') {
             const sentiment = predictions.overall_sentiment;
             const sentimentColor = sentiment.sentiment === 'BULLISH' ? '#22c55e' : 
                                   sentiment.sentiment === 'BEARISH' ? '#ef4444' : '#eab308';
             const sentimentIcon = sentiment.sentiment === 'BULLISH' ? '📈' : 
                                  sentiment.sentiment === 'BEARISH' ? '📉' : '➡️';
+            
+            // Validate sentiment values
+            const sentimentStrength = (typeof sentiment.strength === 'number' && !isNaN(sentiment.strength)) ? sentiment.strength : 0;
+            const sentimentConfidence = (typeof sentiment.confidence === 'number' && !isNaN(sentiment.confidence)) ? sentiment.confidence : 0;
+            const sentimentAvgChange = (typeof sentiment.avg_price_change === 'number' && !isNaN(sentiment.avg_price_change)) ? sentiment.avg_price_change : 0;
             
             html += `
                 <div style="margin: 20px 0; padding: 20px; background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(168,85,247,0.15)); border-radius: 12px; border: 2px solid rgba(139,92,246,0.3);">
@@ -2355,22 +2448,22 @@
                         <div style="padding: 12px; background: rgba(${sentimentColor === '#22c55e' ? '34,197,94' : sentimentColor === '#ef4444' ? '239,68,68' : '234,179,8'},0.15); border-radius: 8px; text-align: center;">
                             <div style="font-size: 0.85em; color: #c4b5fd; margin-bottom: 6px;">Sentiment</div>
                             <div style="font-size: 1.8em;">${sentimentIcon}</div>
-                            <div style="font-size: 1.2em; font-weight: bold; color: ${sentimentColor}; margin-top: 4px;">${sentiment.sentiment}</div>
+                            <div style="font-size: 1.2em; font-weight: bold; color: ${sentimentColor}; margin-top: 4px;">${sentiment.sentiment || 'NEUTRAL'}</div>
                         </div>
                         
                         <div style="padding: 12px; background: rgba(59,130,246,0.15); border-radius: 8px; text-align: center;">
                             <div style="font-size: 0.85em; color: #c4b5fd; margin-bottom: 6px;">Strength</div>
-                            <div style="font-size: 1.5em; font-weight: bold; color: #60a5fa; margin-top: 10px;">${(sentiment.strength * 100).toFixed(2)}%</div>
+                            <div style="font-size: 1.5em; font-weight: bold; color: #60a5fa; margin-top: 10px;">${(sentimentStrength * 100).toFixed(2)}%</div>
                         </div>
                         
                         <div style="padding: 12px; background: rgba(234,179,8,0.15); border-radius: 8px; text-align: center;">
                             <div style="font-size: 0.85em; color: #c4b5fd; margin-bottom: 6px;">Confidence</div>
-                            <div style="font-size: 1.5em; font-weight: bold; color: #facc15; margin-top: 10px;">${(sentiment.confidence * 100).toFixed(1)}%</div>
+                            <div style="font-size: 1.5em; font-weight: bold; color: #facc15; margin-top: 10px;">${(sentimentConfidence * 100).toFixed(1)}%</div>
                         </div>
                         
                         <div style="padding: 12px; background: rgba(168,85,247,0.15); border-radius: 8px; text-align: center;">
                             <div style="font-size: 0.85em; color: #c4b5fd; margin-bottom: 6px;">Avg Change</div>
-                            <div style="font-size: 1.5em; font-weight: bold; color: #a855f7; margin-top: 10px;">${(sentiment.avg_price_change * 100).toFixed(2)}%</div>
+                            <div style="font-size: 1.5em; font-weight: bold; color: #a855f7; margin-top: 10px;">${(sentimentAvgChange * 100).toFixed(2)}%</div>
                         </div>
                         
                     </div>
@@ -2379,10 +2472,17 @@
         }
         
         // Risk Metrics
-        if (predictions.risk_metrics) {
+        if (predictions.risk_metrics && typeof predictions.risk_metrics === 'object') {
             const risk = predictions.risk_metrics;
             const riskColor = risk.risk_level === 'HIGH' ? '#ef4444' : 
                             risk.risk_level === 'MEDIUM' ? '#eab308' : '#22c55e';
+            
+            // Validate risk metrics values
+            const riskVolatility = (typeof risk.volatility === 'number' && !isNaN(risk.volatility)) ? risk.volatility : 0;
+            const riskMaxGain = (typeof risk.max_gain === 'number' && !isNaN(risk.max_gain)) ? risk.max_gain : 0;
+            const riskMaxLoss = (typeof risk.max_loss === 'number' && !isNaN(risk.max_loss)) ? risk.max_loss : 0;
+            const riskRewardRatio = (typeof risk.risk_reward_ratio === 'number' && !isNaN(risk.risk_reward_ratio)) ? risk.risk_reward_ratio : 0;
+            const riskRange = (typeof risk.prediction_range === 'number' && !isNaN(risk.prediction_range)) ? risk.prediction_range : 0;
             
             html += `
                 <div style="margin: 20px 0; padding: 20px; background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(251,146,60,0.1)); border-radius: 12px; border: 2px solid rgba(239,68,68,0.3);">
@@ -2392,32 +2492,32 @@
                         
                         <div style="padding: 14px; background: rgba(${riskColor === '#22c55e' ? '34,197,94' : riskColor === '#ef4444' ? '239,68,68' : '234,179,8'},0.15); border-radius: 8px; text-align: center; border: 2px solid ${riskColor}44;">
                             <div style="font-size: 0.85em; color: #fecaca; margin-bottom: 6px;">Risk Level</div>
-                            <div style="font-size: 1.8em; font-weight: bold; color: ${riskColor}; margin-top: 8px;">${risk.risk_level}</div>
+                            <div style="font-size: 1.8em; font-weight: bold; color: ${riskColor}; margin-top: 8px;">${risk.risk_level || 'UNKNOWN'}</div>
                         </div>
                         
                         <div style="padding: 14px; background: rgba(251,146,60,0.1); border-radius: 8px; text-align: center;">
                             <div style="font-size: 0.85em; color: #fecaca; margin-bottom: 6px;">📊 Volatility</div>
-                            <div style="font-size: 1.4em; font-weight: bold; color: #fb923c; margin-top: 8px;">${(risk.volatility * 100).toFixed(2)}%</div>
+                            <div style="font-size: 1.4em; font-weight: bold; color: #fb923c; margin-top: 8px;">${(riskVolatility * 100).toFixed(2)}%</div>
                         </div>
                         
                         <div style="padding: 14px; background: rgba(34,197,94,0.1); border-radius: 8px; text-align: center;">
                             <div style="font-size: 0.85em; color: #fecaca; margin-bottom: 6px;">📈 Max Gain</div>
-                            <div style="font-size: 1.4em; font-weight: bold; color: #22c55e; margin-top: 8px;">+${(risk.max_gain * 100).toFixed(2)}%</div>
+                            <div style="font-size: 1.4em; font-weight: bold; color: #22c55e; margin-top: 8px;">+${(riskMaxGain * 100).toFixed(2)}%</div>
                         </div>
                         
                         <div style="padding: 14px; background: rgba(239,68,68,0.1); border-radius: 8px; text-align: center;">
                             <div style="font-size: 0.85em; color: #fecaca; margin-bottom: 6px;">📉 Max Loss</div>
-                            <div style="font-size: 1.4em; font-weight: bold; color: #ef4444; margin-top: 8px;">${(risk.max_loss * 100).toFixed(2)}%</div>
+                            <div style="font-size: 1.4em; font-weight: bold; color: #ef4444; margin-top: 8px;">${(riskMaxLoss * 100).toFixed(2)}%</div>
                         </div>
                         
                         <div style="padding: 14px; background: rgba(59,130,246,0.1); border-radius: 8px; text-align: center;">
                             <div style="font-size: 0.85em; color: #fecaca; margin-bottom: 6px;">⚖️ Risk/Reward</div>
-                            <div style="font-size: 1.4em; font-weight: bold; color: #3b82f6; margin-top: 8px;">${risk.risk_reward_ratio.toFixed(2)}</div>
+                            <div style="font-size: 1.4em; font-weight: bold; color: #3b82f6; margin-top: 8px;">${riskRewardRatio.toFixed(2)}</div>
                         </div>
                         
                         <div style="padding: 14px; background: rgba(234,179,8,0.1); border-radius: 8px; text-align: center;">
                             <div style="font-size: 0.85em; color: #fecaca; margin-bottom: 6px;">📏 Price Range</div>
-                            <div style="font-size: 1.4em; font-weight: bold; color: #eab308; margin-top: 8px;">$${risk.prediction_range.toFixed(2)}</div>
+                            <div style="font-size: 1.4em; font-weight: bold; color: #eab308; margin-top: 8px;">$${riskRange.toFixed(2)}</div>
                         </div>
                         
                     </div>
@@ -2447,7 +2547,17 @@
         }
 
         const resultsDiv = document.getElementById('progressive-training-results');
-        resultsDiv.innerHTML = '<div style="text-align: center;">🚀 Starting progressive training...</div>';
+        resultsDiv.innerHTML = '<div style="text-align: center;">🔄 Preparing data (ensure)...</div>';
+
+        // Ensure symbol data exists and is fresh before training
+        try {
+            const ensureRes = await fetch(`/api/data/ensure/${symbol}`);
+            const ensureJson = await ensureRes.json();
+            const ensureHtml = renderEnsureSummary(ensureJson, symbol);
+            resultsDiv.innerHTML = ensureHtml + '<div style="text-align: center; margin-top:8px;">🚀 Starting progressive training...</div>';
+        } catch (e) {
+            resultsDiv.innerHTML = `<div style="background:#3b82f61a;border:1px solid #3b82f655;color:#93c5fd;padding:8px;border-radius:6px;">⚠️ Ensure step warning: ${e?.message || e}</div>`;
+        }
 
         try {
             const response = await fetch(`/api/ml/progressive/train?symbol=${symbol}&model_types=${selectedModels.join(',')}&mode=${mode}`, {
@@ -2486,12 +2596,49 @@
         }
     }
 
+    // Helper to render ensure summary panel
+    function renderEnsureSummary(ensureJson, symbol) {
+        try {
+            const ok = ensureJson && ensureJson.status === 'success' && ensureJson.summary;
+            const s = ok ? ensureJson.summary : null;
+            if (!s) {
+                return `<div style="background:#ef44441a;border:1px solid #ef444455;color:#fecaca;padding:8px;border-radius:6px;">❌ Ensure failed for ${symbol}: ${ensureJson?.detail || ensureJson?.message || 'Unknown error'}</div>`;
+            }
+            const counts = {
+                created: Object.values(s.created || {}).filter(Boolean).length,
+                updated: Object.values(s.updated || {}).filter(Boolean).length,
+                skipped: Object.values(s.skipped || {}).filter(Boolean).length,
+                errors: Object.values(s.errors || {}).filter(Boolean).length,
+            };
+            const errorLines = Object.entries(s.errors || {})
+                .filter(([,v]) => v)
+                .map(([k,v]) => `<div>• ${k}: ${v}</div>`)?.join('') || '';
+            return `
+                <div style="background:#111827;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <div style="font-weight:600;color:#fbbf24;">📦 Data Ensure for ${symbol}</div>
+                        <div style="font-size:0.85em;color:#9ca3af;">dir: <span style="color:#93c5fd;">${s.stock_dir}</span></div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(4, minmax(60px,1fr));gap:8px;margin-top:8px;">
+                        <div style="background:#16a34a22;border:1px solid #16a34a55;border-radius:6px;padding:6px;text-align:center;">✅ Created: <strong>${counts.created}</strong></div>
+                        <div style="background:#3b82f622;border:1px solid #3b82f655;border-radius:6px;padding:6px;text-align:center;">🔄 Updated: <strong>${counts.updated}</strong></div>
+                        <div style="background:#6b728022;border:1px solid #6b728055;border-radius:6px;padding:6px;text-align:center;">⏭️ Skipped: <strong>${counts.skipped}</strong></div>
+                        <div style="background:#ef444422;border:1px solid #ef444455;border-radius:6px;padding:6px;text-align:center;">⚠️ Errors: <strong>${counts.errors}</strong></div>
+                    </div>
+                    ${counts.errors ? `<div style="margin-top:8px;color:#fecaca;font-size:0.85em;">${errorLines}</div>` : ''}
+                </div>
+            `;
+        } catch (e) {
+            return '';
+        }
+    }
+
     function showTrainingProgress(jobId, symbol) {
         const resultsDiv = document.getElementById('progressive-training-results');
         resultsDiv.innerHTML = `
             <div style="padding: 15px;">
                 <div style="color: #10b981; font-size: 1.1em; margin-bottom: 10px;">
-                    <strong>� Training ${symbol}</strong>
+                    <strong>🧠 Training ${symbol}</strong>
                 </div>
                 <div style="margin-bottom: 8px;">
                     <div style="font-size: 0.9em; color: #9ca3af;" id="training-current-step">Initializing...</div>
@@ -2606,6 +2753,7 @@
     });
 
     let backtestPollingInterval = null;
+    let currentBacktestJobId = null;
     let backtestChart = null;
 
     async function startBacktesting() {
@@ -2619,8 +2767,13 @@
         const modelSelect = document.getElementById('progressive-model-types');
         const selectedModels = Array.from(modelSelect.selectedOptions).map(option => option.value);
 
-        // Validation
-        if (!symbol) {
+        // Enhanced validation with debug info
+        console.log('Backtest parameters:', {
+            symbol, startDate, endDate, testPeriod, maxIterations, 
+            targetAccuracy, autoStop, selectedModels
+        });
+
+        if (!symbol || symbol.trim() === '') {
             alert('Please enter a stock symbol');
             return;
         }
@@ -2632,6 +2785,21 @@
 
         if (new Date(startDate) >= new Date(endDate)) {
             alert('Start date must be before end date');
+            return;
+        }
+
+        if (isNaN(testPeriod) || testPeriod < 1 || testPeriod > 365) {
+            alert('Test period must be between 1 and 365 days');
+            return;
+        }
+
+        if (isNaN(maxIterations) || maxIterations < 1 || maxIterations > 50) {
+            alert('Max iterations must be between 1 and 50');
+            return;
+        }
+
+        if (isNaN(targetAccuracy) || targetAccuracy < 0.1 || targetAccuracy > 1.0) {
+            alert('Target accuracy must be between 10% and 100%');
             return;
         }
 
@@ -2647,31 +2815,68 @@
         document.getElementById('backtest-status-text').textContent = 'Starting backtest...';
         document.getElementById('backtest-progress-fill').style.width = '0%';
 
+        // Collect indicator params (optional)
+        const ind = {
+            rsi_period: parseInt(document.getElementById('ind-rsi-period')?.value || '14'),
+            macd_fast: parseInt(document.getElementById('ind-macd-fast')?.value || '12'),
+            macd_slow: parseInt(document.getElementById('ind-macd-slow')?.value || '26'),
+            macd_signal: parseInt(document.getElementById('ind-macd-signal')?.value || '9'),
+            sma_periods: document.getElementById('ind-sma-periods')?.value || '5,10,20,50',
+            ema_periods: document.getElementById('ind-ema-periods')?.value || '5,10,20,50',
+            bb_period: parseInt(document.getElementById('ind-bb-period')?.value || '20'),
+            bb_std: parseFloat(document.getElementById('ind-bb-std')?.value || '2')
+        };
+
+        // Create request payload
+        const requestPayload = {
+            symbol: symbol,
+            train_start_date: startDate,
+            train_end_date: endDate,
+            test_period_days: testPeriod,
+            max_iterations: maxIterations,
+            target_accuracy: targetAccuracy,
+            auto_stop: autoStop,
+            model_types: selectedModels,
+            indicator_params: ind
+        };
+
+        console.log('Sending backtest request:', requestPayload);
+        const bodyString = JSON.stringify(requestPayload);
+        console.log('Request body string:', bodyString);
+
         try {
-            const response = await fetch('/api/ml/progressive/backtest', {
+            const apiUrl = `${window.location.origin}/api/ml/progressive/backtest`;
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
-                body: JSON.stringify({
-                    symbol: symbol,
-                    train_start_date: startDate,
-                    train_end_date: endDate,
-                    test_period_days: testPeriod,
-                    max_iterations: maxIterations,
-                    target_accuracy: targetAccuracy,
-                    auto_stop: autoStop,
-                    model_types: selectedModels
-                })
+                body: bodyString,
+                // credentials intentionally omitted to reduce CORS complexity
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                const errorText = await response.text();
+                console.error('Backtest API Error:', response.status, errorText);
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
             }
 
             const data = await response.json();
 
-            if (data.status === 'success') {
+            // New async path with job id
+            if (data.status === 'backtest_started' && data.job_id) {
+                // Begin polling status
+                if (backtestPollingInterval) {
+                    clearInterval(backtestPollingInterval);
+                }
+                currentBacktestJobId = data.job_id;
+                backtestPollingInterval = setInterval(async () => {
+                    await pollBacktestProgress(data.job_id);
+                }, 1500);
+                document.getElementById('backtest-status-text').textContent = 'Backtest started...';
+            } else if (data.status === 'success') {
+                // Backward compatibility: immediate results
                 displayBacktestResults(data.backtest_results);
             } else {
                 document.getElementById('backtest-status-text').textContent = 'Backtest failed';
@@ -2685,18 +2890,120 @@
         }
     }
 
-    function stopBacktesting() {
-        if (backtestPollingInterval) {
-            clearInterval(backtestPollingInterval);
-            backtestPollingInterval = null;
+    async function stopBacktesting() {
+        try {
+            if (backtestPollingInterval) {
+                clearInterval(backtestPollingInterval);
+                backtestPollingInterval = null;
+            }
+            if (currentBacktestJobId) {
+                await fetch(`/api/ml/progressive/backtest/cancel/${currentBacktestJobId}`, { method: 'POST' });
+            }
+            document.getElementById('backtest-status-text').textContent = 'Cancelling...';
+        } catch (e) {
+            console.error('Stop backtest error:', e);
+            document.getElementById('backtest-status-text').textContent = 'Stop requested';
         }
-        document.getElementById('backtest-status-text').textContent = 'Stopped';
     }
 
-    function displayBacktestResults(results) {
-        if (!results || !results.all_iterations) {
-            alert('No results to display');
+    async function pollBacktestProgress(jobId) {
+        try {
+            const resp = await fetch(`/api/ml/progressive/backtest/status/${jobId}`);
+            if (!resp.ok) {
+                throw new Error(`HTTP ${resp.status}`);
+            }
+            const st = await resp.json();
+
+            // Update progress UI
+            const fill = document.getElementById('backtest-progress-fill');
+            const statusText = document.getElementById('backtest-status-text');
+            const pct = Math.max(0, Math.min(100, Math.round(st.progress || 0)));
+            if (fill) fill.style.width = pct + '%';
+
+            // ETA formatting
+            let etaStr = '';
+            if (st.eta_seconds !== null && st.eta_seconds !== undefined) {
+                const m = Math.floor(st.eta_seconds / 60);
+                const s = Math.round(st.eta_seconds % 60);
+                etaStr = m > 0 ? ` • ETA: ${m}m ${s}s` : ` • ETA: ${s}s`;
+            }
+            if (statusText) statusText.textContent = `${st.current_step || 'Running...'} • ${pct}%${etaStr}`;
+
+            if (st.status === 'completed') {
+                clearInterval(backtestPollingInterval);
+                backtestPollingInterval = null;
+                if (st.result) {
+                    await displayBacktestResults(st.result);
+                } else {
+                    document.getElementById('backtest-progress').style.display = 'none';
+                    document.getElementById('backtest-results-container').style.display = 'none';
+                    document.getElementById('backtest-chart-container').style.display = 'none';
+                    alert('Backtest completed but no result received');
+                }
+            } else if (st.status === 'failed') {
+                clearInterval(backtestPollingInterval);
+                backtestPollingInterval = null;
+                if (statusText) statusText.textContent = `Failed: ${st.error || 'Unknown error'}`;
+                alert(`Backtest failed: ${st.error || 'Unknown error'}`);
+            } else if (st.status === 'cancelled') {
+                clearInterval(backtestPollingInterval);
+                backtestPollingInterval = null;
+                if (statusText) statusText.textContent = '⏹ Backtest cancelled';
+                // Hide progress, don't render results
+                document.getElementById('backtest-progress').style.display = 'none';
+            } else if (st.status === 'cancelling') {
+                // keep polling until we see final cancelled
+            }
+        } catch (err) {
+            console.error('Error polling backtest progress:', err);
+            // keep polling; transient errors are okay
+        }
+    }
+
+    async function displayBacktestResults(results) {
+        // Normalize and validate results structure
+        if (!results || (!results.all_iterations && !results.iterations)) {
+            // Try to fetch the latest saved results from the server as a fallback
+            try {
+                const symbol = document.getElementById('progressive-symbol').value.toUpperCase();
+                const fallbackResp = await fetch(`/api/ml/progressive/backtest/results/${symbol}`);
+                if (fallbackResp.ok) {
+                    const fallbackData = await fallbackResp.json();
+                    if (fallbackData.status === 'success' && fallbackData.results) {
+                        results = fallbackData.results;
+                    }
+                }
+            } catch (e) {
+                console.warn('Backtest fallback fetch failed:', e);
+            }
+        }
+
+        // If still no iterations present, show a friendly error with details if available
+        if (!results || (!results.all_iterations && !results.iterations)) {
+            const msg = results && results.error ? `Backtest error: ${results.error}` : 'No results to display';
+            alert(msg);
+            document.getElementById('backtest-progress').style.display = 'none';
+            document.getElementById('backtest-results-container').style.display = 'none';
+            document.getElementById('backtest-chart-container').style.display = 'none';
             return;
+        }
+
+        // Map legacy saved format { iterations: [...] } to expected { all_iterations: [...] }
+        if (!results.all_iterations && results.iterations) {
+            // Compute best_iteration if missing
+            try {
+                const best = results.iterations.reduce((acc, it) => {
+                    if (typeof it.accuracy === 'number' && it.accuracy > (acc.accuracy ?? -1)) return it;
+                    return acc;
+                }, {});
+                results.all_iterations = results.iterations;
+                if (!results.best_iteration && best && typeof best.iteration === 'number') {
+                    results.best_iteration = best.iteration;
+                }
+            } catch (e) {
+                console.warn('Failed to normalize legacy backtest results:', e);
+                results.all_iterations = results.iterations;
+            }
         }
 
         // Hide progress, show results
@@ -2704,9 +3011,24 @@
         document.getElementById('backtest-results-container').style.display = 'block';
         document.getElementById('backtest-chart-container').style.display = 'block';
 
-        // Populate table
+        // Populate table and add tooltips on header
         const tbody = document.getElementById('backtest-results-tbody');
         tbody.innerHTML = '';
+
+        // Add helpful tooltips to header cells if table exists
+        try {
+            const ths = document.querySelectorAll('#backtest-results-table thead th');
+            if (ths && ths.length >= 6) {
+                ths[0].title = 'Iteration number in the expanding-window backtest';
+                ths[1].title = 'Last date included in training for this iteration';
+                ths[2].title = 'Direction accuracy over the test window for this iteration';
+                ths[3].title = 'Validation loss of the model during training (lower is better)';
+                ths[4].title = 'Training duration for this iteration (seconds)';
+                ths[5].title = 'Best iteration across all based on accuracy';
+            }
+        } catch (e) {
+            // Safe to ignore
+        }
 
         results.all_iterations.forEach((iter, index) => {
             const row = tbody.insertRow();
@@ -2715,15 +3037,65 @@
             row.innerHTML = `
                 <td style="padding: 8px;">${iter.iteration}</td>
                 <td style="padding: 8px;">${iter.train_until}</td>
-                <td style="padding: 8px; color: ${iter.accuracy >= 0.85 ? '#10b981' : '#f59e0b'};">${(iter.accuracy * 100).toFixed(1)}%</td>
-                <td style="padding: 8px;">${iter.val_loss ? iter.val_loss.toFixed(4) : 'N/A'}</td>
-                <td style="padding: 8px;">${iter.training_time ? iter.training_time.toFixed(1) + 's' : 'N/A'}</td>
+                <td style="padding: 8px; color: ${typeof iter.accuracy === 'number' && iter.accuracy >= 0.85 ? '#10b981' : '#f59e0b'};">${typeof iter.accuracy === 'number' ? (iter.accuracy * 100).toFixed(1) + '%' : 'N/A'}</td>
+                <td style="padding: 8px;">${typeof iter.val_loss === 'number' ? iter.val_loss.toFixed(4) : 'N/A'}</td>
+                <td style="padding: 8px;">${typeof iter.training_time === 'number' ? iter.training_time.toFixed(1) + 's' : 'N/A'}</td>
                 <td style="padding: 8px;">${isBest ? '✅ Best' : ''}</td>
             `;
         });
 
         // Create chart
         createBacktestChart(results);
+    }
+
+    async function loadBacktestHistory() {
+        try {
+            const symbol = document.getElementById('progressive-symbol').value.toUpperCase();
+            if (!symbol) return;
+            const resp = await fetch(`/api/ml/progressive/backtest/history/${symbol}`);
+            const data = await resp.json();
+            const listDiv = document.getElementById('backtest-history-list');
+            if (!data || data.status !== 'success' || !Array.isArray(data.items) || data.items.length === 0) {
+                listDiv.innerHTML = '<div style="opacity:0.7;">No history found</div>';
+                return;
+            }
+            listDiv.innerHTML = data.items.map(item => {
+                const acc = (typeof item.best_accuracy === 'number') ? (item.best_accuracy * 100).toFixed(1) + '%' : 'N/A';
+                return `
+                    <div style="display:flex; justify-content: space-between; align-items:center; padding:6px 8px; border-bottom:1px solid rgba(255,255,255,0.08);">
+                        <div>
+                            <div style="font-size:0.9em;">${item.file}</div>
+                            <small style="opacity:0.7;">${new Date(item.modified).toLocaleString()} • Best: ${acc} • Iters: ${item.iterations ?? '—'}</small>
+                        </div>
+                        <button onclick="loadBacktestResultFile('${symbol}', '${item.file}')" style="background:#2563eb; border:none; color:#fff; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:0.8em;">Load</button>
+                    </div>
+                `;
+            }).join('');
+        } catch (e) {
+            console.error('Failed to load history:', e);
+        }
+    }
+
+    async function loadBacktestResultFile(symbol, file) {
+        try {
+            const resp = await fetch(`/api/ml/progressive/backtest/result_by_file/${symbol}/${file}`);
+            if (!resp.ok) return;
+            const data = await resp.json();
+            if (data && data.status === 'success' && data.results) {
+                await displayBacktestResults(data.results);
+            }
+        } catch (e) {
+            console.error('Failed to load result file:', e);
+        }
+    }
+
+    function openBacktestExplainer() {
+        const modal = document.getElementById('backtest-explainer-modal');
+        if (modal) modal.style.display = 'block';
+    }
+    function closeBacktestExplainer() {
+        const modal = document.getElementById('backtest-explainer-modal');
+        if (modal) modal.style.display = 'none';
     }
 
     function createBacktestChart(results) {
@@ -2734,9 +3106,9 @@
             backtestChart.destroy();
         }
 
-        const iterations = results.all_iterations.map(iter => `Iter ${iter.iteration}`);
-        const accuracies = results.all_iterations.map(iter => iter.accuracy * 100);
-        const losses = results.all_iterations.map(iter => iter.val_loss || 0);
+    const iterations = results.all_iterations.map(iter => `Iter ${iter.iteration ?? '?'}`);
+    const accuracies = results.all_iterations.map(iter => typeof iter.accuracy === 'number' ? iter.accuracy * 100 : 0);
+    const losses = results.all_iterations.map(iter => typeof iter.val_loss === 'number' ? iter.val_loss : 0);
 
         backtestChart = new Chart(ctx, {
             type: 'line',
@@ -3015,6 +3387,96 @@
             console.error('❌ MarketDataManager not loaded - check market-data.js');
         }
     });
+
+    // Realtime WebSocket controls and status
+    (function setupWebSocketControls() {
+        // Ensure WebSocketClient is available
+        if (typeof WebSocketClient === 'undefined') {
+            console.warn('⚠️ WebSocketClient not loaded');
+            return;
+        }
+
+        // Create client instance (not connected by default)
+        const ws = new WebSocketClient();
+        ws.init();
+        window.wsClient = ws;
+
+        const btn = document.getElementById('realtime-btn');
+        const badge = document.getElementById('ws-status-badge');
+        const stockInput = document.getElementById('ai-stock-input');
+
+        function currentSymbol() {
+            const v = (stockInput?.value || '').trim().toUpperCase();
+            return v || 'AAPL';
+        }
+
+        function updateButton(isOn) {
+            if (!btn) return;
+            if (isOn) {
+                btn.textContent = '🔴 Live Streaming ON';
+                btn.classList.add('on');
+            } else {
+                btn.textContent = '⚪ Enable Real-time';
+                btn.classList.remove('on');
+            }
+        }
+
+        function updateBadge() {
+            if (!badge) return;
+            const s = ws.getStatus();
+            const parts = [];
+            if (s.alerts) parts.push('Alerts ✓'); else parts.push('Alerts —');
+            if (s.market) parts.push(`Market ${s.currentSymbol}${s.market ? ' ✓' : ' —'}`);
+            // aiAnalysis is disabled
+
+            badge.classList.remove('ws-off','ws-warn','ws-on');
+            if (s.connected && s.alerts && s.market) {
+                badge.classList.add('ws-on');
+            } else if (s.connected && (s.alerts || s.market)) {
+                badge.classList.add('ws-warn');
+            } else {
+                badge.classList.add('ws-off');
+            }
+            badge.textContent = s.connected ? `WS: ${parts.join(' · ')}` : 'WS: OFF';
+        }
+
+        if (btn) {
+            btn.addEventListener('click', () => {
+                if (ws.isConnected) {
+                    ws.disconnect();
+                    updateButton(false);
+                    updateBadge();
+                } else {
+                    ws.connect(currentSymbol());
+                    updateButton(true);
+                    // Allow a brief delay for sockets to open before reflecting
+                    setTimeout(updateBadge, 500);
+                }
+            });
+        }
+
+        // When user changes the stock symbol, update WS subscription (if connected)
+        if (stockInput) {
+            stockInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && ws.isConnected) {
+                    ws.changeSymbol(currentSymbol());
+                    setTimeout(updateBadge, 250);
+                }
+            });
+            stockInput.addEventListener('blur', () => {
+                if (ws.isConnected) {
+                    ws.changeSymbol(currentSymbol());
+                    setTimeout(updateBadge, 250);
+                }
+            });
+        }
+
+        // Periodically refresh badge
+        setInterval(updateBadge, 1500);
+        // Initial paint
+        updateButton(false);
+        updateBadge();
+    })();
 
     </script>
 </body>

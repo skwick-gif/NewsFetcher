@@ -13,8 +13,16 @@ This system supports:
 __version__ = "1.0.0"
 __author__ = "MarketPulse AI Team"
 
+import logging
+logger = logging.getLogger(__name__)
+
 from .data_loader import ProgressiveDataLoader
-from .models import ProgressiveModels, UnifiedModel, LSTMModel, TransformerModel, CNNModel, EnsembleModel
+try:
+    from .models import ProgressiveModels, UnifiedModel, LSTMModel, TransformerModel, CNNModel, EnsembleModel
+    MODELS_AVAILABLE = True
+except ImportError:
+    MODELS_AVAILABLE = False
+    logger.warning("⚠️ PyTorch models not available")
 from .trainer import ProgressiveTrainer
 from .predictor import ProgressivePredictor
 

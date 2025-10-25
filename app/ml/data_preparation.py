@@ -217,31 +217,51 @@ class DataPreparation:
             return data
     
     def add_sentiment_data(self, data: pd.DataFrame, symbol: str) -> pd.DataFrame:
-        """הוספת נתוני סנטימנט (כרגע mock - נשלב עם מערכת החדשות שלנו)"""
+        """הוספת נתוני סנטימנט אמיתיים אם זמינים מקובץ stock_data/{symbol}/{symbol}_sentiment.csv
+        - מצטרף לפי תאריך
+        - מוסיף עמודות sentiment (sentiment_score) ו-news_volume (article_count)
+        - ללא דמו: אם אין נתונים/קובץ – מחזירים כמו שהוא
+        """
         try:
+            from pathlib import Path
+            sentiment_path = Path("stock_data") / symbol / f"{symbol}_sentiment.csv"
+            if not sentiment_path.exists():
+                logger.info(f"ℹ️ Sentiment file not found for {symbol}: {sentiment_path}")
+                return data
+
+            sent_df = pd.read_csv(sentiment_path)
+            if sent_df.empty or 'date' not in sent_df.columns:
+                logger.info(f"ℹ️ Invalid/empty sentiment CSV for {symbol}")
+                return data
+
+            keep_cols = [c for c in ['date', 'sentiment_score', 'article_count'] if c in sent_df.columns]
+            sent_df = sent_df[keep_cols].copy()
+            sent_df['date'] = pd.to_datetime(sent_df['date'], errors='coerce').dt.normalize()
+            sent_df = sent_df.dropna(subset=['date']).drop_duplicates(subset=['date'], keep='last')
+
             df = data.copy()
-            
-            # Mock sentiment data (בעתיד נחבר למערכת החדשות האמיתית)
-            # ניצור sentiment score רנדומלי עם bias לכיוון המגמה
-            np.random.seed(42)
-            
-            # Sentiment score בין -1 ל-1
-            df['sentiment'] = np.random.normal(0, 0.3, len(df))
-            
-            # Bias sentiment לפי מגמת המחיר
-            price_trend = df['Close'].pct_change(5).fillna(0)
-            df['sentiment'] = df['sentiment'] + (price_trend * 0.5)
-            df['sentiment'] = df['sentiment'].clip(-1, 1)
-            
-            # News volume (כמות חדשות - mock)
-            df['news_volume'] = np.random.poisson(5, len(df))
-            
-            logger.info(f"✅ Added sentiment data for {symbol}")
-            
-            return df
-            
+            df_reset = df.copy()
+            # Ensure index is DatetimeIndex
+            if not isinstance(df_reset.index, pd.DatetimeIndex):
+                df_reset.index = pd.to_datetime(df_reset.index, errors='coerce')
+            df_reset['__join_date__'] = df_reset.index.to_series().dt.normalize()
+
+            merged = df_reset.merge(
+                sent_df.rename(columns={'date': '__join_date__'}),
+                on='__join_date__', how='left'
+            )
+
+            if 'sentiment_score' in merged.columns:
+                merged['sentiment'] = merged['sentiment_score']
+            if 'article_count' in merged.columns:
+                merged['news_volume'] = merged['article_count']
+
+            merged = merged.drop(columns=['__join_date__'], errors='ignore')
+            merged.index = df.index
+            logger.info(f"✅ Added sentiment features for {symbol} (rows: {len(merged)})")
+            return merged
         except Exception as e:
-            logger.error(f"❌ Error adding sentiment: {e}")
+            logger.warning(f"⚠️ Failed to add sentiment for {symbol}: {e}")
             return data
     
     def prepare_features(self, symbol: str) -> Optional[pd.DataFrame]:

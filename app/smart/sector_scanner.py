@@ -348,8 +348,9 @@ class SectorScanner:
         }
         """
         try:
-            from financial.neural_networks import EnsembleNeuralNetwork
-            from financial.market_data import financial_provider
+            # DISABLED - Neural networks contain dummy data
+            # from financial.neural_networks import EnsembleNeuralNetwork
+            from financial.market_data import financial_provider  
             import pandas as pd
             import numpy as np
             from pathlib import Path
@@ -418,16 +419,10 @@ class SectorScanner:
                 logger.error(f"Error loading real data for {ticker}: {e}")
                 return {'ticker': ticker, 'has_potential': False, 'error': f'Data load error: {str(e)}'}
             
-            # Get ML prediction
-            ensemble = EnsembleNeuralNetwork()
-            prediction = await ensemble.predict(data, ticker)
-            
-            ensemble_pred = prediction.get('ensemble_prediction', {})
-            predicted_price = ensemble_pred.get('prediction', current_price)
-            confidence = ensemble_pred.get('confidence', 0.5)
-            
-            # Calculate expected return
-            expected_return = ((predicted_price - current_price) / current_price) * 100
+            # DISABLED - Neural networks contain dummy data
+            # Use minimal analysis instead  
+            logger.warning(f"ML scanning disabled for {ticker} - neural networks contained dummy data")
+            return {'ticker': ticker, 'has_potential': False, 'error': 'ML scanning disabled'}
             
             # Log for debugging
             logger.info(f"📊 {ticker}: Return={expected_return:.2f}%, Confidence={confidence:.2f}, Price=${current_price:.2f}→${predicted_price:.2f}")

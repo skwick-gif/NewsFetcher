@@ -17,7 +17,7 @@ import numpy as np
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Tuple, Optional, Callable
 from datetime import datetime, timedelta
 import time
 import uuid
@@ -42,7 +42,9 @@ class ProgressiveBacktester:
                  data_loader: ProgressiveDataLoader,
                  trainer: ProgressiveTrainer,
                  predictor: ProgressivePredictor,
-                 config: Optional[Dict] = None):
+                 config: Optional[Dict] = None,
+                 progress_callback: Optional[Callable[[Dict], None]] = None,
+                 cancel_checker: Optional[Callable[[], bool]] = None):
         """
         Initialize Progressive Backtester
         
@@ -82,6 +84,9 @@ class ProgressiveBacktester:
         self.iteration_results = []
         self.best_iteration = None
         self.is_running = False
+        self.progress_callback = progress_callback
+        self.cancel_checker = cancel_checker
+        self.job_model_dir: Optional[Path] = None
         
         logger.info("🔬 Progressive Backtester initialized")
         logger.info(f"   📂 Results directory: {self.config['results_dir']}")
@@ -112,7 +117,7 @@ class ProgressiveBacktester:
             Dictionary with complete backtest results
         """
         
-        # Generate unique job ID
+    # Generate unique job ID
         self.current_job_id = f"backtest_{symbol}_{uuid.uuid4().hex[:8]}"
         self.is_running = True
         self.iteration_results = []
@@ -130,12 +135,29 @@ class ProgressiveBacktester:
         
         start_time = time.time()
         current_train_end = train_end_date
+
+        # Create a dedicated model directory for this backtest job to avoid overwriting production checkpoints
+        try:
+            base_dir = Path(__file__).parent.parent.parent.parent
+            self.job_model_dir = base_dir / "app" / "ml" / "models" / "backtests" / self.current_job_id
+            self.job_model_dir.mkdir(parents=True, exist_ok=True)
+            logger.info(f"   📂 Job model dir: {self.job_model_dir}")
+        except Exception as e:
+            logger.warning(f"⚠️ Could not create job-specific model dir: {e}")
+            self.job_model_dir = Path(self.config.get('results_dir', '.')) / self.current_job_id
+            try:
+                self.job_model_dir.mkdir(parents=True, exist_ok=True)
+            except Exception:
+                pass
         
         # Load full data for the symbol (no date restrictions yet)
         full_loader = ProgressiveDataLoader(
             stock_data_dir=self.data_loader.stock_data_dir,
             sequence_length=self.data_loader.sequence_length,
-            horizons=self.data_loader.horizons
+            horizons=self.data_loader.horizons,
+            use_fundamentals=self.data_loader.use_fundamentals,
+            use_technical_indicators=self.data_loader.use_technical_indicators,
+            indicator_params=getattr(self.data_loader, 'indicator_params', None)
         )
         full_df = full_loader.load_stock_data(symbol)
         
@@ -152,9 +174,43 @@ class ProgressiveBacktester:
         
         # Run iterations
         for iteration in range(1, max_iterations + 1):
+            # Check cancellation
+            if self.cancel_checker and self.cancel_checker():
+                self.is_running = False
+                # Notify progress callback
+                if self.progress_callback:
+                    elapsed = time.time() - start_time
+                    self.progress_callback({
+                        'status': 'cancelled',
+                        'iteration': iteration,
+                        'total_iterations': max_iterations,
+                        'progress': int(((iteration - 1) / max_iterations) * 100),
+                        'current_step': 'Backtest cancelled by user',
+                        'elapsed_seconds': int(elapsed)
+                    })
+                summary = {
+                    'status': 'cancelled',
+                    'job_id': self.current_job_id,
+                    'symbol': symbol,
+                    'total_iterations': len(self.iteration_results),
+                    'all_iterations': self.iteration_results,
+                    'timestamp': datetime.now().isoformat()
+                }
+                return summary
             logger.info(f"\n{'='*70}")
             logger.info(f"🔄 ITERATION {iteration}/{max_iterations}")
             logger.info(f"{'='*70}")
+            # Progress update: starting iteration
+            if self.progress_callback:
+                elapsed = time.time() - start_time
+                self.progress_callback({
+                    'status': 'running',
+                    'iteration': iteration,
+                    'total_iterations': max_iterations,
+                    'progress': int((iteration - 1) / max_iterations * 100),
+                    'current_step': f'Starting iteration {iteration}/{max_iterations}...',
+                    'elapsed_seconds': int(elapsed)
+                })
             
             try:
                 # Train iteration
@@ -168,12 +224,23 @@ class ProgressiveBacktester:
                 )
                 
                 if not iteration_result['success']:
-                    logger.error(f"❌ Iteration {iteration} failed")
+                    logger.error(f"❌ Iteration {iteration} failed: {iteration_result.get('error', 'Unknown error')}")
                     break
                 
                 # Evaluate iteration
                 test_start_date = self._add_days(current_train_end, 1)
                 test_end_date = self._add_days(test_start_date, test_period_days)
+                # Progress update: evaluating
+                if self.progress_callback:
+                    elapsed = time.time() - start_time
+                    self.progress_callback({
+                        'status': 'running',
+                        'iteration': iteration,
+                        'total_iterations': max_iterations,
+                        'progress': int(((iteration - 0.5) / max_iterations) * 100),
+                        'current_step': f'Evaluating iteration {iteration} on test window...',
+                        'elapsed_seconds': int(elapsed)
+                    })
                 
                 evaluation = self.evaluate_iteration(
                     symbol=symbol,
@@ -201,7 +268,9 @@ class ProgressiveBacktester:
                 # Log results
                 logger.info(f"✅ Iteration {iteration} completed")
                 logger.info(f"   📊 Accuracy: {evaluation['accuracy']:.2%}")
-                logger.info(f"   📉 Loss: {iteration_result['val_loss']:.4f}")
+                loss_val = iteration_result.get('val_loss')
+                loss_str = f"{loss_val:.4f}" if isinstance(loss_val, (int, float)) and loss_val is not None else "N/A"
+                logger.info(f"   📉 Loss: {loss_str}")
                 logger.info(f"   ⏱ Time: {iteration_result['training_time']:.1f}s")
                 
                 # Check if we should continue
@@ -213,6 +282,17 @@ class ProgressiveBacktester:
                     auto_stop=auto_stop
                 ):
                     logger.info(f"🎯 Target accuracy reached! Stopping at iteration {iteration}")
+                    # Progress update: target reached
+                    if self.progress_callback:
+                        elapsed = time.time() - start_time
+                        self.progress_callback({
+                            'status': 'running',
+                            'iteration': iteration,
+                            'total_iterations': max_iterations,
+                            'progress': 95,
+                            'current_step': 'Target accuracy reached, finalizing...',
+                            'elapsed_seconds': int(elapsed)
+                        })
                     break
                 
                 # Expand training window for next iteration
@@ -229,13 +309,30 @@ class ProgressiveBacktester:
         self.is_running = False
         
         logger.info("\n" + "=" * 70)
-        logger.info("🎉 BACKTEST COMPLETED")
-        logger.info("=" * 70)
-        logger.info(f"📊 Total iterations: {len(self.iteration_results)}")
-        logger.info(f"🏆 Best accuracy: {summary['best_accuracy']:.2%} (Iteration {summary['best_iteration']})")
-        logger.info(f"⏱ Total time: {total_time:.1f}s ({total_time/60:.1f} minutes)")
+        if summary['status'] == 'completed':
+            logger.info("🎉 BACKTEST COMPLETED")
+            logger.info("=" * 70)
+            logger.info(f"📊 Total iterations: {len(self.iteration_results)}")
+            logger.info(f"🏆 Best accuracy: {summary['best_accuracy']:.2%} (Iteration {summary['best_iteration']})")
+            logger.info(f"⏱ Total time: {total_time:.1f}s ({total_time/60:.1f} minutes)")
+        else:
+            logger.error("❌ BACKTEST FAILED")
+            logger.error("=" * 70)
+            logger.error(f"❌ Error: {summary.get('error', 'Unknown error')}")
+            logger.error(f"⏱ Time: {total_time:.1f}s")
         logger.info("=" * 70)
         
+        # Final progress update
+        if self.progress_callback:
+            elapsed = time.time() - start_time
+            self.progress_callback({
+                'status': 'completed',
+                'progress': 100,
+                'current_step': '✅ Backtest completed successfully!',
+                'elapsed_seconds': int(elapsed),
+                'result': summary
+            })
+
         return summary
     
     def train_iteration(self,
@@ -268,16 +365,25 @@ class ProgressiveBacktester:
                 sequence_length=self.data_loader.sequence_length,
                 horizons=self.data_loader.horizons,
                 train_start_date=train_start_date,
-                train_end_date=train_end_date
+                train_end_date=train_end_date,
+                use_fundamentals=self.data_loader.use_fundamentals,
+                use_technical_indicators=self.data_loader.use_technical_indicators,
+                indicator_params=getattr(self.data_loader, 'indicator_params', None)
             )
             
             # Prepare features
             features_df = iteration_loader.prepare_features(symbol)
             
-            if features_df is None or len(features_df) < 100:
+            if features_df is None:
                 return {
                     'success': False,
-                    'error': 'Insufficient data for training'
+                    'error': 'Failed to load features data'
+                }
+            
+            if len(features_df) < 50:  # Lower threshold for backtesting
+                return {
+                    'success': False,
+                    'error': f'Insufficient data for training: {len(features_df)} samples (need ≥50)'
                 }
             
             # Create sequences
@@ -286,17 +392,53 @@ class ProgressiveBacktester:
             # Split data
             split_data = iteration_loader.split_data(sequences)
             
-            # Train models (using existing trainer but with new data)
+            # REAL TRAINING - Use the existing trainer with custom data
             training_start = time.time()
             
-            # Note: We're using the trainer's methods but need to pass our custom data
-            # For now, we'll use a simplified approach
+            logger.info(f"🚀 Starting REAL training for {len(model_types)} model(s)...")
+            logger.info(f"📊 Training data: {len(features_df)} samples")
+            
+            # Create a temporary trainer instance with this specific data
+            temp_trainer = ProgressiveTrainer(
+                data_loader=iteration_loader,  # Use our custom data loader
+                model_config=self.trainer.model_config,
+                training_config=self.trainer.training_config,
+                # Save checkpoints to job-specific directory to prevent overwriting production models
+                save_dir=str(self.job_model_dir) if self.job_model_dir is not None else str(self.trainer.save_dir)
+            )
+            
+            # Train models using the real training system
+            training_results = temp_trainer.train_progressive_models(
+                symbol=symbol, 
+                model_types=model_types
+            )
+            
+            training_time = time.time() - training_start
+            
+            # Extract results from the real training
+            model_results = training_results.get(model_types[0], {}) if model_types else {}
+            best_horizon = '1d'  # Use 1-day predictions for backtesting
+            horizon_results = model_results.get(best_horizon, {})
+            
+            # Extract real validation loss from training results
+            real_val_loss = None  # live-only: do not use fallback constants
+            if model_results and best_horizon in model_results:
+                horizon_data = model_results[best_horizon]
+                if 'final_loss' in horizon_data:
+                    real_val_loss = horizon_data['final_loss']
+                elif 'history' in horizon_data and 'val_loss' in horizon_data['history']:
+                    val_losses = horizon_data['history']['val_loss']
+                    if val_losses:
+                        real_val_loss = val_losses[-1]  # Last validation loss
+            
             training_result = {
                 'success': True,
                 'train_samples': len(features_df),
-                'training_time': time.time() - training_start,
-                'val_loss': 0.15,  # Placeholder - will be updated with real training
-                'models_trained': model_types
+                'training_time': training_time,
+                'val_loss': real_val_loss,
+                'models_trained': model_types,
+                'model_path': horizon_results.get('model_path', ''),
+                'training_results': training_results  # Keep full results for analysis
             }
             
             # Save model with iteration number
@@ -345,16 +487,132 @@ class ProgressiveBacktester:
                     'error': 'No test data available'
                 }
             
-            # For now, return placeholder metrics
-            # Real implementation will use predictor to make predictions and compare
-            accuracy = self.calculate_accuracy(test_df, test_df)  # Placeholder
-            
+            # REAL EVALUATION - Use the predictor to make actual predictions per test day
+            logger.info(f"🔮 Making real predictions for {len(test_df)} test samples (sliding window)...")
+
+            pred_prices = []
+            act_prices = []
+            pred_dirs = []
+            act_dirs = []
+            predictions_made = 0
+
+            # Temporarily switch predictor to use this job's model_dir and clear any cached models
+            original_model_dir = getattr(self.predictor, 'model_dir', None)
+            try:
+                if self.job_model_dir is not None:
+                    self.predictor.model_dir = Path(self.job_model_dir)
+                    # Clear loaded models cache to force reload from the job directory
+                    self.predictor.loaded_models = {}
+            except Exception:
+                pass
+
+            # Iterate per test day; for each, restrict data up to that day and predict next-day (1d horizon)
+            for test_date in test_df.index:
+                # Check cancellation during evaluation loop
+                if self.cancel_checker and self.cancel_checker():
+                    logger.info("🛑 Cancellation detected during evaluation loop")
+                    break
+                try:
+                    # Prepare a data loader limited to data up to test_date
+                    perday_loader = ProgressiveDataLoader(
+                        stock_data_dir=self.data_loader.stock_data_dir,
+                        sequence_length=self.data_loader.sequence_length,
+                        horizons=self.data_loader.horizons,
+                        train_end_date=str(test_date.date()),
+                        use_fundamentals=self.data_loader.use_fundamentals,
+                        use_technical_indicators=self.data_loader.use_technical_indicators,
+                        indicator_params=getattr(self.data_loader, 'indicator_params', None)
+                    )
+                    # Temporarily swap predictor's data loader
+                    original_loader = self.predictor.data_loader
+                    self.predictor.data_loader = perday_loader
+
+                    prediction_result = self.predictor.predict_ensemble(
+                        symbol=symbol,
+                        mode="progressive"
+                    )
+
+                    # Restore original loader
+                    self.predictor.data_loader = original_loader
+
+                    if prediction_result and isinstance(prediction_result, dict):
+                        pred_1d = prediction_result.get('predictions', {}).get('1d')
+                        if pred_1d:
+                            # Use top-level current_price (per our predictor structure)
+                            current_price = float(prediction_result.get('current_price', 0.0))
+                            change_pct = float(pred_1d.get('price_change_pct', 0.0))
+                            predicted_price = float(current_price * (1.0 + change_pct))
+
+                            # Actual next-day price
+                            # Find next index after test_date in full_df
+                            if test_date in full_df.index:
+                                idx = full_df.index.get_loc(test_date)
+                                if isinstance(idx, (int, np.integer)) and idx + 1 < len(full_df.index):
+                                    next_idx = idx + 1
+                                    actual_today = float(full_df.iloc[idx]['Close']) if 'Close' in full_df.columns else None
+                                    actual_next = float(full_df.iloc[next_idx]['Close']) if 'Close' in full_df.columns else None
+                                    if actual_today is not None and actual_next is not None:
+                                        pred_prices.append(predicted_price)
+                                        act_prices.append(actual_next)
+                                        pred_dirs.append(1 if change_pct > 0 else 0)
+                                        act_dirs.append(1 if (actual_next - actual_today) > 0 else 0)
+                                        predictions_made += 1
+                except Exception as pred_error:
+                    logger.warning(f"⚠️ Prediction failed for {test_date}: {pred_error}")
+                    # Ensure predictor loader is restored
+                    try:
+                        self.predictor.data_loader = original_loader
+                    except Exception:
+                        pass
+                    continue
+
+            # Restore predictor model_dir at the end of evaluation
+            try:
+                if original_model_dir is not None:
+                    self.predictor.model_dir = original_model_dir
+                    # Keep caches cleared to avoid stale handles
+                    self.predictor.loaded_models = {}
+            except Exception:
+                pass
+
+            if predictions_made == 0:
+                # Live-only: no fabricated improvements; report no predictions
+                return {
+                    'accuracy': 0.0,
+                    'test_samples': 0,
+                    'mae': None,
+                    'rmse': None,
+                    'mape': None,
+                    'direction_accuracy': 0.0,
+                    'predictions_made': 0,
+                    'total_test_days': len(test_df),
+                    'note': 'No model predictions could be generated for the test period'
+                }
+
+            # Compute metrics
+            pred_prices_np = np.array(pred_prices)
+            act_prices_np = np.array(act_prices)
+            pred_dirs_np = np.array(pred_dirs)
+            act_dirs_np = np.array(act_dirs)
+
+            direction_accuracy = float(np.mean(pred_dirs_np == act_dirs_np)) if len(pred_dirs_np) > 0 else 0.0
+            mae = float(np.mean(np.abs(pred_prices_np - act_prices_np)))
+            rmse = float(np.sqrt(np.mean((pred_prices_np - act_prices_np) ** 2)))
+            mape = float(np.mean(np.abs((pred_prices_np - act_prices_np) / np.maximum(act_prices_np, 1e-8))) * 100.0)
+
+            logger.info(f"✅ Evaluation complete: {predictions_made} predictions made")
+            logger.info(f"📊 Direction accuracy: {direction_accuracy:.2%}")
+            logger.info(f"📊 MAPE: {mape:.2f}%")
+
             return {
-                'accuracy': accuracy,
-                'test_samples': len(test_df),
-                'mae': 0.02,  # Placeholder
-                'rmse': 0.03,  # Placeholder
-                'direction_accuracy': accuracy
+                'accuracy': direction_accuracy,
+                'test_samples': int(predictions_made),
+                'mae': mae,
+                'rmse': rmse,
+                'mape': mape,
+                'direction_accuracy': direction_accuracy,
+                'predictions_made': int(predictions_made),
+                'total_test_days': len(test_df)
             }
             
         except Exception as e:
@@ -364,20 +622,7 @@ class ProgressiveBacktester:
                 'error': str(e)
             }
     
-    def calculate_accuracy(self, predictions_df: pd.DataFrame, actuals_df: pd.DataFrame) -> float:
-        """
-        Calculate accuracy by comparing predictions to actual values
-        
-        Args:
-            predictions_df: DataFrame with predictions
-            actuals_df: DataFrame with actual values
-            
-        Returns:
-            Accuracy score (0-1)
-        """
-        # Placeholder implementation
-        # Real implementation will compare predicted directions vs actual directions
-        return 0.75 + (np.random.rand() * 0.15)  # Random between 0.75-0.90 for testing
+    # calculate_accuracy function removed - now using real predictions in evaluate_iteration
     
     def should_continue(self,
                        current_accuracy: float,
@@ -459,7 +704,12 @@ class ProgressiveBacktester:
         if not self.iteration_results:
             return {
                 'status': 'failed',
-                'message': 'No iterations completed'
+                'error': 'No iterations completed',
+                'job_id': self.current_job_id,
+                'symbol': symbol,
+                'total_iterations': 0,
+                'total_time': total_time,
+                'timestamp': datetime.now().isoformat()
             }
         
         # Find best iteration

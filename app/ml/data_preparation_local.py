@@ -356,7 +356,7 @@ class DataPreparation:
             
             # Drop rows with NaN (from indicators that need history)
             initial_rows = len(df)
-            df = df.dropna()
+            # df = df.dropna()  # Commented out to allow NaN filling later
             dropped_rows = initial_rows - len(df)
             
             if dropped_rows > 0:
@@ -371,12 +371,57 @@ class DataPreparation:
             return data
     
     def add_sentiment_data(self, data: pd.DataFrame, symbol: str) -> pd.DataFrame:
-        """הוספת נתוני סנטימנט (mock data לבינתיים)"""
-        # TODO: integrate with actual news sentiment
-        data['sentiment_score'] = np.random.uniform(-1, 1, len(data))
-        data['news_volume'] = np.random.randint(0, 100, len(data))
-        
-        return data
+        """הוספת נתוני סנטימנט אמיתיים מקובץ sentiment CSV אם קיים
+        מצטרף לפי תאריך ומוסיף שני פיצ'רים:
+        - sentiment: sentiment_score (ממוצע פולריות יומי)
+        - news_volume: article_count (מספר כתבות ביום)
+        אין הזרקת דמו; אם אין קובץ תקין או שאין התאמות – נחזיר את הנתונים כפי שהם.
+        """
+        try:
+            sentiment_path = self.stock_data_dir / symbol / f"{symbol}_sentiment.csv"
+            if not sentiment_path.exists():
+                logger.info(f"ℹ️ Sentiment file not found for {symbol}: {sentiment_path}")
+                return data
+
+            sent_df = pd.read_csv(sentiment_path)
+            if sent_df.empty or 'date' not in sent_df.columns:
+                logger.info(f"ℹ️ Invalid/empty sentiment CSV for {symbol}")
+                return data
+
+            # Keep only needed columns
+            keep_cols = [c for c in ['date', 'sentiment_score', 'article_count'] if c in sent_df.columns]
+            sent_df = sent_df[keep_cols].copy()
+            # Parse dates and normalize to date only
+            sent_df['date'] = pd.to_datetime(sent_df['date'], errors='coerce').dt.normalize()
+            sent_df = sent_df.dropna(subset=['date']).drop_duplicates(subset=['date'], keep='last')
+
+            # Prepare main data index as date-only for join
+            df = data.copy()
+            idx_name = df.index.name or 'Date'
+            df_reset = df.copy()
+            df_reset['__join_date__'] = df_reset.index.to_series().dt.normalize()
+
+            # Merge
+            merged = df_reset.merge(
+                sent_df.rename(columns={'date': '__join_date__'}),
+                on='__join_date__', how='left'
+            )
+
+            # Map to ML feature names
+            if 'sentiment_score' in merged.columns:
+                merged['sentiment'] = merged['sentiment_score']
+            if 'article_count' in merged.columns:
+                merged['news_volume'] = merged['article_count']
+
+            # Clean up helper columns and restore index
+            merged = merged.drop(columns=['__join_date__'], errors='ignore')
+            merged.index = df.index
+
+            logger.info(f"✅ Added sentiment features for {symbol} (rows: {len(merged)})")
+            return merged
+        except Exception as e:
+            logger.warning(f"⚠️ Failed to add sentiment for {symbol}: {e}")
+            return data
     
     def create_sequences(self, 
                         data: pd.DataFrame,
@@ -389,6 +434,9 @@ class DataPreparation:
             y: (n_samples,) - תשואה עתידית
         """
         try:
+            # Fill NaN values
+            data = data.ffill().bfill().fillna(0)
+            
             # Normalize features
             scaled_data = self.scaler.fit_transform(data[feature_columns])
             

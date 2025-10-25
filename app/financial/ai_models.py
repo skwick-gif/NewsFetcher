@@ -242,53 +242,10 @@ class AdvancedAIModels:
     
     async def predict_price(self, symbol: str, features: MarketFeatures, 
                           time_horizon: str = '1d') -> PredictionResult:
-        """Predict future price using ML models"""
-        try:
-            if not ML_AVAILABLE:
-                return self._basic_price_prediction(symbol, features, time_horizon)
-            
-            # Convert features to array
-            feature_array = np.array([
-                features.price, features.volume, features.price_change_1d,
-                features.price_change_7d, features.price_change_30d,
-                features.volatility_1d, features.volatility_7d,
-                features.rsi, features.macd, features.bollinger_position,
-                features.news_sentiment, features.social_sentiment,
-                features.sector_performance, features.market_sentiment
-            ]).reshape(1, -1)
-            
-            # Use ensemble of models for better prediction
-            predictions = []
-            confidences = []
-            
-            for model_name in ['price_rf', 'price_gb']:
-                if model_name in self.models:
-                    model = self.models[model_name]
-                    
-                    # Simple prediction (in production, would use trained model)
-                    # For now, use rule-based prediction with ML-like structure
-                    prediction = self._ml_style_prediction(features, time_horizon)
-                    predictions.append(prediction)
-                    confidences.append(0.7)  # Mock confidence
-            
-            # Ensemble prediction
-            final_prediction = np.mean(predictions) if predictions else features.price
-            final_confidence = np.mean(confidences) if confidences else 0.5
-            
-            return PredictionResult(
-                symbol=symbol,
-                prediction_type='price',
-                predicted_value=final_prediction,
-                confidence=final_confidence,
-                time_horizon=time_horizon,
-                features_used=self.feature_columns,
-                model_accuracy=0.75,  # Mock accuracy
-                timestamp=datetime.now()
-            )
-            
-        except Exception as e:
-            logger.error(f"Error predicting price for {symbol}: {e}")
-            return self._basic_price_prediction(symbol, features, time_horizon)
+        """Predict future price using ML models
+        Live-only policy: This module requires trained, validated models. Heuristic/mock outputs are disabled.
+        """
+        raise NotImplementedError("AdvancedAIModels.predict_price is disabled under live-only policy; integrate trained models or use Progressive ML.")
     
     def _ml_style_prediction(self, features: MarketFeatures, time_horizon: str) -> float:
         """ML-style prediction using feature weights"""
@@ -371,163 +328,22 @@ class AdvancedAIModels:
         )
     
     async def predict_direction(self, symbol: str, features: MarketFeatures) -> PredictionResult:
-        """Predict price direction (up/down/sideways)"""
-        try:
-            # Calculate probability of upward movement
-            momentum_signal = features.price_change_7d
-            technical_signal = (features.rsi - 50) / 50
-            sentiment_signal = (features.news_sentiment + features.social_sentiment) / 2
-            
-            # Combine signals
-            up_probability = (
-                momentum_signal * 0.4 +
-                technical_signal * 0.3 +
-                sentiment_signal * 0.3
-            )
-            
-            # Normalize to 0-1 probability
-            up_probability = 1 / (1 + np.exp(-up_probability * 5))  # Sigmoid
-            
-            # Determine direction
-            if up_probability > 0.6:
-                direction = 1.0  # Up
-                confidence = up_probability
-            elif up_probability < 0.4:
-                direction = -1.0  # Down
-                confidence = 1 - up_probability
-            else:
-                direction = 0.0  # Sideways
-                confidence = 0.5
-            
-            return PredictionResult(
-                symbol=symbol,
-                prediction_type='direction',
-                predicted_value=direction,
-                confidence=confidence,
-                time_horizon='1d',
-                features_used=['momentum', 'technical', 'sentiment'],
-                model_accuracy=0.68,
-                timestamp=datetime.now()
-            )
-            
-        except Exception as e:
-            logger.error(f"Error predicting direction for {symbol}: {e}")
-            return PredictionResult(
-                symbol=symbol,
-                prediction_type='direction',
-                predicted_value=0.0,
-                confidence=0.5,
-                time_horizon='1d',
-                features_used=[],
-                model_accuracy=0.5,
-                timestamp=datetime.now()
-            )
+        """Predict price direction (up/down/sideways)
+        Live-only policy: disabled until real trained classifier is integrated.
+        """
+        raise NotImplementedError("AdvancedAIModels.predict_direction is disabled under live-only policy; integrate a trained model.")
     
     async def predict_volatility(self, symbol: str, features: MarketFeatures) -> PredictionResult:
-        """Predict future volatility"""
-        try:
-            # Use historical volatility and market factors
-            base_volatility = features.volatility_7d
-            
-            # Volatility factors
-            news_factor = abs(features.news_sentiment) * 0.01  # News increases volatility
-            technical_factor = abs(features.rsi - 50) / 50 * 0.005  # Extreme RSI = volatility
-            momentum_factor = abs(features.price_change_1d) * 0.5  # Recent moves predict volatility
-            
-            predicted_volatility = base_volatility + news_factor + technical_factor + momentum_factor
-            predicted_volatility = max(0.005, min(0.1, predicted_volatility))  # Cap between 0.5% and 10%
-            
-            confidence = 0.7  # Volatility is generally more predictable
-            
-            return PredictionResult(
-                symbol=symbol,
-                prediction_type='volatility',
-                predicted_value=predicted_volatility,
-                confidence=confidence,
-                time_horizon='1d',
-                features_used=['historical_vol', 'news', 'technical', 'momentum'],
-                model_accuracy=0.72,
-                timestamp=datetime.now()
-            )
-            
-        except Exception as e:
-            logger.error(f"Error predicting volatility for {symbol}: {e}")
-            return PredictionResult(
-                symbol=symbol,
-                prediction_type='volatility',
-                predicted_value=0.02,
-                confidence=0.5,
-                time_horizon='1d',
-                features_used=[],
-                model_accuracy=0.5,
-                timestamp=datetime.now()
-            )
+        """Predict future volatility
+        Live-only policy: disabled until a trained volatility model is integrated.
+        """
+        raise NotImplementedError("AdvancedAIModels.predict_volatility is disabled under live-only policy; integrate a trained model.")
     
     async def get_comprehensive_analysis(self, symbol: str, features: MarketFeatures) -> Dict:
-        """Get comprehensive AI analysis for a symbol"""
-        try:
-            # Run all predictions
-            price_pred = await self.predict_price(symbol, features)
-            direction_pred = await self.predict_direction(symbol, features)
-            volatility_pred = await self.predict_volatility(symbol, features)
-            
-            # Calculate risk-adjusted return
-            expected_return = (price_pred.predicted_value - features.price) / features.price
-            risk_adjusted_return = expected_return / max(volatility_pred.predicted_value, 0.01)
-            
-            # Generate trading signal
-            signal_strength = abs(direction_pred.predicted_value) * direction_pred.confidence
-            
-            if direction_pred.predicted_value > 0.5 and signal_strength > 0.4:
-                trading_signal = 'BUY'
-                signal_confidence = signal_strength
-            elif direction_pred.predicted_value < -0.5 and signal_strength > 0.4:
-                trading_signal = 'SELL'
-                signal_confidence = signal_strength
-            else:
-                trading_signal = 'HOLD'
-                signal_confidence = 1 - signal_strength
-            
-            return {
-                'symbol': symbol,
-                'analysis_timestamp': datetime.now().isoformat(),
-                'predictions': {
-                    'price': {
-                        'current': features.price,
-                        'predicted': round(price_pred.predicted_value, 2),
-                        'change_percent': round(expected_return * 100, 2),
-                        'confidence': round(price_pred.confidence, 3)
-                    },
-                    'direction': {
-                        'signal': direction_pred.predicted_value,
-                        'probability': round(direction_pred.confidence, 3),
-                        'interpretation': 'Bullish' if direction_pred.predicted_value > 0 else 'Bearish' if direction_pred.predicted_value < 0 else 'Neutral'
-                    },
-                    'volatility': {
-                        'predicted': round(volatility_pred.predicted_value * 100, 2),  # As percentage
-                        'confidence': round(volatility_pred.confidence, 3),
-                        'risk_level': 'High' if volatility_pred.predicted_value > 0.03 else 'Medium' if volatility_pred.predicted_value > 0.015 else 'Low'
-                    }
-                },
-                'trading_signal': {
-                    'action': trading_signal,
-                    'confidence': round(signal_confidence, 3),
-                    'risk_adjusted_return': round(risk_adjusted_return, 3)
-                },
-                'model_info': {
-                    'ml_enabled': ML_AVAILABLE,
-                    'features_used': len(self.feature_columns),
-                    'avg_accuracy': round((price_pred.model_accuracy + direction_pred.model_accuracy + volatility_pred.model_accuracy) / 3, 3)
-                }
-            }
-            
-        except Exception as e:
-            logger.error(f"Error in comprehensive analysis for {symbol}: {e}")
-            return {
-                'symbol': symbol,
-                'error': str(e),
-                'analysis_timestamp': datetime.now().isoformat()
-            }
+        """Get comprehensive AI analysis for a symbol
+        Live-only policy: disabled until real trained models are integrated.
+        """
+        raise NotImplementedError("AdvancedAIModels.get_comprehensive_analysis is disabled under live-only policy; integrate trained models or use ProgressivePredictor.")
 
 class TimeSeriesAnalyzer:
     """Time series analysis for financial data"""

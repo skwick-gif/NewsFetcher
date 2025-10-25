@@ -276,63 +276,7 @@ class MarketDataManager {
         }
     }
 
-    /**
-     * Update AI Hot Stocks
-     */
-    async updateHotStocks() {
-        try {
-            const response = await fetch('/api/scanner/hot-stocks?limit=5');
-            const data = await response.json();
-
-            if (data.status === 'success' && data.data) {
-                const hotAlertsDiv = document.getElementById('hot-alerts');
-                
-                if (hotAlertsDiv) {
-                    const stocks = data.data.hot_stocks || [];
-                    
-                    if (stocks.length === 0) {
-                        hotAlertsDiv.innerHTML = `
-                            <p style="text-align: center; opacity: 0.6;">
-                                No hot opportunities found.<br>
-                                <small style="font-size: 0.8em;">Scanned ${data.data.total_scanned} stocks</small>
-                            </p>
-                        `;
-                    } else {
-                        hotAlertsDiv.innerHTML = stocks.map(stock => `
-                            <div style="padding: 8px; background: rgba(16, 185, 129, 0.1); border-radius: 6px; margin-bottom: 8px; border-left: 3px solid #10b981;">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <strong style="color: #10b981; font-size: 1.1em;">${stock.symbol}</strong>
-                                    <span style="font-size: 0.9em; color: ${stock.change_percent >= 0 ? '#10b981' : '#ef4444'};">
-                                        ${stock.change_percent >= 0 ? '+' : ''}${stock.change_percent.toFixed(2)}%
-                                    </span>
-                                </div>
-                                <div style="font-size: 0.85em; margin-top: 4px;">
-                                    <div style="opacity: 0.9;">
-                                        💰 $${stock.current_price?.toFixed(2)} → $${stock.predicted_price?.toFixed(2)}
-                                    </div>
-                                    <div style="opacity: 0.8; margin-top: 2px;">
-                                        📈 Expected: <strong style="color: #10b981;">${stock.expected_return?.toFixed(2)}%</strong>
-                                        | ML Score: ${stock.ml_score?.toFixed(0)}
-                                    </div>
-                                    <div style="opacity: 0.7; margin-top: 2px;">
-                                        ${stock.recommendation || 'HOLD'} • Confidence: ${(stock.confidence * 100)?.toFixed(0)}%
-                                    </div>
-                                </div>
-                            </div>
-                        `).join('');
-                    }
-                }
-
-                console.log(`✅ Hot stocks updated (${stocks.length} found)`);
-            }
-        } catch (error) {
-            console.error('❌ Error updating hot stocks:', error);
-            const hotAlertsDiv = document.getElementById('hot-alerts');
-            if (hotAlertsDiv) {
-                hotAlertsDiv.innerHTML = '<p style="text-align: center; opacity: 0.6; color: #ef4444;">Failed to load hot stocks</p>';
-            }
-        }
-    }
+    
 
     /**
      * Fetch real geopolitical risks from backend and render

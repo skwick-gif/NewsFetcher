@@ -50,7 +50,8 @@ class ProgressiveDataLoader:
                  validation_split: float = 0.2,
                  train_start_date: Optional[str] = None,
                  train_end_date: Optional[str] = None,
-                 test_period_days: int = 14):
+                 test_period_days: int = 14,
+                 indicator_params: Optional[Dict[str, Union[int, float, List[int], str]]] = None):
         """
         Initialize Progressive Data Loader
         
@@ -78,6 +79,8 @@ class ProgressiveDataLoader:
         self.use_fundamentals = use_fundamentals
         self.use_technical_indicators = use_technical_indicators
         self.validation_split = validation_split
+        # Indicator parameters with defaults and safe parsing
+        self.indicator_params = self._normalize_indicator_params(indicator_params or {})
         
         # Backtesting parameters
         self.train_start_date = train_start_date
@@ -93,6 +96,10 @@ class ProgressiveDataLoader:
         logger.info(f"   📈 Sequence length: {self.sequence_length} days")
         logger.info(f"   📋 Fundamentals: {'✅' if use_fundamentals else '❌'}")
         logger.info(f"   🔧 Technical indicators: {'✅' if use_technical_indicators else '❌'}")
+        if self.use_technical_indicators:
+            ip = self.indicator_params
+            logger.info(f"   🧩 Indicator params: RSI={ip['rsi_period']}, MACD={ip['macd_fast']}/{ip['macd_slow']}/{ip['macd_signal']}, "
+                        f"SMA={ip['sma_periods']}, EMA={ip['ema_periods']}, BB={ip['bb_period']}±{ip['bb_std']}")
         if train_start_date or train_end_date:
             logger.info(f"   📅 Date range: {train_start_date or 'START'} → {train_end_date or 'END'}")
             logger.info(f"   🧪 Test period: {test_period_days} days")
@@ -107,7 +114,10 @@ class ProgressiveDataLoader:
                 return None
             
             # Load CSV with proper date parsing
-            df = pd.read_csv(csv_path, index_col=0, parse_dates=True)
+            df = pd.read_csv(csv_path, index_col=0)
+            
+            # Parse dates with flexible format - convert to UTC first then remove timezone
+            df.index = pd.to_datetime(df.index, format='mixed', errors='coerce', utc=True).tz_localize(None)
             
             # Ensure columns are in correct order and named properly
             expected_columns = ['Open', 'High', 'Low', 'Close', 'Volume']
@@ -145,46 +155,148 @@ class ProgressiveDataLoader:
             logger.error(f"❌ Error loading {symbol} price data: {e}")
             return None
     
-    def load_fundamental_data(self, symbol: str) -> Dict:
-        """Load JSON fundamental data for a symbol"""
+    def load_technical_indicators(self, symbol: str) -> Optional[pd.DataFrame]:
+        """Load pre-calculated technical indicators for a symbol"""
         try:
-            json_path = self.stock_data_dir / symbol / f"{symbol}_advanced.json"
+            indicators_path = self.stock_data_dir / symbol / f"{symbol}_indicators.csv"
             
-            if not json_path.exists():
-                logger.warning(f"⚠️ Fundamental data not found: {json_path}")
-                return {}
+            if not indicators_path.exists():
+                logger.warning(f"⚠️ Technical indicators not found: {indicators_path}")
+                return None
             
-            with open(json_path, 'r') as f:
-                data = json.load(f)
+            # Load CSV with proper date parsing
+            df = pd.read_csv(indicators_path, index_col=0)
             
-            # Convert percentage strings to floats
-            fundamental_features = {}
+            # Parse dates with flexible format - convert to UTC first then remove timezone
+            df.index = pd.to_datetime(df.index, format='mixed', errors='coerce', utc=True).tz_localize(None)
             
-            # Key fundamental ratios
-            key_metrics = {
-                'P/E': 'pe_ratio',
-                'EPS (ttm)': 'eps_ttm', 
-                'P/S': 'ps_ratio',
-                'P/B': 'pb_ratio',
-                'PEG': 'peg_ratio',
-                'ROE': 'roe',
-                'ROI': 'roi',
-                'Debt/Eq': 'debt_to_equity',
-                'Market Cap': 'market_cap',
-                'Forward P/E': 'forward_pe'
-            }
+            # Sort by date
+            df = df.sort_index()
             
-            for json_key, feature_name in key_metrics.items():
-                if json_key in data:
-                    value = self._parse_financial_value(data[json_key])
-                    if value is not None:
-                        fundamental_features[feature_name] = value
+            # Filter by date range if specified
+            if self.train_start_date:
+                df = df[df.index >= self.train_start_date]
             
-            logger.info(f"✅ Loaded {symbol} fundamentals: {len(fundamental_features)} features")
-            return fundamental_features
+            if self.train_end_date:
+                df = df[df.index <= self.train_end_date]
+            
+            logger.info(f"✅ Loaded {symbol} indicators: {len(df)} days, {len(df.columns)} indicators")
+            return df
             
         except Exception as e:
-            logger.warning(f"⚠️ Error loading {symbol} fundamentals: {e}")
+            logger.error(f"❌ Error loading {symbol} indicators: {e}")
+            return None
+    
+    def load_sentiment_data(self, symbol: str) -> Optional[pd.DataFrame]:
+        """Load sentiment analysis data for a symbol"""
+        try:
+            sentiment_path = self.stock_data_dir / symbol / f"{symbol}_sentiment.csv"
+            
+            if not sentiment_path.exists():
+                logger.warning(f"⚠️ Sentiment data not found: {sentiment_path}")
+                return None
+            
+            # Load CSV with proper date parsing
+            df = pd.read_csv(sentiment_path, index_col=0, parse_dates=True)
+            
+            # Sort by date
+            df = df.sort_index()
+            
+            # Filter by date range if specified
+            if self.train_start_date:
+                df = df[df.index >= self.train_start_date]
+            
+            if self.train_end_date:
+                df = df[df.index <= self.train_end_date]
+            
+            logger.info(f"✅ Loaded {symbol} sentiment: {len(df)} days, {len(df.columns)} sentiment features")
+            return df
+            
+        except Exception as e:
+            logger.error(f"❌ Error loading {symbol} sentiment: {e}")
+            return None
+    
+    def load_fundamental_data(self, symbol: str) -> Dict[str, float]:
+        """Load fundamental data including economic indicators from advanced JSON"""
+        try:
+            # Check cache first
+            if symbol in self._fundamental_cache:
+                return self._fundamental_cache[symbol]
+            
+            advanced_path = self.stock_data_dir / symbol / f"{symbol}_advanced.json"
+            
+            if not advanced_path.exists():
+                logger.warning(f"⚠️ Advanced data not found: {advanced_path}")
+                return {}
+            
+            # Load JSON data
+            with open(advanced_path, 'r') as f:
+                data = json.load(f)
+            
+            fundamentals = {}
+            
+            # Extract fundamental metrics
+            if 'fundamentals' in data:
+                fund_data = data['fundamentals']
+                
+                # Financial ratios and metrics
+                financial_keys = [
+                    'market_cap', 'pe_ratio', 'pb_ratio', 'debt_to_equity', 
+                    'return_on_equity', 'return_on_assets', 'gross_margin',
+                    'operating_margin', 'net_margin', 'revenue_growth',
+                    'earnings_growth', 'dividend_yield', 'beta'
+                ]
+                
+                for key in financial_keys:
+                    if key in fund_data and fund_data[key] is not None:
+                        parsed_value = self._parse_financial_value(str(fund_data[key]))
+                        if parsed_value is not None:
+                            fundamentals[key] = parsed_value
+                
+                # Company info
+                if 'sector' in fund_data:
+                    fundamentals['sector'] = hash(fund_data['sector']) % 1000  # Convert to numeric
+                if 'industry' in fund_data:
+                    fundamentals['industry'] = hash(fund_data['industry']) % 1000  # Convert to numeric
+            
+            # Extract economic indicators
+            if 'Economic_Data' in data:
+                econ_data = data['Economic_Data']
+                
+                # Interest rates
+                if 'FEDFUNDS' in econ_data:
+                    fundamentals['fed_funds_rate'] = float(econ_data['FEDFUNDS'])
+                if 'treasury_10y' in econ_data:
+                    fundamentals['treasury_10y'] = float(econ_data['treasury_10y'])
+                if 'treasury_2y' in econ_data:
+                    fundamentals['treasury_2y'] = float(econ_data['treasury_2y'])
+                
+                # Economic indicators with proper key mapping
+                economic_mappings = {
+                    'GDP': 'gdp_growth',
+                    'UNRATE': 'unemployment_rate', 
+                    'CPIAUCSL': 'cpi',
+                    'UMCSENT': 'consumer_confidence',
+                    'RSAFS': 'retail_sales',
+                    'INDPRO': 'industrial_production',
+                    'HOUST': 'housing_starts',
+                    'VIX': 'vix'
+                }
+                
+                for json_key, internal_key in economic_mappings.items():
+                    if json_key in econ_data and econ_data[json_key] is not None:
+                        parsed_value = self._parse_financial_value(str(econ_data[json_key]))
+                        if parsed_value is not None:
+                            fundamentals[f'econ_{internal_key}'] = parsed_value
+            
+            # Cache the results
+            self._fundamental_cache[symbol] = fundamentals
+            
+            logger.info(f"✅ Loaded {symbol} fundamentals: {len(fundamentals)} features")
+            return fundamentals
+            
+        except Exception as e:
+            logger.error(f"❌ Error loading {symbol} fundamental data: {e}")
             return {}
     
     def _parse_financial_value(self, value_str: str) -> Optional[float]:
@@ -218,6 +330,7 @@ class ProgressiveDataLoader:
         """Calculate comprehensive technical indicators"""
         try:
             df = df.copy()
+            ip = self.indicator_params
             
             # Basic price features
             df['returns'] = df['Close'].pct_change()
@@ -227,8 +340,9 @@ class ProgressiveDataLoader:
             df['price_volume_trend'] = (df['Close'].pct_change() * df['Volume']).rolling(10).mean()
             
             # Moving averages
-            for period in [5, 10, 20, 50]:
+            for period in ip['sma_periods']:
                 df[f'sma_{period}'] = df['Close'].rolling(period).mean()
+            for period in ip['ema_periods']:
                 df[f'ema_{period}'] = df['Close'].ewm(span=period).mean()
             
             # Price relative to MAs
@@ -236,8 +350,8 @@ class ProgressiveDataLoader:
             df['price_above_sma50'] = (df['Close'] > df['sma_50']).astype(int)
             
             # Bollinger Bands
-            bb_period = 20
-            bb_std = 2
+            bb_period = int(ip['bb_period'])
+            bb_std = float(ip['bb_std'])
             df['bb_middle'] = df['Close'].rolling(bb_period).mean()
             bb_std_val = df['Close'].rolling(bb_period).std()
             df['bb_upper'] = df['bb_middle'] + (bb_std_val * bb_std)
@@ -246,8 +360,13 @@ class ProgressiveDataLoader:
             
             if TALIB_AVAILABLE:
                 # Advanced indicators with TA-Lib
-                df['rsi'] = talib.RSI(df['Close'].values, timeperiod=14)
-                df['macd'], df['macd_signal'], df['macd_hist'] = talib.MACD(df['Close'].values)
+                df['rsi'] = talib.RSI(df['Close'].values, timeperiod=int(ip['rsi_period']))
+                df['macd'], df['macd_signal'], df['macd_hist'] = talib.MACD(
+                    df['Close'].values,
+                    fastperiod=int(ip['macd_fast']),
+                    slowperiod=int(ip['macd_slow']),
+                    signalperiod=int(ip['macd_signal'])
+                )
                 df['atr'] = talib.ATR(df['High'].values, df['Low'].values, df['Close'].values)
                 df['adx'] = talib.ADX(df['High'].values, df['Low'].values, df['Close'].values)
                 df['cci'] = talib.CCI(df['High'].values, df['Low'].values, df['Close'].values)
@@ -255,8 +374,13 @@ class ProgressiveDataLoader:
                 df['stoch_k'], df['stoch_d'] = talib.STOCH(df['High'].values, df['Low'].values, df['Close'].values)
             else:
                 # Manual calculations
-                df['rsi'] = self._calculate_rsi(df['Close'])
-                df['macd'], df['macd_signal'] = self._calculate_macd(df['Close'])
+                df['rsi'] = self._calculate_rsi(df['Close'], period=int(ip['rsi_period']))
+                df['macd'], df['macd_signal'] = self._calculate_macd(
+                    df['Close'],
+                    fast=int(ip['macd_fast']),
+                    slow=int(ip['macd_slow']),
+                    signal=int(ip['macd_signal'])
+                )
                 df['atr'] = self._calculate_atr(df['High'], df['Low'], df['Close'])
             
             # Volume indicators
@@ -292,12 +416,12 @@ class ProgressiveDataLoader:
         rsi = 100 - (100 / (1 + rs))
         return rsi
     
-    def _calculate_macd(self, prices: pd.Series) -> Tuple[pd.Series, pd.Series]:
-        """Manual MACD calculation"""
-        ema12 = prices.ewm(span=12).mean()
-        ema26 = prices.ewm(span=26).mean()
-        macd = ema12 - ema26
-        signal = macd.ewm(span=9).mean()
+    def _calculate_macd(self, prices: pd.Series, fast: int = 12, slow: int = 26, signal: int = 9) -> Tuple[pd.Series, pd.Series]:
+        """Manual MACD calculation with configurable periods"""
+        ema_fast = prices.ewm(span=fast).mean()
+        ema_slow = prices.ewm(span=slow).mean()
+        macd = ema_fast - ema_slow
+        signal = macd.ewm(span=signal).mean()
         return macd, signal
     
     def _calculate_atr(self, high: pd.Series, low: pd.Series, close: pd.Series, period: int = 14) -> pd.Series:
@@ -309,6 +433,43 @@ class ProgressiveDataLoader:
         true_range = ranges.max(axis=1)
         atr = true_range.rolling(period).mean()
         return atr
+
+    def _normalize_indicator_params(self, params: Dict[str, Union[int, float, List[int], str]]) -> Dict[str, Union[int, float, List[int]]]:
+        """Fill defaults and convert CSV strings to lists for indicator params"""
+        def _parse_int_list(v, default):
+            try:
+                if isinstance(v, list):
+                    return [int(x) for x in v if int(x) > 0]
+                if isinstance(v, str):
+                    return [int(x.strip()) for x in v.split(',') if x.strip().isdigit()]
+                if isinstance(v, int):
+                    return [int(v)]
+            except Exception:
+                pass
+            return default
+
+        out = {
+            'rsi_period': int(params.get('rsi_period', 14) or 14),
+            'macd_fast': int(params.get('macd_fast', 12) or 12),
+            'macd_slow': int(params.get('macd_slow', 26) or 26),
+            'macd_signal': int(params.get('macd_signal', 9) or 9),
+            'sma_periods': _parse_int_list(params.get('sma_periods'), [5, 10, 20, 50]),
+            'ema_periods': _parse_int_list(params.get('ema_periods'), [5, 10, 20, 50]),
+            'bb_period': int(params.get('bb_period', 20) or 20),
+            'bb_std': float(params.get('bb_std', 2) or 2.0)
+        }
+        # Sanity clamps
+        out['rsi_period'] = max(2, min(200, out['rsi_period']))
+        out['macd_fast'] = max(2, min(200, out['macd_fast']))
+        out['macd_slow'] = max(out['macd_fast'] + 1, min(400, out['macd_slow']))
+        out['macd_signal'] = max(2, min(200, out['macd_signal']))
+        out['bb_period'] = max(5, min(200, out['bb_period']))
+        out['bb_std'] = max(0.5, min(5.0, out['bb_std']))
+        if not out['sma_periods']:
+            out['sma_periods'] = [5, 10, 20, 50]
+        if not out['ema_periods']:
+            out['ema_periods'] = [5, 10, 20, 50]
+        return out
     
     def create_multi_horizon_targets(self, df: pd.DataFrame) -> pd.DataFrame:
         """Create target variables for all prediction horizons"""
@@ -337,17 +498,56 @@ class ProgressiveDataLoader:
         logger.info(f"🎯 Created targets for horizons: {self.horizons} days")
         return df
     
-    def prepare_features(self, symbol: str) -> Optional[pd.DataFrame]:
-        """Prepare complete feature set for a symbol"""
+    def prepare_features(self, symbol: str, for_prediction: bool = False) -> Optional[pd.DataFrame]:
+        """Prepare complete feature set for a symbol
+        
+        Args:
+            symbol: Stock symbol
+            for_prediction: If True, keeps the last rows for prediction (doesn't remove target rows)
+        """
         try:
             # Load price data
             df = self.load_stock_data(symbol)
             if df is None:
                 return None
             
-            # Calculate technical indicators
+            # Load pre-calculated technical indicators
             if self.use_technical_indicators:
-                df = self.calculate_technical_indicators(df)
+                indicators_df = self.load_technical_indicators(symbol)
+                if indicators_df is not None:
+                    # Remove overlapping columns to avoid conflicts
+                    overlapping_cols = set(df.columns) & set(indicators_df.columns)
+                    if overlapping_cols:
+                        indicators_df = indicators_df.drop(columns=list(overlapping_cols))
+                        logger.info(f"📊 Removed {len(overlapping_cols)} overlapping columns from indicators")
+                    
+                    # Merge indicators with price data
+                    df = df.join(indicators_df, how='left')
+                    logger.info(f"📊 Merged {len(indicators_df.columns)} technical indicators")
+                else:
+                    logger.warning(f"⚠️ Using calculated indicators for {symbol}")
+                    df = self.calculate_technical_indicators(df)
+            
+            # Load sentiment data
+            sentiment_df = self.load_sentiment_data(symbol)
+            if sentiment_df is not None:
+                # Remove overlapping columns to avoid conflicts
+                overlapping_cols = set(df.columns) & set(sentiment_df.columns)
+                if overlapping_cols:
+                    sentiment_df = sentiment_df.drop(columns=list(overlapping_cols))
+                    logger.info(f"📊 Removed {len(overlapping_cols)} overlapping columns from sentiment")
+                
+                # Merge sentiment with price data (left join to keep all price data)
+                df = df.join(sentiment_df, how='left')
+                
+                # Forward fill sentiment data to handle sparse dates
+                sentiment_cols_in_df = [col for col in df.columns if col in sentiment_df.columns]
+                if sentiment_cols_in_df:
+                    df[sentiment_cols_in_df] = df[sentiment_cols_in_df].fillna(method='ffill')
+                    # Fill any remaining NaN at the beginning with 0
+                    df[sentiment_cols_in_df] = df[sentiment_cols_in_df].fillna(0)
+                
+                logger.info(f"📊 Merged {len(sentiment_df.columns)} sentiment features (forward-filled)")
             
             # Add fundamental features (broadcast to all rows)
             if self.use_fundamentals:
@@ -358,11 +558,43 @@ class ProgressiveDataLoader:
             # Create multi-horizon targets
             df = self.create_multi_horizon_targets(df)
             
-            # Remove rows that don't have targets (last N rows)
-            max_horizon = max(self.horizons)
-            df = df.iloc[:-max_horizon]  # Remove last max_horizon rows
+            # Remove rows that don't have targets (last N rows) - only for training
+            if not for_prediction:
+                max_horizon = max(self.horizons)
+                df = df.iloc[:-max_horizon]  # Remove last max_horizon rows
+                logger.info(f"📊 Removed last {max_horizon} rows for training (no targets available)")
+            else:
+                logger.info(f"📊 Keeping all rows for prediction mode")
+            
+            # Final cleanup - only remove rows where essential data is missing
+            # Keep rows even if sentiment data is missing (filled with 0 or ffill)
+            essential_cols = ['Open', 'High', 'Low', 'Close', 'Volume']
+            initial_len = len(df)
+            df = df.dropna(subset=essential_cols)
+            if len(df) < initial_len:
+                logger.info(f"📝 Removed {initial_len - len(df)} rows with missing essential data")
+            
+            # Fill NaN values in technical indicators with forward fill, then backward fill
+            indicator_cols = [col for col in df.columns if col not in essential_cols and not col.startswith(('target_', 'fund_'))]
+            if indicator_cols:
+                df[indicator_cols] = df[indicator_cols].fillna(method='ffill')
+                df[indicator_cols] = df[indicator_cols].fillna(method='bfill')
+                # Fill any remaining NaN (at the beginning) with 0
+                df[indicator_cols] = df[indicator_cols].fillna(0)
+            
+            # Convert all columns to numeric, coercing errors to NaN
+            numeric_cols = [col for col in df.columns if not col.startswith('target_')]
+            for col in numeric_cols:
+                df[col] = pd.to_numeric(df[col], errors='coerce')
+            
+            # Fill any NaN values created by coercion with 0
+            df[numeric_cols] = df[numeric_cols].fillna(0)
+            
+            # Ensure all data types are float64 for consistency
+            df[numeric_cols] = df[numeric_cols].astype('float64')
             
             logger.info(f"✅ Features prepared for {symbol}: {len(df)} samples, {len(df.columns)} features")
+            logger.info(f"📊 Data types: {df.dtypes.value_counts().to_dict()}")
             return df
             
         except Exception as e:

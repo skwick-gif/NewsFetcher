@@ -45,3 +45,28 @@ docker-compose logs api | grep -i "yahoo\|alpha\|demo"
 ## 💡 המלצה:
 המערכת כרגע עובדת מצוין עם נתוני דמו ריאליסטיים.
 לייצור - מומלץ להשיג Alpha Vantage key חינמי.
+
+---
+
+## 🤖 Gemini (לשימושי LLM עתידיים/העשרה)
+
+אנחנו תומכים בזיהוי מפתח של Gemini לצורך העשרה עתידית של תובנות (ללא נתוני דמו). כרגע המפתח נבדק דרך בריאות ספקים, ואפשר להגדיר אותו כמשתנה סביבה:
+
+### Windows PowerShell:
+```powershell
+$env:GEMINI_API_KEY = "YOUR_GEMINI_KEY_HERE"
+```
+
+### Linux/Mac:
+```bash
+export GEMINI_API_KEY="YOUR_GEMINI_KEY_HERE"
+```
+
+לאחר ההגדרה, אפשר לוודא שהמערכת רואה את המפתח:
+
+```powershell
+# בדיקת זמינות ספקים (כולל Gemini)
+Invoke-RestMethod -Uri "http://localhost:8000/api/sentiment/providers" | ConvertTo-Json -Depth 5
+```
+
+הערה: המערכת עובדת במצב Live-only; אם נתוני סנטימנט אינם זמינים בפועל מהספקים (NewsAPI/Bing/Alpha Vantage/Yahoo), תחזור תשובת 200 עם הודעה ידידותית "No sentiment data available" – ללא נתוני דמה.

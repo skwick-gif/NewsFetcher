@@ -15,13 +15,13 @@
    - ✅ כל ה-IDs מוגדרים נכון
    - ✅ 4 טאבים: Overview, AI Analysis, Articles, Settings
 
-3. **JavaScript Modules** (6 קבצים):
-   - ✅ `main.js` - Orchestrator ראשי
+3. **JavaScript Modules**:
+   - ✅ Orchestrator: inline בתוך `dashboard.html` (אין `main.js`)
    - ✅ `market-data.js` - עדכוני מדדים
    - ✅ `chart-manager.js` - גרפים
    - ✅ `alerts-manager.js` - התראות
    - ✅ `ml-scanner.js` - AI analysis
-   - ✅ `settings-manager.js` - הגדרות
+   - ✅ (אין `settings-manager.js`) - ההגדרות מנוהלות inline בתוך `dashboard.html`
    - ✅ `websocket-client.js` - real-time
 
 4. **Flask Proxy Server** (`server.py`):
@@ -182,7 +182,7 @@ MarketPulse/
 │   │   └── dashboard.html           # ✅ מוכן - אולי CSS tweaks
 │   ├── static/
 │   │   └── js/
-│   │       ├── main.js              # ⚠️ לבדוק initialization
+│   │       ├── (אין main.js)
 │   │       └── modules/
 │   │           ├── market-data.js   # ⚠️ לבדוק API calls
 │   │           ├── chart-manager.js # ⚠️ לבדוק Chart.js

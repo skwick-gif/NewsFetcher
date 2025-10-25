@@ -217,32 +217,11 @@ class DataPreparation:
             return data
     
     def add_sentiment_data(self, data: pd.DataFrame, symbol: str) -> pd.DataFrame:
-        """הוספת נתוני סנטימנט (כרגע mock - נשלב עם מערכת החדשות שלנו)"""
-        try:
-            df = data.copy()
-            
-            # Mock sentiment data (בעתיד נחבר למערכת החדשות האמיתית)
-            # ניצור sentiment score רנדומלי עם bias לכיוון המגמה
-            np.random.seed(42)
-            
-            # Sentiment score בין -1 ל-1
-            df['sentiment'] = np.random.normal(0, 0.3, len(df))
-            
-            # Bias sentiment לפי מגמת המחיר
-            price_trend = df['Close'].pct_change(5).fillna(0)
-            df['sentiment'] = df['sentiment'] + (price_trend * 0.5)
-            df['sentiment'] = df['sentiment'].clip(-1, 1)
-            
-            # News volume (כמות חדשות - mock)
-            df['news_volume'] = np.random.poisson(5, len(df))
-            
-            logger.info(f"✅ Added sentiment data for {symbol}")
-            
-            return df
-            
-        except Exception as e:
-            logger.error(f"❌ Error adding sentiment: {e}")
-            return data
+        """הוספת נתוני סנטימנט
+        Live-only policy: No mock sentiment. This is a no-op until a real sentiment provider is integrated.
+        """
+        logger.info(f"⏭️ Skipping sentiment injection for {symbol} (live-only, no mock)")
+        return data
     
     def prepare_features(self, symbol: str) -> Optional[pd.DataFrame]:
         """הכנה מלאה של כל הפיצ'רים למניה"""

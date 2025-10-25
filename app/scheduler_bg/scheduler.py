@@ -501,12 +501,12 @@ Source: {source}
             # Get project root directory
             project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
             
-            # Run download_prices.py (correct script for price downloads)
-            script_path = os.path.join(project_root, "ToUse", "download_prices.py")
-            
+            # Run canonical price download script under app/data
+            script_path = os.path.join(project_root, "app", "data", "download_prices.py")
+
             result = subprocess.run([
                 sys.executable, script_path
-            ], capture_output=True, text=True, cwd=project_root)
+            ], capture_output=True, text=True, cwd=os.path.join(project_root, "app", "data"))
             
             if result.returncode == 0:
                 logger.info("✅ Daily price download completed successfully")
@@ -531,12 +531,12 @@ Source: {source}
             # Get project root directory  
             project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
             
-            # Run weekly fundamentals script
-            script_path = os.path.join(project_root, "ToUse", "download_fundamentals.py")
-            
+            # Run canonical weekly fundamentals script under app/data
+            script_path = os.path.join(project_root, "app", "data", "download_fundamentals.py")
+
             result = subprocess.run([
                 sys.executable, script_path
-            ], capture_output=True, text=True, cwd=project_root)
+            ], capture_output=True, text=True, cwd=os.path.join(project_root, "app", "data"))
             
             if result.returncode == 0:
                 logger.info("✅ Weekly fundamentals update completed successfully")

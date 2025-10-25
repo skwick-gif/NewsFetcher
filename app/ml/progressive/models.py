@@ -130,14 +130,22 @@ class LSTMModel(nn.Module):
         
         # Output layers based on mode
         if self.mode == "progressive":
-            # Separate output layer for each horizon
-            self.output_layers = nn.ModuleDict()
+            # Separate heads per horizon (regression + classification)
+            self.regression_heads = nn.ModuleDict()
+            self.classification_heads = nn.ModuleDict()
             for horizon in self.horizons:
-                self.output_layers[f'{horizon}d'] = nn.Sequential(
+                self.regression_heads[f'{horizon}d'] = nn.Sequential(
                     nn.Linear(lstm_units[-1], 64),
                     nn.ReLU(),
                     nn.Dropout(dropout_rate),
-                    nn.Linear(64, 1)  # Single output for each horizon
+                    nn.Linear(64, 1)
+                )
+                self.classification_heads[f'{horizon}d'] = nn.Sequential(
+                    nn.Linear(lstm_units[-1], 64),
+                    nn.ReLU(),
+                    nn.Dropout(dropout_rate),
+                    nn.Linear(64, 1),
+                    nn.Sigmoid()
                 )
         else:
             # Unified output for all horizons
@@ -151,6 +159,8 @@ class LSTMModel(nn.Module):
     def forward(self, x, horizon=None):
         """Forward pass"""
         # x shape: (batch_size, sequence_length, input_size)
+        # Ensure input is on the same device as the model
+        x = x.to(self.device)
         
         # Pass through LSTM layers
         hidden = x
@@ -164,7 +174,11 @@ class LSTMModel(nn.Module):
         if self.mode == "progressive":
             if horizon is None:
                 raise ValueError("horizon must be specified for progressive mode")
-            return self.output_layers[f'{horizon}d'](hidden)
+            reg = self.regression_heads[f'{horizon}d'](hidden)
+            # Bound regression output to a reasonable range to avoid exploding prices
+            reg = torch.tanh(reg)
+            clf = self.classification_heads[f'{horizon}d'](hidden)
+            return reg, clf
         else:
             return self.output_layer(hidden)
 
@@ -314,14 +328,22 @@ class TransformerModel(nn.Module):
         
         # Output layers based on mode
         if self.mode == "progressive":
-            # Separate output layer for each horizon
-            self.output_layers = nn.ModuleDict()
+            # Separate heads per horizon (regression + classification)
+            self.regression_heads = nn.ModuleDict()
+            self.classification_heads = nn.ModuleDict()
             for horizon in self.horizons:
-                self.output_layers[f'{horizon}d'] = nn.Sequential(
+                self.regression_heads[f'{horizon}d'] = nn.Sequential(
                     nn.Linear(embed_dim, 64),
                     nn.ReLU(),
                     nn.Dropout(dropout_rate),
                     nn.Linear(64, 1)
+                )
+                self.classification_heads[f'{horizon}d'] = nn.Sequential(
+                    nn.Linear(embed_dim, 64),
+                    nn.ReLU(),
+                    nn.Dropout(dropout_rate),
+                    nn.Linear(64, 1),
+                    nn.Sigmoid()
                 )
         else:
             # Unified output for all horizons
@@ -335,6 +357,8 @@ class TransformerModel(nn.Module):
     def forward(self, x, horizon=None):
         """Forward pass"""
         # x shape: (batch_size, sequence_length, input_size)
+        # Ensure input is on the same device as the model
+        x = x.to(self.device)
         
         # Input projection
         x = self.input_projection(x)
@@ -354,7 +378,11 @@ class TransformerModel(nn.Module):
         if self.mode == "progressive":
             if horizon is None:
                 raise ValueError("horizon must be specified for progressive mode")
-            return self.output_layers[f'{horizon}d'](x)
+            reg = self.regression_heads[f'{horizon}d'](x)
+            # Bound regression output to a reasonable range to avoid exploding prices
+            reg = torch.tanh(reg)
+            clf = self.classification_heads[f'{horizon}d'](x)
+            return reg, clf
         else:
             return self.output_layer(x)
     
@@ -419,6 +447,7 @@ class CNNModel(nn.Module):
         self.conv_layers.append(
             nn.Sequential(
                 nn.Conv1d(self.input_size, filters[0], kernel_size=kernel_sizes[0], padding=1),
+                nn.BatchNorm1d(filters[0]),
                 nn.ReLU(),
                 nn.Dropout(dropout_rate)
             )
@@ -429,6 +458,7 @@ class CNNModel(nn.Module):
             self.conv_layers.append(
                 nn.Sequential(
                     nn.Conv1d(filters[i-1], filters[i], kernel_size=kernel_sizes[i], padding=1),
+                    nn.BatchNorm1d(filters[i]),
                     nn.ReLU(),
                     nn.Dropout(dropout_rate)
                 )
@@ -439,14 +469,22 @@ class CNNModel(nn.Module):
         
         # Output layers based on mode
         if self.mode == "progressive":
-            # Separate output layer for each horizon
-            self.output_layers = nn.ModuleDict()
+            # Separate heads per horizon (regression + classification)
+            self.regression_heads = nn.ModuleDict()
+            self.classification_heads = nn.ModuleDict()
             for horizon in self.horizons:
-                self.output_layers[f'{horizon}d'] = nn.Sequential(
+                self.regression_heads[f'{horizon}d'] = nn.Sequential(
                     nn.Linear(filters[-1], 64),
                     nn.ReLU(),
                     nn.Dropout(dropout_rate),
                     nn.Linear(64, 1)
+                )
+                self.classification_heads[f'{horizon}d'] = nn.Sequential(
+                    nn.Linear(filters[-1], 64),
+                    nn.ReLU(),
+                    nn.Dropout(dropout_rate),
+                    nn.Linear(64, 1),
+                    nn.Sigmoid()
                 )
         else:
             # Unified output for all horizons
@@ -460,6 +498,8 @@ class CNNModel(nn.Module):
     def forward(self, x, horizon=None):
         """Forward pass"""
         # x shape: (batch_size, sequence_length, input_size)
+        # Ensure input is on the same device as the model
+        x = x.to(self.device)
         # Conv1D expects: (batch_size, input_size, sequence_length)
         x = x.transpose(1, 2)
         
@@ -474,54 +514,22 @@ class CNNModel(nn.Module):
         if self.mode == "progressive":
             if horizon is None:
                 raise ValueError("horizon must be specified for progressive mode")
-            return self.output_layers[f'{horizon}d'](x)
+            reg = self.regression_heads[f'{horizon}d'](x)
+            # Bound regression output to a reasonable range to avoid exploding prices
+            reg = torch.tanh(reg)
+            clf = self.classification_heads[f'{horizon}d'](x)
+            return reg, clf
         else:
             return self.output_layer(x)
     
     def get_optimizer(self):
         """Get PyTorch optimizer"""
-        return torch.optim.Adam(self.parameters(), lr=self.params['learning_rate'])
+        # Slight weight decay to improve generalization
+        return torch.optim.Adam(self.parameters(), lr=self.params['learning_rate'], weight_decay=1e-5)
     
     def get_loss_fn(self):
         """Get loss function"""
         return nn.MSELoss()
-        
-        # Positional encoding
-        positions = tf.range(start=0, limit=self.input_shape[0], delta=1)
-        position_embedding = layers.Embedding(
-            input_dim=self.input_shape[0], output_dim=self.input_shape[1]
-        )(positions)
-        
-        x = inputs + position_embedding
-        
-        # Transformer blocks
-        head_size = self.input_shape[1] // self.params['num_heads']
-        for _ in range(self.params['num_transformer_blocks']):
-            x = self._transformer_encoder(
-                x, head_size, self.params['num_heads'],
-                self.params['ff_dim'], self.params['dropout_rate']
-            )
-        
-        x = layers.GlobalAveragePooling1D()(x)
-        shared_dense = layers.Dense(128, activation="relu")(x)
-        
-        # Multi-horizon outputs
-        regression_outputs = []
-        classification_outputs = []
-        
-        for horizon in self.horizons:
-            horizon_dense = layers.Dense(64, activation="relu")(shared_dense)
-            horizon_dropout = layers.Dropout(self.params['dropout_rate'])(horizon_dense)
-            
-            reg_out = layers.Dense(1, activation='linear', name=f'price_pred_{horizon}d')(horizon_dropout)
-            clf_out = layers.Dense(1, activation='sigmoid', name=f'direction_pred_{horizon}d')(horizon_dropout)
-            
-            regression_outputs.append(reg_out)
-            classification_outputs.append(clf_out)
-        
-        model = keras.Model(inputs=inputs, outputs=regression_outputs + classification_outputs)
-        
-        # Compile with multi-task losses
 # Legacy wrapper classes for backward compatibility
 class ProgressiveModels:
     """Legacy wrapper for backward compatibility"""

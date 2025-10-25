@@ -20,147 +20,6 @@ FASTAPI_BACKEND = os.getenv('FASTAPI_BACKEND', 'http://localhost:8000')
 
 last_success_cache = {}
 
-def _fallback_response(endpoint: str):
-    """Return a graceful fallback payload with shapes expected by the UI.
-    Prefer last successful cached value if available.
-    """
-    # Serve cached value first if exists
-    cached = last_success_cache.get(endpoint)
-    if cached is not None:
-        return jsonify(cached), 200
-
-    now = datetime.now().isoformat()
-    # Normalize endpoint (ignore query string)
-    base = endpoint.split('?')[0]
-
-    # Financial: market indices
-    if base == '/api/financial/market-indices':
-        data = {
-            'status': 'success',
-            'data': {
-                'sp500': {'price': 4300.00, 'change_percent': 0.12, 'is_positive': True},
-                'nasdaq': {'price': 13500.00, 'change_percent': 0.24, 'is_positive': True},
-                'dow': {'price': 34000.00, 'change_percent': -0.05, 'is_positive': False},
-                'russell': {'price': 1780.00, 'change_percent': 0.18, 'is_positive': True},
-                'vix': {'price': 18.10, 'change_percent': -1.20, 'is_positive': False},
-            },
-            'timestamp': now
-        }
-        return jsonify(data), 200
-
-    # Financial: market sentiment
-    if base == '/api/financial/market-sentiment':
-        data = {'status': 'success', 'data': {'score': 55, 'label': 'Neutral', 'emoji': '➡️'}, 'timestamp': now}
-        return jsonify(data), 200
-
-    # Financial: sector performance (UI expects string with + / -)
-    if base == '/api/financial/sector-performance':
-        sectors = {
-            'Technology': {'change': '+0.85%'},
-            'Health Care': {'change': '-0.12%'},
-            'Financials': {'change': '+0.33%'},
-            'Energy': {'change': '-0.41%'},
-            'Industrials': {'change': '+0.22%'}
-        }
-        return jsonify({'status': 'success', 'data': sectors, 'timestamp': now}), 200
-
-    # Financial: top stocks
-    if base == '/api/financial/top-stocks':
-        gainers = [
-            {'symbol': 'AAPL', 'price': 190.12, 'change_percent': 1.24, 'is_positive': True},
-            {'symbol': 'NVDA', 'price': 440.55, 'change_percent': 0.98, 'is_positive': True},
-            {'symbol': 'TSLA', 'price': 250.33, 'change_percent': -0.42, 'is_positive': False},
-            {'symbol': 'AMZN', 'price': 130.11, 'change_percent': 0.65, 'is_positive': True},
-            {'symbol': 'MSFT', 'price': 330.99, 'change_percent': 0.21, 'is_positive': True},
-        ]
-        return jsonify({'status': 'success', 'data': {'gainers': gainers}, 'timestamp': now}), 200
-
-    # AI: market intelligence
-    if base == '/api/ai/market-intelligence':
-        payload = {
-            'status': 'success',
-            'data': {
-                'market_sentiment': {
-                    'interpretation': 'Neutral',
-                    'bullish_stocks': 120,
-                    'total_analyzed': 300
-                },
-                'overview': {
-                    'symbols_analyzed': 300,
-                    'ai_models_used': ['lstm', 'transformer']
-                },
-                'risk_assessment': {
-                    'overall_risk': 'Medium',
-                    'high_risk_stocks': 25,
-                    'risk_percentage': 8.3
-                }
-            },
-            'timestamp': now
-        }
-        return jsonify(payload), 200
-
-    # Financial: geopolitical risks
-    if base == '/api/financial/geopolitical-risks':
-        payload = {
-            'status': 'success',
-            'data': {
-                'factors': [
-                    {'factor': 'Oil supply tensions', 'severity': 6, 'source': 'Reuters'},
-                    {'factor': 'Currency volatility (EUR/USD)', 'severity': 5, 'source': 'Bloomberg'}
-                ],
-                'overall_assessment': 'Moderate global risk; monitor energy and FX.'
-            },
-            'timestamp': now
-        }
-        return jsonify(payload), 200
-
-    # ML: status
-    if base == '/api/ml/status':
-        payload = {
-            'status': 'success',
-            'components': {
-                'ml_trainer': {'status': 'Idle'},
-                'prediction_service': {'status': 'Operational'}
-            },
-            'performance': {
-                'models_active': 3,
-                'accuracy': 'N/A'
-            },
-            'timestamp': now
-        }
-        return jsonify(payload), 200
-
-    # Watchlist
-    if base == '/api/watchlist':
-        payload = {
-            'status': 'success',
-            'watchlist': [
-                {'symbol': 'AAPL', 'name': 'Apple Inc.', 'price': 190.12, 'change': '+0.85%'},
-                {'symbol': 'NVDA', 'name': 'NVIDIA Corp.', 'price': 440.55, 'change': '+0.42%'}
-            ],
-            'timestamp': now
-        }
-        return jsonify(payload), 200
-
-    # Articles
-    if base == '/api/articles/recent' or base == '/api/articles':
-        return jsonify({'status': 'success', 'articles': [], 'timestamp': now}), 200
-
-    # Scanner hot-stocks
-    if base == '/api/scanner/hot-stocks':
-        payload = {
-            'status': 'success',
-            'data': {
-                'hot_stocks': [],
-                'total_scanned': 0
-            },
-            'timestamp': now
-        }
-        return jsonify(payload), 200
-
-    # Default: indicate degraded mode but keep shape
-    return jsonify({'status': 'error', 'message': 'Backend service unavailable', 'timestamp': now}), 200
-
 
 def proxy_to_backend(endpoint, method='GET', **kwargs):
     """
@@ -182,19 +41,17 @@ def proxy_to_backend(endpoint, method='GET', **kwargs):
         except Exception:
             payload = {'status': 'error', 'message': f'Invalid JSON from backend ({response.status_code})'}
 
-        # Cache successful payloads
-        if 200 <= response.status_code < 300:
-            last_success_cache[endpoint] = payload
-
-        # If backend returned error, attempt graceful fallback
-        if response.status_code >= 500:
-            return _fallback_response(endpoint)
-
+        # Always forward backend response as-is (no demo/fallback)
         return jsonify(payload), response.status_code
     
     except requests.exceptions.ConnectionError:
-        # Graceful degraded-mode fallback
-        return _fallback_response(endpoint)
+        # Return explicit error (no fallback)
+        return jsonify({
+            'status': 'error',
+            'message': 'Backend service unavailable',
+            'endpoint': endpoint,
+            'timestamp': datetime.now().isoformat()
+        }), 503
     except Exception as e:
         return jsonify({
             'status': 'error',
@@ -597,141 +454,43 @@ def run_script_in_background(job_type, script_name, job_id):
 @app.route('/api/data-management/status')
 def data_management_status():
     """Get data management status and job information"""
-    try:
-        # Mock data for now - can be enhanced with real data later
-        return jsonify({
-            "status": "success",
-            "daily_downloads": 150,
-            "weekly_updates": 45,
-            "error_count": 2,
-            "last_run": datetime.now().isoformat(),
-            "jobs": [
-                {
-                    "id": "daily_data",
-                    "name": "Daily Price Data Download",
-                    "status": "scheduled",
-                    "last_run": datetime.now().isoformat(),
-                    "next_run": datetime.now().isoformat(),
-                    "script": "ToUse/download_prices.py"
-                },
-                {
-                    "id": "weekly_fundamentals",
-                    "name": "Weekly Fundamentals Update",
-                    "status": "scheduled",
-                    "last_run": datetime.now().isoformat(),
-                    "next_run": datetime.now().isoformat(),
-                    "script": "ToUse/download_fundamentals.py"
-                }
-            ]
-        })
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+    return jsonify({
+        "status": "error",
+        "message": "Data management status not implemented (no demo data)",
+        "timestamp": datetime.now().isoformat()
+    }), 503
 
 @app.route('/api/data-management/run-job/<job_type>', methods=['POST'])
 def run_data_job(job_type):
     """Trigger a data download job"""
-    try:
-        job_scripts = {
-            'daily': 'ToUse/download_prices.py',
-            'weekly': 'ToUse/download_fundamentals.py'
-        }
-        
-        if job_type not in job_scripts:
-            return jsonify({
-                "success": False,
-                "error": f"Unknown job type: {job_type}"
-            }), 400
-        
-        script_name = job_scripts[job_type]
-        script_path = Path(__file__).parent.parent / script_name
-        
-        # Check if script exists
-        if not script_path.exists():
-            return jsonify({
-                "success": False,
-                "error": f"Script not found: {script_name}"
-            }), 404
-        
-        # Generate job ID
-        job_id = f"{job_type}_{int(datetime.now().timestamp())}"
-        
-        # Start script in background thread
-        thread = threading.Thread(
-            target=run_script_in_background,
-            args=(job_type, str(script_path), job_id)
-        )
-        thread.daemon = True
-        thread.start()
-        
-        return jsonify({
-            "success": True,
-            "message": f"Job {job_type} started successfully",
-            "job_id": job_id
-        })
-    except Exception as e:
-        return jsonify({
-            "success": False,
-            "error": str(e)
-        }), 500
+    return jsonify({
+        "status": "error",
+        "message": "Data job triggering not implemented (no demo execution)",
+        "job_type": job_type
+    }), 501
 
 @app.route('/api/data-management/job-status/<job_id>')
 def get_job_status(job_id):
     """Get the status and logs of a running job"""
-    try:
-        if job_id not in running_jobs:
-            return jsonify({
-                "status": "error",
-                "message": "Job not found"
-            }), 404
-        
-        return jsonify({
-            "status": "success",
-            "job": running_jobs[job_id],
-            "logs": job_logs.get(job_id, [])
-        })
-    except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": str(e)
-        }), 500
+    return jsonify({
+        "status": "error",
+        "message": "Job status not implemented (no background job runner in Flask)",
+        "job_id": job_id
+    }), 501
 
 @app.route('/api/system/health')
 def system_health():
     """Get system health status"""
-    try:
-        return jsonify({
-            "status": "healthy",
-            "database": "online",
-            "scheduler": "running",
-            "api": "online",
-            "storage": "available",
-            "timestamp": datetime.now().isoformat()
-        })
-    except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": str(e)
-        }), 500
+    return proxy_to_backend('/health')
 
 @app.route('/api/data-management/logs')
 def data_management_logs():
     """Get recent logs from data management operations"""
-    try:
-        # Mock logs - can be enhanced to read real logs later
-        logs = [
-            {"timestamp": datetime.now().isoformat(), "level": "INFO", "message": "System started successfully"},
-            {"timestamp": datetime.now().isoformat(), "level": "INFO", "message": "Connected to database"},
-            {"timestamp": datetime.now().isoformat(), "level": "SUCCESS", "message": "Daily download completed: 150 stocks"}
-        ]
-        return jsonify({
-            "status": "success",
-            "logs": logs
-        })
-    except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": str(e)
-        }), 500
+    return jsonify({
+        "status": "error",
+        "message": "Data management logs not implemented (no demo logs)",
+        "timestamp": datetime.now().isoformat()
+    }), 503
 
 if __name__ == '__main__':
     print("🚀 Starting MarketPulse Dashboard Server...")

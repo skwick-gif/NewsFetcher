@@ -1,0 +1,41 @@
+{
+  "job_id": "backtest_INTC_f2899bff",
+  "symbol": "INTC",
+  "start_time": "2025-10-24T01:54:02.119814",
+  "iterations": [
+    {
+      "success": true,
+      "train_samples": 403,
+      "training_time": 6.4373016357421875e-06,
+      "val_loss": 0.15,
+      "models_trained": [
+        "lstm"
+      ],
+      "accuracy": 0.7747715679177678,
+      "test_samples": 11,
+      "mae": 0.02,
+      "rmse": 0.03,
+      "direction_accuracy": 0.7747715679177678,
+      "iteration": 1,
+      "train_until": "2025-09-23",
+      "test_period": "2025-09-24 to 2025-10-08"
+    },
+    {
+      "success": true,
+      "train_samples": 414,
+      "training_time": 1.239776611328125e-05,
+      "val_loss": 0.15,
+      "models_trained": [
+        "lstm"
+      ],
+      "accuracy": 0.8762507844919092,
+      "test_samples": 11,
+      "mae": 0.02,
+      "rmse": 0.03,
+      "direction_accuracy": 0.8762507844919092,
+      "iteration": 2,
+      "train_until": "2025-10-08",
+      "test_period": "2025-10-09 to 2025-10-23"
+    }
+  ]
+}

@@ -38,6 +38,22 @@ logger = logging.getLogger(__name__)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 logger.info(f"🚀 Trainer using device: {device}")
 
+# Hard-disable Torch Dynamo/compile in case the environment enables it implicitly
+try:
+    import torch._dynamo as _dynamo  # type: ignore
+    try:
+        _dynamo.reset()
+    except Exception:
+        pass
+    try:
+        _dynamo.disable()
+        logger.info("🛡️ Torch Dynamo disabled in trainer")
+    except Exception:
+        logger.debug("Torch Dynamo disable not available")
+except Exception:
+    # Safe to ignore if not available
+    pass
+
 # Optional imports
 try:
     import seaborn as sns
@@ -110,8 +126,8 @@ class ProgressiveTrainer:
                 'filters': [64, 128, 64],
                 'kernel_sizes': [3, 3, 3],
                 'pool_sizes': [2, 2, 2],
-                'dropout_rate': 0.3,
-                'learning_rate': 0.001
+                'dropout_rate': 0.35,
+                'learning_rate': 0.0003
             }
         }
         
@@ -130,7 +146,11 @@ class ProgressiveTrainer:
             'save_best_only': True,
             'monitor': 'val_loss',
             'mode': 'min',
-            'verbose': 1
+            'verbose': 1,
+            'loss_weights': {
+                'regression': 1.0,
+                'classification': 0.5
+            }
         }
         
         if training_config:
@@ -237,6 +257,9 @@ class ProgressiveTrainer:
     def create_model(self, model_type: str, input_size: int, sequence_length: int, 
                      horizons: List[int], mode: str = "progressive") -> nn.Module:
         """Create PyTorch model"""
+        # Normalize aliases (e.g., 'cnn_lstm' -> 'cnn')
+        normalized = self._normalize_model_type(model_type)
+        model_type = normalized
         
         if model_type == "lstm":
             return LSTMModel(
@@ -264,6 +287,19 @@ class ProgressiveTrainer:
             )
         else:
             raise ValueError(f"Unknown model type: {model_type}")
+
+    def _normalize_model_type(self, model_type: str) -> str:
+        """Normalize UI aliases and typos to supported model keys"""
+        mt = (model_type or '').strip().lower()
+        alias_map = {
+            'cnn_lstm': 'cnn',
+            'lstm_cnn': 'cnn',
+            'gru': 'lstm',
+            'transformers': 'transformer',
+            'convolution': 'cnn',
+            'rnn': 'lstm'
+        }
+        return alias_map.get(mt, mt)
     
     def save_model(self, model: nn.Module, model_name: str, horizon: str = None):
         """Save PyTorch model"""
@@ -273,7 +309,10 @@ class ProgressiveTrainer:
             'model_class': model.__class__.__name__,
             'model_params': model.params if hasattr(model, 'params') else {},
             'horizons': model.horizons if hasattr(model, 'horizons') else [],
-            'mode': model.mode if hasattr(model, 'mode') else 'progressive'
+            'mode': model.mode if hasattr(model, 'mode') else 'progressive',
+            # Persist critical IO shapes to ensure reliable reload
+            'input_size': getattr(model, 'input_size', None),
+            'sequence_length': getattr(model, 'sequence_length', None)
         }, checkpoint_path)
         logger.info(f"💾 Model saved: {checkpoint_path}")
         
@@ -286,91 +325,68 @@ class ProgressiveTrainer:
         
         checkpoint = torch.load(checkpoint_path, map_location=self.device)
         
-        # Create model based on saved class name
-        model_class = checkpoint['model_class']
-        if model_class == 'LSTMModel':
-            model = LSTMModel(
-                input_size=checkpoint.get('input_size', 20),
-                sequence_length=checkpoint.get('sequence_length', 60),
-                horizons=checkpoint.get('horizons', [1, 7, 30]),
-                mode=checkpoint.get('mode', 'progressive'),
-                model_params=checkpoint.get('model_params', {})
-            )
-        elif model_class == 'TransformerModel':
-            model = TransformerModel(
-                input_size=checkpoint.get('input_size', 20),
-                sequence_length=checkpoint.get('sequence_length', 60),
-                horizons=checkpoint.get('horizons', [1, 7, 30]),
-                mode=checkpoint.get('mode', 'progressive'),
-                model_params=checkpoint.get('model_params', {})
-            )
-        elif model_class == 'CNNModel':
-            model = CNNModel(
-                input_size=checkpoint.get('input_size', 20),
-                sequence_length=checkpoint.get('sequence_length', 60),
-                horizons=checkpoint.get('horizons', [1, 7, 30]),
-                mode=checkpoint.get('mode', 'progressive'),
-                model_params=checkpoint.get('model_params', {})
-            )
-        else:
-            raise ValueError(f"Unknown model class: {model_class}")
-        
+        model_class_name = checkpoint.get('model_class')
+        model_params = checkpoint.get('model_params', {})
+        horizons = checkpoint.get('horizons', [1])
+        mode = checkpoint.get('mode', 'progressive')
+        input_size = checkpoint.get('input_size')
+        sequence_length = checkpoint.get('sequence_length')
+
+        # Map class name to actual class
+        class_map = {
+            'LSTMModel': LSTMModel,
+            'TransformerModel': TransformerModel,
+            'CNNModel': CNNModel,
+        }
+        if model_class_name not in class_map:
+            raise ValueError(f"Unknown saved model class: {model_class_name}")
+
+        ModelCls = class_map[model_class_name]
+        model = ModelCls(
+            input_size=input_size,
+            sequence_length=sequence_length,
+            horizons=horizons,
+            mode=mode,
+            model_params=model_params
+        ).to(self.device)
+
         model.load_state_dict(checkpoint['model_state_dict'])
-        model.to(self.device)
-        logger.info(f"📥 Model loaded: {checkpoint_path}")
+        model.eval()
         return model
-    
-    def early_stopping_check(self, current_loss: float, best_loss: float, patience_counter: int) -> Tuple[bool, int]:
-        """Check if training should stop early"""
-        if current_loss < best_loss:
-            return False, 0  # Continue training, reset patience
-        else:
-            patience_counter += 1
-            if patience_counter >= self.training_config['early_stopping_patience']:
-                return True, patience_counter  # Stop training
-            return False, patience_counter  # Continue training
-    
+
     def train_progressive_models(self, symbol: str = "AAPL", model_types: List[str] = ['lstm']) -> Dict:
-        """
-        Train models in progressive mode (1d → 7d → 30d)
-        
-        Args:
-            symbol: Stock symbol to train on
-            model_types: List of model types ['lstm', 'transformer', 'cnn']
-        
-        Returns:
-            Dictionary with training results
-        """
-        
+        """Train separate models per horizon in progressive mode."""
         logger.info(f"🚀 Starting Progressive Training for {symbol}")
+        # Normalize all model types first
+        model_types = [self._normalize_model_type(mt) for mt in model_types]
         logger.info(f"📋 Model types: {model_types}")
-        
-        # Prepare data
+
+        # Prepare data per horizon
         data = self.prepare_progressive_data(symbol)
-        
-        # Get input dimensions from first horizon
-        sample_X = data['1d']['X_train']
-        sequence_length, input_size = sample_X.shape[1], sample_X.shape[2]
-        
-        results = {}
-        
+        if not data:
+            raise ValueError("No progressive data available for training")
+
+        # Infer input sizes from any horizon
+        any_key = next(iter(data.keys()))
+        X_train_sample = data[any_key]['X_train']
+        sequence_length, input_size = X_train_sample.shape[1], X_train_sample.shape[2]
+
+        results: Dict[str, Dict[str, Any]] = {}
         for model_type in model_types:
-            logger.info(f"\n🧠 Training {model_type.upper()} models...")
-            
-            model_results = {}
-            
-            # Train each horizon progressively
-            for horizon in self.data_loader.horizons:
-                horizon_key = f'{horizon}d'
-                
-                logger.info(f"   📈 Training {model_type} for {horizon_key}...")
-                
-                # Get data for this horizon
-                X_train = torch.FloatTensor(data[horizon_key]['X_train']).to(self.device)
-                X_val = torch.FloatTensor(data[horizon_key]['X_val']).to(self.device)
-                y_train = torch.FloatTensor(data[horizon_key]['y_reg_train']).to(self.device)
-                y_val = torch.FloatTensor(data[horizon_key]['y_reg_val']).to(self.device)
-                
+            logger.info(f"\n🧠 Training {model_type.upper()} models (progressive)...")
+            model_results: Dict[str, Any] = {}
+
+            for horizon_key, d in data.items():
+                horizon = int(horizon_key.replace('d', ''))
+
+                # Convert to tensors
+                X_train = torch.FloatTensor(d['X_train']).to(self.device)
+                X_val = torch.FloatTensor(d['X_val']).to(self.device)
+                y_train = torch.FloatTensor(d['y_reg_train']).to(self.device)
+                y_val = torch.FloatTensor(d['y_reg_val']).to(self.device)
+                y_clf_train = torch.FloatTensor(d['y_clf_train']).to(self.device)
+                y_clf_val = torch.FloatTensor(d['y_clf_val']).to(self.device)
+
                 # Create model
                 model = self.create_model(
                     model_type=model_type,
@@ -379,7 +395,7 @@ class ProgressiveTrainer:
                     horizons=[horizon],
                     mode="progressive"
                 )
-                
+
                 # Train model
                 history = self._train_single_model(
                     model=model,
@@ -388,18 +404,20 @@ class ProgressiveTrainer:
                     X_val=X_val,
                     y_val=y_val,
                     model_name=f"{model_type}_{symbol}",
-                    horizon=horizon_key
+                    horizon=horizon_key,
+                    y_clf_train=y_clf_train,
+                    y_clf_val=y_clf_val
                 )
-                
+
                 model_results[horizon_key] = {
                     'history': history,
-                    'final_loss': history['val_loss'][-1] if history['val_loss'] else float('inf')
+                    'final_loss': history['val_loss'][-1] if history.get('val_loss') else float('inf')
                 }
-                
+
                 logger.info(f"   ✅ {model_type} {horizon_key} completed")
-            
+
             results[model_type] = model_results
-        
+
         logger.info(f"✅ Progressive training completed for {symbol}")
         return results
     
@@ -416,6 +434,8 @@ class ProgressiveTrainer:
         """
         
         logger.info(f"🚀 Starting Unified Training for {symbol}")
+        # Normalize all model types first
+        model_types = [self._normalize_model_type(mt) for mt in model_types]
         logger.info(f"📋 Model types: {model_types}")
         
         # Prepare data
@@ -476,28 +496,46 @@ class ProgressiveTrainer:
         return results
     
     def _train_single_model(self, model: nn.Module, X_train: torch.Tensor, y_train: torch.Tensor,
-                           X_val: torch.Tensor, y_val: torch.Tensor, model_name: str, horizon: str) -> Dict:
+                           X_val: torch.Tensor, y_val: torch.Tensor, model_name: str, horizon: str,
+                           y_clf_train: Optional[torch.Tensor] = None, y_clf_val: Optional[torch.Tensor] = None) -> Dict:
         """Train a single PyTorch model"""
         
         # Setup optimizer and loss function
         optimizer = model.get_optimizer()
-        criterion = model.get_loss_fn()
+        criterion_reg = model.get_loss_fn()
+        criterion_clf = nn.BCELoss()
         
         # Training parameters
         epochs = self.training_config['epochs']
         batch_size = self.training_config['batch_size']
         
-        # Create data loaders
-        train_dataset = TensorDataset(X_train, y_train)
-        val_dataset = TensorDataset(X_val, y_val)
+        # Clamp regression targets to a sane range (percentage returns) to stabilize training
+        try:
+            y_train = y_train.clamp(min=-1.0, max=1.0)
+            y_val = y_val.clamp(min=-1.0, max=1.0)
+        except Exception:
+            # If shapes are unexpected, proceed without clamp
+            pass
+
+        # Create data loaders (include classification targets if provided)
+        if y_clf_train is not None and y_clf_val is not None:
+            train_dataset = TensorDataset(X_train, y_train, y_clf_train)
+            val_dataset = TensorDataset(X_val, y_val, y_clf_val)
+        else:
+            train_dataset = TensorDataset(X_train, y_train)
+            val_dataset = TensorDataset(X_val, y_val)
         
         train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
         val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
         
-        # Training history
+        # Training history (per-epoch aggregates only to ensure equal lengths)
         history = {
             'train_loss': [],
-            'val_loss': []
+            'val_loss': [],
+            'train_reg_loss_epoch': [],
+            'train_clf_loss_epoch': [],
+            'val_reg_loss_epoch': [],
+            'val_clf_loss_epoch': []
         }
         
         best_val_loss = float('inf')
@@ -509,8 +547,14 @@ class ProgressiveTrainer:
             # Training phase
             model.train()
             train_loss = 0.0
+            # Accumulate per-batch components to report per-epoch means
+            train_reg_sum, train_clf_sum, train_batches = 0.0, 0.0, 0
             
-            for batch_X, batch_y in train_loader:
+            for batch in train_loader:
+                if y_clf_train is not None and y_clf_val is not None:
+                    batch_X, batch_y, batch_y_clf = batch
+                else:
+                    batch_X, batch_y = batch
                 optimizer.zero_grad()
                 
                 if model.mode == "progressive":
@@ -518,35 +562,78 @@ class ProgressiveTrainer:
                     outputs = model(batch_X, horizon=horizon_num)
                 else:
                     outputs = model(batch_X)
-                
-                loss = criterion(outputs.squeeze(), batch_y)
+
+                # Compute losses
+                reg_loss = None
+                clf_loss = None
+                if isinstance(outputs, tuple) and len(outputs) == 2 and y_clf_train is not None:
+                    reg_out, clf_out = outputs
+                    reg_loss = criterion_reg(reg_out.squeeze(), batch_y)
+                    # use the batch's classification targets, not a slice from the start
+                    clf_loss = criterion_clf(clf_out.squeeze(), batch_y_clf)
+                    loss = (self.training_config['loss_weights']['regression'] * reg_loss +
+                            self.training_config['loss_weights']['classification'] * clf_loss)
+                else:
+                    reg_loss = criterion_reg(outputs.squeeze(), batch_y)
+                    loss = reg_loss
                 loss.backward()
                 optimizer.step()
                 
-                train_loss += loss.item()
+                train_loss += float(loss.item())
+                train_reg_sum += float(reg_loss.item()) if reg_loss is not None else 0.0
+                train_clf_sum += float(clf_loss.item()) if clf_loss is not None else 0.0
+                train_batches += 1
             
             train_loss /= len(train_loader)
             
+            # Aggregate per-epoch train components
+            if train_batches > 0:
+                history['train_reg_loss_epoch'].append(train_reg_sum / train_batches)
+                history['train_clf_loss_epoch'].append(train_clf_sum / train_batches)
+
             # Validation phase
             model.eval()
             val_loss = 0.0
+            val_reg_sum, val_clf_sum, val_batches = 0.0, 0.0, 0
             
             with torch.no_grad():
-                for batch_X, batch_y in val_loader:
+                for i, batch in enumerate(val_loader):
+                    if y_clf_train is not None and y_clf_val is not None:
+                        batch_X, batch_y, batch_y_clf = batch
+                    else:
+                        batch_X, batch_y = batch
                     if model.mode == "progressive":
                         horizon_num = int(horizon.replace('d', ''))
                         outputs = model(batch_X, horizon=horizon_num)
                     else:
                         outputs = model(batch_X)
-                    
-                    loss = criterion(outputs.squeeze(), batch_y)
-                    val_loss += loss.item()
+
+                    if isinstance(outputs, tuple) and len(outputs) == 2 and y_clf_val is not None:
+                        reg_out, clf_out = outputs
+                        reg_l = criterion_reg(reg_out.squeeze(), batch_y)
+                        # use the batch's classification targets directly
+                        clf_l = criterion_clf(clf_out.squeeze(), batch_y_clf)
+                        loss = (self.training_config['loss_weights']['regression'] * reg_l +
+                                self.training_config['loss_weights']['classification'] * clf_l)
+                        val_reg_sum += float(reg_l.item())
+                        val_clf_sum += float(clf_l.item())
+                    else:
+                        reg_l = criterion_reg(outputs.squeeze(), batch_y)
+                        loss = reg_l
+                        val_reg_sum += float(reg_l.item())
+                        val_clf_sum += 0.0
+
+                    val_loss += float(loss.item())
+                    val_batches += 1
             
             val_loss /= len(val_loader)
             
             # Update history
             history['train_loss'].append(train_loss)
             history['val_loss'].append(val_loss)
+            if val_batches > 0:
+                history['val_reg_loss_epoch'].append(val_reg_sum / val_batches)
+                history['val_clf_loss_epoch'].append(val_clf_sum / val_batches)
             
             # Check for improvement
             if val_loss < best_val_loss:
@@ -566,224 +653,13 @@ class ProgressiveTrainer:
                 logger.info(f"      Early stopping at epoch {epoch+1}")
                 break
         
-        # Save training history
+        # Save training history (ensure equal-length columns)
         history_path = self.save_dir / f"{model_name}{'_'+horizon if horizon else ''}_history.csv"
         pd.DataFrame(history).to_csv(history_path, index=False)
-        
+
         logger.info(f"      Final validation loss: {best_val_loss:.4f}")
-        
+
         return history
-        
-        # Prepare data
-        data = self.prepare_unified_data(symbol)
-        input_shape = data['X_train'].shape[1:]
-        
-        results = {}
-        
-        for model_type in model_types:
-            logger.info(f"\n🧠 Training {model_type.upper()} unified model...")
-            
-            # Create model
-            if model_type == 'lstm':
-                model_creator = ProgressiveModels.create_lstm(
-                    input_shape,
-                    self.data_loader.horizons,
-                    'unified',
-                    **self.model_config['lstm_params']
-                )
-            elif model_type == 'transformer':
-                model_creator = ProgressiveModels.create_transformer(
-                    input_shape,
-                    self.data_loader.horizons,
-                    'unified',
-                    **self.model_config['transformer_params']
-                )
-            elif model_type == 'cnn':
-                model_creator = ProgressiveModels.create_cnn(
-                    input_shape,
-                    self.data_loader.horizons,
-                    'unified',
-                    **self.model_config['cnn_params']
-                )
-            else:
-                logger.warning(f"⚠️ Unknown model type: {model_type}")
-                continue
-            
-            # Get unified model
-            model = model_creator.get_model()
-            
-            # Create callbacks
-            callbacks = self.create_callbacks(f"{model_type}_{symbol}_unified")
-            
-            # Train model
-            start_time = time.time()
-            
-            history = model.fit(
-                data['X_train'],
-                data['y_train'],
-                validation_data=(data['X_val'], data['y_val']),
-                epochs=self.training_config['epochs'],
-                batch_size=self.training_config['batch_size'],
-                callbacks=callbacks,
-                verbose=self.training_config['verbose']
-            )
-            
-            training_time = time.time() - start_time
-            
-            # Evaluate model
-            val_metrics = model.evaluate(data['X_val'], data['y_val'], verbose=0)
-            
-            # Store results
-            results[model_type] = {
-                'model': model,
-                'history': history.history,
-                'training_time': training_time,
-                'val_metrics': val_metrics,
-                'best_epoch': len(history.history['loss'])
-            }
-            
-            self.models[f"{model_type}_unified"] = model_creator
-            
-            logger.info(f"   ✅ {model_type} unified completed in {training_time:.1f}s")
-            logger.info(f"   📊 Val Loss: {val_metrics[0]:.4f}")
-        
-        # Store training history
-        self.training_history[f'unified_{symbol}'] = results
-        
-        logger.info(f"✅ Unified training completed for {symbol}")
-        
-        return results
-    
-    def create_ensemble(self, symbol: str = "AAPL", mode: str = "progressive") -> EnsembleModel:
-        """Create ensemble model from trained individual models"""
-        
-        logger.info(f"🎯 Creating ensemble model ({mode} mode)...")
-        
-        # Get data shape
-        if mode == "progressive":
-            data = self.prepare_progressive_data(symbol)
-            input_shape = data['1d']['X_train'].shape[1:]
-        else:
-            data = self.prepare_unified_data(symbol)
-            input_shape = data['X_train'].shape[1:]
-        
-        # Create ensemble
-        self.ensemble_model = ProgressiveModels.create_ensemble(
-            input_shape,
-            self.data_loader.horizons,
-            mode
-        )
-        
-        logger.info(f"✅ Ensemble model created")
-        
-        return self.ensemble_model
-    
-    def evaluate_models(self, symbol: str = "AAPL", mode: str = "progressive") -> Dict:
-        """Evaluate trained models"""
-        
-        logger.info(f"📊 Evaluating models ({mode} mode)...")
-        
-        # Prepare test data
-        if mode == "progressive":
-            data = self.prepare_progressive_data(symbol)
-        else:
-            data = self.prepare_unified_data(symbol)
-        
-        evaluation_results = {}
-        
-        # Evaluate individual models
-        for model_name, model_creator in self.models.items():
-            if mode in model_name or (mode == "progressive" and "unified" not in model_name):
-                logger.info(f"   📈 Evaluating {model_name}...")
-                
-                if mode == "progressive":
-                    model_eval = {}
-                    for horizon in self.data_loader.horizons:
-                        horizon_key = f'{horizon}d'
-                        model = model_creator.get_model(horizon)
-                        
-                        X_val = data[horizon_key]['X_val']
-                        y_reg_val = data[horizon_key]['y_reg_val']
-                        y_clf_val = data[horizon_key]['y_clf_val']
-                        
-                        # Get predictions
-                        predictions = model.predict(X_val, verbose=0)
-                        pred_reg, pred_clf = predictions[0], predictions[1]
-                        
-                        # Calculate metrics
-                        mse = mean_squared_error(y_reg_val, pred_reg)
-                        mae = mean_absolute_error(y_reg_val, pred_reg)
-                        accuracy = accuracy_score(y_clf_val, (pred_clf > 0.5).astype(int))
-                        
-                        model_eval[horizon_key] = {
-                            'mse': mse,
-                            'mae': mae,
-                            'rmse': np.sqrt(mse),
-                            'accuracy': accuracy
-                        }
-                    
-                    evaluation_results[model_name] = model_eval
-                    
-                else:  # unified
-                    model = model_creator.get_model()
-                    predictions = model.predict(data['X_val'], verbose=0)
-                    
-                    # Handle multiple outputs
-                    model_eval = {}
-                    for i, horizon in enumerate(self.data_loader.horizons):
-                        horizon_key = f'{horizon}d'
-                        
-                        # Extract predictions for this horizon
-                        pred_reg = predictions[i]
-                        pred_clf = predictions[i + len(self.data_loader.horizons)]
-                        
-                        y_reg_val = data['y_val'][f'price_pred_{horizon}d']
-                        y_clf_val = data['y_val'][f'direction_pred_{horizon}d']
-                        
-                        # Calculate metrics
-                        mse = mean_squared_error(y_reg_val, pred_reg)
-                        mae = mean_absolute_error(y_reg_val, pred_reg)
-                        accuracy = accuracy_score(y_clf_val, (pred_clf > 0.5).astype(int))
-                        
-                        model_eval[horizon_key] = {
-                            'mse': mse,
-                            'mae': mae,
-                            'rmse': np.sqrt(mse),
-                            'accuracy': accuracy
-                        }
-                    
-                    evaluation_results[model_name] = model_eval
-        
-        logger.info(f"✅ Model evaluation completed")
-        
-        return evaluation_results
-    
-    def save_models(self, symbol: str = "AAPL"):
-        """Save all trained models"""
-        
-        logger.info(f"💾 Saving models for {symbol}...")
-        
-        for model_name, model_creator in self.models.items():
-            model_dir = self.save_dir / f"{model_name}_{symbol}"
-            model_dir.mkdir(exist_ok=True)
-            
-            if hasattr(model_creator, 'models'):
-                for horizon_name, model in model_creator.models.items():
-                    save_path = model_dir / f"{horizon_name}.h5"
-                    model.save(str(save_path))
-                    logger.info(f"   💾 Saved {model_name}_{horizon_name}")
-        
-        # Save training history
-        history_path = self.save_dir / f"training_history_{symbol}.json"
-        with open(history_path, 'w') as f:
-            # Convert numpy arrays to lists for JSON serialization
-            serializable_history = {}
-            for key, value in self.training_history.items():
-                serializable_history[key] = self._make_json_serializable(value)
-            
-            json.dump(serializable_history, f, indent=2)
-        
-        logger.info(f"✅ Models saved to {self.save_dir}")
     
     def _make_json_serializable(self, obj):
         """Convert numpy arrays and other non-serializable objects to JSON-compatible format"""
@@ -931,11 +807,6 @@ def test_progressive_trainer():
     
     unified_data = trainer.prepare_unified_data("AAPL")
     print(f"✅ Unified data prepared: X_train shape = {unified_data['X_train'].shape}")
-    
-    # Test callback creation
-    print("\n⚙️ Testing callbacks...")
-    callbacks = trainer.create_callbacks("test_model", "1d")
-    print(f"✅ Created {len(callbacks)} callbacks")
     
     print("\n✅ Progressive Trainer test completed successfully!")
     return True

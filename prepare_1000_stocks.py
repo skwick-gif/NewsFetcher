@@ -45,14 +45,14 @@ def main():
     logging.info("This will take approximately 30-60 minutes...")
     
     # Run data preparation
-    prep = DataPreparation(symbols=symbols, period='3y', output_dir='app/ml/data')
+    prep = DataPreparation(symbols=symbols, period='3y')
     results = prep.prepare_all_symbols()
     
     # Print summary
     print(f"\n{'='*70}")
     print("DATA PREPARATION COMPLETED")
     print(f"{'='*70}")
-    print(f"✅ Successful: {len(results['successful'])}/{len(symbols)}")
+    print(f"✅ Successful: {len(results['symbols'])}/{len(symbols)}")
     print(f"❌ Failed: {len(results['failed'])}")
     print(f"📊 Total samples: {results['total_samples']:,}")
     print(f"📈 Features: {results['feature_count']}")

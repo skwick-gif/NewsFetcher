@@ -34,7 +34,7 @@
 - **סטטוס**: מוכן לריצה על http://localhost:5000
 
 ### 4. ⏳ JavaScript Modules
-- **קיימים**: 6 modules + main.js
+- **קיימים**: 6 modules (ללא main.js; ה-Orchestration inline ב-`dashboard.html`)
 - **סטטוס**: צריכים בדיקה קלה (הם כבר נראים טוב)
 
 ---

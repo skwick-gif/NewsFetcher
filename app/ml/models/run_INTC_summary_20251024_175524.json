@@ -1,0 +1,179 @@
+[
+  {
+    "model_type": "lstm",
+    "backtest": {
+      "status": "failed",
+      "error": "No iterations completed",
+      "job_id": "backtest_INTC_95688898",
+      "symbol": "INTC",
+      "total_iterations": 0,
+      "total_time": 5.858821392059326,
+      "timestamp": "2025-10-24T20:55:14.771347"
+    },
+    "prediction": {
+      "symbol": "INTC",
+      "current_price": 37.391399,
+      "current_date": "2025-10-23 00:00:00",
+      "mode": "progressive",
+      "predictions": {
+        "1d": {
+          "current_price": 37.391399,
+          "target_price": 35.34814272728198,
+          "price_change_pct": -0.05464508756995201,
+          "price_change_abs": -2.0432562727180184,
+          "direction": "UP",
+          "direction_prob": 0.5007660388946533,
+          "confidence": 1.0,
+          "signal": "SELL",
+          "signal_strength": 0.05464508756995201,
+          "horizon_days": 1,
+          "num_models": 1,
+          "model_agreement_std": 0.0,
+          "individual_predictions": [
+            {
+              "price_change_pct": -0.05464508756995201,
+              "direction_prob": 0.5007660388946533,
+              "direction": "UP",
+              "confidence": 0.0015320777893066406,
+              "horizon": "1d"
+            }
+          ],
+          "timestamp": "2025-10-24T20:55:14.916549"
+        }
+      },
+      "overall_sentiment": {
+        "sentiment": "BEARISH",
+        "strength": 0.05464508756995201,
+        "confidence": 1.0,
+        "avg_price_change": -0.05464508756995201
+      },
+      "risk_metrics": {
+        "volatility": 0.0,
+        "max_gain": -0.054645087569952074,
+        "max_loss": -0.054645087569952074,
+        "risk_reward_ratio": 1.0,
+        "prediction_range": 0.0,
+        "risk_level": "LOW"
+      },
+      "generated_at": "2025-10-24T20:55:14.917669"
+    }
+  },
+  {
+    "model_type": "transformer",
+    "backtest": {
+      "status": "failed",
+      "error": "No iterations completed",
+      "job_id": "backtest_INTC_ccb5337f",
+      "symbol": "INTC",
+      "total_iterations": 0,
+      "total_time": 7.513967037200928,
+      "timestamp": "2025-10-24T20:55:22.446473"
+    },
+    "prediction": {
+      "symbol": "INTC",
+      "current_price": 37.391399,
+      "current_date": "2025-10-23 00:00:00",
+      "mode": "progressive",
+      "predictions": {
+        "1d": {
+          "current_price": 37.391399,
+          "target_price": 36.87899917619637,
+          "price_change_pct": -0.013703681528568268,
+          "price_change_abs": -0.5123998238036265,
+          "direction": "UP",
+          "direction_prob": 0.5181371569633484,
+          "confidence": 1.0,
+          "signal": "HOLD",
+          "signal_strength": 0.013703681528568268,
+          "horizon_days": 1,
+          "num_models": 1,
+          "model_agreement_std": 0.0,
+          "individual_predictions": [
+            {
+              "price_change_pct": -0.013703681528568268,
+              "direction_prob": 0.5181371569633484,
+              "direction": "UP",
+              "confidence": 0.03627431392669678,
+              "horizon": "1d"
+            }
+          ],
+          "timestamp": "2025-10-24T20:55:22.609967"
+        }
+      },
+      "overall_sentiment": {
+        "sentiment": "NEUTRAL",
+        "strength": 0.013703681528568268,
+        "confidence": 1.0,
+        "avg_price_change": -0.013703681528568268
+      },
+      "risk_metrics": {
+        "volatility": 0.0,
+        "max_gain": -0.01370368152856828,
+        "max_loss": -0.01370368152856828,
+        "risk_reward_ratio": 1.0,
+        "prediction_range": 0.0,
+        "risk_level": "LOW"
+      },
+      "generated_at": "2025-10-24T20:55:22.610687"
+    }
+  },
+  {
+    "model_type": "cnn",
+    "backtest": {
+      "status": "failed",
+      "error": "No iterations completed",
+      "job_id": "backtest_INTC_cb855480",
+      "symbol": "INTC",
+      "total_iterations": 0,
+      "total_time": 1.8286917209625244,
+      "timestamp": "2025-10-24T20:55:24.450347"
+    },
+    "prediction": {
+      "symbol": "INTC",
+      "current_price": 37.391399,
+      "current_date": "2025-10-23 00:00:00",
+      "mode": "progressive",
+      "predictions": {
+        "1d": {
+          "current_price": 37.391399,
+          "target_price": 3264431.2594691017,
+          "price_change_pct": 87303.3359375,
+          "price_change_abs": 3264393.868070102,
+          "direction": "DOWN",
+          "direction_prob": 0.0,
+          "confidence": 1.0,
+          "signal": "BUY",
+          "signal_strength": 87303.3359375,
+          "horizon_days": 1,
+          "num_models": 1,
+          "model_agreement_std": 0.0,
+          "individual_predictions": [
+            {
+              "price_change_pct": 87303.3359375,
+              "direction_prob": 0.0,
+              "direction": "DOWN",
+              "confidence": 1.0,
+              "horizon": "1d"
+            }
+          ],
+          "timestamp": "2025-10-24T20:55:24.605287"
+        }
+      },
+      "overall_sentiment": {
+        "sentiment": "BULLISH",
+        "strength": 87303.3359375,
+        "confidence": 1.0,
+        "avg_price_change": 87303.3359375
+      },
+      "risk_metrics": {
+        "volatility": 0.0,
+        "max_gain": 87303.33593750001,
+        "max_loss": 87303.33593750001,
+        "risk_reward_ratio": 1.0,
+        "prediction_range": 0.0,
+        "risk_level": "LOW"
+      },
+      "generated_at": "2025-10-24T20:55:24.606060"
+    }
+  }
+]

@@ -1,0 +1,244 @@
+[
+  {
+    "model_type": "lstm",
+    "backtest": {
+      "status": "completed",
+      "job_id": "backtest_PLTR_d7913c64",
+      "symbol": "PLTR",
+      "total_iterations": 1,
+      "total_time": 4.805061101913452,
+      "best_iteration": 1,
+      "best_accuracy": 0.36363636363636365,
+      "best_loss": 0.35361263155937195,
+      "accuracy_improvement": 0,
+      "all_iterations": [
+        {
+          "success": true,
+          "train_samples": 1212,
+          "training_time": 3.7042369842529297,
+          "val_loss": 0.35361263155937195,
+          "models_trained": [
+            "lstm"
+          ],
+          "model_path": "",
+          "training_results": {
+            "lstm": {
+              "1d": {
+                "history": {
+                  "train_loss": [
+                    0.3488844315210978,
+                    0.3487273653348287,
+                    0.3478521148363749
+                  ],
+                  "val_loss": [
+                    0.35283390432596207,
+                    0.35261526703834534,
+                    0.35361263155937195
+                  ],
+                  "train_reg_loss_epoch": [
+                    0.002763185875179867,
+                    0.0024006580856318275,
+                    0.002183109874992321
+                  ],
+                  "train_clf_loss_epoch": [
+                    0.6922424952189128,
+                    0.6926534096399943,
+                    0.6913380185763042
+                  ],
+                  "val_reg_loss_epoch": [
+                    0.002032935604802333,
+                    0.002032767122727819,
+                    0.0020782058854820207
+                  ],
+                  "val_clf_loss_epoch": [
+                    0.7016019374132156,
+                    0.7011650204658508,
+                    0.7030688375234604
+                  ]
+                },
+                "final_loss": 0.35361263155937195
+              },
+              "7d": {
+                "history": {
+                  "train_loss": [
+                    0.360388837258021,
+                    0.3589915454387665,
+                    0.3574223140875498
+                  ],
+                  "val_loss": [
+                    0.35946449637413025,
+                    0.3592306077480316,
+                    0.36042191833257675
+                  ],
+                  "train_reg_loss_epoch": [
+                    0.014127644958595436,
+                    0.013875640152643124,
+                    0.013777888814608256
+                  ],
+                  "train_clf_loss_epoch": [
+                    0.692522386709849,
+                    0.6902318080266316,
+                    0.6872888406117758
+                  ],
+                  "val_reg_loss_epoch": [
+                    0.016500201309099793,
+                    0.017276577767916024,
+                    0.017649727407842875
+                  ],
+                  "val_clf_loss_epoch": [
+                    0.6859285831451416,
+                    0.683908075094223,
+                    0.6855443865060806
+                  ]
+                },
+                "final_loss": 0.36042191833257675
+              },
+              "30d": {
+                "history": {
+                  "train_loss": [
+                    0.4026645580927531,
+                    0.39583688775698345,
+                    0.37828914523124696
+                  ],
+                  "val_loss": [
+                    0.42885061353445053,
+                    0.39162448793649673,
+                    0.3228134885430336
+                  ],
+                  "train_reg_loss_epoch": [
+                    0.05591037943959236,
+                    0.0531901183227698,
+                    0.04875832659502824
+                  ],
+                  "train_clf_loss_epoch": [
+                    0.6935083587964376,
+                    0.6852935393651326,
+                    0.6590616385142009
+                  ],
+                  "val_reg_loss_epoch": [
+                    0.08664736058562994,
+                    0.06310631916858256,
+                    0.048628026619553566
+                  ],
+                  "val_clf_loss_epoch": [
+                    0.684406504034996,
+                    0.6570363491773605,
+                    0.5483709126710892
+                  ]
+                },
+                "final_loss": 0.3228134885430336
+              }
+            }
+          },
+          "accuracy": 0.36363636363636365,
+          "test_samples": 11,
+          "mae": 3.5488359193955277,
+          "rmse": 4.001086176956383,
+          "mape": 2.012591932011275,
+          "direction_accuracy": 0.36363636363636365,
+          "predictions_made": 11,
+          "total_test_days": 11,
+          "iteration": 1,
+          "train_until": "2025-09-10",
+          "test_period": "2025-09-11 to 2025-09-25"
+        }
+      ],
+      "timestamp": "2025-10-25T10:17:45.406737"
+    },
+    "prediction": {
+      "symbol": "PLTR",
+      "current_price": 184.630005,
+      "current_date": "2025-10-24 00:00:00",
+      "mode": "progressive",
+      "predictions": {
+        "1d": {
+          "current_price": 184.630005,
+          "target_price": 185.82620805291234,
+          "price_change_pct": 0.006478920113295317,
+          "price_change_abs": 1.196203052912324,
+          "direction": "UP",
+          "direction_prob": 0.4791792631149292,
+          "confidence": 0.5208207368850708,
+          "signal": "HOLD",
+          "signal_strength": 0.006478920113295317,
+          "horizon_days": 1,
+          "num_models": 1,
+          "model_agreement_std": 0.0,
+          "individual_predictions": [
+            {
+              "price_change_pct": 0.006478920113295317,
+              "direction_prob": 0.4791792631149292,
+              "direction": "DOWN",
+              "confidence": 0.0416414737701416,
+              "horizon": "1d"
+            }
+          ],
+          "timestamp": "2025-10-25T10:17:45.550783"
+        },
+        "7d": {
+          "current_price": 184.630005,
+          "target_price": 185.72469568280576,
+          "price_change_pct": 0.00592910498380661,
+          "price_change_abs": 1.0946906828057479,
+          "direction": "UP",
+          "direction_prob": 0.5108721256256104,
+          "confidence": 0.5108721256256104,
+          "signal": "HOLD",
+          "signal_strength": 0.00592910498380661,
+          "horizon_days": 7,
+          "num_models": 1,
+          "model_agreement_std": 0.0,
+          "individual_predictions": [
+            {
+              "price_change_pct": 0.00592910498380661,
+              "direction_prob": 0.5108721256256104,
+              "direction": "UP",
+              "confidence": 0.021744251251220703,
+              "horizon": "7d"
+            }
+          ],
+          "timestamp": "2025-10-25T10:17:45.555879"
+        },
+        "30d": {
+          "current_price": 184.630005,
+          "target_price": 228.42655445858293,
+          "price_change_pct": 0.23721252381801605,
+          "price_change_abs": 43.796549458582916,
+          "direction": "UP",
+          "direction_prob": 0.5985415577888489,
+          "confidence": 0.5985415577888489,
+          "signal": "BUY",
+          "signal_strength": 0.23721252381801605,
+          "horizon_days": 30,
+          "num_models": 1,
+          "model_agreement_std": 0.0,
+          "individual_predictions": [
+            {
+              "price_change_pct": 0.23721252381801605,
+              "direction_prob": 0.5985415577888489,
+              "direction": "UP",
+              "confidence": 0.19708311557769775,
+              "horizon": "30d"
+            }
+          ],
+          "timestamp": "2025-10-25T10:17:45.560758"
+        }
+      },
+      "overall_sentiment": {
+        "sentiment": "BULLISH",
+        "strength": 0.08320684963837266,
+        "confidence": 0.5434114734331766,
+        "avg_price_change": 0.08320684963837266
+      },
+      "risk_metrics": {
+        "volatility": 0.10889868788255745,
+        "max_gain": 0.237212523818016,
+        "max_loss": 0.005929104983806656,
+        "risk_reward_ratio": 40.008150381192735,
+        "prediction_range": 42.70185877577717,
+        "risk_level": "HIGH"
+      },
+      "generated_at": "2025-10-25T10:17:45.560906"
+    }
+  }
+]

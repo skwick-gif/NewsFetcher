@@ -28,28 +28,47 @@ class MLScanner {
             const response = await fetch('/api/ai/status');
             const result = await response.json();
 
-            if (result.status === 'success') {
-                const data = result.data;
-                
+            // Backend returns shape: { status: "operational", components: { ... }, performance: {...} }
+            const hasComponents = result && typeof result === 'object' && result.components && typeof result.components === 'object';
+
+            if (hasComponents) {
+                const components = result.components;
+
                 // Update AI Models Status grid
                 const statusGrid = document.getElementById('ai-models-status');
-                if (statusGrid && data) {
+                if (statusGrid) {
+                    const prettyName = (key) => ({
+                        ml_trainer: 'ML Trainer',
+                        news_analyzer: 'News Analyzer',
+                        social_analyzer: 'Social Analyzer',
+                        ai_models: 'AI Models'
+                    }[key] || key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()));
+
                     let html = '';
-                    Object.entries(data).forEach(([key, model]) => {
+                    Object.entries(components).forEach(([key, comp]) => {
+                        const available = !!comp.available || comp.status === 'ready' || comp.status === 'active' || comp.status === 'Operational';
+                        const icon = available ? '✅' : '❌';
+                        const label = prettyName(key);
+                        const status = comp.status || (available ? 'ready' : 'unavailable');
+
                         html += `
                             <div class="status-item">
-                                <div class="status-icon">✅</div>
-                                <div class="status-label">${model.name}</div>
-                                <div class="status-name">${model.status}</div>
+                                <div class="status-icon">${icon}</div>
+                                <div class="status-label">${label}</div>
+                                <div class="status-name">${status}</div>
                             </div>
                         `;
                     });
                     statusGrid.innerHTML = html;
                 }
-                
-                console.log('✅ AI Status loaded:', data);
+
+                // Optional: reflect availability flags
+                this.mlAvailable = Object.values(components).some(c => (c?.available === true) || c?.status === 'ready');
+                this.tfAvailable = false; // TensorFlow disabled in backend
+
+                console.log('✅ AI Status loaded (components):', components);
             } else {
-                console.error('AI status error:', result);
+                console.error('AI status error or unexpected shape:', result);
                 this.updateMLStatusError();
             }
         } catch (error) {
@@ -339,11 +358,9 @@ class MLScanner {
      * Analyze a specific stock using AI
      */
     async analyzeStock() {
-        const inputElement = document.getElementById('ai-symbol-input');
-        const resultsElement = document.getElementById('ai-analysis-results');
-        
+        const inputElement = document.getElementById('ai-stock-input');
         if (!inputElement) {
-            console.error('❌ Stock symbol input not found');
+            console.error('❌ Stock symbol input not found (#ai-stock-input)');
             return;
         }
 
@@ -355,58 +372,116 @@ class MLScanner {
 
         console.log(`🔍 Analyzing stock: ${symbol}`);
 
-        // Show loading state
-        if (resultsElement) {
-            resultsElement.innerHTML = '<p style="text-align: center; opacity: 0.6; padding: 20px;">🔄 Analyzing ' + symbol + '...</p>';
-        }
+        // Show loading state in all AI sections
+        const selectedInfo = document.getElementById('selected-stock-analysis');
+        const compEl = document.getElementById('ai-comprehensive-results');
+        const techEl = document.getElementById('ai-technical-results');
+        const riskEl = document.getElementById('ai-risk-factors');
+        if (selectedInfo) selectedInfo.innerHTML = `<p style="text-align: center;">🤖 Analyzing ${symbol}...</p>`;
+        if (compEl) compEl.innerHTML = `<p style="text-align: center;">🔄 Running AI analysis...</p>`;
+        if (techEl) techEl.innerHTML = `<p style="text-align: center;">📊 Processing technical data...</p>`;
+        if (riskEl) riskEl.innerHTML = `<p style="text-align: center;">⚠️ Calculating risk factors...</p>`;
 
-        // Load analysis from API
         try {
             const response = await fetch(`/api/ai/comprehensive-analysis/${symbol}`);
-            const result = await response.json();
+            const data = await response.json();
 
-            if (result.status === 'success' && resultsElement) {
-                const data = result.data;
-                
-                // Display results
-                resultsElement.innerHTML = `
-                    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 8px; margin-top: 15px;">
-                        <h4 style="color: #ffd700; margin-bottom: 15px;">Analysis Results for ${data.symbol}</h4>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                            <div style="background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 8px;">
-                                <div style="font-size: 1.5em; font-weight: bold; color: #3b82f6;">$${data.price?.toFixed(2) || 'N/A'}</div>
-                                <div style="font-size: 0.85em; opacity: 0.8;">Current Price</div>
-                                <div style="font-size: 0.8em; color: ${data.change_percent > 0 ? '#10b981' : '#ef4444'}; margin-top: 5px;">
-                                    ${data.change_percent > 0 ? '+' : ''}${data.change_percent?.toFixed(2) || 0}%
-                                </div>
-                            </div>
-                            <div style="background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: 8px;">
-                                <div style="font-size: 1.5em; font-weight: bold; color: #10b981;">${data.recommendation || 'HOLD'}</div>
-                                <div style="font-size: 0.85em; opacity: 0.8;">Recommendation</div>
-                                <div style="font-size: 0.8em; margin-top: 5px;">
-                                    Confidence: ${((data.confidence || 0) * 100).toFixed(0)}%
-                                </div>
-                            </div>
-                            <div style="background: rgba(139, 92, 246, 0.1); padding: 15px; border-radius: 8px;">
-                                <div style="font-size: 1.5em; font-weight: bold; color: #8b5cf6;">${data.sentiment_label || 'Neutral'}</div>
-                                <div style="font-size: 0.85em; opacity: 0.8;">Sentiment</div>
-                                <div style="font-size: 0.8em; margin-top: 5px;">
-                                    Score: ${(data.sentiment_score * 100).toFixed(0)}%
-                                </div>
-                            </div>
+            if (data.status === 'success') {
+                const analysis = data.analysis || {};
+                const prediction = data.prediction || {};
+                const meta = data.ai_metadata || {};
+
+                // Stock info + metadata
+                if (selectedInfo) {
+                    selectedInfo.innerHTML = `
+                        <div style="background: rgba(59, 130, 246, 0.1); border-radius: 6px; padding: 10px;">
+                            <strong style="color: #3b82f6;">${symbol}</strong><br>
+                            <span style="color: #10b981;">Current Price: $${data.current_price ?? 'N/A'}</span><br>
+                            <small>🤖 AI Model: ${meta.model || 'N/A'}</small><br>
+                            <small>📊 Sources: ${meta.search_results_count || 0} | Cost: $${(meta.cost?.total_cost || 0).toFixed?.(4) || 0}</small><br>
+                            <small>📝 Response: ${meta.raw_response_length || 0} chars | ${new Date().toLocaleTimeString()}</small>
+                            ${meta.raw_response_preview ? `
+                            <details style="margin-top: 8px;">
+                                <summary style="cursor: pointer; color: #3b82f6; font-size: 0.8em;">📄 View AI Response Preview</summary>
+                                <pre style="white-space: pre-wrap; margin-top: 8px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 4px; font-size: 0.75em; max-height: 200px; overflow-y: auto;">${meta.raw_response_preview}</pre>
+                            </details>` : ''}
                         </div>
-                    </div>
-                `;
-                
+                    `;
+                }
+
+                // Comprehensive analysis block
+                if (compEl) {
+                    const dir = (prediction.direction || 'neutral').toLowerCase();
+                    const dirColor = dir === 'up' ? '#10b981' : dir === 'down' ? '#ef4444' : '#f59e0b';
+                    const confPct = typeof prediction.confidence === 'number' ? `${(prediction.confidence * 100).toFixed(1)}%` : '--';
+                    compEl.innerHTML = `
+                        <div class="prediction-item">
+                            <span class="prediction-label">Overall Prediction:</span>
+                            <span class="prediction-value" style="color: ${dirColor};">${(prediction.direction || 'NEUTRAL').toString().toUpperCase()}</span>
+                        </div>
+                        <div class="prediction-item">
+                            <span class="prediction-label">Confidence Level:</span>
+                            <span class="prediction-value">${confPct}</span>
+                        </div>
+                        <div class="prediction-item">
+                            <span class="prediction-label">Target Price:</span>
+                            <span class="prediction-value">$${prediction.target_price ?? '--'}</span>
+                        </div>
+                    `;
+                }
+
+                // Technical analysis block
+                if (techEl) {
+                    const tech = analysis.technical || {};
+                    const trend = (tech.trend || 'neutral').toLowerCase();
+                    const trendColor = trend === 'bullish' ? '#10b981' : trend === 'bearish' ? '#ef4444' : '#f59e0b';
+                    techEl.innerHTML = `
+                        <div class="timeseries-metric">
+                            <span class="metric-name">Trend Direction:</span>
+                            <span class="metric-value" style="color: ${trendColor};">${tech.trend || 'neutral'}</span>
+                        </div>
+                        <div class="timeseries-metric">
+                            <span class="metric-name">Support Level:</span>
+                            <span class="metric-value">$${tech.support_level ?? '--'}</span>
+                        </div>
+                        <div class="timeseries-metric">
+                            <span class="metric-name">Resistance Level:</span>
+                            <span class="metric-value">$${tech.resistance_level ?? '--'}</span>
+                        </div>
+                        <div class="timeseries-metric">
+                            <span class="metric-name">RSI/MACD Signal:</span>
+                            <span class="metric-value">${tech.macd_signal || '--'}</span>
+                        </div>
+                    `;
+                }
+
+                // Risk assessment
+                if (riskEl) {
+                    const risk = analysis.risk_assessment || {};
+                    const riskScore = typeof risk.risk_score === 'number' ? (risk.risk_score * 100).toFixed(0) : '--';
+                    riskEl.innerHTML = `
+                        <div style="font-size: 0.9em;">
+                            <strong>Risk Level:</strong> ${risk.volatility || 'N/A'}<br>
+                            <strong>Beta:</strong> ${risk.beta ?? 'N/A'}<br>
+                            <strong>Liquidity:</strong> ${risk.liquidity || 'N/A'}<br>
+                            <strong>Overall Score:</strong> ${riskScore}%
+                        </div>
+                    `;
+                }
+
                 console.log('✅ Analysis displayed successfully');
             } else {
-                throw new Error('Failed to get analysis');
+                if (selectedInfo) selectedInfo.innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Analysis failed</p>';
+                if (compEl) compEl.innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Failed to get AI analysis</p>';
+                if (techEl) techEl.innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Technical analysis unavailable</p>';
+                if (riskEl) riskEl.innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Risk analysis failed</p>';
             }
         } catch (error) {
             console.error('❌ Error analyzing stock:', error);
-            if (resultsElement) {
-                resultsElement.innerHTML = `<p style="text-align: center; color: #ef4444; padding: 20px;">❌ Error analyzing ${symbol}. Please try again.</p>`;
-            }
+            if (selectedInfo) selectedInfo.innerHTML = `<p style="color: #ef4444; text-align: center;">❌ Error: ${error.message}</p>`;
+            if (compEl) compEl.innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Connection error</p>';
+            if (techEl) techEl.innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Network error</p>';
+            if (riskEl) riskEl.innerHTML = '<p style="color: #ef4444; text-align: center;">❌ Service unavailable</p>';
         }
     }
 
@@ -419,42 +494,41 @@ class MLScanner {
             this.ensureAIAnalysisElements();
             
             const response = await fetch(`/api/ai/comprehensive-analysis/${symbol}`);
+            if (!response.ok) {
+                throw new Error(`API error ${response.status}`);
+            }
             const result = await response.json();
 
             const resultsElement = document.getElementById('comprehensive-results');
             if (!resultsElement) return;
 
             if (result.status === 'success') {
-                const data = result.data;
+                const pred = result.prediction || {};
+                const direction = pred.direction || 'Neutral';
+                const directionConf = typeof pred.confidence === 'number' ? `${(pred.confidence * 100).toFixed(1)}%` : 'N/A';
+                const targetPrice = typeof pred.target_price === 'number' ? `$${pred.target_price.toFixed(2)}` : 'N/A';
+                const riskLevel = (result.analysis && result.analysis.volatility && result.analysis.volatility.risk_level) || 'N/A';
+                const volatility = (result.analysis && result.analysis.volatility && typeof result.analysis.volatility.predicted === 'number') ? `${result.analysis.volatility.predicted}%` : 'N/A';
+
                 const html = `
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
                         <div class="metric-card">
-                            <div class="metric-value">$${data.predictions?.price?.predicted || 'N/A'}</div>
-                            <div class="metric-label">Price Prediction</div>
-                            <div style="font-size: 0.8em; color: #ccc;">
-                                ${data.predictions?.price?.change_percent || 0}% change
-                            </div>
+                            <div class="metric-value">${targetPrice}</div>
+                            <div class="metric-label">Target Price</div>
                         </div>
                         <div class="metric-card">
-                            <div class="metric-value">${data.predictions?.direction?.interpretation || 'Neutral'}</div>
+                            <div class="metric-value">${direction}</div>
                             <div class="metric-label">Direction</div>
-                            <div style="font-size: 0.8em; color: #ccc;">
-                                ${((data.predictions?.direction?.probability || 0) * 100).toFixed(1)}% confidence
-                            </div>
+                            <div style="font-size: 0.8em; color: #ccc;">${directionConf} confidence</div>
                         </div>
                         <div class="metric-card">
-                            <div class="metric-value">${data.trading_signal?.action || 'HOLD'}</div>
-                            <div class="metric-label">Trading Signal</div>
-                            <div style="font-size: 0.8em; color: #ccc;">
-                                ${((data.trading_signal?.confidence || 0) * 100).toFixed(1)}% confidence
-                            </div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-value">${data.predictions?.volatility?.risk_level || 'Medium'}</div>
+                            <div class="metric-value">${riskLevel}</div>
                             <div class="metric-label">Risk Level</div>
-                            <div style="font-size: 0.8em; color: #ccc;">
-                                ${data.predictions?.volatility?.predicted || 0}% volatility
-                            </div>
+                            <div style="font-size: 0.8em; color: #ccc;">Volatility: ${volatility}</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">$${(result.current_price ?? 0).toFixed(2)}</div>
+                            <div class="metric-label">Current Price</div>
                         </div>
                     </div>
                 `;

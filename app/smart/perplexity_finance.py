@@ -37,6 +37,84 @@ class PerplexityFinanceAnalyzer:
         return await asyncio.get_event_loop().run_in_executor(
             None, self._analyze_stock_sync, symbol, current_price
         )
+
+    async def analyze_async(self, symbol: str, user_query: str, analysis_type: str = "generic") -> Dict:
+        """
+        Lightweight async analysis for scheduler/event-driven use.
+
+        Returns a simplified schema expected by the scheduler:
+        - analysis: str (full AI text)
+        - recommendation: str (best-effort extraction)
+        - confidence: float (0.0-1.0, heuristic)
+        - citations: list (from API if available)
+
+        This method intentionally avoids heavy parsing and is resilient to
+        schema changes from the upstream API.
+        """
+        try:
+            headers = {
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+            }
+            data = {
+                "model": self.model,
+                "messages": [
+                    {"role": "user", "content": user_query}
+                ],
+                "max_tokens": 1200,
+                "temperature": 0.2,
+            }
+
+            logger.info(f"🤖 Perplexity async analysis for {symbol} ({analysis_type})...")
+            resp = requests.post(self.base_url, json=data, headers=headers, timeout=60)
+            if resp.status_code != 200:
+                logger.error(f"❌ Perplexity API error ({resp.status_code}): {resp.text[:200]}")
+                return {
+                    "analysis": "",
+                    "recommendation": "",
+                    "confidence": 0.0,
+                    "citations": [],
+                }
+
+            result = resp.json()
+            content = result.get("choices", [{}])[0].get("message", {}).get("content", "")
+            citations = result.get("citations", []) or []
+
+            # Best-effort recommendation extraction
+            recommendation = ""
+            try:
+                import re
+                match = re.search(r"\b(RECOMMENDATION|Action)\s*:\s*(BUY|SELL|HOLD)\b", content, re.I)
+                if match:
+                    recommendation = match.group(2).upper()
+            except Exception:
+                pass
+
+            # Heuristic confidence extraction (0-1)
+            confidence = 0.0
+            try:
+                import re
+                m2 = re.search(r"CONFIDENCE\s*[:=]\s*(\d{1,3})%", content, re.I)
+                if m2:
+                    pct = float(m2.group(1))
+                    confidence = max(0.0, min(1.0, pct / 100.0))
+            except Exception:
+                pass
+
+            return {
+                "analysis": content,
+                "recommendation": recommendation,
+                "confidence": confidence,
+                "citations": citations,
+            }
+        except Exception as e:
+            logger.error(f"❌ Perplexity async analysis error: {e}")
+            return {
+                "analysis": "",
+                "recommendation": "",
+                "confidence": 0.0,
+                "citations": [],
+            }
     
     def _analyze_stock_sync(self, symbol: str, current_price: float) -> Dict:
         """

@@ -250,22 +250,8 @@ class FinancialDataProvider:
             # Get basic info
             info = ticker.info
             
-            # Get news impact analysis
-            try:
-                from financial.news_impact import NewsImpactAnalyzer
-                news_analyzer = NewsImpactAnalyzer()
-                
-                # Mock recent news for demo (in production, fetch from your news database)
-                recent_news = [
-                    f"{symbol} reports quarterly earnings above expectations",
-                    f"Market volatility affects {symbol} stock price",
-                    f"Analysts maintain positive outlook for {symbol}"
-                ]
-                
-                news_impact = await news_analyzer.analyze_stock_impact(symbol, recent_news)
-            except Exception as e:
-                logger.warning(f"Could not analyze news impact for {symbol}: {e}")
-                news_impact = {'impact_score': 0.0, 'sentiment': 'neutral'}
+            # News impact analysis (live-only: no mock news). If no real news source is wired, use neutral.
+            news_impact = {'impact_score': 0.0, 'sentiment': 'neutral'}
 
             stock_data = {
                 'symbol': symbol,

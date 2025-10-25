@@ -14,12 +14,14 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel
 from contextlib import asynccontextmanager
 import json
 import requests
 import numpy as np
 from pathlib import Path
 import yaml
+from pathlib import Path
 
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -30,6 +32,12 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# Safety: disable torch dynamo/compile in this process to avoid environment-induced issues
+# Some environments auto-enable Dynamo which may import torch._C._dynamo.eval_frame.skip_code
+# Our code does not use torch.compile; explicitly disable to be safe.
+os.environ.setdefault("PYTORCH_ENABLE_DYNAMO", "0")
+os.environ.setdefault("TORCH_COMPILE_DISABLE", "1")
 
 # Import our components
 # Scheduler functionality
@@ -57,13 +65,15 @@ try:
     from app.financial.social_sentiment_enhanced import RealSocialMediaAnalyzer
     from app.financial.ai_models import AdvancedAIModels, TimeSeriesAnalyzer
     # from app.financial.neural_networks import EnsembleNeuralNetwork  # DISABLED - OLD TENSORFLOW
-    from app.financial.ml_trainer import MLModelTrainer
+    # from app.financial.ml_trainer import MLModelTrainer  # DISABLED - TensorFlow compatibility issues
+    ML_TRAINER_AVAILABLE = False
     from app.financial.websocket_manager import WebSocketManager, MarketDataStreamer
     
     FINANCIAL_MODULES_AVAILABLE = True
     logger.info("✅ Financial modules loaded successfully")
 except ImportError as e:
     FINANCIAL_MODULES_AVAILABLE = False
+    ML_TRAINER_AVAILABLE = False
     logger.warning(f"⚠️ Financial modules not available: {e}")
     logger.info("📊 Running in demo mode with limited functionality")
 
@@ -73,12 +83,21 @@ try:
     from app.ml.progressive.trainer import ProgressiveTrainer
     from app.ml.progressive.predictor import ProgressivePredictor
     from app.ml.progressive.models import ProgressiveModels
+    from app.data.data_manager import DataManager
     
     PROGRESSIVE_ML_AVAILABLE = True
     logger.info("✅ Progressive ML system loaded successfully")
 except ImportError as e:
     PROGRESSIVE_ML_AVAILABLE = False
     logger.warning(f"⚠️ Progressive ML system not available: {e}")
+
+# News sentiment provider (wraps real providers: NewsAPI, Yahoo, Alpha Vantage, Bing)
+try:
+    from app.financial.news_sentiment_provider import NewsSentimentProvider
+    NEWS_SENTIMENT_AVAILABLE = True
+except ImportError as e:
+    NEWS_SENTIMENT_AVAILABLE = False
+    logger.warning(f"⚠️ News sentiment provider unavailable: {e}")
 
 # Initialize templates
 try:
@@ -98,6 +117,7 @@ websocket_manager = None
 market_streamer = None
 keyword_analyzer = None
 real_data_loader = None
+news_sentiment_provider = None
 
 # Progressive ML instances
 progressive_data_loader = None
@@ -112,7 +132,10 @@ if FINANCIAL_MODULES_AVAILABLE:
         news_impact_analyzer = NewsImpactAnalyzer()
         social_analyzer = RealSocialMediaAnalyzer()
         ai_models = AdvancedAIModels()
-        ml_trainer = MLModelTrainer()
+        if ML_TRAINER_AVAILABLE:
+            ml_trainer = MLModelTrainer()
+        else:
+            ml_trainer = None
         websocket_manager = WebSocketManager()
         market_streamer = MarketDataStreamer(websocket_manager)
         
@@ -144,10 +167,21 @@ if PROGRESSIVE_ML_AVAILABLE:
         progressive_data_loader = ProgressiveDataLoader()
         progressive_trainer = ProgressiveTrainer(progressive_data_loader)
         progressive_predictor = ProgressivePredictor(progressive_data_loader)
+        data_manager = DataManager()
         logger.info("✅ Progressive ML system initialized successfully")
     except Exception as e:
         logger.error(f"Failed to initialize Progressive ML system: {e}")
         PROGRESSIVE_ML_AVAILABLE = False
+
+# Initialize News Sentiment Provider
+if NEWS_SENTIMENT_AVAILABLE:
+    try:
+        # 14 days back, cache TTL 10 minutes
+        news_sentiment_provider = NewsSentimentProvider(days_back=14, ttl_seconds=600)
+        logger.info("✅ News Sentiment provider initialized")
+    except Exception as e:
+        logger.error(f"Failed to initialize News Sentiment provider: {e}")
+        NEWS_SENTIMENT_AVAILABLE = False
 
 # ============================================================
 # WebSocket Connection Manager
@@ -263,10 +297,14 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Add CORS
+# Add CORS (explicit localhost origins to avoid browser "Failed to fetch" on POSTs)
+_allowed_origins = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -420,7 +458,7 @@ async def get_statistics():
         return scheduler.get_statistics()
     except Exception as e:
         logger.error(f"Statistics error: {e}")
-        return {"error": "Statistics unavailable", "dummy": True}
+        return {"error": "Statistics unavailable", "status": "error"}
 
 @app.get("/api/jobs")
 async def get_jobs():
@@ -597,6 +635,106 @@ async def get_top_stocks_endpoint():
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# ============================================================
+# News & Sentiment Endpoints (Live-only, no mock data)
+# ============================================================
+@app.get("/api/news/sentiment/{symbol}", tags=["Sentiment"])
+async def get_news_sentiment(symbol: str):
+    """Get aggregated daily news sentiment for a symbol.
+
+    Returns 200 with an empty data list and a friendly message when no data.
+    """
+    try:
+        if not NEWS_SENTIMENT_AVAILABLE or not news_sentiment_provider:
+            raise HTTPException(status_code=503, detail="News sentiment provider unavailable")
+
+        # Run blocking analyzer in a thread
+        result = await asyncio.to_thread(news_sentiment_provider.fetch_daily_sentiment, symbol)
+
+        if not result.get("data"):
+            return {
+                "status": "success",
+                "symbol": symbol,
+                "data": [],
+                "message": "No sentiment data available",
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            }
+
+        return {
+            "status": "success",
+            "symbol": symbol,
+            "data": result.get("data", []),
+            "days": result.get("days", len(result.get("data", []))),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Error getting news sentiment for {symbol}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/news/{symbol}", tags=["News"])
+async def get_recent_news(symbol: str, limit: int = 20):
+    """Get recent news articles for a symbol.
+
+    Returns 200 with an empty articles array and a friendly message when no data.
+    """
+    try:
+        if not NEWS_SENTIMENT_AVAILABLE or not news_sentiment_provider:
+            raise HTTPException(status_code=503, detail="News sentiment provider unavailable")
+
+        result = await asyncio.to_thread(news_sentiment_provider.fetch_recent_news, symbol, min(max(limit, 1), 50))
+
+        if not result.get("articles"):
+            return {
+                "status": "success",
+                "symbol": symbol,
+                "articles": [],
+                "message": "No sentiment data available",
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            }
+
+        return {
+            "status": "success",
+            "symbol": symbol,
+            "count": result.get("count", len(result.get("articles", []))),
+            "articles": result.get("articles", []),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Error getting news articles for {symbol}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/sentiment/providers", tags=["Sentiment"])
+async def get_sentiment_providers_health():
+    """List availability of sentiment/news providers and related LLM keys.
+
+    This is informational for ops; it does not change behavior.
+    """
+    try:
+        if not NEWS_SENTIMENT_AVAILABLE or not news_sentiment_provider:
+            # Still report social/LLM availability even if news provider import failed
+            from app.financial.news_sentiment_provider import NewsSentimentProvider as _NSP  # type: ignore
+            tmp = _NSP(days_back=1, ttl_seconds=60)
+            health = tmp.get_provider_health()
+        else:
+            health = news_sentiment_provider.get_provider_health()
+
+        return {
+            "status": "success",
+            "providers": health,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"❌ Error getting providers health: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 
 
@@ -616,6 +754,16 @@ async def get_ml_prediction(symbol: str, horizon: str = "1d"):
         # Get prediction using PyTorch system
         prediction = progressive_predictor.predict_ensemble(symbol, mode="progressive")
         
+        # Calculate real confidence from prediction variance
+        confidence = 0.95 if prediction.get('accuracy', 0) > 0.7 else 0.75
+        if prediction.get('predictions'):
+            # Use ensemble variance for confidence
+            import numpy as np
+            pred_values = [p.get('predicted_value', 0) for p in prediction.get('predictions', [])]
+            if len(pred_values) > 1:
+                variance = np.var(pred_values)
+                confidence = max(0.5, min(0.99, 1.0 - variance / 100))
+        
         return {
             "status": "success",
             "data": {
@@ -623,7 +771,7 @@ async def get_ml_prediction(symbol: str, horizon: str = "1d"):
                 "horizon": horizon,
                 "prediction": prediction,
                 "model_type": "pytorch_progressive_ml",
-                "confidence": 0.85  # Placeholder
+                "confidence": round(confidence, 3)
             },
             "timestamp": datetime.now().isoformat()
         }
@@ -678,7 +826,7 @@ async def get_ml_status():
                         "best_for": "Feature importance, non-linear relationships"
                     },
                     "gradient_boost": {
-                        "status": "✅ Active" if ML_AVAILABLE else "⚠️ Unavailable",
+                        "status": "✅ Active" if PROGRESSIVE_ML_AVAILABLE else "⚠️ Unavailable",
                         "type": "Machine Learning - Boosting",
                         "accuracy": "80-88%",
                         "best_for": "High accuracy predictions, complex features"
@@ -711,23 +859,25 @@ async def get_market_intelligence():
     try:
         from app.financial.market_data import financial_provider
         
-        # Get market indices for sentiment
+        # Get market indices and calculate sentiment
         indices = await financial_provider.get_market_indices()
         sentiment_data = await financial_provider.calculate_market_sentiment()
-        
-        # Calculate market sentiment interpretation
-        sentiment_score = sentiment_data.get('sentiment_score', 50)
-        
+
+        # Harmonized sentiment fields
+        sentiment_score = float(sentiment_data.get('score', 50.0))
+        total_change = float(sentiment_data.get('total_change', 0.0))
+
+        # Canonical interpretation used by frontend coloring logic
         if sentiment_score >= 70:
-            sentiment_interpretation = "Bullish 🚀"
+            sentiment_interpretation = "Bullish"
         elif sentiment_score >= 55:
-            sentiment_interpretation = "Slightly Bullish 📈"
+            sentiment_interpretation = "Slightly Bullish"
         elif sentiment_score >= 45:
-            sentiment_interpretation = "Neutral ➡️"
+            sentiment_interpretation = "Neutral"
         elif sentiment_score >= 30:
-            sentiment_interpretation = "Slightly Bearish 📉"
+            sentiment_interpretation = "Slightly Bearish"
         else:
-            sentiment_interpretation = "Bearish 🔻"
+            sentiment_interpretation = "Bearish"
         
         # Calculate risk assessment based on VIX and market volatility
         vix_data = indices.get('vix', {})
@@ -743,8 +893,12 @@ async def get_market_intelligence():
             risk_level = "Low"
             risk_percentage = int(vix_value)
         
-        # Get top movers for recommendations
+        # Get top movers for recommendations and compute overview stats
         stocks = await financial_provider.get_key_stocks_data()
+        total_analyzed = len(stocks)
+        bullish_stocks = sum(1 for s in stocks if s.get('is_positive'))
+        # Heuristic: consider high risk if daily drop >= 2.5%
+        high_risk_stocks = sum(1 for s in stocks if s.get('change_percent', 0) <= -2.5)
         
         # Generate AI recommendations based on real data
         recommendations = []
@@ -785,27 +939,42 @@ async def get_market_intelligence():
                 "change_percent": change_pct
             })
         
+        # Derive simple trend signal from aggregate index change
+        if total_change > 0.5:
+            trend = "up"
+        elif total_change < -0.5:
+            trend = "down"
+        else:
+            trend = "neutral"
+
         return {
             "status": "success",
             "data": {
+                "overview": {
+                    "symbols_analyzed": total_analyzed,
+                    "ai_models_used": ["sentiment", "risk", "recommendations"],
+                },
                 "market_sentiment": {
-                    "overall_score": sentiment_score,
+                    "overall_score": round(sentiment_score, 1),
                     "interpretation": sentiment_interpretation,
-                    "trend": sentiment_data.get('trend', 'neutral')
+                    "trend": trend,
+                    "bullish_stocks": bullish_stocks,
+                    "total_analyzed": total_analyzed,
                 },
                 "risk_assessment": {
                     "overall_risk": risk_level,
                     "risk_percentage": risk_percentage,
                     "vix_level": vix_value,
+                    "high_risk_stocks": high_risk_stocks,
                     "factors": [
                         f"VIX at {vix_value:.2f}",
                         f"Market sentiment: {sentiment_interpretation}",
                         f"Volatility: {risk_level}"
-                    ]
+                    ],
                 },
                 "recommendations": recommendations,
-                "last_updated": datetime.now().isoformat()
-            }
+                "last_updated": datetime.now().isoformat(),
+            },
         }
         
     except Exception as e:
@@ -1290,46 +1459,8 @@ async def get_recent_articles(limit: int = Query(20, ge=1, le=100)):
     """Get recent financial articles"""
     try:
         if not real_data_loader:
-            # Return demo data if real loader not available
-            return {
-                "status": "success",
-                "count": 3,
-                "articles": [
-                    {
-                        "id": "demo_1",
-                        "title": "Market Analysis: Tech Stocks Show Strong Performance",
-                        "summary": "Technology sector continues outperforming broader market indices",
-                        "source": "demo_source",
-                        "published_at": datetime.now(timezone.utc).isoformat(),
-                        "sentiment": "positive",
-                        "relevance_score": 0.85,
-                        "url": "#",
-                        "keywords": ["technology", "stocks", "performance"]
-                    },
-                    {
-                        "id": "demo_2", 
-                        "title": "Federal Reserve Policy Update",
-                        "summary": "Central bank signals potential rate adjustments",
-                        "source": "demo_source",
-                        "published_at": datetime.now(timezone.utc).isoformat(),
-                        "sentiment": "neutral",
-                        "relevance_score": 0.92,
-                        "url": "#",
-                        "keywords": ["federal reserve", "policy", "rates"]
-                    },
-                    {
-                        "id": "demo_3",
-                        "title": "Global Trade Developments",
-                        "summary": "International trade agreements show positive momentum",
-                        "source": "demo_source", 
-                        "published_at": datetime.now(timezone.utc).isoformat(),
-                        "sentiment": "positive",
-                        "relevance_score": 0.78,
-                        "url": "#",
-                        "keywords": ["trade", "global", "agreements"]
-                    }
-                ]
-            }
+            # Live only: return explicit error (no demo articles)
+            raise HTTPException(status_code=503, detail="RSS system unavailable")
         # REAL data path: fetch RSS and enrich with keyword analysis
         fetched = await real_data_loader.fetch_all_rss_feeds(tier="major_news")
         articles = []
@@ -1390,40 +1521,8 @@ async def get_recent_articles(limit: int = Query(20, ge=1, le=100)):
 async def get_active_alerts():
     """Get active market alerts"""
     try:
-        current_time = datetime.now(timezone.utc)
-        
-        # Demo active alerts
-        alerts = [
-            {
-                "id": "alert_1",
-                "type": "price_movement",
-                "severity": "high",
-                "title": "Significant Price Movement Detected",
-                "message": "AAPL showing unusual trading volume (+35%)",
-                "symbol": "AAPL",
-                "created_at": current_time.isoformat(),
-                "is_active": True,
-                "confidence": 0.89
-            },
-            {
-                "id": "alert_2",
-                "type": "news_impact",
-                "severity": "medium", 
-                "title": "News Impact Alert",
-                "message": "Breaking news may affect tech sector",
-                "symbol": "QQQ",
-                "created_at": current_time.isoformat(),
-                "is_active": True,
-                "confidence": 0.76
-            }
-        ]
-        
-        return {
-            "status": "success",
-            "count": len(alerts),
-            "alerts": alerts,
-            "last_updated": current_time.isoformat()
-        }
+        # Live only: alerts system not wired yet
+        raise HTTPException(status_code=503, detail="Alerts system unavailable")
         
     except Exception as e:
         logger.error(f"Failed to fetch active alerts: {e}")
@@ -1433,44 +1532,8 @@ async def get_active_alerts():
 async def get_stats():
     """Get comprehensive system analytics"""
     try:
-        current_time = datetime.now(timezone.utc)
-        
-        return {
-            "status": "success",
-            "data": {
-                "articles": {
-                    "total_processed": 1247,
-                    "today": 89,
-                    "last_hour": 12,
-                    "sources_active": 8
-                },
-                "alerts": {
-                    "total_generated": 234,
-                    "active": 3,
-                    "resolved": 231,
-                    "accuracy": 0.87
-                },
-                "predictions": {
-                    "total": 156,
-                    "accurate": 128,
-                    "accuracy_rate": 0.82,
-                    "avg_confidence": 0.76
-                },
-                "monitoring": {
-                    "stocks_tracked": 500,
-                    "feeds_monitored": 12,
-                    "update_frequency": "real-time",
-                    "last_update": current_time.isoformat()
-                },
-                "performance": {
-                    "uptime": "99.8%",
-                    "avg_response_time": "145ms",
-                    "websocket_connections": len(manager.active_connections),
-                    "system_load": "normal"
-                }
-            },
-            "timestamp": current_time.isoformat()
-        }
+        # Live only: statistics not implemented
+        raise HTTPException(status_code=503, detail="Statistics not implemented")
         
     except Exception as e:
         logger.error(f"Failed to generate stats: {e}")
@@ -1482,19 +1545,8 @@ async def get_sector_performance():
     try:
         if financial_provider:
             return await financial_provider.get_sector_performance()
-        
-        # Demo data
-        return {
-            "status": "success",
-            "data": {
-                "Technology": {"change": "+2.34%", "value": 234.56, "trend": "up"},
-                "Healthcare": {"change": "+1.87%", "value": 189.23, "trend": "up"},
-                "Finance": {"change": "-0.45%", "value": 145.78, "trend": "down"},
-                "Energy": {"change": "+3.21%", "value": 98.45, "trend": "up"},
-                "Consumer": {"change": "+0.67%", "value": 167.89, "trend": "up"}
-            },
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        }
+        # Live only: no sector performance without provider
+        raise HTTPException(status_code=503, detail="Financial provider unavailable")
         
     except Exception as e:
         logger.error(f"Failed to get sector performance: {e}")
@@ -1504,47 +1556,114 @@ async def get_sector_performance():
 async def get_geopolitical_risks():
     """Get geopolitical risk assessment"""
     try:
-        current_time = datetime.now(timezone.utc)
-        
+        # Validate required components
+        if real_data_loader is None:
+            raise HTTPException(status_code=503, detail="RSS loader unavailable")
+        if news_impact_analyzer is None:
+            raise HTTPException(status_code=503, detail="News impact analyzer unavailable")
+
+        # Fetch recent RSS articles from relevant tiers (keep fast/lightweight)
+        relevant_tiers = ["major_news", "global_markets", "chinese_news"]
+        all_articles: List[Dict[str, Any]] = []
+        try:
+            for tier in relevant_tiers:
+                articles = await real_data_loader.fetch_all_rss_feeds(tier=tier)
+                all_articles.extend(articles)
+                # Be a good citizen between tiers
+                await asyncio.sleep(0.2)
+        except Exception as e:
+            logger.warning(f"Failed fetching RSS tiers for geopolitics: {e}")
+
+        # If nothing fetched, return friendly 200 with no data
+        if not all_articles:
+            return {
+                "status": "success",
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "data": {
+                    "risk_level": "Low",
+                    "risk_score": 0.0,
+                    "factors": [],
+                    "affected_sectors": [],
+                    "events": [],
+                    "overall_assessment": "No significant geopolitical signals detected in the last 48h"
+                }
+            }
+
+        # Filter for geopolitically relevant articles
+        geo_terms = {
+            "war", "conflict", "sanction", "sanctions", "tariff", "trade", "trade war",
+            "geopolitic", "geopolitical", "military", "missile", "cyberattack", "embargo",
+            "taiwan", "ukraine", "russia", "china", "middle east", "israel", "gaza", "iran",
+            "south china sea", "red sea", "strait", "blockade", "coup", "border clash", "naval"
+        }
+
+        def is_geo_article(a: Dict[str, Any]) -> bool:
+            text = f"{a.get('title','')} {a.get('content','')}".lower()
+            return any(term in text for term in geo_terms)
+
+        geo_articles = [a for a in all_articles if is_geo_article(a)]
+
+        # If none matched, provide low risk response
+        if not geo_articles:
+            return {
+                "status": "success",
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "data": {
+                    "risk_level": "Low",
+                    "risk_score": 0.0,
+                    "factors": [],
+                    "affected_sectors": [],
+                    "events": [],
+                    "overall_assessment": "No geopolitically-relevant headlines detected in the last 48h"
+                }
+            }
+
+        # Compute summary risk using analyzer (0-1 score, Low/Medium/High/Critical)
+        news_texts = [f"{a.get('title','')}. {a.get('content','')}" for a in geo_articles]
+        summary = await news_impact_analyzer.calculate_geopolitical_risk(news_texts)
+
+        # Build top events ranked by per-article geopolitical risk (0-10)
+        events: List[Dict[str, Any]] = []
+        for art in geo_articles:
+            try:
+                # Map source field for analyzer
+                mapped_article = {
+                    "id": art.get("id", art.get("url", "")),
+                    "title": art.get("title", ""),
+                    "content": art.get("content", ""),
+                    "source": art.get("source_name", art.get("source", "rss")),
+                    "published_at": art.get("published_at"),
+                }
+                analysis = news_impact_analyzer.analyze_article_impact(mapped_article)
+                events.append({
+                    "title": art.get("title", ""),
+                    "url": art.get("url", ""),
+                    "source": art.get("source_name", art.get("source", "rss")),
+                    "published_at": art.get("published_at"),
+                    "risk_score": analysis.get("geopolitical_risk_score", 0.0),  # 0-10 scale
+                    "affected_sectors": [s.get("sector") for s in analysis.get("affected_sectors", [])],
+                    "symbols": art.get("symbols", []),
+                })
+            except Exception as e:
+                logger.debug(f"Article analysis failed (geo): {e}")
+
+        # Sort by risk score desc and take top N
+        events.sort(key=lambda e: e.get("risk_score", 0.0), reverse=True)
+        top_events = events[:10]
+
+        # Compose response
+        assessment = f"{summary.get('risk_level', 'Medium')} geopolitical risk (Score: {summary.get('risk_score', 0.0)}) based on {len(geo_articles)} articles"
         return {
             "status": "success",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "data": {
-                "overall_risk_level": "moderate",
-                "risk_score": 0.65,
-                "factors": [
-                    {
-                        "region": "US-China",
-                        "risk_type": "trade_tensions",
-                        "level": "moderate",
-                        "impact": "technology sector",
-                        "probability": 0.7,
-                        "description": "Ongoing trade discussions affecting tech imports"
-                    },
-                    {
-                        "region": "Europe",
-                        "risk_type": "regulatory",
-                        "level": "low",
-                        "impact": "financial services",
-                        "probability": 0.3,
-                        "description": "New financial regulations under consideration"
-                    },
-                    {
-                        "region": "Middle East",
-                        "risk_type": "energy_supply",
-                        "level": "moderate",
-                        "impact": "energy sector",
-                        "probability": 0.6,
-                        "description": "Regional tensions affecting oil supply chains"
-                    }
-                ],
-                "recommendations": [
-                    "Monitor technology sector exposure",
-                    "Consider energy hedging strategies",
-                    "Watch for regulatory updates"
-                ]
-            },
-            "timestamp": current_time.isoformat(),
-            "next_update": (current_time + timedelta(hours=6)).isoformat()
+                "risk_level": summary.get("risk_level", "Medium"),
+                "risk_score": summary.get("risk_score", 0.0),
+                "factors": summary.get("factors", []),
+                "affected_sectors": summary.get("affected_sectors", []),
+                "events": top_events,
+                "overall_assessment": assessment
+            }
         }
         
     except Exception as e:
@@ -1626,11 +1745,8 @@ async def get_comprehensive_analysis(symbol: str):
         # Get real market data first
         stock_data = await financial_provider.get_stock_data(symbol)
         if not stock_data:
-            return {
-                "status": "error",
-                "message": f"No market data available for {symbol}",
-                "symbol": symbol
-            }
+            # Live only: return explicit error, no fallback
+            raise HTTPException(status_code=404, detail=f"No market data available for {symbol}")
         
         current_price = float(stock_data.get('price', 100.0))
         logger.info(f"🤖 Starting AI analysis for {symbol}: price=${current_price}")
@@ -1658,43 +1774,16 @@ async def get_comprehensive_analysis(symbol: str):
                 "timestamp": datetime.now(timezone.utc).isoformat()
             }
         else:
-            # Fallback to demo data if AI fails
-            logger.warning(f"⚠️ AI analysis failed for {symbol}, using fallback")
-            return {
-                "status": "success",
-                "symbol": symbol,
-                "current_price": current_price,
-                "analysis": {
-                    "technical": {
-                        "trend": "neutral",
-                        "support_level": round(current_price * 0.90, 2),
-                        "resistance_level": round(current_price * 1.10, 2),
-                        "rsi": 50,
-                        "macd_signal": "hold"
-                    },
-                    "prediction": {
-                        "direction": "sideways",
-                        "confidence": 0.6,
-                        "target_price": current_price,
-                        "time_horizon": "1_month"
-                    }
-                },
-                "prediction": {
-                    "direction": "sideways",
-                    "confidence": 0.6,
-                    "target_price": current_price,
-                    "time_horizon": "1_month"
-                },
-                "ai_metadata": {
-                    "model": "fallback",
-                    "error": ai_result.get("message", "AI analysis unavailable")
-                },
-                "timestamp": datetime.now(timezone.utc).isoformat()
-            }
+            # Live only: no fallback/dummy, return explicit error
+            error_msg = ai_result.get("message", "AI analysis unavailable")
+            logger.error(f"AI analysis failed for {symbol}: {error_msg}")
+            raise HTTPException(status_code=502, detail=f"AI analysis failed: {error_msg}")
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Failed to get comprehensive analysis for {symbol}: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to analyze {symbol}")
+        raise HTTPException(status_code=500, detail=f"Failed to analyze {symbol}: {str(e)}")
 
 # ============================================================
 # Enhanced ML Endpoints from Production Enhanced
@@ -1804,15 +1893,13 @@ async def start_progressive_training(
         
         logger.info(f"🚀 Starting progressive training for {symbol}: {model_types_list}, mode={mode}")
         
-        # Validate that stock data exists
-        from pathlib import Path
-        stock_file = Path(f"stock_data/{symbol}/{symbol}_price.csv")
-        if not stock_file.exists():
-            logger.warning(f"⚠️ Stock data not found for {symbol}: {stock_file}")
-            raise HTTPException(
-                status_code=404, 
-                detail=f"Stock data not found for {symbol}. Please ensure the ticker exists in stock_data folder."
-            )
+        # Ensure data is ready before starting (price/indicators/sentiment/fundamentals)
+        try:
+            training_jobs.clear()  # keep one job at a time clarity
+        except Exception:
+            pass
+        ensure_summary = await asyncio.to_thread(data_manager.ensure_symbol_data, symbol)
+        logger.info(f"📦 Ensure data summary for {symbol}: {ensure_summary.to_dict()}")
         
         # Generate unique job ID
         import uuid
@@ -1864,13 +1951,45 @@ async def run_training_job(job_id: str, symbol: str, model_types: List[str], mod
     import time
     import asyncio
     
+    # Explicitly disable Torch Dynamo before any training begins
+    try:
+        import torch  # noqa: F401
+        try:
+            import torch._dynamo as _dynamo  # type: ignore
+            try:
+                _dynamo.reset()
+            except Exception:
+                pass
+            try:
+                _dynamo.disable()
+                logger.info("🛡️ Torch Dynamo disabled in training job")
+            except Exception:
+                logger.debug("Torch Dynamo disable not available in training job")
+        except Exception as dynamo_e:
+            logger.debug(f"Torch Dynamo module not present: {dynamo_e}")
+    except Exception:
+        pass
+    
     try:
         training_jobs[job_id]["status"] = "running"
         training_jobs[job_id]["progress"] = 10
-        training_jobs[job_id]["current_step"] = f"Loading data for {symbol}..."
+        training_jobs[job_id]["current_step"] = f"Ensuring data for {symbol}..."
         
         start_time = time.time()
         
+        # Ensure data presence before training
+        try:
+            ensure = await asyncio.to_thread(data_manager.ensure_symbol_data, symbol)
+            training_jobs[job_id]["current_step"] = "Loading training data..."
+            training_jobs[job_id]["progress"] = 15
+        except Exception as e:
+            training_jobs[job_id].update({
+                "status": "failed",
+                "current_step": f"❌ Ensure data failed: {e}",
+                "error": str(e),
+            })
+            return
+
         # Start a background task to update progress periodically
         async def simulate_progress():
             # Estimate: ~30 seconds per model per horizon (3 horizons = 90 sec per model)
@@ -1958,34 +2077,6 @@ async def get_training_job_status(job_id: str):
             job_data["timestamp"] = datetime.now(timezone.utc).isoformat()
             return job_data
         
-        # Fallback: try to infer status from file system if job not in memory
-        # Extract symbol from job_id (format: train_SYMBOL_hash)
-        parts = job_id.split('_')
-        if len(parts) >= 3 and parts[0] == 'train':
-            symbol = parts[1]
-            
-            # Check if model files exist for this symbol
-            import os
-            from pathlib import Path
-            models_dir = Path("app/ml/models")
-            model_files = list(models_dir.glob(f"*{symbol}*"))
-            
-            if model_files:
-                # Files exist, assume training completed
-                return {
-                    "status": "completed",
-                    "progress": 100,
-                    "current_step": "Training completed (inferred from files)",
-                    "eta_seconds": 0,
-                    "symbol": symbol,
-                    "job_id": job_id,
-                    "result": {
-                        "message": f"Training completed. Found {len(model_files)} model files.",
-                        "files": [f.name for f in model_files[:3]]  # Show first 3 files
-                    },
-                    "timestamp": datetime.now(timezone.utc).isoformat()
-                }
-        
         # No job in memory and no files found
         raise HTTPException(status_code=404, detail=f"Training job {job_id} not found")
         
@@ -2028,7 +2119,18 @@ async def progressive_predict(symbol: str, mode: str = "progressive"):
         logger.info(f"🔮 Getting progressive predictions for {symbol} (mode={mode})")
         
         # Get ensemble predictions
+        logger.info(f"🔮 Calling predict_ensemble for {symbol}")
         predictions = progressive_predictor.predict_ensemble(symbol=symbol, mode=mode)
+        logger.info(f"🔮 predict_ensemble returned: {type(predictions)}, keys: {list(predictions.keys()) if isinstance(predictions, dict) else 'not dict'}")
+        
+        # Validate predictions structure
+        if not predictions or not isinstance(predictions, dict):
+            logger.error(f"❌ Invalid predictions returned: {predictions}")
+            raise HTTPException(status_code=500, detail="Invalid predictions data returned")
+        
+        if 'current_price' not in predictions:
+            logger.error(f"❌ Missing current_price in predictions: {list(predictions.keys())}")
+            raise HTTPException(status_code=500, detail="Missing current_price in predictions")
         
         logger.info(f"✅ Successfully got predictions for {symbol}")
         
@@ -2040,6 +2142,8 @@ async def progressive_predict(symbol: str, mode: str = "progressive"):
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Failed to get progressive predictions for {symbol}: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to get progressive predictions: {str(e)}")
@@ -2054,8 +2158,7 @@ async def get_progressive_models():
         models_info = {
             "available_models": [
                 "lstm",
-                "gru", 
-                "cnn_lstm",
+                "cnn",
                 "transformer"
             ],
             "available_modes": [
@@ -2090,17 +2193,22 @@ async def get_progressive_models():
         logger.error(f"Failed to get progressive models info: {e}")
         raise HTTPException(status_code=500, detail="Failed to get progressive models info")
 
+# Pydantic model for backtest request
+class BacktestRequest(BaseModel):
+    symbol: str
+    train_start_date: str
+    train_end_date: str
+    test_period_days: int = 14
+    max_iterations: int = 10
+    target_accuracy: float = 0.85
+    auto_stop: bool = True
+    model_types: List[str] = ["lstm"]  # Add model selection support
+    indicator_params: Dict[str, Any] | None = None  # Optional technical indicator parameters
+
+backtest_jobs = {}
+
 @app.post("/api/ml/progressive/backtest", tags=["Progressive ML"])
-async def start_backtest(
-    symbol: str,
-    train_start_date: str,
-    train_end_date: str,
-    test_period_days: int = 14,
-    max_iterations: int = 10,
-    target_accuracy: float = 0.85,
-    auto_stop: bool = True,
-    model_types: List[str] = ["lstm"]
-):
+async def start_backtest(request: BacktestRequest, raw_request: Request = None, background_tasks: BackgroundTasks = None):
     """
     Start progressive backtesting with date-range training
     
@@ -2118,38 +2226,65 @@ async def start_backtest(
         Backtest results with all iterations
     """
     try:
+        logger.info(f"🔬 Received backtest request")
+        
+        # Debug request data
+        try:
+            logger.info(f"📊 Request object: {request}")
+            logger.info(f"📊 Symbol: {request.symbol}")
+            logger.info(f"📊 Model types: {request.model_types}")
+            logger.info(f"📊 Dates: {request.train_start_date} to {request.train_end_date}")
+            if request.indicator_params:
+                logger.info(f"🧩 Indicator params override: {request.indicator_params}")
+        except Exception as debug_e:
+            logger.error(f"❌ Error accessing request data: {debug_e}")
+            
+        # Try to get raw body for debugging
+        if raw_request:
+            try:
+                body = await raw_request.body()
+                logger.info(f"📊 Raw body: {body.decode('utf-8')}")
+            except Exception as body_e:
+                logger.error(f"❌ Error reading raw body: {body_e}")
+        
         if not PROGRESSIVE_ML_AVAILABLE:
             raise HTTPException(status_code=503, detail="Progressive ML system not available")
         
         if not progressive_data_loader or not progressive_trainer or not progressive_predictor:
             raise HTTPException(status_code=503, detail="Progressive ML components not initialized")
         
-        # Import backtester
-        from app.ml.progressive.backtester import ProgressiveBacktester
-        
-        # Create backtester instance
-        backtester = ProgressiveBacktester(
-            data_loader=progressive_data_loader,
-            trainer=progressive_trainer,
-            predictor=progressive_predictor
+    # Start async backtest job with progress tracking
+        import uuid
+        job_id = f"backtest_{request.symbol}_{uuid.uuid4().hex[:8]}"
+        backtest_jobs[job_id] = {
+            "job_id": job_id,
+            "symbol": request.symbol,
+            "status": "starting",
+            "progress": 0,
+            "current_step": "Initializing...",
+            "eta_seconds": None,
+            "start_time": datetime.now(timezone.utc).isoformat(),
+            "end_time": None,
+            "result": None,
+            "error": None,
+            "cancelled": False
+        }
+
+        # Launch background job
+        if background_tasks is None:
+            from fastapi import BackgroundTasks as _BT
+            background_tasks = _BT()
+        background_tasks.add_task(
+            run_backtest_job,
+            job_id=job_id,
+            request=request
         )
-        
-        # Run backtest
-        logger.info(f"🔬 Starting backtest for {symbol}")
-        results = backtester.run_backtest(
-            symbol=symbol,
-            train_start_date=train_start_date,
-            train_end_date=train_end_date,
-            test_period_days=test_period_days,
-            max_iterations=max_iterations,
-            target_accuracy=target_accuracy,
-            auto_stop=auto_stop,
-            model_types=model_types
-        )
-        
+
         return {
-            "status": "success",
-            "backtest_results": results,
+            "status": "backtest_started",
+            "job_id": job_id,
+            "symbol": request.symbol,
+            "message": "Backtest started in background. Use job_id to track progress.",
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
         
@@ -2159,36 +2294,163 @@ async def start_backtest(
 
 @app.get("/api/ml/progressive/backtest/status/{job_id}", tags=["Progressive ML"])
 async def get_backtest_status(job_id: str):
-    """
-    Get status of running backtest
-    
-    Args:
-        job_id: Backtest job ID
-        
-    Returns:
-        Current status of the backtest
-    """
+    """Get status of running backtest"""
     try:
-        if not PROGRESSIVE_ML_AVAILABLE:
-            raise HTTPException(status_code=503, detail="Progressive ML system not available")
-        
-        # Import backtester
-        from app.ml.progressive.backtester import ProgressiveBacktester
-        
-        # For now, return basic status
-        # In production, you'd maintain a registry of active backtests
-        status = {
-            "job_id": job_id,
-            "is_running": False,
-            "message": "Status tracking not yet implemented",
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        }
-        
-        return status
-        
+        if job_id in backtest_jobs:
+            job = backtest_jobs[job_id].copy()
+            job["timestamp"] = datetime.now(timezone.utc).isoformat()
+            return job
+        raise HTTPException(status_code=404, detail=f"Backtest job {job_id} not found")
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Failed to get backtest status: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to get backtest status: {str(e)}")
+
+@app.post("/api/ml/progressive/backtest/cancel/{job_id}", tags=["Progressive ML"])
+async def cancel_backtest(job_id: str):
+    """Request cancellation of a running backtest job"""
+    try:
+        if job_id not in backtest_jobs:
+            raise HTTPException(status_code=404, detail=f"Backtest job {job_id} not found")
+        # Mark job cancelled; worker will observe and stop gracefully
+        backtest_jobs[job_id]["cancelled"] = True
+        # Update status text if still running
+        if backtest_jobs[job_id]["status"] in ["starting", "running"]:
+            backtest_jobs[job_id]["status"] = "cancelling"
+            backtest_jobs[job_id]["current_step"] = "Cancelling..."
+        return {
+            "status": "cancellation_requested",
+            "job_id": job_id,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to cancel backtest: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to cancel backtest: {str(e)}")
+
+async def run_backtest_job(job_id: str, request: BacktestRequest):
+    """Background task for running backtest with progress updates"""
+    import time
+    try:
+        backtest_jobs[job_id]["status"] = "running"
+        backtest_jobs[job_id]["progress"] = 5
+        backtest_jobs[job_id]["current_step"] = "Ensuring ticker data..."
+        start_time = time.time()
+
+        # Progress callback from backtester
+        def _progress_cb(ev: Dict[str, Any]):
+            try:
+                prog = int(ev.get('progress', backtest_jobs[job_id].get('progress', 0)))
+                backtest_jobs[job_id].update({
+                    "status": ev.get('status', backtest_jobs[job_id]["status"]),
+                    "progress": max(min(prog, 99), 0),
+                    "current_step": ev.get('current_step', backtest_jobs[job_id]["current_step"]),
+                    "eta_seconds": ev.get('eta_seconds')
+                })
+            except Exception:
+                pass
+
+        # Ensure data before backtesting
+        try:
+            ensure = await asyncio.to_thread(data_manager.ensure_symbol_data, request.symbol)
+            backtest_jobs[job_id]["current_step"] = "Initializing backtester..."
+            backtest_jobs[job_id]["progress"] = 10
+        except Exception as e:
+            backtest_jobs[job_id].update({
+                "status": "failed",
+                "current_step": f"❌ Ensure data failed: {e}",
+                "error": str(e),
+            })
+            return
+
+        # Import backtester and run
+        from app.ml.progressive.backtester import ProgressiveBacktester
+        # If indicator_params provided, create a job-specific data loader with those params
+        dl_for_job = progressive_data_loader
+        try:
+            if request.indicator_params is not None and PROGRESSIVE_ML_AVAILABLE:
+                dl_for_job = ProgressiveDataLoader(
+                    stock_data_dir=progressive_data_loader.stock_data_dir,
+                    sequence_length=progressive_data_loader.sequence_length,
+                    horizons=progressive_data_loader.horizons,
+                    use_fundamentals=progressive_data_loader.use_fundamentals,
+                    use_technical_indicators=progressive_data_loader.use_technical_indicators,
+                    indicator_params=request.indicator_params
+                )
+                logger.info("🧩 Using job-specific indicator params for backtest")
+        except Exception as _e:
+            logger.warning(f"Failed to construct job-specific data loader: {_e}")
+
+        backtester = ProgressiveBacktester(
+            data_loader=dl_for_job,
+            trainer=progressive_trainer,
+            predictor=progressive_predictor,
+            progress_callback=_progress_cb,
+            cancel_checker=lambda: bool(backtest_jobs.get(job_id, {}).get("cancelled", False))
+        )
+
+        results = backtester.run_backtest(
+            symbol=request.symbol,
+            train_start_date=request.train_start_date,
+            train_end_date=request.train_end_date,
+            test_period_days=request.test_period_days,
+            max_iterations=request.max_iterations,
+            target_accuracy=request.target_accuracy,
+            auto_stop=request.auto_stop,
+            model_types=request.model_types
+        )
+
+        elapsed = int(time.time() - start_time)
+        # Handle cancelled/failed/completed from results
+        status_result = results.get('status') if isinstance(results, dict) else None
+        if status_result == 'cancelled':
+            backtest_jobs[job_id].update({
+                "status": "cancelled",
+                "progress": backtest_jobs[job_id].get("progress", 0),
+                "current_step": "⏹ Backtest cancelled",
+                "eta_seconds": 0,
+                "end_time": datetime.now(timezone.utc).isoformat(),
+                "result": results,
+            })
+        else:
+            backtest_jobs[job_id].update({
+                "status": "completed",
+                "progress": 100,
+                "current_step": "✅ Backtest completed successfully!",
+                "eta_seconds": 0,
+                "end_time": datetime.now(timezone.utc).isoformat(),
+                "result": results,
+            })
+        logger.info(f"✅ Backtest job {job_id} completed for {request.symbol}")
+    except Exception as e:
+        logger.error(f"❌ Backtest job {job_id} failed: {e}")
+        backtest_jobs[job_id].update({
+            "status": "failed",
+            "progress": 0,
+            "current_step": f"❌ Error: {str(e)}",
+            "end_time": datetime.now(timezone.utc).isoformat(),
+            "error": str(e),
+            "eta_seconds": 0
+        })
+
+@app.get("/api/data/ensure/{symbol}", tags=["Data"])
+async def api_ensure_symbol_data(symbol: str):
+    """Ensure the four required data files for a symbol exist and are up-to-date.
+
+    Returns a summary of created/updated/skipped and any errors.
+    """
+    try:
+        if not PROGRESSIVE_ML_AVAILABLE:
+            raise HTTPException(status_code=503, detail="System not initialized")
+        summary = await asyncio.to_thread(data_manager.ensure_symbol_data, symbol)
+        return {"status": "success", "symbol": symbol, "summary": summary.to_dict()}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Ensure data failed for {symbol}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/ml/progressive/backtest/results/{symbol}", tags=["Progressive ML"])
 async def get_backtest_results(symbol: str):
@@ -2233,6 +2495,24 @@ async def get_backtest_results(symbol: str):
         
         with open(latest_file, 'r') as f:
             results = json.load(f)
+
+        # Normalize legacy format to match frontend expectations
+        try:
+            if isinstance(results, dict):
+                if 'all_iterations' not in results and 'iterations' in results:
+                    results['all_iterations'] = results.get('iterations', [])
+                if 'best_iteration' not in results and results.get('all_iterations'):
+                    # Compute best iteration by max accuracy if available
+                    best = None
+                    for it in results['all_iterations']:
+                        acc = it.get('accuracy')
+                        if isinstance(acc, (int, float)):
+                            if best is None or acc > best.get('accuracy', -1):
+                                best = it
+                    if best and 'iteration' in best:
+                        results['best_iteration'] = best['iteration']
+        except Exception as _norm_e:
+            logger.debug(f"Backtest results normalization skipped: {_norm_e}")
         
         return {
             "status": "success",
@@ -2246,6 +2526,87 @@ async def get_backtest_results(symbol: str):
         logger.error(f"Failed to get backtest results: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to get backtest results: {str(e)}")
 
+@app.get("/api/ml/progressive/backtest/history/{symbol}", tags=["Progressive ML"])
+async def list_backtest_history(symbol: str, limit: int = Query(20, ge=1, le=100)):
+    """
+    List recent backtest result files for a symbol with brief metadata
+    """
+    try:
+        from pathlib import Path
+        import json
+        results_dir = Path("app/ml/models/backtest_results")
+        if not results_dir.exists():
+            return {"status": "success", "symbol": symbol, "items": []}
+        files = sorted(results_dir.glob(f"results_{symbol}_*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+        items = []
+        for f in files[:limit]:
+            try:
+                with open(f, 'r', encoding='utf-8') as fh:
+                    data = json.load(fh)
+                # Normalize iteration list
+                iterations = data.get('all_iterations') or data.get('iterations') or []
+                # Best accuracy
+                best_acc = None
+                if isinstance(iterations, list) and iterations:
+                    for it in iterations:
+                        acc = it.get('accuracy')
+                        if isinstance(acc, (int, float)):
+                            best_acc = acc if best_acc is None else max(best_acc, acc)
+                items.append({
+                    "file": f.name,
+                    "modified": datetime.fromtimestamp(f.stat().st_mtime, tz=timezone.utc).isoformat(),
+                    "best_accuracy": best_acc,
+                    "iterations": len(iterations)
+                })
+            except Exception:
+                items.append({
+                    "file": f.name,
+                    "modified": datetime.fromtimestamp(f.stat().st_mtime, tz=timezone.utc).isoformat(),
+                    "best_accuracy": None,
+                    "iterations": None
+                })
+        return {"status": "success", "symbol": symbol, "items": items}
+    except Exception as e:
+        logger.error(f"Failed to list backtest history: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to list backtest history: {str(e)}")
+
+@app.get("/api/ml/progressive/backtest/result_by_file/{symbol}/{file_name}", tags=["Progressive ML"])
+async def get_backtest_result_by_file(symbol: str, file_name: str):
+    """
+    Fetch a specific backtest results file by name for a symbol
+    """
+    try:
+        from pathlib import Path
+        import json
+        results_dir = Path("app/ml/models/backtest_results")
+        target = results_dir / file_name
+        if not target.exists() or f"results_{symbol}_" not in target.name:
+            raise HTTPException(status_code=404, detail="Results file not found")
+        with open(target, 'r', encoding='utf-8') as f:
+            results = json.load(f)
+        # Normalize legacy format
+        try:
+            if isinstance(results, dict):
+                if 'all_iterations' not in results and 'iterations' in results:
+                    results['all_iterations'] = results.get('iterations', [])
+                if 'best_iteration' not in results and results.get('all_iterations'):
+                    best = None
+                    for it in results['all_iterations']:
+                        acc = it.get('accuracy')
+                        if isinstance(acc, (int, float)):
+                            if best is None or acc > best.get('accuracy', -1):
+                                best = it
+                    if best and 'iteration' in best:
+                        results['best_iteration'] = best['iteration']
+        except Exception:
+            pass
+        return {"status": "success", "symbol": symbol, "results": results, "file": target.name}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to get backtest result by file: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get backtest result: {str(e)}")
+
 @app.get("/api/market/{symbol}", tags=["Market"])
 async def get_market_data(symbol: str):
     """Get real-time market data for symbol"""
@@ -2258,22 +2619,8 @@ async def get_market_data(symbol: str):
                 "data": market_data,
                 "timestamp": datetime.now(timezone.utc).isoformat()
             }
-        
-        # Demo market data
-        return {
-            "status": "success",
-            "symbol": symbol,
-            "data": {
-                "price": 158.50,
-                "change": "+2.35",
-                "change_percent": "+1.50%",
-                "volume": 1250000,
-                "high": 159.00,
-                "low": 156.20,
-                "open": 157.00
-            },
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        }
+        # Live only: no market data without provider
+        raise HTTPException(status_code=503, detail="Financial provider unavailable")
         
     except Exception as e:
         logger.error(f"Failed to get market data for {symbol}: {e}")
@@ -2291,21 +2638,8 @@ async def get_social_sentiment(symbol: str):
                 "sentiment": sentiment,
                 "timestamp": datetime.now(timezone.utc).isoformat()
             }
-        
-        # Demo sentiment data  
-        return {
-            "status": "success",
-            "symbol": symbol,
-            "sentiment": {
-                "overall_score": 0.72,
-                "positive": 0.65,
-                "neutral": 0.25,
-                "negative": 0.10,
-                "volume": 1500,
-                "trending": True
-            },
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        }
+        # Live only: social sentiment unavailable
+        raise HTTPException(status_code=503, detail="Social sentiment analyzer unavailable")
         
     except Exception as e:
         logger.error(f"Failed to get sentiment for {symbol}: {e}")
@@ -2315,21 +2649,8 @@ async def get_social_sentiment(symbol: str):
 async def get_watchlist():
     """Get user watchlist with live data"""
     try:
-        # Demo watchlist
-        watchlist = [
-            {"symbol": "AAPL", "name": "Apple Inc.", "price": 158.50, "change": "+1.50%"},
-            {"symbol": "GOOGL", "name": "Alphabet Inc.", "price": 2750.00, "change": "+0.85%"},
-            {"symbol": "TSLA", "name": "Tesla Inc.", "price": 245.30, "change": "-2.10%"},
-            {"symbol": "MSFT", "name": "Microsoft Corp.", "price": 342.75, "change": "+1.25%"},
-            {"symbol": "NVDA", "name": "NVIDIA Corp.", "price": 475.20, "change": "+3.45%"}
-        ]
-        
-        return {
-            "status": "success",
-            "watchlist": watchlist,
-            "count": len(watchlist),
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        }
+        # Live only: watchlist not implemented
+        raise HTTPException(status_code=501, detail="Watchlist not implemented")
         
     except Exception as e:
         logger.error(f"Failed to get watchlist: {e}")
@@ -2430,25 +2751,11 @@ async def get_data_management_status():
                 latest_log = max(all_logs, key=lambda x: x.stat().st_mtime)
                 status["last_run"] = datetime.fromtimestamp(latest_log.stat().st_mtime).isoformat()
         
-        # Mock job statuses (in real implementation, these would come from scheduler)
-        status["jobs"] = [
-            {
-                "id": "daily_data",
-                "name": "Daily Stock Data Download",
-                "status": "scheduled",
-                "last_run": status["last_run"],
-                "next_run": _get_next_daily_run().isoformat() if _get_next_daily_run() else None,
-                "frequency": "daily"
-            },
-            {
-                "id": "weekly_fundamentals", 
-                "name": "Weekly Fundamentals Update",
-                "status": "scheduled",
-                "last_run": status["last_run"],
-                "next_run": _get_next_weekly_run().isoformat() if _get_next_weekly_run() else None,
-                "frequency": "weekly"
-            }
-        ]
+        # Live-only: do not return mocked job statuses. If a real scheduler is integrated,
+        # this endpoint should reflect its state. For now, return only log-derived info
+        # and an empty jobs list with a note.
+        status["jobs"] = []
+        status["note"] = "Scheduler integration not available; returning logs-derived status only."
         
         return JSONResponse(content=status)
         
@@ -2570,10 +2877,10 @@ async def run_daily_scan():
         
         logger.info("🚀 Starting daily stock scan...")
         
-        # Run the daily scan script
+        # Run the daily scan script (canonical under app/data)
         result = subprocess.run([
             sys.executable, "daily_scan.py"
-        ], capture_output=True, text=True, cwd=".")
+        ], capture_output=True, text=True, cwd="app/data")
         
         if result.returncode == 0:
             logger.info("✅ Daily scan completed successfully")
@@ -2592,10 +2899,10 @@ async def run_weekly_fundamentals():
         
         logger.info("🚀 Starting weekly fundamentals update...")
         
-        # Run the weekly fundamentals script
+        # Run the weekly fundamentals script via canonical downloader in app/data
         result = subprocess.run([
-            sys.executable, "ToUse/run_weekly_fundamentals.py"
-        ], capture_output=True, text=True, cwd=".")
+            sys.executable, "download_fundamentals.py"
+        ], capture_output=True, text=True, cwd="app/data")
         
         if result.returncode == 0:
             logger.info("✅ Weekly fundamentals update completed successfully")
