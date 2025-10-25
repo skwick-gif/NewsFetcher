@@ -1,0 +1,18 @@
+{
+  "symbol": "RGTI",
+  "job_id": "backtest_RGTI_bf1496cf",
+  "best_iteration": 2,
+  "summary": {
+    "best_accuracy": 0.8,
+    "best_loss": 0.3653098791837692,
+    "total_iterations": 10,
+    "total_time": 219.37654662132263
+  },
+  "train_end_date": "2025-04-04",
+  "test_period_days": 14,
+  "model_types": [
+    "cnn",
+    "lstm",
+    "transformer"
+  ]
+}

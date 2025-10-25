@@ -47,6 +47,7 @@ class ProgressiveDataLoader:
                  horizons: List[int] = [1, 7, 30],
                  use_fundamentals: bool = True,
                  use_technical_indicators: bool = True,
+                 use_market_features: bool = True,
                  validation_split: float = 0.2,
                  train_start_date: Optional[str] = None,
                  train_end_date: Optional[str] = None,
@@ -79,6 +80,7 @@ class ProgressiveDataLoader:
         self.use_fundamentals = use_fundamentals
         self.use_technical_indicators = use_technical_indicators
         self.validation_split = validation_split
+        self.use_market_features = use_market_features
         # Indicator parameters with defaults and safe parsing
         self.indicator_params = self._normalize_indicator_params(indicator_params or {})
         
@@ -96,6 +98,7 @@ class ProgressiveDataLoader:
         logger.info(f"   📈 Sequence length: {self.sequence_length} days")
         logger.info(f"   📋 Fundamentals: {'✅' if use_fundamentals else '❌'}")
         logger.info(f"   🔧 Technical indicators: {'✅' if use_technical_indicators else '❌'}")
+        logger.info(f"   🌐 Market features (VIX): {'✅' if use_market_features else '❌'}")
         if self.use_technical_indicators:
             ip = self.indicator_params
             logger.info(f"   🧩 Indicator params: RSI={ip['rsi_period']}, MACD={ip['macd_fast']}/{ip['macd_slow']}/{ip['macd_signal']}, "
@@ -554,6 +557,27 @@ class ProgressiveDataLoader:
                 fundamentals = self.load_fundamental_data(symbol)
                 for feature_name, value in fundamentals.items():
                     df[f'fund_{feature_name}'] = value
+
+            # Merge market features (e.g., VIX)
+            if self.use_market_features:
+                try:
+                    vix_df = self._load_vix_features()
+                    if vix_df is not None and len(vix_df) > 0:
+                        # Remove overlapping columns to avoid conflicts
+                        overlapping_cols = set(df.columns) & set(vix_df.columns)
+                        if overlapping_cols:
+                            vix_df = vix_df.drop(columns=list(overlapping_cols))
+                        df = df.join(vix_df, how='left')
+                        # Forward/backward fill and zeros for any remaining gaps
+                        vix_cols = list(vix_df.columns)
+                        df[vix_cols] = df[vix_cols].fillna(method='ffill')
+                        df[vix_cols] = df[vix_cols].fillna(method='bfill')
+                        df[vix_cols] = df[vix_cols].fillna(0)
+                        logger.info(f"🌐 Merged market features (VIX): {', '.join(vix_cols)}")
+                    else:
+                        logger.info("🌐 VIX features not available or empty—skipping")
+                except Exception as _e:
+                    logger.warning(f"Market features merge skipped: {_e}")
             
             # Create multi-horizon targets
             df = self.create_multi_horizon_targets(df)
@@ -852,6 +876,39 @@ class ProgressiveDataLoader:
         except Exception as e:
             logger.error(f"❌ Date validation error: {e}")
             return False
+
+    def _load_vix_features(self) -> Optional[pd.DataFrame]:
+        """Load VIX daily features and return a small feature frame indexed by date.
+
+        Features:
+        - mkt_vix_level: VIX close level
+        - mkt_vix_ret_1d: daily pct change of VIX close
+        """
+        try:
+            vix_path = self.stock_data_dir / 'VIX' / 'VIX_price.csv'
+            if not vix_path.exists():
+                logger.debug(f"VIX file not found: {vix_path}")
+                return None
+            vdf = pd.read_csv(vix_path, index_col=0)
+            vdf.index = pd.to_datetime(vdf.index, format='mixed', errors='coerce', utc=True).tz_localize(None)
+            vdf = vdf.sort_index()
+            # Keep only Close to avoid heavy merges
+            if 'Close' not in vdf.columns:
+                return None
+            out = pd.DataFrame(index=vdf.index)
+            out['mkt_vix_level'] = pd.to_numeric(vdf['Close'], errors='coerce')
+            out['mkt_vix_ret_1d'] = out['mkt_vix_level'].pct_change()
+
+            # Align to optional training date window (no leakage)
+            if self.train_start_date:
+                out = out[out.index >= pd.to_datetime(self.train_start_date)]
+            if self.train_end_date:
+                out = out[out.index <= pd.to_datetime(self.train_end_date)]
+
+            return out
+        except Exception as e:
+            logger.warning(f"Failed to load VIX features: {e}")
+            return None
 
 
 def test_progressive_dataloader():

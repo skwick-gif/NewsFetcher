@@ -931,6 +931,9 @@
                             <button onclick="startBacktesting()" style="width: 100%; background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer; font-weight: bold; font-size: 0.85em;">
                                 🔬 Start
                             </button>
+                            <button onclick="startAutoBacktesting()" style="width: 100%; background: linear-gradient(135deg, #10b981, #3b82f6); border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer; font-weight: bold; font-size: 0.85em; margin-top:6px;">
+                                🤖 Auto (Plan & Run)
+                            </button>
                         </div>
                         
                         <div>
@@ -994,6 +997,26 @@
                         </div>
                     </div>
                     
+                    <!-- Plan & Preflight Card -->
+                    <div id="backtest-plan-card" style="margin-top: 12px; display:none; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px;">
+                        <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:6px;">
+                            <h5 style="margin:0;">🧭 Plan & Preflight</h5>
+                            <span id="backtest-preflight-badge" style="background:#2563eb; color:#fff; padding:2px 8px; border-radius:999px; font-size:0.75em;">Planning…</span>
+                        </div>
+                        <div id="backtest-plan-content" style="font-size:0.9em; opacity:0.95;"></div>
+                    </div>
+
+                    <!-- Champion Card -->
+                    <div id="backtest-champion-card" style="margin-top: 12px; display:none; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.35); border-radius: 8px; padding: 10px;">
+                        <div style="display:flex; justify-content: space-between; align-items:center;">
+                            <h5 style="margin:0;">🏆 Champion</h5>
+                            <button id="champion-forward-btn" onclick="runChampionForwardTest()" style="background:#059669; border:none; color:#fff; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:0.85em;">Run Forward Test</button>
+                        </div>
+                        <div id="backtest-champion-content" style="margin-top:6px; font-size:0.9em;"></div>
+                        <div id="backtest-current-preds" style="margin-top:6px; font-size:0.9em;"></div>
+                        <div id="backtest-forward-results" style="margin-top:6px; font-size:0.9em;"></div>
+                    </div>
+
                     <!-- Results Table -->
                     <div id="backtest-results-container" style="margin-top: 20px; display: none;">
                         <h5 style="margin-bottom: 10px;">📊 Backtest Results</h5>
@@ -2866,6 +2889,9 @@
 
             // New async path with job id
             if (data.status === 'backtest_started' && data.job_id) {
+                if (data.preflight || data.plan || data.adjusted) {
+                    displayPlanAndPreflight(data);
+                }
                 // Begin polling status
                 if (backtestPollingInterval) {
                     clearInterval(backtestPollingInterval);
@@ -2887,6 +2913,75 @@
             console.error('Error starting backtest:', error);
             document.getElementById('backtest-status-text').textContent = 'Error: ' + error.message;
             alert('Error starting backtest: ' + error.message);
+        }
+    }
+
+    async function startAutoBacktesting() {
+        const symbol = document.getElementById('progressive-symbol').value.toUpperCase();
+        const modelSelect = document.getElementById('progressive-model-types');
+        const selectedModels = Array.from(modelSelect.selectedOptions).map(option => option.value);
+        if (!symbol) { alert('Please enter a stock symbol'); return; }
+        if (selectedModels.length === 0) { alert('Select at least one model'); return; }
+
+        document.getElementById('backtest-progress').style.display = 'block';
+        document.getElementById('backtest-results-container').style.display = 'none';
+        document.getElementById('backtest-chart-container').style.display = 'none';
+        document.getElementById('backtest-plan-card').style.display = 'none';
+        document.getElementById('backtest-champion-card').style.display = 'none';
+        document.getElementById('backtest-status-text').textContent = 'Planning & starting…';
+        document.getElementById('backtest-progress-fill').style.width = '0%';
+
+        const ind = {
+            rsi_period: parseInt(document.getElementById('ind-rsi-period')?.value || '14'),
+            macd_fast: parseInt(document.getElementById('ind-macd-fast')?.value || '12'),
+            macd_slow: parseInt(document.getElementById('ind-macd-slow')?.value || '26'),
+            macd_signal: parseInt(document.getElementById('ind-macd-signal')?.value || '9'),
+            sma_periods: document.getElementById('ind-sma-periods')?.value || '5,10,20,50',
+            ema_periods: document.getElementById('ind-ema-periods')?.value || '5,10,20,50',
+            bb_period: parseInt(document.getElementById('ind-bb-period')?.value || '20'),
+            bb_std: parseFloat(document.getElementById('ind-bb-std')?.value || '2')
+        };
+
+        const payload = {
+            symbol,
+            auto_plan: true,
+            deep_mode: true,
+            ensure_fresh_data: true,
+            auto_adjust_iterations: true,
+            desired_iterations: 10,
+            desired_test_period_days: 14,
+            model_types: selectedModels,
+            indicator_params: ind,
+            train_start_date: '2000-01-01',
+            train_end_date: '2099-12-31',
+            test_period_days: 14,
+            max_iterations: 10,
+            target_accuracy: 0.85,
+            auto_stop: true
+        };
+
+        try {
+            const apiUrl = `${window.location.origin}/api/ml/progressive/backtest`;
+            const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload) });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(typeof data?.detail === 'string' ? data.detail : JSON.stringify(data));
+            }
+            if (data.preflight || data.plan || data.adjusted) {
+                displayPlanAndPreflight(data);
+            }
+            if (data.status === 'backtest_started' && data.job_id) {
+                if (backtestPollingInterval) clearInterval(backtestPollingInterval);
+                currentBacktestJobId = data.job_id;
+                backtestPollingInterval = setInterval(async () => { await pollBacktestProgress(data.job_id); }, 1500);
+                document.getElementById('backtest-status-text').textContent = 'Backtest started...';
+            } else {
+                document.getElementById('backtest-status-text').textContent = 'Backtest failed to start';
+            }
+        } catch (e) {
+            console.error('Auto backtest failed:', e);
+            alert('Auto backtest failed: ' + e.message);
+            document.getElementById('backtest-progress').style.display = 'none';
         }
     }
 
@@ -2929,11 +3024,120 @@
             }
             if (statusText) statusText.textContent = `${st.current_step || 'Running...'} • ${pct}%${etaStr}`;
 
+            if (st.preflight || st.plan || st.adjusted || st.note) {
+                displayPlanAndPreflight(st);
+            }
+            if (st.champion) {
+                displayChampion(st.champion);
+            }
+            // Auto-render current predictions from champion if available
+            if (st.current_predictions && st.current_predictions.predictions) {
+                try {
+                    const cp = st.current_predictions;
+                    const box = document.getElementById('backtest-current-preds');
+                    if (box) {
+                        const h = ['1d','7d','30d'].map(hk => {
+                            const p = cp.predictions[hk];
+                            if (!p) return null;
+                            const sig = p.signal || (p.direction || '-');
+                            const conf = typeof p.confidence === 'number' ? Math.round(p.confidence*100) + '%' : '—';
+                            const pct = typeof p.price_change_pct === 'number' ? ((p.price_change_pct>=0?'+':'') + (p.price_change_pct*100).toFixed(1) + '%') : '—';
+                            return `${hk.toUpperCase()}: ${sig} • Conf ${conf} • ${pct}`;
+                        }).filter(Boolean).join(' | ');
+                        // Build risk lines per horizon if available
+                        const riskLines = ['1d','7d','30d'].map(hk => {
+                            const p = cp.predictions[hk];
+                            if (!p || !p.risk) return null;
+                            const r = p.risk;
+                            const slp = typeof r.stop_loss_pct === 'number' ? (r.stop_loss_pct*100).toFixed(1)+'%' : '—';
+                            const tpp = typeof r.take_profit_pct === 'number' ? (r.take_profit_pct*100).toFixed(1)+'%' : '—';
+                            const sl = typeof r.stop_loss === 'number' ? '$'+Number(r.stop_loss).toFixed(2) : '—';
+                            const tp = typeof r.take_profit === 'number' ? '$'+Number(r.take_profit).toFixed(2) : '—';
+                            const basis = r.basis ? ` • basis: ${r.basis}` : '';
+                            const rr = r.rr ? ` • RR: 1:${r.rr}` : '';
+                            return `${hk.toUpperCase()}: SL ${sl} (${slp}) • TP ${tp} (${tpp})${rr}${basis}`;
+                        }).filter(Boolean).join('\n');
+                        const tipParts = [
+                            'Explanation:',
+                            '• BUY/SELL/HOLD = Action signal from expected move magnitude (regression), resolved with direction probability.',
+                            '• Conf = Blended confidence (model agreement + distance from 50% direction probability).',
+                            '• %+ = Expected price change vs current price (capped per horizon to avoid outliers).',
+                            'Caps: 1D ±10%, 7D ±20%, 30D ±40%.'
+                        ];
+                        if (riskLines) {
+                            tipParts.push('', 'Risk (per horizon):', riskLines);
+                        }
+                        const tip = tipParts.join('\n');
+                        // Compact inline SL/TP line
+                        const compactRisk = ['1d','7d','30d'].map(hk => {
+                            const p = cp.predictions[hk];
+                            if (!p || !p.risk) return null;
+                            const r = p.risk;
+                            const sl = typeof r.stop_loss === 'number' ? '$'+Number(r.stop_loss).toFixed(2) : '—';
+                            const tp = typeof r.take_profit === 'number' ? '$'+Number(r.take_profit).toFixed(2) : '—';
+                            return `${hk.toUpperCase()}: ${sl}/${tp}`;
+                        }).filter(Boolean).join(' | ');
+                        box.innerHTML = h ? `<div><span title="${tip}">Current predictions → ${h}</span>${compactRisk ? `<div style='opacity:0.75; font-size:0.85em; margin-top:2px;'>SL/TP → ${compactRisk}</div>` : ''}</div>` : '';
+                        document.getElementById('backtest-champion-card').style.display = 'block';
+                    }
+                } catch (e) { console.warn('render current preds failed', e); }
+            }
             if (st.status === 'completed') {
                 clearInterval(backtestPollingInterval);
                 backtestPollingInterval = null;
                 if (st.result) {
                     await displayBacktestResults(st.result);
+                    if (st.champion) { displayChampion(st.champion); }
+                    // Keep current predictions visible post-completion
+                    if (st.current_predictions && st.current_predictions.predictions) {
+                        try {
+                            const cp = st.current_predictions;
+                            const box = document.getElementById('backtest-current-preds');
+                            if (box) {
+                                const h = ['1d','7d','30d'].map(hk => {
+                                    const p = cp.predictions[hk];
+                                    if (!p) return null;
+                                    const sig = p.signal || (p.direction || '-');
+                                    const conf = typeof p.confidence === 'number' ? Math.round(p.confidence*100) + '%' : '—';
+                                    const pct = typeof p.price_change_pct === 'number' ? ((p.price_change_pct>=0?'+':'') + (p.price_change_pct*100).toFixed(1) + '%') : '—';
+                                    return `${hk.toUpperCase()}: ${sig} • Conf ${conf} • ${pct}`;
+                                }).filter(Boolean).join(' | ');
+                                const riskLines = ['1d','7d','30d'].map(hk => {
+                                    const p = cp.predictions[hk];
+                                    if (!p || !p.risk) return null;
+                                    const r = p.risk;
+                                    const slp = typeof r.stop_loss_pct === 'number' ? (r.stop_loss_pct*100).toFixed(1)+'%' : '—';
+                                    const tpp = typeof r.take_profit_pct === 'number' ? (r.take_profit_pct*100).toFixed(1)+'%' : '—';
+                                    const sl = typeof r.stop_loss === 'number' ? '$'+Number(r.stop_loss).toFixed(2) : '—';
+                                    const tp = typeof r.take_profit === 'number' ? '$'+Number(r.take_profit).toFixed(2) : '—';
+                                    const basis = r.basis ? ` • basis: ${r.basis}` : '';
+                                    const rr = r.rr ? ` • RR: 1:${r.rr}` : '';
+                                    return `${hk.toUpperCase()}: SL ${sl} (${slp}) • TP ${tp} (${tpp})${rr}${basis}`;
+                                }).filter(Boolean).join('\n');
+                                const tipParts = [
+                                    'Explanation:',
+                                    '• BUY/SELL/HOLD = Action signal from expected move magnitude (regression), resolved with direction probability.',
+                                    '• Conf = Blended confidence (model agreement + distance from 50% direction probability).',
+                                    '• %+ = Expected price change vs current price (capped per horizon to avoid outliers).',
+                                    'Caps: 1D ±10%, 7D ±20%, 30D ±40%.'
+                                ];
+                                if (riskLines) {
+                                    tipParts.push('', 'Risk (per horizon):', riskLines);
+                                }
+                                const tip = tipParts.join('\n');
+                                const compactRisk = ['1d','7d','30d'].map(hk => {
+                                    const p = cp.predictions[hk];
+                                    if (!p || !p.risk) return null;
+                                    const r = p.risk;
+                                    const sl = typeof r.stop_loss === 'number' ? '$'+Number(r.stop_loss).toFixed(2) : '—';
+                                    const tp = typeof r.take_profit === 'number' ? '$'+Number(r.take_profit).toFixed(2) : '—';
+                                    return `${hk.toUpperCase()}: ${sl}/${tp}`;
+                                }).filter(Boolean).join(' | ');
+                                box.innerHTML = h ? `<div><span title="${tip}">Current predictions → ${h}</span>${compactRisk ? `<div style='opacity:0.75; font-size:0.85em; margin-top:2px;'>SL/TP → ${compactRisk}</div>` : ''}</div>` : '';
+                                document.getElementById('backtest-champion-card').style.display = 'block';
+                            }
+                        } catch (e) {}
+                    }
                 } else {
                     document.getElementById('backtest-progress').style.display = 'none';
                     document.getElementById('backtest-results-container').style.display = 'none';
@@ -3006,12 +3210,14 @@
             }
         }
 
+        // Forward metrics are rendered during polling when available
         // Hide progress, show results
         document.getElementById('backtest-progress').style.display = 'none';
         document.getElementById('backtest-results-container').style.display = 'block';
         document.getElementById('backtest-chart-container').style.display = 'block';
 
         // Populate table and add tooltips on header
+        // Forward metrics are rendered earlier and preserved in champion card
         const tbody = document.getElementById('backtest-results-tbody');
         tbody.innerHTML = '';
 
@@ -3183,6 +3389,75 @@
                 }
             }
         });
+    }
+
+    function displayPlanAndPreflight(obj) {
+        try {
+            const card = document.getElementById('backtest-plan-card');
+            const badge = document.getElementById('backtest-preflight-badge');
+            const content = document.getElementById('backtest-plan-content');
+            if (!card || !content) return;
+            const pf = obj.preflight || {};
+            const plan = obj.plan || pf.plan || {};
+            const adjusted = obj.adjusted ? 'Yes' : 'No';
+            const last = pf.last_data_date || '-';
+            const tpd = pf.test_period_days || plan.test_period_days || '-';
+            const req = pf.requested_max_iterations || plan.requested_iterations || '-';
+            const feasible = pf.feasible_max_iterations !== undefined ? pf.feasible_max_iterations : '-';
+            const lines = [
+                plan.train_start_date ? `Train: ${plan.train_start_date} → ${plan.train_end_date}` : (obj.train_start_date && obj.train_end_date ? `Train: ${obj.train_start_date} → ${obj.train_end_date}` : ''),
+                `Test window: ${tpd} days • Requested iters: ${req} • Feasible: ${feasible}`,
+                `Last data: ${last}`,
+                obj.note ? obj.note : ''
+            ].filter(Boolean);
+
+            // Render brief scout info if available
+            try {
+                const scout = obj.scout || (obj.result && obj.result.scout) || null;
+                if (scout && scout.chosen) {
+                    const ch = scout.chosen;
+                    lines.push(`Chosen config → Window ${ch.window_days}d • Seq ${ch.sequence_length} • Profile ${ch.profile} • Fwd Acc ${(ch.accuracy*100).toFixed(1)}% • N=${ch.predictions}`);
+                }
+            } catch (e) {}
+
+            content.innerHTML = lines.join('<br>');
+            badge.textContent = 'Planned';
+            card.style.display = 'block';
+        } catch (e) { console.warn('displayPlanAndPreflight failed', e); }
+    }
+
+    function displayChampion(champion) {
+        try {
+            const card = document.getElementById('backtest-champion-card');
+            const content = document.getElementById('backtest-champion-content');
+            if (!card || !content) return;
+            const meta = champion.meta || {};
+            const bestIter = meta.best_iteration || '-';
+            const acc = meta.summary?.best_accuracy !== undefined ? (meta.summary.best_accuracy * 100).toFixed(1) + '%' : 'N/A';
+            const dir = champion.dir || champion.path || champion;
+            content.innerHTML = `Best Iteration: <strong>${bestIter}</strong> • Best Accuracy: <strong>${acc}</strong><br>Path: <code style="font-size:0.85em;">${dir}</code>`;
+            card.style.display = 'block';
+        } catch (e) { console.warn('displayChampion failed', e); }
+    }
+
+    async function runChampionForwardTest() {
+        try {
+            const symbol = document.getElementById('progressive-symbol').value.toUpperCase();
+            const resp = await fetch(`/api/ml/progressive/champion/forward_test/${symbol}`, { method: 'POST' });
+            const data = await resp.json();
+            if (!resp.ok) throw new Error(typeof data?.detail === 'string' ? data.detail : JSON.stringify(data));
+            const box = document.getElementById('backtest-forward-results');
+            const m = data.metrics || {};
+            const acc = typeof m.direction_accuracy === 'number' ? (m.direction_accuracy * 100).toFixed(1) + '%' : (typeof m.accuracy === 'number' ? (m.accuracy * 100).toFixed(1) + '%' : 'N/A');
+            const mae = m.mae !== undefined && m.mae !== null ? m.mae.toFixed(4) : 'N/A';
+            const rmse = m.rmse !== undefined && m.rmse !== null ? m.rmse.toFixed(4) : 'N/A';
+            const mape = m.mape !== undefined && m.mape !== null ? m.mape.toFixed(2) + '%' : 'N/A';
+            const n = m.predictions_made ?? m.test_samples ?? '-';
+            box.innerHTML = `Forward ${data.forward_start} → ${data.forward_end}: Accuracy ${acc}, MAE ${mae}, RMSE ${rmse}, MAPE ${mape}, N=${n}`;
+            document.getElementById('backtest-champion-card').style.display = 'block';
+        } catch (e) {
+            alert('Forward test failed: ' + e.message);
+        }
     }
 
     // ============================================

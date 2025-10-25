@@ -1,0 +1,16 @@
+{
+  "symbol": "NIO",
+  "job_id": "backtest_NIO_c8df14a4",
+  "best_iteration": 1,
+  "summary": {
+    "best_accuracy": 0.0,
+    "best_loss": 0.3474946580827236,
+    "total_iterations": 1,
+    "total_time": 40.0684552192688
+  },
+  "train_end_date": "2025-04-04",
+  "test_period_days": 14,
+  "model_types": [
+    "transformer"
+  ]
+}

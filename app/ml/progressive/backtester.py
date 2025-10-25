@@ -273,6 +273,14 @@ class ProgressiveBacktester:
                 logger.info(f"   📉 Loss: {loss_str}")
                 logger.info(f"   ⏱ Time: {iteration_result['training_time']:.1f}s")
                 
+                # Stop early if there's no evaluable test data (e.g., window moved past available market dates)
+                try:
+                    if int(evaluation.get('test_samples', 0) or 0) == 0:
+                        logger.info("🛑 No test data available for this window; stopping iterations early")
+                        break
+                except Exception:
+                    pass
+
                 # Check if we should continue
                 if not self.should_continue(
                     current_accuracy=evaluation['accuracy'],
@@ -399,12 +407,18 @@ class ProgressiveBacktester:
             logger.info(f"📊 Training data: {len(features_df)} samples")
             
             # Create a temporary trainer instance with this specific data
+            # Use per-iteration subfolder so each iteration's checkpoints are preserved
+            iter_save_dir = self.job_model_dir / f"iter_{iteration_num:02d}" if self.job_model_dir is not None else self.trainer.save_dir
+            try:
+                Path(iter_save_dir).mkdir(parents=True, exist_ok=True)
+            except Exception:
+                pass
             temp_trainer = ProgressiveTrainer(
                 data_loader=iteration_loader,  # Use our custom data loader
                 model_config=self.trainer.model_config,
                 training_config=self.trainer.training_config,
-                # Save checkpoints to job-specific directory to prevent overwriting production models
-                save_dir=str(self.job_model_dir) if self.job_model_dir is not None else str(self.trainer.save_dir)
+                # Save checkpoints to iteration-specific directory to prevent overwriting
+                save_dir=str(iter_save_dir)
             )
             
             # Train models using the real training system
@@ -416,7 +430,23 @@ class ProgressiveBacktester:
             training_time = time.time() - training_start
             
             # Extract results from the real training
-            model_results = training_results.get(model_types[0], {}) if model_types else {}
+            # Trainer normalizes some UI aliases (e.g., 'cnn_lstm' -> 'cnn'). Try both keys.
+            model_results = {}
+            if model_types:
+                primary_key = model_types[0]
+                candidates = [primary_key]
+                try:
+                    normalizer = getattr(self.trainer, '_normalize_model_type', None)
+                    if callable(normalizer):
+                        normalized = normalizer(primary_key)
+                        if normalized and normalized not in candidates:
+                            candidates.append(normalized)
+                except Exception:
+                    pass
+                for k in candidates:
+                    if isinstance(training_results, dict) and k in training_results:
+                        model_results = training_results.get(k, {})
+                        break
             best_horizon = '1d'  # Use 1-day predictions for backtesting
             horizon_results = model_results.get(best_horizon, {})
             
@@ -496,11 +526,14 @@ class ProgressiveBacktester:
             act_dirs = []
             predictions_made = 0
 
-            # Temporarily switch predictor to use this job's model_dir and clear any cached models
+            # Temporarily switch predictor to use this iteration's model_dir and clear any cached models
             original_model_dir = getattr(self.predictor, 'model_dir', None)
             try:
                 if self.job_model_dir is not None:
-                    self.predictor.model_dir = Path(self.job_model_dir)
+                    # Prefer the current iteration's checkpoint directory
+                    iter_dir = Path(self.job_model_dir) / f"iter_{iteration_num:02d}"
+                    effective_dir = iter_dir if iter_dir.exists() else Path(self.job_model_dir)
+                    self.predictor.model_dir = effective_dir
                     # Clear loaded models cache to force reload from the job directory
                     self.predictor.loaded_models = {}
             except Exception:

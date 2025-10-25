@@ -1,0 +1,18 @@
+{
+  "symbol": "SAVA",
+  "job_id": "backtest_SAVA_354cb646",
+  "best_iteration": 3,
+  "summary": {
+    "best_accuracy": 0.8181818181818182,
+    "best_loss": 0.38174474239349365,
+    "total_iterations": 10,
+    "total_time": 193.1896677017212
+  },
+  "train_end_date": "2025-04-04",
+  "test_period_days": 14,
+  "model_types": [
+    "cnn",
+    "lstm",
+    "transformer"
+  ]
+}
