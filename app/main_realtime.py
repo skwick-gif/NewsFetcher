@@ -3714,6 +3714,25 @@ async def dashboard():
         )
 
 # ============================================================
+# Progressive ML Guide (HTML)
+# ============================================================
+@app.get("/docs/progressive-ml", response_class=HTMLResponse)
+async def progressive_ml_guide():
+    """Serve the Progressive ML Guide page from templates/docs."""
+    from pathlib import Path
+
+    guide_path = Path(__file__).parent / "templates" / "docs" / "progressive_ml_guide.html"
+    try:
+        with open(guide_path, "r", encoding="utf-8") as f:
+            html_content = f.read()
+        return HTMLResponse(content=html_content)
+    except FileNotFoundError:
+        return HTMLResponse(
+            content="<h1>Guide file not found. Ensure app/templates/docs/progressive_ml_guide.html exists.</h1>",
+            status_code=500
+        )
+
+# ============================================================
 # Entry Point
 # ============================================================
 def run_server():
