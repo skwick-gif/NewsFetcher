@@ -41,9 +41,9 @@
         <canvas id="rl-chart" width="980" height="300" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:8px;"></canvas>
       </div>
       <div style="margin-top:6px; display:flex; gap:12px; align-items:center;">
-        <span style="opacity:0.85;">Chart Type:</span>
-        <label><input type="radio" name="rl-chart-type" id="rl-chart-type-line" value="line" checked> Line</label>
-        <label><input type="radio" name="rl-chart-type" id="rl-chart-type-candle" value="candlestick"> Candlestick</label>
+  <span style="opacity:0.85;">Chart Type:</span>
+  <label><input type="radio" name="rl-chart-type" id="rl-chart-type-line" value="line"> Line</label>
+  <label><input type="radio" name="rl-chart-type" id="rl-chart-type-candle" value="candlestick" checked> Candlestick</label>
       </div>
       <div id="rl-metrics" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap:10px; margin-top:10px;">
         <div class="card"><div>Final Equity</div><strong id="m-final">—</strong></div>
@@ -129,6 +129,7 @@
       const W=c.width,H=c.height, pad=30;
       // Normalize price and equity to [0,1] for simple overlay
       const prices = data.prices, equities = data.equities;
+      const labels = Array.isArray(data.labels) ? data.labels : null;
       const minP = Math.min(...prices), maxP = Math.max(...prices);
       const minE = Math.min(...equities), maxE = Math.max(...equities);
       const n = prices.length;
@@ -138,6 +139,41 @@
       // axes
       ctx.strokeStyle = 'rgba(255,255,255,0.15)';
       ctx.strokeRect(pad, pad, W-2*pad, H-2*pad);
+
+      // axes ticks and labels (X dates, Y prices)
+      ctx.fillStyle = 'rgba(226,232,240,0.85)';
+      ctx.font='11px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto';
+      // Y ticks (prices)
+      const yTicks = 5;
+      for(let k=0;k<=yTicks;k++){
+        const frac = k/yTicks;
+        const val = minP + (maxP-minP)*frac;
+        const yy = y(frac);
+        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+        ctx.beginPath(); ctx.moveTo(pad, yy); ctx.lineTo(W-pad, yy); ctx.stroke();
+        ctx.fillStyle = 'rgba(226,232,240,0.7)';
+        const txt = `$${val.toFixed(2)}`;
+        ctx.fillText(txt, 4, Math.max(pad+10, Math.min(H-pad-2, yy-2)));
+      }
+      // X ticks (dates)
+      const xTicks = Math.min(8, Math.max(2, Math.floor(W/140)));
+      const getLabelAt = (i)=>{
+        if(labels && labels[i]) return labels[i];
+        const o = (data.ohlc||[])[i];
+        if(o && o.t){
+          try{ const d = new Date(o.t); return `${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`; }catch{return String(i);} }
+        return String(i);
+      };
+      for(let k=0;k<xTicks;k++){
+        const idx = Math.round((k/(xTicks-1))*(n-1));
+        const xx = x(idx);
+        ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+        ctx.beginPath(); ctx.moveTo(xx, H-pad); ctx.lineTo(xx, H-pad+4); ctx.stroke();
+        const lab = getLabelAt(idx);
+        ctx.fillStyle = 'rgba(226,232,240,0.7)';
+        ctx.textAlign = 'center';
+        ctx.fillText(lab, xx, H-6);
+      }
       // price line (yellow)
       ctx.beginPath(); ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 1.5;
       for(let i=0;i<n;i++){
@@ -177,6 +213,7 @@
       const prices = data.prices || [];
       const equities = data.equities || [];
       const candles = data.ohlc || [];
+      const labels = Array.isArray(data.labels) ? data.labels : null;
       const n = Math.max(prices.length, candles.length);
       if(n===0){ return; }
       // axes
@@ -197,6 +234,40 @@
       const minE = Math.min(...equities), maxE = Math.max(...equities);
       function x(i){ return pad + (W-2*pad) * (i/(Math.max(1,n-1))); }
       function yv(v, lo, hi){ if(!(hi>lo)) return H/2; return H - pad - (H-2*pad)*((v-lo)/(hi-lo)); }
+
+      // axes ticks and labels (Y price, X dates)
+      ctx.fillStyle = 'rgba(226,232,240,0.85)';
+      ctx.font='11px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto';
+      // Y ticks
+      const yTicks2 = 5;
+      for(let k=0;k<=yTicks2;k++){
+        const frac = k/yTicks2;
+        const val = minP + (maxP-minP)*frac;
+        const yy = yv(val, minP, maxP);
+        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+        ctx.beginPath(); ctx.moveTo(pad, yy); ctx.lineTo(W-pad, yy); ctx.stroke();
+        ctx.fillStyle = 'rgba(226,232,240,0.7)';
+        ctx.fillText(`$${val.toFixed(2)}`, 4, Math.max(pad+10, Math.min(H-pad-2, yy-2)));
+      }
+      // X ticks
+      const xTicks2 = Math.min(8, Math.max(2, Math.floor(W/140)));
+      const getLabelAt2 = (i)=>{
+        if(labels && labels[i]) return labels[i];
+        const o = (data.ohlc||[])[i];
+        if(o && o.t){
+          try{ const d = new Date(o.t); return `${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`; }catch{return String(i);} }
+        return String(i);
+      };
+      for(let k=0;k<xTicks2;k++){
+        const idx = Math.round((k/(xTicks2-1))*(n-1));
+        const xx = x(idx);
+        ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+        ctx.beginPath(); ctx.moveTo(xx, H-pad); ctx.lineTo(xx, H-pad+4); ctx.stroke();
+        const lab = getLabelAt2(idx);
+        ctx.fillStyle = 'rgba(226,232,240,0.7)';
+        ctx.textAlign = 'center';
+        ctx.fillText(lab, xx, H-6);
+      }
       // draw candles
       const bodyW = Math.max(2, Math.floor((W-2*pad)/Math.max(20,n)) - 1);
       for(let i=0;i<candles.length;i++){

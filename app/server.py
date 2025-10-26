@@ -21,17 +21,21 @@ FASTAPI_BACKEND = os.getenv('FASTAPI_BACKEND', 'http://localhost:8000')
 last_success_cache = {}
 
 
-def proxy_to_backend(endpoint, method='GET', **kwargs):
+def proxy_to_backend(endpoint, method='GET', timeout=None, **kwargs):
     """
     Proxy request to FastAPI backend
     """
     try:
         url = f"{FASTAPI_BACKEND}{endpoint}"
-        
+
+        # Default timeouts: GET 6s, POST 12s unless overridden
+        if timeout is None:
+            timeout = 12 if method == 'POST' else 6
+
         if method == 'GET':
-            response = requests.get(url, timeout=6, **kwargs)
+            response = requests.get(url, timeout=timeout, **kwargs)
         elif method == 'POST':
-            response = requests.post(url, timeout=12, **kwargs)
+            response = requests.post(url, timeout=timeout, **kwargs)
         else:
             return jsonify({'error': f'Unsupported method: {method}'}), 400
         
@@ -189,21 +193,9 @@ def api_progressive_predict(symbol):
 @app.route('/api/ml/progressive/backtest', methods=['POST'])
 def api_progressive_backtest():
     """Proxy to FastAPI: Start progressive backtesting"""
-    data = request.get_json()
-    symbol = data.get('symbol')
-    train_start_date = data.get('train_start_date')
-    train_end_date = data.get('train_end_date')
-    test_period_days = data.get('test_period_days', 14)
-    max_iterations = data.get('max_iterations', 10)
-    target_accuracy = data.get('target_accuracy', 0.85)
-    auto_stop = data.get('auto_stop', True)
-    model_types = data.get('model_types', ['lstm'])
-    
-    url = f'/api/ml/progressive/backtest?symbol={symbol}&train_start_date={train_start_date}&train_end_date={train_end_date}&test_period_days={test_period_days}&max_iterations={max_iterations}&target_accuracy={target_accuracy}&auto_stop={auto_stop}'
-    for model_type in model_types:
-        url += f'&model_types={model_type}'
-    
-    return proxy_to_backend(url, method='POST')
+    data = request.get_json(silent=True) or {}
+    # Forward JSON body as-is; FastAPI expects a Pydantic model in the request body.
+    return proxy_to_backend('/api/ml/progressive/backtest', method='POST', timeout=60, json=data)
 
 @app.route('/api/ml/progressive/backtest/status/<job_id>')
 def api_progressive_backtest_status(job_id):
@@ -214,6 +206,15 @@ def api_progressive_backtest_status(job_id):
 def api_progressive_backtest_results(symbol):
     """Proxy to FastAPI: Get backtest results"""
     return proxy_to_backend(f'/api/ml/progressive/backtest/results/{symbol}')
+
+# ===========================
+# Data Ensure Proxy (NEW)
+# ===========================
+
+@app.route('/api/data/ensure/<symbol>')
+def api_data_ensure(symbol):
+    """Proxy to FastAPI: Ensure per-symbol data exists and is fresh"""
+    return proxy_to_backend(f'/api/data/ensure/{symbol}', method='GET', timeout=30)
 
 # ===========================
 # Enhanced Financial API Proxies (NEW)

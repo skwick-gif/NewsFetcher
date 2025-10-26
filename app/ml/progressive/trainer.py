@@ -25,7 +25,16 @@ import logging
 from pathlib import Path
 import json
 import pickle
-import matplotlib.pyplot as plt
+# Matplotlib is optional; avoid hard import errors in headless/minimal environments
+try:
+    import matplotlib
+    # Use a non-interactive backend to be safe on servers/CI
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt  # type: ignore
+    MATPLOTLIB_AVAILABLE = True
+except Exception:
+    MATPLOTLIB_AVAILABLE = False
+    logger.warning("📉 Matplotlib not available; plotting disabled.")
 from datetime import datetime
 import time
 from sklearn.model_selection import KFold, TimeSeriesSplit
@@ -688,6 +697,9 @@ class ProgressiveTrainer:
     
     def plot_training_history(self, symbol: str = "AAPL", save_plots: bool = True):
         """Plot training history"""
+        if not MATPLOTLIB_AVAILABLE:
+            logger.info("Plotting skipped: Matplotlib not available")
+            return
         
         logger.info(f"📊 Plotting training history for {symbol}...")
         
@@ -719,6 +731,8 @@ class ProgressiveTrainer:
     
     def _plot_single_history(self, history: Dict, title: str):
         """Plot single model training history"""
+        if not MATPLOTLIB_AVAILABLE:
+            return
         
         fig, axes = plt.subplots(2, 2, figsize=(15, 10))
         fig.suptitle(f'Training History: {title}', fontsize=16)

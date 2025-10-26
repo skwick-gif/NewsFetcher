@@ -1,0 +1,18 @@
+{
+  "symbol": "MBLY",
+  "job_id": "backtest_MBLY_1862294f",
+  "best_iteration": 8,
+  "summary": {
+    "best_accuracy": 0.7,
+    "best_loss": 0.35330556333065033,
+    "total_iterations": 10,
+    "total_time": 297.65638637542725
+  },
+  "train_end_date": "2025-04-04",
+  "test_period_days": 14,
+  "model_types": [
+    "cnn",
+    "lstm",
+    "transformer"
+  ]
+}
