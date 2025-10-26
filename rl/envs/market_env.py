@@ -76,10 +76,10 @@ class MarketEnv:
                     dfm['Date'] = pd.to_datetime(dfm['Date'])
                     dfm = dfm.set_index('Date')
             dfm = dfm.join(sigs, how='left')
-    # keep OHLCV when present + progressive features
-    base_cols = {'Open', 'High', 'Low', 'Close', 'Volume'}
-    keep_cols = [c for c in dfm.columns if (c in base_cols) or c.startswith('expected_return_') or c.startswith('confidence_') or c.startswith('signal_')]
-    df = dfm[keep_cols].copy() if keep_cols else dfm[['Close']].copy()
+        # keep OHLCV when present + progressive features
+        base_cols = {'Open', 'High', 'Low', 'Close', 'Volume'}
+        keep_cols = [c for c in dfm.columns if (c in base_cols) or c.startswith('expected_return_') or c.startswith('confidence_') or c.startswith('signal_') or c.startswith('sl_') or c.startswith('tp_')]
+        df = dfm[keep_cols].copy() if keep_cols else dfm[['Close']].copy()
         return MarketEnv(symbol, df, window, transaction_cost_bps, slippage_bps, starting_cash)
 
     def _obs(self) -> Dict[str, Any]:
