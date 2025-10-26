@@ -37,13 +37,23 @@ class Portfolio:
 class MarketEnv:
     def __init__(self, symbol: str, data: pd.DataFrame, window: int = 60,
                  transaction_cost_bps: int = 5, slippage_bps: int = 5,
-                 starting_cash: float = 10000.0) -> None:
+                 starting_cash: float = 10000.0,
+                 # Broker/commission model
+                 broker: str = 'bps',
+                 ibkr_per_share: float = 0.0035,
+                 ibkr_min_per_order: float = 0.35,
+                 sec_fee_rate: float = 0.000008) -> None:
         self.symbol = symbol
         self.df = data.copy()
         self.window = int(max(2, window))
         self.cost_bps = int(max(0, transaction_cost_bps))
         self.slip_bps = int(max(0, slippage_bps))
         self.total_bps = self.cost_bps + self.slip_bps
+        # Broker commission settings
+        self.broker = str(broker or 'bps').lower()
+        self.ibkr_per_share = float(max(0.0, ibkr_per_share))
+        self.ibkr_min_per_order = float(max(0.0, ibkr_min_per_order))
+        self.sec_fee_rate = float(max(0.0, sec_fee_rate))
 
         # precompute simple returns
         self.df['ret'] = self.df['Close'].pct_change().fillna(0.0)
@@ -62,7 +72,11 @@ class MarketEnv:
     def load_from_local(symbol: str, window: int = 60, tail_days: Optional[int] = None,
                         start_date: Optional[str] = None, end_date: Optional[str] = None,
                         transaction_cost_bps: int = 5, slippage_bps: int = 5,
-                        starting_cash: float = 10000.0) -> "MarketEnv":
+                        starting_cash: float = 10000.0,
+                        broker: str = 'bps',
+                        ibkr_per_share: float = 0.0035,
+                        ibkr_min_per_order: float = 0.35,
+                        sec_fee_rate: float = 0.000008) -> "MarketEnv":
         adapter = LocalStockData()
         bundle = adapter.load_symbol(symbol, tail_days=tail_days, start_date=start_date, end_date=end_date)
         dfm = bundle['merged']
@@ -80,7 +94,9 @@ class MarketEnv:
         base_cols = {'Open', 'High', 'Low', 'Close', 'Volume'}
         keep_cols = [c for c in dfm.columns if (c in base_cols) or c.startswith('expected_return_') or c.startswith('confidence_') or c.startswith('signal_') or c.startswith('sl_') or c.startswith('tp_')]
         df = dfm[keep_cols].copy() if keep_cols else dfm[['Close']].copy()
-        return MarketEnv(symbol, df, window, transaction_cost_bps, slippage_bps, starting_cash)
+        return MarketEnv(symbol, df, window, transaction_cost_bps, slippage_bps, starting_cash,
+                         broker=broker, ibkr_per_share=ibkr_per_share,
+                         ibkr_min_per_order=ibkr_min_per_order, sec_fee_rate=sec_fee_rate)
 
     def _obs(self) -> Dict[str, Any]:
         w = self.df.iloc[self._idx - self.window:self._idx]
@@ -152,7 +168,14 @@ class MarketEnv:
 
         # Convert to shares change
         delta_shares = 0.0 if price <= 0 else (delta_value / price)
-        trade_cost = abs(delta_shares) * price * (self.total_bps / 10000.0)
+        # Commission model
+        if self.broker == 'ibkr':
+            commission = max(self.ibkr_min_per_order, self.ibkr_per_share * abs(delta_shares))
+            sell_notional = max(0.0, -delta_shares) * price
+            sec_fee = self.sec_fee_rate * sell_notional
+            trade_cost = commission + sec_fee
+        else:
+            trade_cost = abs(delta_shares) * price * (self.total_bps / 10000.0)
 
         # Execute trade
         cash_change = -(delta_shares * price) - trade_cost

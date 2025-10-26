@@ -17,6 +17,45 @@
   <div class="container">
     <h2 class="title">RL Agent (Paper) — Preview</h2>
     <div class="card">
+      <h3>Data Ensure</h3>
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <label>Symbols</label>
+        <input id="ens-syms" placeholder="e.g. QQQ,MBLY,TNA" style="min-width:300px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label>Start</label>
+        <input id="ens-start" type="date" value="2020-01-01" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label>End</label>
+        <input id="ens-end" type="date" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <button onclick="ensureData()" style="background:#22c55e; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Ensure</button>
+      </div>
+      <details style="margin-top:8px;">
+        <summary style="cursor:pointer; opacity:0.9;">Advanced indicator params (optional)</summary>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); gap:8px; margin-top:8px;">
+          <label style="display:flex; flex-direction:column; gap:4px;">RSI Period<input id="ip-rsi" type="number" min="1" placeholder="14" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+          <label style="display:flex; flex-direction:column; gap:4px;">MACD Fast<input id="ip-macd-fast" type="number" min="1" placeholder="12" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+          <label style="display:flex; flex-direction:column; gap:4px;">MACD Slow<input id="ip-macd-slow" type="number" min="1" placeholder="26" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+          <label style="display:flex; flex-direction:column; gap:4px;">MACD Signal<input id="ip-macd-signal" type="number" min="1" placeholder="9" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+          <label style="display:flex; flex-direction:column; gap:4px;">ATR Period<input id="ip-atr" type="number" min="1" placeholder="14" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+          <label style="display:flex; flex-direction:column; gap:4px;">BB Period<input id="ip-bb-p" type="number" min="1" placeholder="20" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+          <label style="display:flex; flex-direction:column; gap:4px;">BB Std K<input id="ip-bb-k" type="number" step="0.1" min="0.1" placeholder="2.0" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+          <label style="display:flex; flex-direction:column; gap:4px;">SMA Short<input id="ip-sma-short" type="number" min="1" placeholder="20" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+          <label style="display:flex; flex-direction:column; gap:4px;">SMA Mid<input id="ip-sma-mid" type="number" min="1" placeholder="50" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+          <label style="display:flex; flex-direction:column; gap:4px;">SMA Long<input id="ip-sma-long" type="number" min="1" placeholder="200" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+          <label style="display:flex; flex-direction:column; gap:4px;">EMA Main<input id="ip-ema" type="number" min="1" placeholder="50" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+          <label style="display:flex; flex-direction:column; gap:4px;">ROC Period<input id="ip-roc" type="number" min="1" placeholder="20" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+          <label style="display:flex; flex-direction:column; gap:4px;">Vol Period<input id="ip-vol" type="number" min="1" placeholder="20" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+          <label style="display:flex; flex-direction:column; gap:4px;">Volume MA<input id="ip-volma" type="number" min="1" placeholder="20" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+          <label style="display:flex; flex-direction:column; gap:4px;">ADX Period<input id="ip-adx" type="number" min="1" placeholder="14" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+          <label style="display:flex; flex-direction:column; gap:4px;">KAMA N<input id="ip-kama-n" type="number" min="1" placeholder="10" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+          <label style="display:flex; flex-direction:column; gap:4px;">KAMA Fast<input id="ip-kama-fast" type="number" min="1" placeholder="2" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+          <label style="display:flex; flex-direction:column; gap:4px;">KAMA Slow<input id="ip-kama-slow" type="number" min="1" placeholder="30" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+          <label style="display:flex; flex-direction:column; gap:4px;">Stoch %K<input id="ip-stoch-k" type="number" min="1" placeholder="14" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+          <label style="display:flex; flex-direction:column; gap:4px;">Stoch %D<input id="ip-stoch-d" type="number" min="1" placeholder="3" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;"></label>
+        </div>
+      </details>
+      <div id="ens-status" style="margin-top:8px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Courier New', monospace;"></div>
+      <pre id="ens-logs" style="max-height:180px; overflow:auto; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px; font-size:12px;"></pre>
+    </div>
+    <div class="card">
       <h3>Quick Simulation</h3>
       <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
   <label>Symbol</label>
@@ -35,8 +74,11 @@
           <option value="buy_and_hold">buy_and_hold</option>
           <option value="half_long">half_long</option>
         </select>
+        <button onclick="planRLSim()" title="Auto-plan dates/window/days from local data" style="background:#059669; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Plan</button>
+        <button onclick="planAndRunRLSim()" title="Plan then Run simulation" style="background:#16a34a; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Plan & Run</button>
         <button onclick="runRLSim()" style="background:#3b82f6; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Run</button>
       </div>
+      <div id="rl-plan-status" style="margin-top:6px; font-size:12px; color:#cbd5e1; display:none;"></div>
       <div style="margin-top:8px;">
         <canvas id="rl-chart" width="980" height="300" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:8px;"></canvas>
         <div id="rl-tip" style="position:absolute; display:none; pointer-events:none; background:rgba(17,24,39,0.95); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:8px 10px; border-radius:6px; font-size:12px; white-space:nowrap; z-index:10;"></div>
@@ -94,8 +136,8 @@
     <div class="card">
       <h3>Train PPO (SB3)</h3>
       <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-        <label>Symbol</label>
-        <input id="ppo-sym" placeholder="AAPL" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label>Symbols</label>
+        <input id="ppo-syms" placeholder="e.g. QQQ,MBLY,TNA or single like RGTI" style="min-width:300px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
         <label>Window</label>
         <input id="ppo-window" type="number" value="60" style="width:80px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
         <label>Start</label>
@@ -104,14 +146,144 @@
         <input id="ppo-end" type="date" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
         <label>Timesteps</label>
         <input id="ppo-steps" type="number" value="100000" style="width:120px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <button onclick="planPPO()" title="Auto-plan dates/window/steps from local data" style="background:#059669; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Plan</button>
+        <button onclick="planAndTrainPPO()" title="Plan then Train" style="background:#0ea5e9; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Plan & Train</button>
         <button onclick="startPPO()" style="background:#8b5cf6; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Train PPO</button>
       </div>
+      <div id="ppo-plan-card" style="display:none; margin-top:8px; background: rgba(255,255,255,0.03); border:1px dashed rgba(255,255,255,0.12); padding:8px; border-radius:6px; font-size:12px; color:#cbd5e1;"></div>
       <div id="ppo-status" style="margin-top:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;"></div>
       <pre id="ppo-logs" style="max-height:200px; overflow:auto; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px; font-size:12px;"></pre>
     </div>
     <div class="card">
+      <h3>Portfolio — Evaluate (2024)</h3>
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <label>Symbols</label>
+        <input id="pf-syms" placeholder="QQQ,MBLY,TNA" value="QQQ,MBLY,TNA" style="min-width:300px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label>Eval Start</label>
+        <input id="pf-start" type="date" value="2024-01-01" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label>Eval End</label>
+        <input id="pf-end" type="date" value="2024-12-31" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <button onclick="startPortfolioEval()" style="background:#22c55e; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Run Report</button>
+      </div>
+      <div id="pf-status" style="margin-top:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;"></div>
+      <pre id="pf-logs" style="max-height:200px; overflow:auto; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px; font-size:12px;"></pre>
+      <div id="pf-summary" style="margin-top:10px;"></div>
+    </div>
+    <div class="card">
+      <h3>Walk-forward Evaluation</h3>
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <label>Symbols</label>
+        <input id="wf-syms" placeholder="QQQ,MBLY,TNA" value="QQQ,MBLY,TNA" style="min-width:300px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label>Start</label>
+        <input id="wf-start" type="date" value="2021-01-01" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label>End</label>
+        <input id="wf-end" type="date" value="2024-12-31" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label>Segments</label>
+        <input id="wf-seg" type="number" value="4" style="width:90px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label>Band</label>
+        <input id="wf-band" type="number" step="0.01" value="0.05" style="width:90px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label>Min Days</label>
+        <input id="wf-min-days" type="number" value="5" style="width:80px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <button onclick="startWalkForward()" style="background:#22c55e; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Run Walk-forward</button>
+      </div>
+      <div id="wf-status" style="margin-top:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;"></div>
+      <pre id="wf-logs" style="max-height:200px; overflow:auto; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px; font-size:12px;"></pre>
+      <div id="wf-summary" style="margin-top:10px;"></div>
+    </div>
+    <div class="card">
+      <h3>Live (Paper) — Preview</h3>
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+   <label title="רשימת ניירות (מופרדים בפסיק) לתצוגה מקדימה של משקולות. משפיע על היקף התיק. מומלץ להשתמש באותם סמלים כמו באימון/Ensure.">Symbols</label>
+   <input id="live-syms" placeholder="QQQ,MBLY,TNA or single like RGTI" value="QQQ,MBLY,TNA" title="דוגמה: QQQ,MBLY,TNA — סמלים שיהוו את התיק לתצוגה."
+     style="min-width:300px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+   <label title="נתיב למודל PPO לשימוש בתצוגה. משפיע על האסטרטגיה והמשקולות. אם לא בטוחים — לחצו Use Latest.">Model</label>
+   <input id="live-model" placeholder="path/to/model.zip (or Use Latest)" title="השאירו ריק ולחצו Use Latest כדי לקחת את המודל האחרון שנשמר."
+     style="min-width:320px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <button onclick="liveUseLatest()" style="background:#64748b; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Use Latest</button>
+   <label title="No-Trade Band — רצועה שמונעת עסקאות קטנות ומייצבת את המשקולות. ערך מומלץ: 0.05 (5%).">Band</label>
+   <input id="live-band" type="number" step="0.01" value="0.05" title="ערך מומלץ: 0.05 (5%). ערכים גבוהים יותר יקטינו תדירות מסחר."
+     style="width:90px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+   <label title="מספר ימי מינימום בין שינויים עקב ה-Band. מפחית תדירות עסקאות. מומלץ: 5.">Min Days</label>
+   <input id="live-min-days" type="number" value="5" title="מומלץ: 5. העלאה תקטין תדירות התאמות."
+     style="width:80px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <button onclick="livePreview()" style="background:#22c55e; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Preview</button>
+      </div>
+      <div id="live-out" style="margin-top:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;"></div>
+    </div>
+    <div class="card">
+      <h3>Live (Paper) — Mode</h3>
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+   <label title="רשימת ניירות (מופרדים בפסיק) למסחר Paper. מומלץ להשתמש באותם סמלים שאומנו/Ensure.">Symbols</label>
+   <input id="paper-syms" placeholder="QQQ,MBLY,TNA or single like RGTI" value="QQQ,MBLY,TNA" title="דוגמה: QQQ,MBLY,TNA — תמהיל התיק בפייפר."
+     style="min-width:300px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+   <label title="קובץ מודל PPO להפעלה. משפיע על החלטות הקצאה. אם לא בטוחים — השתמשו ב-Use Latest.">Model</label>
+   <input id="paper-model" placeholder="path/to/model.zip (or Use Latest)" title="השאירו ריק ולחצו Use Latest כדי לבחור את המודל האחרון."
+     style="min-width:320px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <button onclick="paperUseLatest()" style="background:#64748b; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Use Latest</button>
+   <label title="הון התחלתי לתיק בפייפר. משפיע על גודל פוזיציות ועל PnL בכסף. מומלץ: 10,000 (או בהתאם לגודל חשבון טיפוסי).">Start Cash</label>
+   <input id="paper-cash" type="number" value="10000" title="מומלץ: 10,000."
+     style="width:120px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+   <label title="No-Trade Band — רצועה שמונעת עסקאות קטנות ומייצבת את המשקולות. ערך מומלץ: 0.05 (5%).">Band</label>
+   <input id="paper-band" type="number" step="0.01" value="0.05" title="ערך מומלץ: 0.05 (5%). קחו בחשבון טריידאוף בין תגובתיות לבין יציבות."
+     style="width:90px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+   <label title="מספר ימי מינימום בין שינויי הקצאה (בהקשר ה-Band). מפחית תדירות עסקאות. מומלץ: 5.">Min Days</label>
+   <input id="paper-min-days" type="number" value="5" title="מומלץ: 5. העלאה תקטין עוד את התדירות.">
+   <label title="Transaction Cost בבסיס נקודות (bps = 0.01%). מפחית רווחיות נטו. מומלץ: 5 (0.05%).">TC bps</label>
+   <input id="paper-tc" type="number" value="5" title="מומלץ: 5 (כלומר 0.05%)." style="width:70px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+   <label title="Slippage בבסיס נקודות (bps). מדמה החלקה במחיר. מומלץ: 5 (0.05%).">Slip bps</label>
+   <input id="paper-slip" type="number" value="5" title="מומלץ: 5 (כלומר 0.05%)." style="width:70px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+   <label title="גודל חלון התצפית (ימים) המשמש את המודל. משפיע על הפיצ'רים והתנהגות. מומלץ: 60.">Window</label>
+   <input id="paper-window" type="number" value="60" title="מומלץ: 60. חשוב ליישר עם חלון האימון."
+     style="width:80px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+   <label title="תקרת היפוך יומי (Turnover) כאחוז מההון — שומר על גבולות מסחר. מומלץ: 50%–100% בהתאם למדיניות.">Max Turnover %</label>
+   <input id="paper-turnover" type="number" value="100" title="מומלץ: 100% כברירת מחדל. הקטינו אם רוצים להגביל מסחר." style="width:90px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+   <label title="עצירת מצב במקרה של Drawdown מצטבר מעל הסף. ניהול סיכונים. מומלץ: 20%–30% (ברירת מחדל 25%).">Max DD %</label>
+   <input id="paper-dd" type="number" value="25" title="מומלץ: 25%. הורידו לערכים מחמירים יותר לניהול סיכון הדוק."
+     style="width:80px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+   <label style="display:flex; align-items:center; gap:4px;" title="המשך מריצת Paper מהמצב האחרון השמור (positions/equity). מומלץ להשאיר מסומן.">Resume<input id="paper-resume" type="checkbox" checked></label>
+   <label title="שעת ההרצה היומית (לפי אזור הזמן). מומלץ: אחרי נעילה — 16:05 America/New_York.">Time</label>
+   <input id="paper-time" type="time" value="16:05" title="מומלץ: 16:05 (אחרי נעילת שוק בניו-יורק)."
+     style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+   <label title="אזור הזמן להפעלה. קובע מתי התזמון יתבצע. מומלץ: America/New_York.">TZ</label>
+   <input id="paper-tz" placeholder="America/New_York" value="America/New_York" title="מומלץ: America/New_York."
+     style="min-width:170px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <button onclick="paperStart()" style="background:#22c55e; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Start Paper</button>
+        <button onclick="paperStop()" style="background:#ef4444; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Stop</button>
+      </div>
+      <div class="row">
+        <div class="card">
+          <h4>Status</h4>
+          <div id="paper-status">—</div>
+        </div>
+        <div class="card">
+          <h4>Positions</h4>
+          <div id="paper-positions">—</div>
+        </div>
+        <div class="card">
+          <h4>PnL</h4>
+          <div id="paper-pnl">—</div>
+        </div>
+      </div>
+      <pre id="paper-logs" style="max-height:200px; overflow:auto; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px; font-size:12px;"></pre>
+    </div>
+    <div class="card">
       <h3>Recent Decisions</h3>
       <div id="rl-decisions">—</div>
+    </div>
+    <div class="card">
+      <h3>News Export (T−1)</h3>
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <label>Symbols</label>
+        <input id="news-syms" placeholder="e.g. SPY,QQQ,MBLY,..." style="min-width:320px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label>Start</label>
+        <input id="news-start" type="date" value="2020-01-01" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label>End</label>
+        <input id="news-end" type="date" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label style="display:flex; align-items:center; gap:4px;">Refresh<input id="news-refresh" type="checkbox"></label>
+        <button onclick="startNewsExport()" style="background:#0ea5e9; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Export</button>
+      </div>
+      <div id="news-status" style="margin-top:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;"></div>
+      <pre id="news-logs" style="max-height:200px; overflow:auto; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px; font-size:12px;"></pre>
     </div>
   </div>
   <script src="/static/js/rl.js"></script>
@@ -119,7 +291,7 @@
     let _lastDecisions = [];
     let _lastIndicators = null;
     let _hoverIndex = null;
-    async function runRLSim(){
+  async function runRLSim(){
       const sym = (document.getElementById('rl-sym').value || 'AAPL').toUpperCase();
     const days = parseInt(document.getElementById('rl-days').value || '250', 10);
     const policy = document.getElementById('rl-policy').value;
@@ -129,9 +301,11 @@
     const params = new URLSearchParams({ symbol: sym, window: String(windowSize), policy });
     if (sd && ed) { params.set('start_date', sd); params.set('end_date', ed); }
     else { params.set('days', String(days)); }
-    const r = await fetch(`/api/rl/simulate?${params.toString()}`);
-    const j = await r.json();
-    if(j.status !== 'success'){ alert(j.message || 'Simulation failed'); return; }
+    try {
+      const r = await fetch(`/api/rl/simulate?${params.toString()}`);
+      if(!r.ok){ throw new Error(`HTTP ${r.status}`); }
+      const j = await r.json();
+      if(j.status !== 'success'){ alert(j.message || 'Simulation failed'); return; }
   window._lastSimData = j.data;
   _lastIndicators = computeIndicators(j.data);
   drawRL(j.data, _hoverIndex);
@@ -146,7 +320,38 @@
       fillRLMetrics(j.data.metrics || {});
       _lastDecisions = j.data.decisions || [];
       renderRLDecisions(_lastDecisions);
+    } catch(err){
+      console.error('runRLSim failed', err);
+      alert('Simulation failed. See console for details.');
     }
+  }
+    async function planRLSim(){
+      const sym = (document.getElementById('rl-sym').value || 'AAPL').toUpperCase();
+      try{
+        const r = await fetch(`/api/rl/simulate/plan?symbol=${encodeURIComponent(sym)}`);
+        const j = await r.json();
+        if(j.status !== 'planned'){ alert(j.detail || 'Planning failed'); return; }
+        const p = j.plan || {};
+        if(p.start_date) document.getElementById('rl-start').value = p.start_date;
+        if(p.end_date) document.getElementById('rl-end').value = p.end_date;
+        if(Number.isFinite(p.window)) document.getElementById('rl-window').value = String(p.window);
+        if(Number.isFinite(p.days)) document.getElementById('rl-days').value = String(p.days);
+        const s = document.getElementById('rl-plan-status');
+        if(s){
+          s.style.display = 'block';
+          s.textContent = `Planned ${sym}: ${p.start_date} → ${p.end_date} | window=${p.window}, days=${p.days} (rows=${p.total_rows})`;
+        }
+        return p;
+      }catch(err){
+        console.error('planRLSim failed', err);
+        alert('Plan failed. See console for details.');
+      }
+    }
+    async function planAndRunRLSim(){
+      const p = await planRLSim();
+      if(p){ await runRLSim(); }
+    }
+    
   function drawRLLine(data, hoverIndex){
       const c = document.getElementById('rl-chart');
       const ctx = c.getContext('2d');
@@ -440,13 +645,13 @@
     // PPO train UI
     let _ppoPoll = null;
     async function startPPO(){
-      const sym = (document.getElementById('ppo-sym').value || '').toUpperCase();
-      if(!sym){ alert('Please enter a symbol'); return; }
+      const symsRaw = (document.getElementById('ppo-syms').value || '').toUpperCase();
+      if(!symsRaw){ alert('Please enter symbol(s)'); return; }
       const windowSize = parseInt(document.getElementById('ppo-window').value || '60', 10);
       const steps = parseInt(document.getElementById('ppo-steps').value || '100000', 10);
       const sd = (document.getElementById('ppo-start').value || '').trim();
       const ed = (document.getElementById('ppo-end').value || '').trim();
-      const params = new URLSearchParams({ symbol: sym, window: String(windowSize), timesteps: String(steps) });
+      const params = new URLSearchParams({ symbols: symsRaw, window: String(windowSize), timesteps: String(steps) });
       if(sd) params.set('start_date', sd);
       if(ed) params.set('end_date', ed);
       const resp = await fetch(`/api/rl/ppo/train?${params.toString()}`, { method: 'POST' });
@@ -457,6 +662,44 @@
       if(_ppoPoll) clearInterval(_ppoPoll);
       _ppoPoll = setInterval(()=> pollPPO(jobId), 2000);
       pollPPO(jobId);
+    }
+
+    async function planPPO(){
+      const symsRaw = (document.getElementById('ppo-syms').value || '').toUpperCase();
+      const parts = symsRaw.split(',').map(s=>s.trim()).filter(Boolean);
+      if(parts.length===0){ alert('Please enter symbol(s)'); return; }
+      const winVal = parseInt(document.getElementById('ppo-window').value || '0', 10);
+      const params = new URLSearchParams({ symbols: parts.join(',') });
+      if(winVal>0){ params.set('window', String(winVal)); }
+      try{
+        const r = await fetch(`/api/rl/ppo/plan?${params.toString()}`);
+        const j = await r.json();
+        if(j.status !== 'planned'){ alert(j.detail || 'Planning failed'); return; }
+        const p = j.plan || {};
+        // Fill UI
+        if(p.train_start_date){ document.getElementById('ppo-start').value = p.train_start_date; }
+        if(p.train_end_date){ document.getElementById('ppo-end').value = p.train_end_date; }
+        if(Number.isFinite(p.window)){ document.getElementById('ppo-window').value = String(p.window); }
+        if(Number.isFinite(p.timesteps)){ document.getElementById('ppo-steps').value = String(p.timesteps); }
+        // Plan card
+        const card = document.getElementById('ppo-plan-card');
+        if(card){
+          card.style.display = 'block';
+          const label = (p.symbols && Array.isArray(p.symbols)) ? p.symbols.join(',') : parts[0];
+          card.textContent = `Planned ${label}: ${p.train_start_date} → ${p.train_end_date} | window=${p.window}, steps=${p.timesteps} (days=${p.training_days})`;
+        }
+      }catch(err){
+        console.error('planPPO failed', err);
+        alert('Plan failed. See console for details.');
+      }
+    }
+    async function planAndTrainPPO(){
+      const symsRaw = (document.getElementById('ppo-syms').value || '').toUpperCase();
+      const parts = symsRaw.split(',').map(s=>s.trim()).filter(Boolean);
+      const sym = (parts[0] || '').toUpperCase();
+      if(!sym){ alert('Please enter symbol(s)'); return; }
+      await planPPO();
+      await startPPO();
     }
     async function pollPPO(jobId){
       try{
@@ -739,6 +982,353 @@
         ctx.beginPath(); ctx.moveTo(xi, pad); ctx.lineTo(xi, H-pad); ctx.stroke();
       }
     }
+    // Portfolio evaluation
+    let _pfPoll = null;
+    async function startPortfolioEval(){
+      const syms = (document.getElementById('pf-syms').value || '').trim();
+      if(!syms){ alert('Please enter symbols (comma-separated)'); return; }
+      const sd = (document.getElementById('pf-start').value || '2024-01-01').trim();
+      const ed = (document.getElementById('pf-end').value || '2024-12-31').trim();
+      const params = new URLSearchParams({ symbols: syms, eval_start: sd, eval_end: ed });
+      const resp = await fetch(`/api/rl/portfolio/evaluate?${params.toString()}`, { method: 'POST' });
+      const j = await resp.json();
+      if(j.status !== 'started'){ alert(j.detail || 'Failed to start report'); return; }
+      const jobId = j.job_id;
+      document.getElementById('pf-status').textContent = `Job ${jobId} — running...`;
+      document.getElementById('pf-logs').textContent = '';
+      document.getElementById('pf-summary').innerHTML = '';
+      if(_pfPoll) clearInterval(_pfPoll);
+      _pfPoll = setInterval(()=> pollPortfolioEval(jobId), 2000);
+      pollPortfolioEval(jobId);
+    }
+    async function pollPortfolioEval(jobId){
+      try{
+        const r = await fetch(`/api/rl/portfolio/evaluate/status/${jobId}`);
+        if(!r.ok) throw new Error('status not found');
+        const j = await r.json();
+        const st = j.status || 'unknown';
+        let line1 = `Job ${jobId} — ${st}`;
+        if(j.out_dir){ line1 += ` — out: ${j.out_dir}`; }
+        document.getElementById('pf-status').textContent = line1;
+        const logs = (j.logs || []).join('\n');
+        document.getElementById('pf-logs').textContent = logs;
+        if(Array.isArray(j.summary)){
+          const rows = j.summary;
+          let html = '<table style="width:100%; border-collapse:collapse;">\n<thead><tr>'+
+            '<th style="padding:6px; text-align:left;">Label</th>'+
+            '<th style="padding:6px; text-align:right;">Return</th>'+
+            '<th style="padding:6px; text-align:right;">MDD</th>'+
+            '<th style="padding:6px; text-align:right;">Sharpe</th>'+
+            '<th style="padding:6px; text-align:right;">CAGR</th>'+
+            '<th style="padding:6px; text-align:right;">Pts</th>'+
+          '</tr></thead><tbody>';
+          rows.forEach(r=>{
+            const tr = (parseFloat(r.total_return)||0)*100;
+            const dd = (parseFloat(r.max_drawdown)||0)*100;
+            const sh = parseFloat(r.sharpe)||0;
+            const cg = (parseFloat(r.cagr)||0)*100;
+            html += `<tr>`+
+              `<td style="padding:6px;">${r.label}</td>`+
+              `<td style="padding:6px; text-align:right;">${tr.toFixed(2)}%</td>`+
+              `<td style="padding:6px; text-align:right;">${dd.toFixed(2)}%</td>`+
+              `<td style="padding:6px; text-align:right;">${sh.toFixed(2)}</td>`+
+              `<td style="padding:6px; text-align:right;">${cg.toFixed(2)}%</td>`+
+              `<td style="padding:6px; text-align:right;">${r.points}</td>`+
+            `</tr>`;
+          });
+          html += '</tbody></table>';
+          document.getElementById('pf-summary').innerHTML = html;
+        }
+        if(st === 'completed' || st === 'failed' || st === 'error'){
+          if(_pfPoll){ clearInterval(_pfPoll); _pfPoll = null; }
+        }
+      }catch(e){ if(_pfPoll){ clearInterval(_pfPoll); _pfPoll = null; } }
+    }
+
+    // Ensure functions are available on window for inline onclick handlers
+    window.runRLSim = runRLSim;
+    window.planRLSim = planRLSim;
+    window.planAndRunRLSim = planAndRunRLSim;
+  window.startPPO = startPPO;
+  window.planPPO = planPPO;
+  window.planAndTrainPPO = planAndTrainPPO;
+    window.startPortfolioEval = startPortfolioEval;
+    // Walk-forward JS
+    let _wfPoll = null;
+    async function startWalkForward(){
+      const syms = (document.getElementById('wf-syms').value || '').trim();
+      const sd = (document.getElementById('wf-start').value || '').trim();
+      const ed = (document.getElementById('wf-end').value || '').trim();
+      const seg = parseInt(document.getElementById('wf-seg').value || '4', 10);
+      const band = parseFloat(document.getElementById('wf-band').value || '0');
+      const minDays = parseInt(document.getElementById('wf-min-days').value || '0', 10);
+      if(!syms || !sd || !ed){ alert('Please fill symbols, start, end'); return; }
+      const params = new URLSearchParams({ symbols: syms, start: sd, end: ed, segments: String(seg) });
+      if(band>0){ params.set('no_trade_band', String(band)); params.set('band_min_days', String(minDays)); }
+      const r = await fetch(`/api/rl/portfolio/walkforward?${params.toString()}`, { method: 'POST' });
+      const j = await r.json();
+      if(j.status !== 'started'){ alert(j.detail || 'Failed to start walk-forward'); return; }
+      const jobId = j.job_id;
+      document.getElementById('wf-status').textContent = `Job ${jobId} — running...`;
+      document.getElementById('wf-logs').textContent = '';
+      document.getElementById('wf-summary').innerHTML = '';
+      if(_wfPoll) clearInterval(_wfPoll);
+      _wfPoll = setInterval(()=> pollWalkForward(jobId), 2000);
+      pollWalkForward(jobId);
+    }
+    async function pollWalkForward(jobId){
+      try{
+        const r = await fetch(`/api/rl/portfolio/walkforward/status/${jobId}`);
+        if(!r.ok) throw new Error('status not found');
+        const j = await r.json();
+        const st = j.status || 'unknown';
+        let line1 = `Job ${jobId} — ${st}`;
+        if(j.out_dir){ line1 += ` — out: ${j.out_dir}`; }
+        document.getElementById('wf-status').textContent = line1;
+        document.getElementById('wf-logs').textContent = (j.logs||[]).join('\n');
+        if(Array.isArray(j.summary)){
+          const rows = j.summary;
+          let html = '<table style="width:100%; border-collapse:collapse;">\n<thead><tr>'+
+            '<th style="padding:6px; text-align:left;">Window</th>'+
+            '<th style="padding:6px; text-align:left;">Kind</th>'+
+            '<th style="padding:6px; text-align:right;">Return</th>'+
+            '<th style="padding:6px; text-align:right;">MDD</th>'+
+            '<th style="padding:6px; text-align:right;">Sharpe</th>'+
+            '<th style="padding:6px; text-align:right;">CAGR</th>'+
+            '<th style="padding:6px; text-align:right;">Pts</th>'+
+          '</tr></thead><tbody>';
+          rows.forEach(r=>{
+            const tr = (parseFloat(r.total_return)||0)*100;
+            const dd = (parseFloat(r.max_drawdown)||0)*100;
+            const sh = parseFloat(r.sharpe)||0;
+            const cg = (parseFloat(r.cagr)||0)*100;
+            html += `<tr>`+
+              `<td style="padding:6px;">${r.window||''}</td>`+
+              `<td style="padding:6px;">${r.kind||''}</td>`+
+              `<td style="padding:6px; text-align:right;">${tr.toFixed(2)}%</td>`+
+              `<td style="padding:6px; text-align:right;">${dd.toFixed(2)}%</td>`+
+              `<td style="padding:6px; text-align:right;">${sh.toFixed(2)}</td>`+
+              `<td style="padding:6px; text-align:right;">${cg.toFixed(2)}%</td>`+
+              `<td style="padding:6px; text-align:right;">${r.points||0}</td>`+
+            `</tr>`;
+          });
+          html += '</tbody></table>';
+          document.getElementById('wf-summary').innerHTML = html;
+        }
+        if(st === 'completed' || st === 'failed' || st === 'error'){
+          if(_wfPoll){ clearInterval(_wfPoll); _wfPoll = null; }
+        }
+      }catch(e){ if(_wfPoll){ clearInterval(_wfPoll); _wfPoll = null; } }
+    }
+    window.startWalkForward = startWalkForward;
+    // News Exporter JS
+    let _newsPoll = null;
+    async function startNewsExport(){
+      const syms = (document.getElementById('news-syms').value || '').trim();
+      const sd = (document.getElementById('news-start').value || '').trim();
+      const ed = (document.getElementById('news-end').value || '').trim();
+      const refresh = !!document.getElementById('news-refresh').checked;
+      if(!syms || !sd || !ed){ alert('Please fill symbols, start, end'); return; }
+      const body = { symbols: syms, start: sd, end: ed, refresh };
+      const r = await fetch('/api/rl/news/export', { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(body) });
+      const j = await r.json();
+      if(j.status !== 'started'){ alert(j.detail || 'Failed to start news export'); return; }
+      const jobId = j.job_id;
+      document.getElementById('news-status').textContent = `Job ${jobId} — running...`;
+      document.getElementById('news-logs').textContent = '';
+      if(_newsPoll) clearInterval(_newsPoll);
+      _newsPoll = setInterval(()=> pollNewsExport(jobId), 2000);
+      pollNewsExport(jobId);
+    }
+    async function pollNewsExport(jobId){
+      try{
+        const r = await fetch(`/api/rl/news/export/status/${jobId}`);
+        if(!r.ok) throw new Error('status not found');
+        const j = await r.json();
+        const st = j.status || 'unknown';
+        document.getElementById('news-status').textContent = `Job ${jobId} — ${st}`;
+        document.getElementById('news-logs').textContent = (j.logs||[]).join('\n');
+        if(st === 'completed' || st === 'failed' || st === 'error'){
+          if(_newsPoll){ clearInterval(_newsPoll); _newsPoll = null; }
+        }
+      }catch(e){ if(_newsPoll){ clearInterval(_newsPoll); _newsPoll = null; } }
+    }
+    window.startNewsExport = startNewsExport;
+
+    // Live (Paper) preview JS
+    async function liveUseLatest(){
+      try{
+        const r = await fetch('/api/rl/live/latest-model');
+        const j = await r.json();
+        if(j.status==='ok' && j.model_path){
+          document.getElementById('live-model').value = j.model_path;
+        } else {
+          alert(j.detail || 'No model found');
+        }
+      }catch(e){ alert('Failed to fetch latest model'); }
+    }
+    async function livePreview(){
+      const syms = (document.getElementById('live-syms').value || '').trim();
+      if(!syms){ alert('Enter symbols'); return; }
+      const model = (document.getElementById('live-model').value || '').trim();
+      const band = parseFloat(document.getElementById('live-band').value || '0');
+      const minDays = parseInt(document.getElementById('live-min-days').value || '0', 10);
+      const body = { symbols: syms, model_path: model || undefined, no_trade_band: band, band_min_days: minDays };
+      try{
+        const r = await fetch('/api/rl/live/preview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        const j = await r.json();
+        const out = document.getElementById('live-out');
+        if(j.status!=='ok'){ out.textContent = `Error: ${j.detail||'preview failed'}`; return; }
+        const sy = j.symbols||[];
+        const rw = j.raw_weights || {}; const bw = j.banded_weights || null;
+        let html = '';
+        html += `Date: ${j.date || '—'}\n`;
+        html += 'Raw Weights:\n';
+        sy.forEach(s=>{ html += `${s}: ${(rw[s]!=null?(rw[s]*100).toFixed(1)+'%':'—')}\n`; });
+        if(bw){
+          html += '\nBanded Weights:\n';
+          sy.forEach(s=>{ html += `${s}: ${(bw[s]!=null?(bw[s]*100).toFixed(1)+'%':'—')}\n`; });
+        }
+        out.textContent = html;
+      }catch(e){
+        document.getElementById('live-out').textContent = 'Preview failed';
+      }
+    }
+
+    // Paper mode JS
+    async function paperUseLatest(){
+      try{
+        const r = await fetch('/api/rl/live/latest-model');
+        const j = await r.json();
+        if(j.status==='ok' && j.model_path){ document.getElementById('paper-model').value = j.model_path; }
+        else { alert(j.detail || 'No model found'); }
+      }catch(e){ alert('Failed to fetch latest model'); }
+    }
+    async function paperStart(){
+      const syms = (document.getElementById('paper-syms').value || '').trim();
+      if(!syms){ alert('Enter symbols'); return; }
+      const body = {
+        symbols: syms,
+        model_path: (document.getElementById('paper-model').value || '').trim() || undefined,
+        starting_cash: parseFloat(document.getElementById('paper-cash').value || '10000'),
+        no_trade_band: parseFloat(document.getElementById('paper-band').value || '0.05'),
+        band_min_days: parseInt(document.getElementById('paper-min-days').value || '5', 10),
+        transaction_cost_bps: parseInt(document.getElementById('paper-tc').value || '5', 10),
+        slippage_bps: parseInt(document.getElementById('paper-slip').value || '5', 10),
+        window: parseInt(document.getElementById('paper-window').value || '60', 10),
+        max_daily_turnover_ratio: Math.max(0, parseFloat(document.getElementById('paper-turnover').value || '100')/100),
+        max_drawdown_stop: Math.max(0, parseFloat(document.getElementById('paper-dd').value || '25')/100),
+        resume: !!document.getElementById('paper-resume').checked,
+        schedule_time: (document.getElementById('paper-time').value || '16:05'),
+        timezone: (document.getElementById('paper-tz').value || 'America/New_York').trim(),
+      };
+      const r = await fetch('/api/rl/live/paper/start', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const j = await r.json();
+      if(j.status!=='started'){ alert(j.detail || 'Failed to start paper mode'); return; }
+      pollPaperStatus();
+      if(!window._paperPoll){ window._paperPoll = setInterval(pollPaperStatus, 5000); }
+    }
+    async function paperStop(){
+      try{ await fetch('/api/rl/live/paper/stop', { method: 'POST' }); }catch{}
+      if(window._paperPoll){ clearInterval(window._paperPoll); window._paperPoll = null; }
+      pollPaperStatus();
+    }
+    async function pollPaperStatus(){
+      try{
+        const r = await fetch('/api/rl/live/paper/status');
+        const j = await r.json();
+        const st = document.getElementById('paper-status');
+        const posEl = document.getElementById('paper-positions');
+        const pnlEl = document.getElementById('paper-pnl');
+        const logsEl = document.getElementById('paper-logs');
+        const running = j.running ? 'RUNNING' : 'STOPPED';
+        const lr = j.last_run_date || '—';
+        st.textContent = `${running} — last run: ${lr}`;
+        // positions table
+        const pos = j.positions || {}; const cash = j.cash || 0; const eq = j.equity || 0;
+        let html = `<div>Cash: $${(cash).toFixed(2)} | Equity: $${(eq).toFixed(2)}</div>`;
+        const keys = Object.keys(pos);
+        if(keys.length){
+          html += '<table style="margin-top:6px; width:100%; border-collapse:collapse;">\n<thead><tr><th style="text-align:left; padding:4px;">Symbol</th><th style="text-align:right; padding:4px;">Shares</th></tr></thead><tbody>';
+          keys.forEach(k=>{ html += `<tr><td style="padding:4px;">${k}</td><td style="padding:4px; text-align:right;">${(pos[k]).toFixed(4)}</td></tr>`; });
+          html += '</tbody></table>';
+        }
+        posEl.innerHTML = html;
+        // PnL
+        const last = j.last_decision;
+        if(last){
+          const d = last.date || '—';
+          const eb = last.equity_before || 0; const ea = last.equity_after || 0;
+          const pnl = ea - eb; const pnlp = eb>0? (pnl/eb*100):0;
+          pnlEl.textContent = `Last ${d}: PnL $${pnl.toFixed(2)} (${pnlp.toFixed(2)}%)`;
+        } else {
+          pnlEl.textContent = '—';
+        }
+        // logs
+        logsEl.textContent = (j.logs||[]).join('\n');
+      }catch(e){ /* ignore */ }
+    }
+    // Bind to window
+    window.paperUseLatest = paperUseLatest;
+    window.paperStart = paperStart;
+    window.paperStop = paperStop;
+    window.pollPaperStatus = pollPaperStatus;
+
+    // Ensure data JS
+    async function ensureData(){
+      const syms = (document.getElementById('ens-syms').value || '').trim();
+      if(!syms){ alert('Enter symbols'); return; }
+      const sd = (document.getElementById('ens-start').value || '').trim();
+      const ed = (document.getElementById('ens-end').value || '').trim();
+      const body = { symbols: syms, start: sd || undefined, end: ed || undefined };
+      // collect optional indicator params
+      const grabInt = (id)=>{ const el = document.getElementById(id); if(!el) return undefined; const v = (el.value||'').trim(); if(!v) return undefined; const n = parseInt(v, 10); return Number.isFinite(n)? n : undefined; };
+      const grabFloat = (id)=>{ const el = document.getElementById(id); if(!el) return undefined; const v = (el.value||'').trim(); if(!v) return undefined; const n = parseFloat(v); return Number.isFinite(n)? n : undefined; };
+      const ip = {
+        rsi_period: grabInt('ip-rsi'),
+        macd_fast: grabInt('ip-macd-fast'),
+        macd_slow: grabInt('ip-macd-slow'),
+        macd_signal: grabInt('ip-macd-signal'),
+        atr_period: grabInt('ip-atr'),
+        bb_period: grabInt('ip-bb-p'),
+        bb_std: grabFloat('ip-bb-k'),
+        sma_short: grabInt('ip-sma-short'),
+        sma_mid: grabInt('ip-sma-mid'),
+        sma_long: grabInt('ip-sma-long'),
+        ema_main: grabInt('ip-ema'),
+        roc_period: grabInt('ip-roc'),
+        vol_period: grabInt('ip-vol'),
+        volume_ma_period: grabInt('ip-volma'),
+        adx_period: grabInt('ip-adx'),
+        kama_n: grabInt('ip-kama-n'),
+        kama_fast: grabInt('ip-kama-fast'),
+        kama_slow: grabInt('ip-kama-slow'),
+        stoch_k: grabInt('ip-stoch-k'),
+        stoch_d: grabInt('ip-stoch-d'),
+      };
+      // remove undefineds
+      const cleaned = {}; Object.keys(ip).forEach(k=>{ if(ip[k] !== undefined) cleaned[k] = ip[k]; });
+      if(Object.keys(cleaned).length){ body.indicator_params = cleaned; }
+      const r = await fetch('/api/rl/data/ensure', { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(body) });
+      const j = await r.json();
+      if(j.status !== 'started'){ alert(j.detail || 'Failed to start ensure'); return; }
+      const jobId = j.job_id;
+      document.getElementById('ens-status').textContent = `Ensure job ${jobId} — running...`;
+      if(window._ensPoll){ clearInterval(window._ensPoll); }
+      const poll = async ()=>{
+        try{
+          const rs = await fetch(`/api/rl/data/ensure/status/${jobId}`);
+          const js = await rs.json();
+          document.getElementById('ens-status').textContent = `Ensure job ${jobId} — ${js.status}`;
+          document.getElementById('ens-logs').textContent = (js.logs||[]).join('\n');
+          if(js.status==='completed' || js.status==='failed' || js.status==='error'){
+            clearInterval(window._ensPoll); window._ensPoll = null;
+          }
+        }catch(e){ clearInterval(window._ensPoll); window._ensPoll = null; }
+      };
+      window._ensPoll = setInterval(poll, 2000); poll();
+    }
+    window.ensureData = ensureData;
   </script>
 </body>
 </html>

@@ -21,11 +21,15 @@ from pathlib import Path
 from datetime import datetime
 
 
-def make_env(symbol: str, window: int, start: str | None, end: str | None):
+def make_env(symbol: str, window: int, start: str | None, end: str | None,
+             broker: str = 'bps', ibkr_per_share: float = 0.0035,
+             ibkr_min_per_order: float = 0.35, sec_fee_rate: float = 0.000008):
     from rl.envs.market_env import MarketEnv
     from rl.envs.wrappers import MarketEnvGym
     env = MarketEnv.load_from_local(symbol=symbol, window=window, tail_days=None,
-                                    start_date=start, end_date=end)
+                                    start_date=start, end_date=end,
+                                    broker=broker, ibkr_per_share=ibkr_per_share,
+                                    ibkr_min_per_order=ibkr_min_per_order, sec_fee_rate=sec_fee_rate)
     return MarketEnvGym(env)
 
 
@@ -37,6 +41,11 @@ def main():
     parser.add_argument('--start', type=str, default=None, help='Start date YYYY-MM-DD (optional)')
     parser.add_argument('--end', type=str, default=None, help='End date YYYY-MM-DD (optional)')
     parser.add_argument('--seed', type=int, default=42, help='Random seed')
+    # Broker commission model
+    parser.add_argument('--broker', type=str, default='bps', choices=['bps', 'ibkr'], help="Commission model: 'bps' linear bps or 'ibkr' per-share + SEC fee")
+    parser.add_argument('--ibkr-per-share', type=float, default=0.0035, help='IBKR commission $ per share (e.g., 0.0035)')
+    parser.add_argument('--ibkr-min-per-order', type=float, default=0.35, help='IBKR minimum commission $ per order per step')
+    parser.add_argument('--sec-fee-rate', type=float, default=0.000008, help='SEC fee rate applied to sell notional (approx)')
     # Optional evaluation split (use a separate date range if provided)
     parser.add_argument('--eval-start', type=str, default=None, help='Eval start date YYYY-MM-DD (optional)')
     parser.add_argument('--eval-end', type=str, default=None, help='Eval end date YYYY-MM-DD (optional)')
@@ -53,7 +62,9 @@ def main():
         raise ImportError("stable-baselines3 (and torch) are required. Please install them to run PPO training.") from e
 
     # Build env
-    env = make_env(args.symbol, args.window, args.start, args.end)
+    env = make_env(args.symbol, args.window, args.start, args.end,
+                   broker=args.broker, ibkr_per_share=args.ibkr_per_share,
+                   ibkr_min_per_order=args.ibkr_min_per_order, sec_fee_rate=args.sec_fee_rate)
 
     # Construct model
     # Default device preference: CUDA when available, else CPU
