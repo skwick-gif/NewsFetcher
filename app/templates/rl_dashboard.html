@@ -19,8 +19,8 @@
     <div class="card">
       <h3>Quick Simulation</h3>
       <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-        <label>Symbol</label>
-        <input id="rl-sym" placeholder="AAPL" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+  <label>Symbol</label>
+  <input id="rl-sym" placeholder="ENTER SYMBOL" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
   <label>Days</label>
   <input id="rl-days" type="number" value="250" style="width:80px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
   <label>Start</label>
@@ -39,11 +39,25 @@
       </div>
       <div style="margin-top:8px;">
         <canvas id="rl-chart" width="980" height="300" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:8px;"></canvas>
+        <div id="rl-tip" style="position:absolute; display:none; pointer-events:none; background:rgba(17,24,39,0.95); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:8px 10px; border-radius:6px; font-size:12px; white-space:nowrap; z-index:10;"></div>
       </div>
       <div style="margin-top:6px; display:flex; gap:12px; align-items:center;">
   <span style="opacity:0.85;">Chart Type:</span>
   <label><input type="radio" name="rl-chart-type" id="rl-chart-type-line" value="line"> Line</label>
   <label><input type="radio" name="rl-chart-type" id="rl-chart-type-candle" value="candlestick" checked> Candlestick</label>
+      </div>
+      <div style="margin-top:6px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+        <span style="opacity:0.85;">Indicators:</span>
+        <label><input type="checkbox" id="ind-sma20"> SMA 20</label>
+        <label><input type="checkbox" id="ind-ema50"> EMA 50</label>
+        <label><input type="checkbox" id="ind-vol"> Volume</label>
+        <label><input type="checkbox" id="ind-macd"> MACD</label>
+      </div>
+      <div style="margin-top:6px;">
+        <canvas id="rl-macd" width="980" height="120" style="display:none; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:8px;"></canvas>
+      </div>
+      <div style="margin-top:6px;">
+        <canvas id="rl-vol" width="980" height="100" style="display:none; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:8px;"></canvas>
       </div>
       <div id="rl-metrics" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap:10px; margin-top:10px;">
         <div class="card"><div>Final Equity</div><strong id="m-final">—</strong></div>
@@ -103,6 +117,8 @@
   <script src="/static/js/rl.js"></script>
   <script>
     let _lastDecisions = [];
+    let _lastIndicators = null;
+    let _hoverIndex = null;
     async function runRLSim(){
       const sym = (document.getElementById('rl-sym').value || 'AAPL').toUpperCase();
     const days = parseInt(document.getElementById('rl-days').value || '250', 10);
@@ -116,13 +132,22 @@
     const r = await fetch(`/api/rl/simulate?${params.toString()}`);
     const j = await r.json();
     if(j.status !== 'success'){ alert(j.message || 'Simulation failed'); return; }
-    window._lastSimData = j.data;
-    drawRL(j.data);
+  window._lastSimData = j.data;
+  _lastIndicators = computeIndicators(j.data);
+  drawRL(j.data, _hoverIndex);
+  const macdOn = document.getElementById('ind-macd')?.checked;
+  const macEl = document.getElementById('rl-macd');
+  if(macEl){ macEl.style.display = macdOn? 'block' : 'none'; }
+  if(macdOn){ drawMACD(j.data, _hoverIndex); }
+  const volOn = document.getElementById('ind-vol')?.checked;
+  const volEl = document.getElementById('rl-vol');
+  if(volEl){ volEl.style.display = volOn? 'block' : 'none'; }
+  if(volOn){ drawVolume(j.data, _hoverIndex); }
       fillRLMetrics(j.data.metrics || {});
       _lastDecisions = j.data.decisions || [];
       renderRLDecisions(_lastDecisions);
     }
-    function drawRLLine(data){
+  function drawRLLine(data, hoverIndex){
       const c = document.getElementById('rl-chart');
       const ctx = c.getContext('2d');
       ctx.clearRect(0,0,c.width,c.height);
@@ -198,6 +223,14 @@
           ctx.fillRect(nx-1, ny-1, 2, 2);
         }
       }
+      // overlays (SMA/EMA on price scale)
+      drawOverlays({ ctx, W, H, pad, n, x, yPrice:(v)=> H - pad - (H-2*pad)*((v-minP)/((maxP-minP)||1)), seriesType:'line' });
+      // hover crosshair
+      if(typeof hoverIndex === 'number' && hoverIndex>=0 && hoverIndex<n){
+        const xi = x(hoverIndex);
+        ctx.strokeStyle = 'rgba(148,163,184,0.6)';
+        ctx.beginPath(); ctx.moveTo(xi, pad); ctx.lineTo(xi, H-pad); ctx.stroke();
+      }
       // legend
       ctx.fillStyle = '#e2e8f0'; ctx.font='12px system-ui';
       ctx.fillText('Price', pad+6, pad+14);
@@ -205,7 +238,7 @@
       ctx.fillStyle = '#e2e8f0'; ctx.fillText('Equity', pad+60, pad+14);
       ctx.fillStyle = '#10b981'; ctx.fillRect(pad+50, pad+6, 4, 4);
     }
-    function drawRLCandles(data){
+  function drawRLCandles(data, hoverIndex){
       const c = document.getElementById('rl-chart');
       const ctx = c.getContext('2d');
       ctx.clearRect(0,0,c.width,c.height);
@@ -229,7 +262,7 @@
       }
       if(!isFinite(minP) || !isFinite(maxP)){
         // fallback to line if no ohlc
-        return drawRLLine(data);
+        return drawRLLine(data, hoverIndex);
       }
       const minE = Math.min(...equities), maxE = Math.max(...equities);
       function x(i){ return pad + (W-2*pad) * (i/(Math.max(1,n-1))); }
@@ -286,6 +319,8 @@
         ctx.fillStyle = up ? '#10b981' : '#ef4444';
         ctx.fillRect(nx - bodyW/2, top, bodyW, h);
       }
+      // overlays (SMA/EMA on closes)
+      drawOverlays({ ctx, W, H, pad, n, x, yPrice:(v)=> yv(v, minP, maxP), seriesType:'candle' });
       // overlay equity
       if(equities.length>1 && isFinite(minE) && isFinite(maxE)){
         ctx.beginPath(); ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1;
@@ -295,6 +330,12 @@
         }
         ctx.stroke();
       }
+      // hover crosshair
+      if(typeof hoverIndex === 'number' && hoverIndex>=0 && hoverIndex<n){
+        const xi = x(hoverIndex);
+        ctx.strokeStyle = 'rgba(148,163,184,0.6)';
+        ctx.beginPath(); ctx.moveTo(xi, pad); ctx.lineTo(xi, H-pad); ctx.stroke();
+      }
       // legend
       ctx.fillStyle = '#e2e8f0'; ctx.font='12px system-ui';
       ctx.fillText('Candles', pad+6, pad+14);
@@ -302,17 +343,17 @@
       ctx.fillStyle = '#e2e8f0'; ctx.fillText('Equity', pad+70, pad+14);
       ctx.fillStyle = '#94a3b8'; ctx.fillRect(pad+60, pad+6, 4, 4);
     }
-    function drawRL(data){
+    function drawRL(data, hoverIndex){
       const tLine = document.getElementById('rl-chart-type-line');
       const type = (tLine && tLine.checked) ? 'line' : 'candlestick';
-      if(type==='candlestick') return drawRLCandles(data);
-      return drawRLLine(data);
+      if(type==='candlestick') return drawRLCandles(data, hoverIndex);
+      return drawRLLine(data, hoverIndex);
     }
     // toggle events (attach immediately; DOM already loaded since script is at end)
     (function attachRlChartTypeListeners(){
       const l = document.getElementById('rl-chart-type-line');
       const c = document.getElementById('rl-chart-type-candle');
-      const rerender = ()=>{ if(window._lastSimData) drawRL(window._lastSimData); };
+  const rerender = ()=>{ if(window._lastSimData) drawRL(window._lastSimData, _hoverIndex); };
       if(l && !l._rlBound){ l.addEventListener('change', rerender); l._rlBound = true; }
       if(c && !c._rlBound){ c.addEventListener('change', rerender); c._rlBound = true; }
       // fallback: if elements not yet present, try once DOM is ready
@@ -434,6 +475,268 @@
       }catch(e){
         // stop polling on error
         if(_ppoPoll){ clearInterval(_ppoPoll); _ppoPoll = null; }
+      }
+    }
+    // Indicator toggles
+    (function attachIndicatorListeners(){
+      const ids = ['ind-sma20','ind-ema50','ind-vol','ind-macd'];
+      let bound = 0;
+      const rerender = ()=>{
+        const macdOn = document.getElementById('ind-macd')?.checked;
+        const macEl = document.getElementById('rl-macd');
+        if(macEl){ macEl.style.display = macdOn? 'block' : 'none'; }
+        const volOn = document.getElementById('ind-vol')?.checked;
+        const volEl = document.getElementById('rl-vol');
+        if(volEl){ volEl.style.display = volOn? 'block' : 'none'; }
+        if(window._lastSimData){
+          drawRL(window._lastSimData, _hoverIndex);
+          if(macdOn){ drawMACD(window._lastSimData, _hoverIndex); }
+          if(volOn){ drawVolume(window._lastSimData, _hoverIndex); }
+        }
+      };
+      ids.forEach(id=>{
+        const el = document.getElementById(id);
+        if(el && !el._bound){ el.addEventListener('change', rerender); el._bound = true; bound++; }
+      });
+      if(bound===0){ window.addEventListener('DOMContentLoaded', attachIndicatorListeners, { once:true }); }
+    })();
+
+    // Canvas hover for tooltip and crosshair
+    (function attachHover(){
+      const canvas = document.getElementById('rl-chart');
+      const tip = document.getElementById('rl-tip');
+      if(!canvas) return;
+      const handlerMove = (e)=>{
+        if(!window._lastSimData) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const W = canvas.width, pad = 30;
+        const data = window._lastSimData;
+        const n = Math.max(data.prices?.length||0, data.ohlc?.length||0);
+        const frac = (x - pad) / Math.max(1, (W - 2*pad));
+        let idx = Math.round(frac * (n-1));
+        idx = Math.max(0, Math.min(n-1, idx));
+        _hoverIndex = idx;
+        // render
+        drawRL(data, _hoverIndex);
+        if(document.getElementById('ind-macd')?.checked){ drawMACD(data, _hoverIndex); }
+        if(document.getElementById('ind-vol')?.checked){ drawVolume(data, _hoverIndex); }
+        // tooltip content
+        const labels = Array.isArray(data.labels) ? data.labels : null;
+        const datesArr = Array.isArray(data.dates) ? data.dates : null;
+        const tRaw = (data.ohlc && data.ohlc[idx] && data.ohlc[idx].t) ? data.ohlc[idx].t : null;
+        let dateStr = null;
+        if(tRaw){
+          try{ const d = new Date(tRaw); dateStr = d.toISOString().slice(0,10); }catch{ dateStr = String(tRaw); }
+        } else if(datesArr && datesArr[idx]) {
+          dateStr = String(datesArr[idx]);
+        } else if(labels && labels[idx]) {
+          dateStr = String(labels[idx]);
+        } else {
+          dateStr = `#${idx}`;
+        }
+        const equity = (data.equities && data.equities[idx]!=null) ? data.equities[idx] : null;
+        let html = `<div style=\"opacity:0.8;\">${dateStr}</div>`;
+        if(data.ohlc && data.ohlc[idx]){
+          const cd = data.ohlc[idx];
+          html += `<div>O: $${(cd.o??0).toFixed(2)} H: $${(cd.h??0).toFixed(2)} L: $${(cd.l??0).toFixed(2)} C: $${(cd.c??0).toFixed(2)}</div>`;
+          if(typeof cd.v === 'number'){
+            const vol = cd.v.toLocaleString();
+            html += `<div>Vol: ${vol}</div>`;
+          }
+        }else if(data.prices && data.prices[idx]!=null){
+          html += `<div>Price: $${data.prices[idx].toFixed(2)}</div>`;
+        }
+        if(equity!=null){ html += `<div>Equity: $${equity.toFixed(2)}</div>`; }
+        tip.innerHTML = html;
+        tip.style.display = 'block';
+        const pageX = e.clientX + window.scrollX;
+        const pageY = e.clientY + window.scrollY;
+        tip.style.left = `${pageX + 12}px`;
+        tip.style.top = `${pageY + 12}px`;
+      };
+      const handlerLeave = ()=>{
+        _hoverIndex = null;
+        if(window._lastSimData) drawRL(window._lastSimData, _hoverIndex);
+        if(tip) tip.style.display = 'none';
+        const macdOn = document.getElementById('ind-macd')?.checked;
+        if(macdOn && window._lastSimData){ drawMACD(window._lastSimData, _hoverIndex); }
+        const volOn = document.getElementById('ind-vol')?.checked;
+        if(volOn && window._lastSimData){ drawVolume(window._lastSimData, _hoverIndex); }
+      };
+      if(!canvas._hoverBound){
+        canvas.addEventListener('mousemove', handlerMove);
+        canvas.addEventListener('mouseleave', handlerLeave);
+        canvas._hoverBound = true;
+      }
+    })();
+
+    // Compute indicators once per dataset
+    function computeIndicators(data){
+      const closes = (data.ohlc && data.ohlc.length) ? data.ohlc.map(d=> (d&&typeof d.c==='number')? d.c : NaN) : (data.prices||[]);
+      const n = closes.length;
+      const sma = (period)=>{
+        const out = new Array(n).fill(null);
+        let sum = 0, cnt = 0;
+        for(let i=0;i<n;i++){
+          const v = closes[i];
+          if(Number.isFinite(v)) { sum += v; cnt++; }
+          if(i>=period){ const vOld = closes[i-period]; if(Number.isFinite(vOld)){ sum -= vOld; cnt--; } }
+          if(i>=period-1){ out[i] = (cnt>0)? (sum/cnt) : null; }
+        }
+        return out;
+      };
+      const emaFrom = (src, period)=>{
+        const out = new Array(src.length).fill(null);
+        const alpha = 2/(period+1);
+        let prev = null;
+        for(let i=0;i<src.length;i++){
+          const v = src[i];
+          if(!Number.isFinite(v)) { out[i] = prev; continue; }
+          prev = (prev==null)? v : (alpha*v + (1-alpha)*prev);
+          out[i] = prev;
+        }
+        return out;
+      };
+      const sma20 = sma(20);
+      const ema50 = emaFrom(closes, 50);
+      // MACD (12,26,9)
+      const ema12 = emaFrom(closes, 12);
+      const ema26 = emaFrom(closes, 26);
+      const macd = ema12.map((e,i)=> (e!=null && ema26[i]!=null)? (e - ema26[i]) : null);
+      const signal = emaFrom(macd, 9);
+      const hist = macd.map((m,i)=> (m!=null && signal[i]!=null)? (m - signal[i]) : null);
+      return { sma20, ema50, macd, signal, hist };
+    }
+
+    function drawOverlays({ ctx, W, H, pad, n, x, yPrice, seriesType }){
+      const useSMA = document.getElementById('ind-sma20')?.checked;
+      const useEMA = document.getElementById('ind-ema50')?.checked;
+      if(!_lastIndicators) return;
+      if(useSMA && _lastIndicators.sma20){
+        ctx.beginPath(); ctx.strokeStyle = '#60a5fa'; ctx.lineWidth = 1.2;
+        let moved=false;
+        for(let i=0;i<n;i++){
+          const v = _lastIndicators.sma20[i]; if(!Number.isFinite(v)) continue;
+          const nx = x(i), ny = yPrice(v);
+          if(!moved){ ctx.moveTo(nx, ny); moved=true; } else { ctx.lineTo(nx, ny); }
+        }
+        ctx.stroke();
+      }
+      if(useEMA && _lastIndicators.ema50){
+        ctx.beginPath(); ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 1.2;
+        let moved=false;
+        for(let i=0;i<n;i++){
+          const v = _lastIndicators.ema50[i]; if(!Number.isFinite(v)) continue;
+          const nx = x(i), ny = yPrice(v);
+          if(!moved){ ctx.moveTo(nx, ny); moved=true; } else { ctx.lineTo(nx, ny); }
+        }
+        ctx.stroke();
+      }
+    }
+
+    function drawMACD(data, hoverIndex){
+      const macdOn = document.getElementById('ind-macd')?.checked;
+      const c = document.getElementById('rl-macd');
+      if(!c) return;
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0,0,c.width,c.height);
+      if(!macdOn || !_lastIndicators) return;
+      const W=c.width,H=c.height,pad=26;
+      const n = Math.max(data.prices?.length||0, data.ohlc?.length||0);
+      const x = (i)=> pad + (W-2*pad) * (i/(Math.max(1,n-1)));
+      const mac = _lastIndicators.macd || [];
+      const sig = _lastIndicators.signal || [];
+      const hist = _lastIndicators.hist || [];
+      // y scale
+      let minY=Infinity, maxY=-Infinity;
+      for(let i=0;i<n;i++){
+        const a = mac[i], b = sig[i], h = hist[i];
+        if(Number.isFinite(a)){ minY=Math.min(minY,a); maxY=Math.max(maxY,a); }
+        if(Number.isFinite(b)){ minY=Math.min(minY,b); maxY=Math.max(maxY,b); }
+        if(Number.isFinite(h)){ minY=Math.min(minY,h); maxY=Math.max(maxY,h); }
+      }
+      if(!isFinite(minY) || !isFinite(maxY)){ minY=-1; maxY=1; }
+      const span = (maxY-minY) || 1; minY -= 0.1*span; maxY += 0.1*span;
+      const y = (v)=> H - pad - (H-2*pad)*((v-minY)/(maxY-minY));
+      // axes
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+      ctx.strokeRect(pad, pad, W-2*pad, H-2*pad);
+      // zero line
+      const y0 = y(0);
+      ctx.strokeStyle = 'rgba(148,163,184,0.5)'; ctx.setLineDash([4,4]);
+      ctx.beginPath(); ctx.moveTo(pad, y0); ctx.lineTo(W-pad, y0); ctx.stroke(); ctx.setLineDash([]);
+      // histogram bars
+      const barW = Math.max(1, Math.floor((W-2*pad)/Math.max(20,n)) - 1);
+      for(let i=0;i<n;i++){
+        const h = hist[i]; if(!Number.isFinite(h)) continue;
+        const nx = x(i);
+        const yH = y(h), yZ = y(0);
+        ctx.fillStyle = h>=0 ? 'rgba(34,197,94,0.7)' : 'rgba(239,68,68,0.7)';
+        const top = Math.min(yH, yZ), hh = Math.abs(yH - yZ);
+        ctx.fillRect(nx - barW/2, top, barW, Math.max(1, hh));
+      }
+      // MACD line
+      ctx.beginPath(); ctx.strokeStyle = '#eab308'; ctx.lineWidth = 1.2;
+      let moved=false;
+      for(let i=0;i<n;i++){
+        const v = mac[i]; if(!Number.isFinite(v)) continue;
+        const nx = x(i), ny = y(v);
+        if(!moved){ ctx.moveTo(nx,ny); moved=true; } else { ctx.lineTo(nx,ny); }
+      }
+      ctx.stroke();
+      // Signal line
+      ctx.beginPath(); ctx.strokeStyle = '#f97316'; ctx.lineWidth = 1.2;
+      moved=false;
+      for(let i=0;i<n;i++){
+        const v = sig[i]; if(!Number.isFinite(v)) continue;
+        const nx = x(i), ny = y(v);
+        if(!moved){ ctx.moveTo(nx,ny); moved=true; } else { ctx.lineTo(nx,ny); }
+      }
+      ctx.stroke();
+      // hover crosshair
+      if(typeof hoverIndex === 'number' && hoverIndex>=0 && hoverIndex<n){
+        const xi = x(hoverIndex);
+        ctx.strokeStyle = 'rgba(148,163,184,0.6)';
+        ctx.beginPath(); ctx.moveTo(xi, pad); ctx.lineTo(xi, H-pad); ctx.stroke();
+      }
+    }
+    function drawVolume(data, hoverIndex){
+      const volOn = document.getElementById('ind-vol')?.checked;
+      const c = document.getElementById('rl-vol');
+      if(!c) return;
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0,0,c.width,c.height);
+      if(!volOn) return;
+      const W=c.width,H=c.height,pad=22;
+      const n = Math.max(data.prices?.length||0, data.ohlc?.length||0);
+      const x = (i)=> pad + (W-2*pad) * (i/(Math.max(1,n-1)));
+      const candles = data.ohlc || [];
+      // volume array
+      const vols = candles.map(cd => (cd && typeof cd.v==='number') ? cd.v : null);
+      if(!vols.length) return;
+      // y scale
+      let maxV = 0; for(let i=0;i<vols.length;i++){ const v=vols[i]; if(Number.isFinite(v)) maxV=Math.max(maxV,v); }
+      if(!(maxV>0)) return;
+      const y = (v)=> H - pad - (H-2*pad) * (v/maxV);
+      // axes
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.strokeRect(pad, pad, W-2*pad, H-2*pad);
+      // bars colored by up/down
+      const barW = Math.max(1, Math.floor((W-2*pad)/Math.max(20,n)) - 1);
+      for(let i=0;i<vols.length;i++){
+        const v = vols[i]; if(!Number.isFinite(v)) continue;
+        const cd = candles[i]; if(!cd) continue;
+        const up = (typeof cd.c==='number' && typeof cd.o==='number') ? (cd.c >= cd.o) : false;
+        const nx = x(i);
+        const yV = y(v);
+        ctx.fillStyle = up ? 'rgba(34,197,94,0.7)' : 'rgba(239,68,68,0.7)';
+        ctx.fillRect(nx - barW/2, yV, barW, Math.max(1, (H - pad) - yV));
+      }
+      // hover crosshair
+      if(typeof hoverIndex === 'number' && hoverIndex>=0 && hoverIndex<n){
+        const xi = x(hoverIndex);
+        ctx.strokeStyle = 'rgba(148,163,184,0.6)';
+        ctx.beginPath(); ctx.moveTo(xi, pad); ctx.lineTo(xi, H-pad); ctx.stroke();
       }
     }
   </script>

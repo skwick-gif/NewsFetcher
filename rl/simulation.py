@@ -74,8 +74,18 @@ def run_simulation(symbol: str, days: Optional[int] = 250, window: int = 60,
             h = float(row['High']) if 'High' in env.df.columns else None
             l = float(row['Low']) if 'Low' in env.df.columns else None
             c = float(row['Close']) if 'Close' in env.df.columns else None
+            # also try to fetch Volume
+            v = None
+            try:
+                if 'Volume' in env.df.columns:
+                    v = float(row['Volume'])
+                elif 'volume' in env.df.columns:
+                    v = float(row['volume'])
+            except Exception:
+                v = None
             if None not in (o, h, l, c):
-                ohlc.append({"o": o, "h": h, "l": l, "c": c})
+                # include timestamp string for tooltip and axes, and volume if present
+                ohlc.append({"o": o, "h": h, "l": l, "c": c, "t": dt, **({"v": v} if v is not None else {})})
             else:
                 ohlc.append({})
         except Exception:
