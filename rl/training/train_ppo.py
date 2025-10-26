@@ -48,14 +48,24 @@ def main():
     try:
         from stable_baselines3 import PPO  # type: ignore
         from stable_baselines3.common.callbacks import CheckpointCallback, CallbackList, EvalCallback  # type: ignore
+        import torch  # type: ignore
     except Exception as e:
-        raise ImportError("stable-baselines3 is required. Please install it to run PPO training.") from e
+        raise ImportError("stable-baselines3 (and torch) are required. Please install them to run PPO training.") from e
 
     # Build env
     env = make_env(args.symbol, args.window, args.start, args.end)
 
     # Construct model
-    model = PPO("MlpPolicy", env, verbose=1, seed=args.seed, tensorboard_log=args.tensorboard_log)
+    # Default device preference: CUDA when available, else CPU
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    model = PPO(
+        "MlpPolicy",
+        env,
+        verbose=1,
+        seed=args.seed,
+        tensorboard_log=args.tensorboard_log,
+        device=device,
+    )
 
     # Prepare callbacks
     callbacks = []

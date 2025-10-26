@@ -16,15 +16,14 @@ import numpy as np
 
 from rl.envs.market_env import MarketEnv
 
+import gymnasium as gym  # type: ignore
 
-class MarketEnvGym:
+
+class MarketEnvGym(gym.Env):
+    metadata = {"render_modes": []}
+
     def __init__(self, env: MarketEnv) -> None:
-        try:
-            import gymnasium as gym  # type: ignore
-        except Exception as e:  # pragma: no cover
-            raise ImportError("gymnasium is required for MarketEnvGym. Please install gymnasium.") from e
-
-        self._gym = gym
+        super().__init__()
         self._env = env
 
         # derive feature size from a fresh reset
