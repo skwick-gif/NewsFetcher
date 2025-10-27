@@ -13,6 +13,9 @@ try:
     HAS_SELECTOLAX = True
 except ImportError:
     HAS_SELECTOLAX = False
+    # Provide a lightweight fallback type to satisfy annotations when selectolax is missing
+    class HTMLParser:  # type: ignore
+        pass
 try:
     from playwright.async_api import async_playwright, Page, Browser
     HAS_PLAYWRIGHT = True

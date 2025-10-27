@@ -102,6 +102,22 @@ class DeduplicationEngine:
         try:
             # Check publication time - updates usually come later
             new_pub = new_article.get("published_at")
+            # Normalize timezone to avoid naive/aware comparison errors
+            try:
+                if isinstance(new_pub, str):
+                    # Accept ISO strings with or without Z
+                    new_pub_dt = datetime.fromisoformat(new_pub.replace('Z', '+00:00'))
+                else:
+                    new_pub_dt = new_pub
+                if isinstance(new_pub_dt, datetime) and new_pub_dt is not None:
+                    # Convert aware -> UTC naive; leave naive as-is
+                    if new_pub_dt.tzinfo is not None:
+                        new_pub_dt = new_pub_dt.astimezone(tz=None).replace(tzinfo=None)
+                new_pub = new_pub_dt
+            except Exception:
+                # If parsing fails, fall back to original value
+                pass
+
             if new_pub and existing_article.published_at:
                 if new_pub <= existing_article.published_at:
                     return False  # Older article, not an update

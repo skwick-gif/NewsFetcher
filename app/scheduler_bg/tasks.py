@@ -1,8 +1,16 @@
 import os
 from celery import Celery
+from celery.schedules import crontab
 from datetime import datetime, timedelta
 import asyncio
-from typing import Dict, Any
+from typing import Dict, Any, List
+from pathlib import Path
+import csv
+import re
+
+# Optional heavy libs (already in requirements for the API image)
+import pandas as pd  # type: ignore
+import numpy as np  # type: ignore
 
 # Import our pipeline components
 import sys
@@ -15,21 +23,20 @@ from ingest.twitter_scraper import TwitterScraper, scrape_twitter_accounts
 from ingest.normalizer import TextNormalizer as ArticleNormalizer
 from ingest.dedup import DeduplicationEngine as DuplicateDetector
 from smart.keywords import KeywordFilter
-from smart.embedder import EmbeddingGenerator
-from smart.classifier import RelevanceClassifier as ArticleClassifier
-from smart.triage_agent import TriageAgent
-from smart.sector_scanner import SectorScanner
+# Heavy ML modules are imported lazily to avoid large dependency requirements
+# Lazily import optional components to avoid heavy deps at import time
 from notify.wecom import WeCom
 from notify.emailer import EmailNotifier
 from notify.telegram import TelegramNotifier
 from storage.db import SessionLocal
 from storage.models import Article, Source
 
-# Initialize Celery
+# Initialize Celery (broker/result from env; fallback to local Redis for host runs)
+REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
 celery_app = Celery(
     'tariff_radar',
-    broker='redis://localhost:6379/0',
-    backend='redis://localhost:6379/0'
+    broker=REDIS_URL,
+    backend=REDIS_URL
 )
 
 # Configuration
@@ -43,6 +50,9 @@ celery_app.conf.update(
     task_soft_time_limit=300,  # 5 minutes
     task_time_limit=600,       # 10 minutes hard limit
 )
+
+# Add beat schedule here so the scheduler container (-A app.scheduler_bg.tasks beat) picks it up
+celery_app.conf.beat_schedule = celery_app.conf.get('beat_schedule', {})
 
 # Load configuration
 import yaml
@@ -81,8 +91,15 @@ embedder = None
 classifier = None
 triage_agent = None
 sector_scanner = None  # Lazy load sector scanner
-USE_EMBEDDINGS = True  # Will try to load on first use
-USE_CLASSIFIER = True
+# Toggle heavy ML components via env (default True if not specified)
+def _env_flag(name: str, default: bool = True) -> bool:
+    val = os.getenv(name)
+    if val is None:
+        return default
+    return str(val).strip().lower() in {"1", "true", "yes", "y", "on"}
+
+USE_EMBEDDINGS = _env_flag('USE_EMBEDDINGS', True)
+USE_CLASSIFIER = _env_flag('USE_CLASSIFIER', True)
 
 def get_embedder():
     """Lazy load embedder only when needed"""
@@ -90,6 +107,7 @@ def get_embedder():
     if embedder is None:
         try:
             print("🔄 Loading ML embedding model (this may take 1-2 minutes)...")
+            from smart.embedder import EmbeddingGenerator
             embedder = EmbeddingGenerator(config.get("ml", {}))
             print("✅ Embedding model loaded successfully!")
         except Exception as e:
@@ -103,6 +121,7 @@ def get_classifier():
     if classifier is None:
         try:
             print("🔄 Loading ML classifier model...")
+            from smart.classifier import RelevanceClassifier as ArticleClassifier
             classifier = ArticleClassifier(config.get("ml", {}))
             print("✅ Classifier model loaded successfully!")
         except Exception as e:
@@ -116,6 +135,7 @@ def get_triage_agent():
     if triage_agent is None:
         try:
             print("🔄 Loading LLM triage agent...")
+            from smart.triage_agent import TriageAgent
             triage_agent = TriageAgent(config.get("llm", {}))
             print("✅ Triage agent loaded successfully!")
         except Exception as e:
@@ -129,6 +149,7 @@ def get_sector_scanner():
     if sector_scanner is None:
         try:
             print("🔄 Loading Sector Scanner for intelligent stock discovery...")
+            from smart.sector_scanner import SectorScanner
             sector_scanner = SectorScanner()
             print("✅ Sector Scanner loaded successfully!")
         except Exception as e:
@@ -151,6 +172,135 @@ try:
     telegram = TelegramNotifier(config.get("notifications", {}).get("telegram", {}))
 except:
     telegram = TelegramNotifier({})
+
+
+    # ===== Utilities for daily export and feature computation =====
+    SYMBOL_PATTERNS = [
+        re.compile(r"\$([A-Z]{1,5})", re.IGNORECASE),
+        re.compile(r"\((?:NASDAQ|NYSE|AMEX):\s*([A-Z]{1,5})\)", re.IGNORECASE),
+        re.compile(r"\b([A-Z]{2,5})\s+stock\b", re.IGNORECASE),
+    ]
+
+
+    def _extract_symbols(text: str) -> List[str]:
+        syms = set()
+        for pat in SYMBOL_PATTERNS:
+            syms.update(m.upper() for m in pat.findall(text or ""))
+        return sorted(syms)
+
+
+    def _guess_tags(title: str, content: str) -> List[str]:
+        t = f"{title} {content}".lower()
+        tags: List[str] = []
+        if "fda" in t:
+            tags.append("FDA")
+        if "china" in t or "beijing" in t:
+            tags.append("China")
+        if any(k in t for k in ["geopolit", "sanction", "taiwan", "ukraine", "middle east", "conflict", "tariff", "trade war"]):
+            tags.append("Geopolitics")
+        return tags
+
+
+    def _compute_news_features(articles_csv_path: Path, symbols: List[str], start: str, end: str, out_path: Path) -> int:
+        df = pd.read_csv(articles_csv_path)
+        # Normalize columns
+        cols = {c.lower(): c for c in df.columns}
+        date_col = cols.get("date") or cols.get("published_at") or cols.get("timestamp")
+        sym_col = cols.get("symbol") or cols.get("ticker")
+        if not date_col:
+            raise ValueError("articles CSV must include Date/published_at column")
+        if not sym_col:
+            df["Symbol"] = None
+        else:
+            df = df.rename(columns={cols.get(sym_col.lower(), sym_col): "Symbol"})
+        df = df.rename(columns={date_col: "Date"})
+        df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+        df = df.dropna(subset=["Date"]) 
+
+        # Derived tag flags
+        if "tags" not in df.columns:
+            df["tags"] = ""
+        fda_flag = df["tags"].fillna("").str.contains("FDA", case=False)
+        china_flag = df["tags"].fillna("").str.contains("China", case=False)
+        geo_flag = df["tags"].fillna("").str.contains("Geopolitics", case=False)
+
+        # Ensure expected columns exist
+        for col in ["llm_relevant", "score", "sentiment"]:
+            if col not in df.columns:
+                df[col] = np.nan if col != "llm_relevant" else False
+
+        market_dates = pd.date_range(start=start, end=end, freq="B")
+        rows = []
+        for d in market_dates:
+            df_cut = df[df["Date"] < d]
+            if df_cut.empty:
+                for s in symbols:
+                    rows.append({
+                        "Date": d, "Symbol": s,
+                        "news_count": 0,
+                        "llm_relevant_count": 0,
+                        "avg_score": np.nan,
+                        "max_score": np.nan,
+                        "sentiment_avg": np.nan,
+                        "fda_count": 0,
+                        "china_count": 0,
+                        "geopolitics_count": 0,
+                    })
+                continue
+            df_cut = df_cut.assign(is_fda=fda_flag.loc[df_cut.index].astype(int),
+                                   is_china=china_flag.loc[df_cut.index].astype(int),
+                                   is_geo=geo_flag.loc[df_cut.index].astype(int))
+            if df_cut["Symbol"].notna().any():
+                g = df_cut.groupby(df_cut["Symbol"].fillna("__ALL__")).agg(
+                    news_count=("Date", "count"),
+                    llm_relevant_count=("llm_relevant", "sum"),
+                    avg_score=("score", "mean"),
+                    max_score=("score", "max"),
+                    sentiment_avg=("sentiment", "mean"),
+                    fda_count=("is_fda", "sum"),
+                    china_count=("is_china", "sum"),
+                    geopolitics_count=("is_geo", "sum"),
+                )
+                for s in symbols:
+                    if s in g.index:
+                        row = g.loc[s].to_dict()
+                    elif "__ALL__" in g.index:
+                        row = g.loc["__ALL__"].to_dict()
+                    else:
+                        row = {
+                            "news_count": 0,
+                            "llm_relevant_count": 0,
+                            "avg_score": np.nan,
+                            "max_score": np.nan,
+                            "sentiment_avg": np.nan,
+                            "fda_count": 0,
+                            "china_count": 0,
+                            "geopolitics_count": 0,
+                        }
+                    row["Date"] = d
+                    row["Symbol"] = s
+                    rows.append(row)
+            else:
+                base = {
+                    "Date": d,
+                    "news_count": int(len(df_cut)),
+                    "llm_relevant_count": int(df_cut["llm_relevant"].sum()),
+                    "avg_score": float(df_cut["score"].mean()) if df_cut["score"].notna().any() else np.nan,
+                    "max_score": float(df_cut["score"].max()) if df_cut["score"].notna().any() else np.nan,
+                    "sentiment_avg": float(df_cut["sentiment"].mean()) if df_cut["sentiment"].notna().any() else np.nan,
+                    "fda_count": int(df_cut["is_fda"].sum()),
+                    "china_count": int(df_cut["is_china"].sum()),
+                    "geopolitics_count": int(df_cut["is_geo"].sum()),
+                }
+                for s in symbols:
+                    r = dict(base)
+                    r["Symbol"] = s
+                    rows.append(r)
+
+        feats = pd.DataFrame(rows).sort_values(["Date", "Symbol"]).reset_index(drop=True)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        feats.to_csv(out_path, index=False)
+        return int(len(feats))
 
 
 @celery_app.task(bind=True, max_retries=3)
@@ -254,11 +404,14 @@ def ingest_articles_task(self, source_configs: list = None):
                 
                 for raw_article in raw_articles:
                     try:
-                        # Step 2: Scrape full content
-                        if raw_article.get('link'):
-                            scraped_content = task_scraper.scrape_article(raw_article['link'])
-                            if scraped_content:
-                                raw_article.update(scraped_content)
+                        # Step 2: Scrape full content (optional; disabled by default to minimize deps)
+                        if raw_article.get('link') and not _env_flag('DISABLE_SCRAPE', True):
+                            try:
+                                scraped = asyncio.run(task_scraper.scrape_article_content(raw_article['link']))
+                                if scraped:
+                                    raw_article['content'] = scraped
+                            except Exception as se:
+                                print(f"Scrape failed, continuing with RSS content: {se}")
                         
                         # Step 3: Normalize article data
                         normalized = task_normalizer.normalize(
@@ -402,6 +555,96 @@ def ingest_articles_task(self, source_configs: list = None):
         print(f"Ingestion task failed: {exc}")
         # Retry with exponential backoff
         raise self.retry(exc=exc, countdown=60 * (2 ** self.request.retries))
+
+
+@celery_app.task(bind=True, max_retries=2, name="app.scheduler_bg.tasks.export_articles_and_recompute_features_task")
+def export_articles_and_recompute_features_task(self, start: str | None = None, end: str | None = None, symbols_csv: str | None = None):
+    """
+    Daily job: export real ingested articles to CSV and recompute strict T-1 news features.
+
+    - Exports to /app/ml/data/articles_export.csv
+    - Writes features to /app/ml/data/news_features.csv
+    - Symbols default from env NEWS_FEATURE_SYMBOLS (e.g., "MBLY,QQQ,TNA")
+    - Date range default from env NEWS_EXPORT_START to today (UTC)
+    """
+    try:
+        from storage.db import SessionLocal
+        from storage.models import Article, Source
+
+        export_start = start or os.getenv("NEWS_EXPORT_START", "2019-12-01")
+        export_end = end or datetime.utcnow().date().isoformat()
+        symbols = [s.strip().upper() for s in (symbols_csv or os.getenv("NEWS_FEATURE_SYMBOLS", "MBLY,QQQ,TNA")).split(",") if s.strip()]
+
+        out_articles = Path("/app/ml/data/articles_export.csv")
+        out_features = Path("/app/ml/data/news_features.csv")
+
+        out_articles.parent.mkdir(parents=True, exist_ok=True)
+        session = SessionLocal()
+        try:
+            q = session.query(Article).join(Source).filter(Article.discovered_at >= datetime.fromisoformat(export_start))
+            # End bound
+            end_dt = datetime.fromisoformat(export_end) if len(export_end) > 10 else datetime.fromisoformat(export_end + "T23:59:59")
+            q = q.filter(Article.discovered_at <= end_dt)
+
+            rows_written = 0
+            scanned = 0
+            with out_articles.open("w", newline="", encoding="utf-8") as f:
+                w = csv.DictWriter(f, fieldnames=["Date", "Symbol", "score", "category", "tier", "tags", "llm_relevant", "sentiment"])
+                w.writeheader()
+                for art in q.all():
+                    scanned += 1
+                    title = art.title or ""
+                    content = art.content or ""
+                    date = art.published_at or art.discovered_at
+                    if not date:
+                        continue
+                    cfg = (art.source.config or {}) if getattr(art, "source", None) else {}
+                    category = cfg.get("category", "") if isinstance(cfg, dict) else ""
+                    tier = cfg.get("tier", "") if isinstance(cfg, dict) else ""
+                    tags = _guess_tags(title, content)
+                    syms = _extract_symbols(f"{title} {content}") or [None]
+                    for s in syms:
+                        w.writerow({
+                            "Date": (date.isoformat() if hasattr(date, 'isoformat') else str(date)),
+                            "Symbol": s or "",
+                            "score": art.final_score if art.final_score is not None else "",
+                            "category": category,
+                            "tier": tier,
+                            "tags": "|".join(tags) if tags else "",
+                            "llm_relevant": art.llm_relevant if art.llm_relevant is not None else "",
+                            "sentiment": "",
+                        })
+                        rows_written += 1
+        finally:
+            session.close()
+
+        # Recompute features (strict T-1)
+        rows = _compute_news_features(out_articles, symbols, start=export_start, end=export_end, out_path=out_features)
+
+        return {
+            "success": True,
+            "articles_rows": rows_written,
+            "features_rows": rows,
+            "symbols": symbols,
+            "start": export_start,
+            "end": export_end,
+            "timestamp": datetime.utcnow().isoformat(),
+        }
+    except Exception as exc:
+        print(f"Daily export/features task failed: {exc}")
+        raise self.retry(exc=exc, countdown=300)
+
+
+# Register beat schedule entry for daily export+features (01:20 UTC)
+celery_app.conf.beat_schedule.update({
+    'daily-export-and-features': {
+        'task': 'app.scheduler_bg.tasks.export_articles_and_recompute_features_task',
+        'schedule': crontab(minute=20, hour=1),
+        'options': {
+            'expires': 7200
+        }
+    }
+})
 
 
 @celery_app.task(bind=True, max_retries=2)

@@ -4027,6 +4027,56 @@ async def rl_simulate(symbol: str, days: int = 250, window: int = 60, policy: st
         logger.error(f"RL simulate failed: {e}")
         return {"status": "error", "message": f"Simulation failed: {str(e)}"}
 
+@app.get("/api/rl/simulate/plan")
+async def rl_simulate_plan(symbol: str) -> Dict[str, Any]:
+    """Plan sensible dates/days and window for Quick Simulation from local data.
+
+    Heuristics:
+    - Use last N=250 trading rows if available; else use all
+    - start_date = index[-N], end_date = last index
+    - window = min(60, max(10, floor(N/4)))
+    - days = N
+    """
+    try:
+        from rl.data_adapters.local_stock_data import LocalStockData
+        import pandas as pd
+        adapter = LocalStockData()
+        if not adapter.has_symbol(symbol):
+            raise HTTPException(status_code=404, detail=f"Local data for {symbol} not found")
+        bundle = adapter.load_symbol(symbol)
+        dfp = bundle.get("price")
+        if dfp is None or dfp.empty:
+            raise HTTPException(status_code=400, detail=f"No price data for {symbol}")
+        if not isinstance(dfp.index, pd.DatetimeIndex):
+            try:
+                dfp.index = pd.to_datetime(dfp.index)
+            except Exception:
+                pass
+        dfp = dfp.sort_index()
+        total = len(dfp)
+        if total < 2:
+            raise HTTPException(status_code=400, detail=f"Insufficient data for {symbol}")
+        N = 250 if total >= 250 else total
+        start_dt = dfp.index[-N]
+        end_dt = dfp.index[-1]
+        window = int(min(60, max(10, N // 4)))
+        plan = {
+            "symbol": symbol.upper(),
+            "start_date": start_dt.date().isoformat(),
+            "end_date": end_dt.date().isoformat(),
+            "window": window,
+            "days": int(N),
+            "first_data_date": dfp.index[0].date().isoformat(),
+            "last_data_date": end_dt.date().isoformat(),
+            "total_rows": int(total)
+        }
+        return {"status": "planned", "plan": plan}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to plan Quick Simulation: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to plan Quick Simulation: {str(e)}")
+
 # ============================================================
 # RL PPO Training (SB3) — background job runner
 # ============================================================
@@ -4098,6 +4148,73 @@ async def rl_ppo_train(symbol: str, timesteps: int = 100000, window: int = 60,
     except Exception as e:
         logger.error(f"Failed to start PPO training: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to start PPO training: {str(e)}")
+
+
+@app.get("/api/rl/ppo/plan")
+async def rl_ppo_plan(symbol: str, window: Optional[int] = None) -> Dict[str, Any]:
+    """Plan sensible training dates, window size, and timesteps from local data.
+
+    Heuristics:
+    - Start at max(first available date, 2020-01-01) if enough data, else earliest date
+    - End at last available date
+    - Window defaults to 60 if >=60 training days, else min( max(10, floor(days/3)), 60 )
+    - Timesteps ~= clamp(days * 200, 50k..1,000k)
+    """
+    try:
+        from rl.data_adapters.local_stock_data import LocalStockData
+        import pandas as pd
+        adapter = LocalStockData()
+        if not adapter.has_symbol(symbol):
+            raise HTTPException(status_code=404, detail=f"Local data for {symbol} not found")
+        bundle = adapter.load_symbol(symbol)
+        dfp = bundle.get("price")
+        if dfp is None or dfp.empty:
+            raise HTTPException(status_code=400, detail=f"No price data for {symbol}")
+        # Ensure DateTimeIndex
+        if not isinstance(dfp.index, pd.DatetimeIndex):
+            try:
+                dfp.index = pd.to_datetime(dfp.index)
+            except Exception:
+                pass
+        dfp = dfp.sort_index()
+        first_dt = dfp.index[0]
+        last_dt = dfp.index[-1]
+        # Prefer start >= 2020-01-01 when possible
+        pref_start = pd.Timestamp(year=2020, month=1, day=1, tz=None)
+        start_dt = pref_start if pref_start >= first_dt else first_dt
+        # If the span from preferred start is too short (< 120 days), fallback to earliest
+        if (last_dt - start_dt).days < 120:
+            start_dt = first_dt
+        # Compute training days (calendar index length in slice)
+        df_train = dfp[(dfp.index >= start_dt) & (dfp.index <= last_dt)]
+        days = int(len(df_train))
+        if days < 2:
+            # Not enough data to train
+            raise HTTPException(status_code=400, detail=f"Insufficient training range for {symbol} (days={days})")
+        # Choose window
+        if window is None:
+            win = 60 if days >= 60 else int(max(10, min(60, days // 3)))
+        else:
+            win = int(max(10, min(window, 300)))
+        # Estimate timesteps
+        est_steps = int(days * 200)
+        timesteps = int(max(50_000, min(1_000_000, est_steps)))
+        plan = {
+            "symbol": symbol.upper(),
+            "train_start_date": start_dt.date().isoformat(),
+            "train_end_date": last_dt.date().isoformat(),
+            "window": int(win),
+            "timesteps": int(timesteps),
+            "training_days": days,
+            "first_data_date": first_dt.date().isoformat(),
+            "last_data_date": last_dt.date().isoformat(),
+        }
+        return {"status": "planned", "plan": plan}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to plan PPO training: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to plan PPO training: {str(e)}")
 
 
 @app.get("/api/rl/ppo/train/status")

@@ -20,7 +20,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY app/ ./
-COPY config.yaml ./
+# Copy default config (from app directory) into container root
+COPY app/config.yaml ./config.yaml
 
 # Create necessary directories
 RUN mkdir -p logs data temp

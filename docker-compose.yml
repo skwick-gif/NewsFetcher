@@ -97,7 +97,7 @@ services:
       - ./app:/app
       - ./config.yaml:/app/config.yaml
       - ./logs:/app/logs
-  command: uvicorn main_realtime:app --host 0.0.0.0 --port 8000
+    command: uvicorn main_realtime:app --host 0.0.0.0 --port 8000
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
@@ -129,7 +129,7 @@ services:
     dns:
       - 8.8.8.8
       - 1.1.1.1
-    command: celery -A sched.tasks worker --loglevel=info --concurrency=2
+    command: celery -A app.scheduler_bg.tasks worker --loglevel=info --concurrency=2
     restart: unless-stopped
 
   # Celery Beat Scheduler
@@ -152,7 +152,7 @@ services:
       - ./config.yaml:/app/config.yaml
       - ./logs:/app/logs
     working_dir: /app
-    command: celery -A sched.tasks beat --loglevel=info
+    command: celery -A app.scheduler_bg.tasks beat --loglevel=info
     restart: unless-stopped
 
   # Monitoring - Prometheus (Optional)
