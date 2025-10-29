@@ -5,7 +5,7 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.pool import StaticPool
-from storage.models import Base
+from .models import Base
 import logging
 
 logger = logging.getLogger(__name__)

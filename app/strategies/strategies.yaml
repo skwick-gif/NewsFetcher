@@ -1,0 +1,78 @@
+# Defaults for Strategy Lab strategies and overlay indicators
+# You can adjust values per environment without touching code.
+
+strategies:
+  macd_cross:
+    label: "MACD Cross"
+    params:
+      macd_fast: 12
+      macd_slow: 26
+      macd_signal: 9
+      pre_bars: 2
+      sell_bars: 2
+      adx_min: 0
+      stop_loss_pct: 0
+      trailing_stop: false
+      conv_window: 60
+      p_buy: 35
+      e_buy: 20
+      p_sell: 40
+      vol_sma_period: 20
+      vol_down_strict: false
+      macd_zero_stop: false
+      rsi_period: 14
+      stoch_k: 14
+      stoch_d: 3
+      ema_fast: 20
+      ema_slow: 50
+      kama_n: 10
+
+  macd_pre_cross_below_zero:
+    label: "MACD Pre-cross ETF (5-35-5)"
+    params:
+      macd_fast: 5
+      macd_slow: 35
+      macd_signal: 5
+      pre_bars: 3
+      sell_bars: 2
+      adx_min: 25
+      stop_loss_pct: 9
+      trailing_stop: true
+      conv_window: 60
+      p_buy: 35
+      e_buy: 20
+      p_sell: 40
+      vol_sma_period: 20
+      vol_down_strict: false
+      macd_zero_stop: false
+      rsi_period: 14
+      stoch_k: 14
+      stoch_d: 3
+      ema_fast: 20
+      ema_slow: 50
+      kama_n: 10
+
+  macd_convergence_stock:
+    label: "MACD Convergence Stock"
+    params:
+      macd_fast: 12
+      macd_slow: 26
+      macd_signal: 9
+      pre_bars: 3
+      sell_bars: 2
+      adx_min: 20
+      stop_loss_pct: 8
+      trailing_stop: false
+      conv_window: 60
+      p_buy: 40
+      e_buy: 25
+      p_sell: 50
+      vol_sma_period: 20
+      vol_down_strict: false
+      macd_zero_stop: true
+      rsi_period: 14
+      stoch_k: 14
+      stoch_d: 3
+      ema_fast: 20
+      ema_slow: 50
+      kama_n: 10

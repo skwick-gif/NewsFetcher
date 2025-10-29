@@ -22,6 +22,8 @@ import numpy as np
 from pathlib import Path
 import yaml
 from pathlib import Path
+import subprocess
+import threading
 
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -55,6 +57,7 @@ try:
 except ImportError:
     print("⚠️ Keywords engine not available")
 from app.ingest.rss_loader import FinancialDataLoader
+from app.integrations.ibkr_client import ibkr
 
 # Financial modules imports
 try:
@@ -297,6 +300,370 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# ============================================================
+# IBKR Bridge Endpoints (stubs for C# integration)
+# ============================================================
+class IBKRConnectRequest(BaseModel):
+    host: Optional[str] = None
+    port: Optional[int] = None
+    client_id: Optional[int] = None
+
+
+class IBKROrderRequest(BaseModel):
+    symbol: str
+    quantity: float
+    side: str  # BUY or SELL
+    order_type: str = "MKT"  # MKT or LMT
+    limit_price: Optional[float] = None
+
+
+@app.post("/api/ibkr/connect", tags=["IBKR"])
+async def ibkr_connect(req: IBKRConnectRequest):
+    try:
+        data = ibkr.connect(req.host, req.port, req.client_id)
+        return {"status": "success", "data": data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/ibkr/status", tags=["IBKR"])
+async def ibkr_status():
+    try:
+        return {"status": "success", "data": ibkr.status()}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/ibkr/place_order", tags=["IBKR"])
+async def ibkr_place_order(req: IBKROrderRequest):
+    try:
+        side = req.side.upper()
+        order_type = req.order_type.upper() if req.order_type else "MKT"
+        if side not in ("BUY", "SELL"):
+            raise HTTPException(status_code=400, detail="Invalid side. Use BUY or SELL")
+        if order_type not in ("MKT", "LMT"):
+            raise HTTPException(status_code=400, detail="Invalid order_type. Use MKT or LMT")
+
+        res = ibkr.place_order(req.symbol, req.quantity, side, order_type, req.limit_price)
+        if not res.get("ok"):
+            raise HTTPException(status_code=503, detail=res.get("error") or "IBKR unavailable")
+        return {"status": "success", "data": res}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/ibkr/positions", tags=["IBKR"])
+async def ibkr_positions():
+    try:
+        return {"status": "success", "data": {"positions": ibkr.positions()}}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/ibkr/disconnect", tags=["IBKR"])
+async def ibkr_disconnect():
+    try:
+        return {"status": "success", "data": ibkr.disconnect()}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ---------------------------------------------
+# Local stock_data-backed Scanner implementation (no legacy auto-scan)
+# ---------------------------------------------
+from typing import Optional, Dict, Any
+import asyncio
+
+STOCK_DATA_DIR = Path('stock_data')
+
+
+def _iter_local_symbols(max_symbols: int = 1000) -> List[str]:
+    """List symbols that have local CSV data under stock_data/.
+
+    Returns at most max_symbols sorted alphabetically.
+    """
+    try:
+        root = STOCK_DATA_DIR
+        if not root.exists():
+            return []
+        syms: List[str] = []
+        for p in root.iterdir():
+            if not p.is_dir():
+                continue
+            sym = p.name
+            price = p / f"{sym}_price.csv"
+            if price.exists():
+                syms.append(sym)
+        syms.sort()
+        return syms[:max_symbols]
+    except Exception:
+        return []
+
+
+def _compute_local_metrics(symbol: str) -> Optional[Dict[str, Any]]:
+    """Compute simple metrics from local CSVs for a symbol.
+
+    Produces a dict compatible with hot-stocks items and scanner top rendering.
+    """
+    try:
+        import pandas as pd
+        sym = symbol.upper()
+        price_path = STOCK_DATA_DIR / sym / f"{sym}_price.csv"
+        ind_path = STOCK_DATA_DIR / sym / f"{sym}_indicators.csv"
+        if not price_path.exists():
+            return None
+        df = pd.read_csv(price_path)
+        # Normalize column names access
+        close_col = 'Close' if 'Close' in df.columns else ('close' if 'close' in df.columns else None)
+        open_col = 'Open' if 'Open' in df.columns else ('open' if 'open' in df.columns else None)
+        high_col = 'High' if 'High' in df.columns else ('high' if 'high' in df.columns else None)
+        low_col = 'Low' if 'Low' in df.columns else ('low' if 'low' in df.columns else None)
+        vol_col = 'Volume' if 'Volume' in df.columns else ('volume' if 'volume' in df.columns else None)
+        if close_col is None or len(df) < 3:
+            return None
+        # Use last and previous values
+        close_vals = pd.to_numeric(df[close_col], errors='coerce').dropna()
+        if len(close_vals) < 3:
+            return None
+        current_price = float(close_vals.iloc[-1])
+        prev_price = float(close_vals.iloc[-2])
+        change_pct = ((current_price - prev_price) / prev_price * 100.0) if prev_price else 0.0
+        # ADV(20) if volume available
+        avg_volume_20 = None
+        if vol_col and vol_col in df.columns:
+            vol_series = pd.to_numeric(df[vol_col], errors='coerce').dropna()
+            if len(vol_series) >= 20:
+                avg_volume_20 = float(vol_series.tail(20).mean())
+
+        # 5-day return as expected_return proxy
+        last5 = close_vals.tail(6)
+        if len(last5) >= 2:
+            base = float(last5.iloc[0])
+            expected_return = ((current_price - base) / base * 100.0) if base else 0.0
+        else:
+            expected_return = change_pct
+
+        # Load indicators if available for basic ml_score/confidence
+        rsi = None
+        atr_pct = None
+        if ind_path.exists():
+            try:
+                ind = pd.read_csv(ind_path)
+                if 'RSI_14' in ind.columns:
+                    rsi_series = pd.to_numeric(ind['RSI_14'], errors='coerce').dropna()
+                    if len(rsi_series):
+                        rsi = float(rsi_series.iloc[-1])
+                # ATR% approximation if ATR and price present
+                if 'ATR_14' in ind.columns and current_price > 0:
+                    atr_series = pd.to_numeric(ind['ATR_14'], errors='coerce').dropna()
+                    if len(atr_series):
+                        atr = float(atr_series.iloc[-1])
+                        atr_pct = max(0.001, min(0.2, atr / current_price))
+            except Exception:
+                pass
+
+        # Derive a simple ml_score 0..100 from momentum and RSI
+        # Base score from 5d momentum clipped [-5, +5] -> [0, 100]
+        mom = max(-5.0, min(5.0, expected_return))
+        base_score = (mom + 5.0) * 10.0  # -5->0, 0->50, +5->100
+        # RSI contribution: favor 50-70 mildly, penalize >80 or <20
+        rsi_adj = 0.0
+        if rsi is not None:
+            if 50 <= rsi <= 70:
+                rsi_adj = 5.0
+            elif rsi > 80:
+                rsi_adj = -10.0
+            elif rsi < 20:
+                rsi_adj = -5.0
+        ml_score = max(0.0, min(100.0, base_score + rsi_adj))
+
+        # Confidence from volatility (ATR%) if available, else modest default
+        if atr_pct is not None:
+            confidence = max(0.5, min(0.95, 1.0 - atr_pct * 2.5))
+        else:
+            confidence = 0.7
+
+        # Recommendation heuristic
+        recommendation = 'HOLD'
+        if expected_return > 1.0 and confidence >= 0.6:
+            recommendation = 'BUY'
+        if expected_return > 3.0 and confidence >= 0.7:
+            recommendation = 'STRONG BUY'
+        if expected_return < -2.0:
+            recommendation = 'SELL'
+
+        predicted_price = current_price * (1.0 + expected_return / 100.0)
+
+        return {
+            'symbol': sym,
+            'current_price': round(current_price, 4),
+            'predicted_price': round(predicted_price, 4),
+            'expected_return': round(expected_return, 3),
+            'confidence': round(confidence, 3),
+            'recommendation': recommendation,
+            'ml_score': round(ml_score, 2),
+            'change_percent': round(change_pct, 3),
+            'avg_volume_20': avg_volume_20
+        }
+    except Exception:
+        return None
+
+
+class _ScannerState:
+    def __init__(self) -> None:
+        # Scan
+        self.status: str = 'idle'  # idle|running|completed|error
+        self.mode: str = 'ml'
+        self.started_at: Optional[str] = None
+        self.finished_at: Optional[str] = None
+        self.last_error: Optional[str] = None
+        self.progress: float = 0.0
+        self.message: Optional[str] = None
+        self.eta_seconds: Optional[int] = None
+        self.total_symbols: int = 0
+        self.processed_symbols: int = 0
+        self.top: List[Dict[str, Any]] = []
+        # Filter
+        self.filter_state: str = 'not-started'  # not-started|running|completed|error
+        self.filter_progress: float = 0.0
+        self.filter_items: List[Dict[str, Any]] = []
+        self.passed_count: int = 0
+        self.trained_count: int = 0
+        # Train
+        self.train_status: str = 'idle'  # idle|running|completed|error
+        self.train_current_symbol: Optional[str] = None
+
+    def to_status(self) -> Dict[str, Any]:
+        return {
+            'state': self.status,
+            'mode': self.mode,
+            'started_at': self.started_at,
+            'finished_at': self.finished_at,
+            'error': self.last_error,
+            'progress': self.progress,
+            'message': self.message,
+            'eta_seconds': self.eta_seconds,
+            'total_symbols': self.total_symbols,
+            'processed_symbols': self.processed_symbols,
+            'count_top': len(self.top),
+        }
+
+
+_scanner_state = _ScannerState()
+
+
+async def _run_scan(mode: str, limit: int = 50) -> None:
+    from datetime import datetime as _dt
+    _scanner_state.status = 'running'
+    _scanner_state.mode = mode
+    _scanner_state.started_at = _dt.now().isoformat()
+    _scanner_state.finished_at = None
+    _scanner_state.last_error = None
+    _scanner_state.progress = 0.0
+    _scanner_state.message = 'Scanning local symbols'
+    _scanner_state.eta_seconds = None
+    _scanner_state.top = []
+    _scanner_state.total_symbols = 0
+    _scanner_state.processed_symbols = 0
+    try:
+        syms = _iter_local_symbols(max_symbols=500)
+        _scanner_state.total_symbols = len(syms)
+        results: List[Dict[str, Any]] = []
+        # Process a subset quickly; compute simple metrics and build list
+        for idx, sym in enumerate(syms):
+            m = _compute_local_metrics(sym)
+            if m is not None:
+                results.append(m)
+            _scanner_state.processed_symbols = idx + 1
+            # Update progress and simple ETA
+            if _scanner_state.total_symbols:
+                _scanner_state.progress = (_scanner_state.processed_symbols / _scanner_state.total_symbols)
+                remaining = _scanner_state.total_symbols - _scanner_state.processed_symbols
+                # Assume ~2ms per symbol average – safe small ETA
+                _scanner_state.eta_seconds = max(0, int(remaining * 0.002))
+            if idx % 50 == 0:
+                await asyncio.sleep(0)  # yield to event loop
+            # Early stop if we have more than we need for ranking diversity
+            if len(results) >= max(limit * 5, 100):
+                break
+        # Rank by expected return desc
+        results.sort(key=lambda x: x.get('expected_return', 0.0), reverse=True)
+        _scanner_state.top = results[: max(limit, 50)]
+        _scanner_state.status = 'completed'
+        _scanner_state.message = f"Completed: {len(_scanner_state.top)} candidates"
+    except Exception as _e:
+        _scanner_state.status = 'error'
+        _scanner_state.last_error = str(_e)
+        _scanner_state.message = 'Scan failed'
+    finally:
+        _scanner_state.finished_at = _dt.now().isoformat()
+
+
+async def _run_filter_job(price_min: float = 3.0, adv_min: float = 1_000_000.0) -> None:
+    """Filter local symbols by last close and ADV thresholds; enrich with training status.
+
+    - price_min: minimum last close
+    - adv_min: minimum average daily volume (20d)
+    """
+    try:
+        _scanner_state.filter_state = 'running'
+        _scanner_state.filter_progress = 0.0
+        _scanner_state.filter_items = []
+        _scanner_state.passed_count = 0
+        _scanner_state.last_error = None
+        syms = _iter_local_symbols(max_symbols=50_000)
+        _scanner_state.total_symbols = len(syms)
+        _scanner_state.processed_symbols = 0
+        items: List[Dict[str, Any]] = []
+        from pathlib import Path as _Path
+        champions_root = _Path('app/ml/models/champions')
+        for idx, sym in enumerate(syms):
+            _scanner_state.processed_symbols = idx + 1
+            m = _compute_local_metrics(sym)
+            if m is None:
+                # Update progress and yield
+                if _scanner_state.total_symbols:
+                    _scanner_state.filter_progress = _scanner_state.processed_symbols / _scanner_state.total_symbols
+                if idx % 50 == 0:
+                    await asyncio.sleep(0)
+                continue
+            # Apply filters
+            ok_price = (m.get('current_price') is not None and float(m['current_price']) >= float(price_min))
+            adv = m.get('avg_volume_20')
+            ok_adv = (adv is not None and float(adv) >= float(adv_min))
+            # TODO: micro-cap exclusion if fundamentals available; skipped for now
+            if ok_price and ok_adv:
+                # Determine training state by presence of champion dir for symbol
+                trained = False
+                try:
+                    sym_dir = (champions_root / sym)
+                    if sym_dir.exists():
+                        # Heuristic: any subdir implies at least one champion
+                        trained = any(p.is_dir() for p in sym_dir.iterdir())
+                except Exception:
+                    trained = False
+                item = {
+                    'symbol': sym,
+                    'current_price': m.get('current_price'),
+                    'avg_volume_20': m.get('avg_volume_20'),
+                    'trained': trained,
+                    'train_status': 'completed' if trained else 'not-started'
+                }
+                items.append(item)
+                _scanner_state.passed_count = len(items)
+            # Progress + yield
+            if _scanner_state.total_symbols:
+                _scanner_state.filter_progress = _scanner_state.processed_symbols / _scanner_state.total_symbols
+            if idx % 50 == 0:
+                await asyncio.sleep(0)
+        _scanner_state.filter_items = items
+        _scanner_state.filter_state = 'completed'
+    except Exception as e:
+        _scanner_state.filter_state = 'error'
+        _scanner_state.last_error = str(e)
+
+
 # Add CORS (explicit localhost origins to avoid browser "Failed to fetch" on POSTs)
 _allowed_origins = [
     "http://localhost:8000",
@@ -313,6 +680,1262 @@ app.add_middleware(
 # Mount static files directory for CSS/JS modules
 static_dir = os.path.join(os.path.dirname(__file__), "static")
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+# ============================================================
+# RL Endpoints (migrated from Flask)
+# ============================================================
+@app.get("/api/rl/status")
+async def rl_status():
+    """Simple RL service status for the dashboard."""
+    return {
+        'status': 'ok',
+        'service': 'fastapi-rl',
+        'timestamp': datetime.now().isoformat()
+    }
+
+
+@app.get("/api/rl/simulate")
+async def rl_simulate(
+    symbol: str = Query("AAPL"),
+    policy: str = Query("follow_trend"),
+    window: int = Query(60, ge=2, le=500),
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    days: Optional[int] = Query(None, ge=1, le=5000),
+):
+    """Run a quick, non-learning RL simulation for a single symbol."""
+    try:
+        try:
+            from rl.simulation import run_simulation as rl_run_simulation  # type: ignore
+        except Exception:
+            raise HTTPException(status_code=500, detail="RL simulation module not available")
+
+        data = await asyncio.to_thread(
+            rl_run_simulation,
+            symbol=symbol.upper(),
+            days=days,
+            window=window,
+            cost_bps=5,
+            slip_bps=5,
+            policy=policy,
+            start_date=start_date,
+            end_date=end_date
+        )
+        return {"status": "success", "data": data}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================
+# RL PPO Training: background process runner + endpoints
+# ============================================================
+_rl_job_logs: Dict[str, List[Dict[str, Any]]] = {}
+_rl_running_jobs: Dict[str, Dict[str, Any]] = {}
+
+
+def _rl_run_command_in_background(job_type: str, cmd_args: List[str], job_id: str) -> bool:
+    _rl_job_logs[job_id] = []
+    _rl_running_jobs[job_id] = {"status": "running", "start_time": datetime.now().isoformat(), "job_type": job_type}
+
+    def _target():
+        try:
+            # Launch as a separate process group for safe termination on all OSes
+            creationflags = 0
+            preexec_fn = None
+            try:
+                import os as _os
+                import sys as _sys
+                if _sys.platform.startswith('win'):
+                    # CREATE_NEW_PROCESS_GROUP = 0x00000200
+                    creationflags = 0x00000200
+                else:
+                    import os
+                    import signal as _signal  # noqa: F401
+                    preexec_fn = os.setsid
+            except Exception:
+                pass
+
+            process = subprocess.Popen(
+                cmd_args,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=0,
+                universal_newlines=True,
+                cwd=str(Path(__file__).parent.parent),
+                creationflags=creationflags,
+                preexec_fn=preexec_fn,
+            )
+            # Save process reference and pid for future cancellation
+            try:
+                _rl_running_jobs[job_id]['pid'] = process.pid
+                _rl_running_jobs[job_id]['_popen'] = process  # non-serializable, internal use
+            except Exception:
+                pass
+            out_dir = None
+            for line in process.stdout or []:
+                line = line.strip()
+                if not line:
+                    continue
+                # Parse model saved hints
+                if 'Saved model' in line or 'Model saved' in line or 'saved to' in line.lower():
+                    try:
+                        parts = line.split(':', 1)
+                        if len(parts) == 2:
+                            cand = parts[1].strip()
+                            if cand:
+                                _rl_running_jobs[job_id]['model_path'] = cand
+                    except Exception:
+                        pass
+                _rl_job_logs[job_id].append({"timestamp": datetime.now().isoformat(), "level": "INFO", "message": line})
+                if len(_rl_job_logs[job_id]) > 400:
+                    _rl_job_logs[job_id] = _rl_job_logs[job_id][-400:]
+            process.wait()
+            if process.returncode == 0:
+                _rl_running_jobs[job_id]["status"] = "completed"
+                _rl_job_logs[job_id].append({"timestamp": datetime.now().isoformat(), "level": "SUCCESS", "message": "✅ Job completed successfully!"})
+            else:
+                _rl_running_jobs[job_id]["status"] = "failed"
+                _rl_job_logs[job_id].append({"timestamp": datetime.now().isoformat(), "level": "ERROR", "message": f"❌ Job failed with exit code {process.returncode}"})
+        except Exception as e:
+            _rl_running_jobs[job_id]["status"] = "error"
+            _rl_job_logs[job_id].append({"timestamp": datetime.now().isoformat(), "level": "ERROR", "message": f"❌ Error: {str(e)}"})
+
+    th = threading.Thread(target=_target, daemon=True)
+    th.start()
+    return True
+
+
+@app.post("/api/rl/ppo/train")
+async def rl_ppo_train(
+    symbols: Optional[str] = Query(None),
+    symbol: Optional[str] = Query(None),
+    window: int = Query(60, ge=2, le=500),
+    timesteps: int = Query(100000, ge=10000, le=5000000),
+    start_date: Optional[str] = Query(None),
+    end_date: Optional[str] = Query(None),
+    add_vix: Optional[bool] = Query(False),
+    vix_symbol: Optional[str] = Query("^VIX"),
+    use_indicators: Optional[bool] = Query(False),
+    indicator_cols: Optional[str] = Query(None),
+    use_news: Optional[bool] = Query(True),
+):
+    # Build symbols string like Flask version
+    syms_str = None
+    if symbols:
+        syms_str = ",".join([s.strip().upper() for s in symbols.split(',') if s.strip()])
+    elif symbol:
+        syms_str = symbol.strip().upper()
+    else:
+        raise HTTPException(status_code=400, detail="symbol or symbols is required")
+
+    cmd = [
+        sys.executable, '-m', 'rl.training.train_ppo_portfolio',
+        '--symbols', syms_str,
+        '--window', str(window),
+        '--timesteps', str(timesteps)
+    ]
+    if start_date:
+        cmd += ['--start', start_date]
+    if end_date:
+        cmd += ['--end', end_date]
+
+    # News features default on when file exists unless explicitly disabled
+    try:
+        project_root = Path(__file__).parent.parent
+        nf1 = project_root / 'app' / 'ml' / 'data' / 'news_features.csv'
+        nf2 = project_root / 'ml' / 'data' / 'news_features.csv'
+        news_csv = nf1 if nf1.exists() else (nf2 if nf2.exists() else None)
+        if use_news and news_csv is not None:
+            cmd += ['--news-features-csv', str(news_csv)]
+            cols = 'news_count,llm_relevant_count,avg_score,fda_count,china_count,geopolitics_count,sentiment_avg'
+            cmd += ['--news-cols', cols]
+    except Exception:
+        pass
+
+    if add_vix:
+        cmd += ['--add-vix-feature']
+        if vix_symbol:
+            cmd += ['--vix-symbol', vix_symbol]
+
+    # Indicator feature flags supported by trainer
+    try:
+        if use_indicators and indicator_cols:
+            cmd += ['--use-indicator-features']
+            cmd += ['--indicator-cols', str(indicator_cols)]
+    except Exception:
+        pass
+
+    # If only one symbol, duplicate for portfolio trainer
+    try:
+        syms_list = [s for s in (syms_str or '').split(',') if s]
+        if len(syms_list) == 1:
+            dup = f"{syms_list[0]},{syms_list[0]}"
+            for i in range(len(cmd)):
+                if cmd[i] == '--symbols' and i + 1 < len(cmd):
+                    cmd[i+1] = dup
+                    break
+    except Exception:
+        pass
+
+    job_id = f"ppo-train-{(syms_str or 'NA').replace(',', '-')}-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+    started = _rl_run_command_in_background('ppo_train', cmd, job_id)
+    if not started:
+        raise HTTPException(status_code=500, detail='failed to start training job')
+    return {"status": "started", "job_id": job_id, "cmd": cmd}
+
+
+@app.get("/api/rl/ppo/train/status/{job_id}")
+async def rl_ppo_train_status(job_id: str):
+    info = _rl_running_jobs.get(job_id)
+    logs = _rl_job_logs.get(job_id, [])
+    if not info:
+        raise HTTPException(status_code=404, detail='unknown job_id')
+    model_path = info.get('model_path')
+    return {
+        'status': info.get('status'),
+        'job_id': job_id,
+        'logs': [l.get('message') for l in logs],
+        **({'model_path': model_path} if model_path else {})
+    }
+
+
+@app.post("/api/rl/ppo/train/stop/{job_id}")
+async def rl_ppo_train_stop(job_id: str):
+    """Attempt to stop a running PPO training job by job_id."""
+    info = _rl_running_jobs.get(job_id)
+    if not info:
+        raise HTTPException(status_code=404, detail='unknown job_id')
+    status = info.get('status')
+    if status in ('completed', 'failed', 'error', 'cancelled'):
+        return {'status': status, 'job_id': job_id, 'message': 'job is not running'}
+
+    pid = info.get('pid')
+    popen = info.get('_popen')
+    killed = False
+    err = None
+    try:
+        import sys as _sys
+        if popen and getattr(popen, 'poll', None) and popen.poll() is None:
+            # Try graceful termination first
+            try:
+                if _sys.platform.startswith('win'):
+                    # Send CTRL-BREAK to the process group (if supported), else taskkill
+                    try:
+                        import signal as _signal
+                        popen.send_signal(_signal.CTRL_BREAK_EVENT)  # type: ignore[attr-defined]
+                    except Exception:
+                        pass
+                else:
+                    import os, signal
+                    try:
+                        os.killpg(os.getpgid(popen.pid), signal.SIGTERM)
+                    except Exception:
+                        popen.terminate()
+            except Exception:
+                pass
+        # Force kill if still alive
+        if popen and popen.poll() is None:
+            if _sys.platform.startswith('win') and pid:
+                try:
+                    import subprocess as _sp
+                    _sp.run(["taskkill", "/PID", str(pid), "/T", "/F"], capture_output=True)
+                except Exception:
+                    pass
+            else:
+                try:
+                    popen.kill()
+                except Exception:
+                    pass
+        killed = True
+    except Exception as e:
+        err = str(e)
+
+    # Update status/logs
+    info['status'] = 'cancelled'
+    _rl_job_logs.setdefault(job_id, []).append({
+        'timestamp': datetime.now().isoformat(),
+        'level': 'INFO',
+        'message': '🛑 Stop requested by user.' + (f' Note: {err}' if err else '')
+    })
+    return {'status': info['status'], 'job_id': job_id, 'stopped': killed}
+
+
+# ============================================================
+# RL Auto-Tune (real orchestrator)
+# ============================================================
+
+_rla_auto_tune_state: Dict[str, Any] = {"status": "idle"}
+_rla_auto_tune_lock = threading.Lock()
+
+
+def _rla_log(msg: str) -> None:
+    try:
+        logs_dir = Path(__file__).parent.parent / 'logs'
+        logs_dir.mkdir(parents=True, exist_ok=True)
+        log_path = logs_dir / 'auto_tune_stdout.log'
+        with open(log_path, 'a', encoding='utf-8') as f:
+            f.write(msg.rstrip() + "\n")
+    except Exception:
+        pass
+
+
+def _auto_tune_runner(config: Dict[str, Any]) -> None:
+    from time import sleep
+    with _rla_auto_tune_lock:
+        _rla_auto_tune_state.update({
+            "status": "running",
+            "stdout": "",
+            "stderr": "",
+            "current": None,
+            "trials": [],
+            "best": None,
+            "stop": False,
+        })
+    project_root = Path(__file__).parent.parent
+    symbols: List[str] = config.get('symbols') or ['QQQ', 'SPY']
+    if len(symbols) == 1:
+        symbols = [symbols[0], symbols[0]]
+    # Plan window/timesteps
+    try:
+        plan = asyncio.run(rl_ppo_plan(symbols=','.join(sorted(set(symbols))), symbol=None, window=60))  # type: ignore
+        plan_data = plan.get('plan') if isinstance(plan, dict) else None
+    except Exception:
+        plan_data = None
+    window = int(config.get('window') or (plan_data.get('window') if plan_data else 60) or 60)
+    timesteps = int(config.get('timesteps') or (plan_data.get('timesteps') if plan_data else 300_000) or 300_000)
+    eval_start = str(config.get('eval_start') or (plan_data.get('train_start_date') if plan_data else '2022-01-01'))
+    eval_end = str(config.get('eval_end') or (plan_data.get('train_end_date') if plan_data else datetime.now().date().isoformat()))
+
+    # Feature candidates
+    news_csv = None
+    try:
+        c1 = project_root / 'app' / 'ml' / 'data' / 'news_features.csv'
+        c2 = project_root / 'ml' / 'data' / 'news_features.csv'
+        if c1.exists():
+            news_csv = c1.as_posix()
+        elif c2.exists():
+            news_csv = c2.as_posix()
+    except Exception:
+        pass
+    news_cols = 'news_count,llm_relevant_count,avg_score,fda_count,china_count,geopolitics_count,sentiment_avg'
+    ind_cols = config.get('indicator_cols') or 'rsi14,macd_hist,adx14,bb_pctb,bb_width,volume_sma_ratio,roc20,vol20'
+    vix_symbol = config.get('vix_symbol') or '^VIX'
+
+    candidates: List[Dict[str, Any]] = []
+    candidates.append({'name': 'w{w}_ts{ts}_sd0_price'.format(w=window, ts=timesteps), 'args': {}})
+    if news_csv:
+        candidates.append({'name': f'w{window}_ts{timesteps}_sd0_news', 'args': {'news_csv': news_csv, 'news_cols': news_cols}})
+        candidates.append({'name': f'w{window}_ts{timesteps}_sd0_news_vix', 'args': {'news_csv': news_csv, 'news_cols': news_cols, 'add_vix': True, 'vix_symbol': vix_symbol}})
+        candidates.append({'name': f'w{window}_ts{timesteps}_sd0_news_vix_indicators', 'args': {'news_csv': news_csv, 'news_cols': news_cols, 'add_vix': True, 'vix_symbol': vix_symbol, 'use_indicators': True, 'indicator_cols': ind_cols}})
+    candidates.append({'name': f'w{window}_ts{timesteps}_sd0_vix', 'args': {'add_vix': True, 'vix_symbol': vix_symbol}})
+    candidates.append({'name': f'w{window}_ts{timesteps}_sd0_indicators', 'args': {'use_indicators': True, 'indicator_cols': ind_cols}})
+
+    seeds = config.get('seeds') or [0]
+
+    best: Optional[Dict[str, Any]] = None
+    try:
+        for sd in seeds:
+            for cand in candidates:
+                with _rla_auto_tune_lock:
+                    if _rla_auto_tune_state.get('stop'):
+                        raise KeyboardInterrupt('Auto-tune stopped by user')
+                    _rla_auto_tune_state['current'] = {'seed': sd, 'name': cand['name']}
+                # Build train command
+                cmd = [
+                    sys.executable, '-m', 'rl.training.train_ppo_portfolio',
+                    '--symbols', ','.join(symbols),
+                    '--window', str(window),
+                    '--timesteps', str(timesteps),
+                    '--seed', str(sd),
+                ]
+                args = cand['args']
+                if args.get('news_csv'):
+                    cmd += ['--news-features-csv', str(args['news_csv']), '--news-cols', str(args.get('news_cols', news_cols)), '--news-window', '1']
+                if args.get('add_vix'):
+                    cmd += ['--add-vix-feature', '--vix-symbol', str(args.get('vix_symbol', '^VIX'))]
+                if args.get('use_indicators'):
+                    cmd += ['--use-indicator-features', '--indicator-cols', str(args.get('indicator_cols', ind_cols))]
+                # Run training synchronously
+                _rla_log(f"Training trial {cand['name']} seed={sd} ...")
+                try:
+                    proc = subprocess.Popen(cmd, cwd=str(project_root), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, universal_newlines=True)
+                    with _rla_auto_tune_lock:
+                        _rla_auto_tune_state['pid'] = proc.pid
+                        _rla_auto_tune_state['cmd'] = ' '.join(cmd)
+                    for line in proc.stdout or []:
+                        _rla_log(line.rstrip())
+                        with _rla_auto_tune_lock:
+                            prev = _rla_auto_tune_state.get('stdout', '') or ''
+                            snap = (prev + ('\n' if prev else '') + line.rstrip())
+                            _rla_auto_tune_state['stdout'] = snap[-2000:]
+                    proc.wait()
+                    rc = proc.returncode
+                except Exception as e:
+                    rc = -1
+                    _rla_log(f"Error running training: {e}")
+                if rc != 0:
+                    with _rla_auto_tune_lock:
+                        trials = _rla_auto_tune_state.get('trials', [])
+                        trials.append({'name': cand['name'], 'seed': sd, 'status': 'failed'})
+                        _rla_auto_tune_state['trials'] = trials
+                    continue
+                # Evaluate
+                eval_out = project_root / 'reports' / 'rl' / f"auto_tune_{datetime.now().strftime('%Y%m%d_%H%M%S')}" / cand['name']
+                ev_cmd = [sys.executable, '-m', 'rl.evaluation.generate_portfolio_report', '--symbols', ','.join(symbols), '--eval-start', eval_start, '--eval-end', eval_end, '--out', eval_out.as_posix()]
+                if args.get('news_csv'):
+                    ev_cmd += ['--news-features-csv', str(args['news_csv']), '--news-cols', str(args.get('news_cols', news_cols)), '--news-window', '1']
+                if args.get('use_indicators'):
+                    ev_cmd += ['--use-indicator-features', '--indicator-cols', str(args.get('indicator_cols', ind_cols))]
+                _rla_log(f"Evaluating trial {cand['name']} seed={sd} ...")
+                try:
+                    proc2 = subprocess.Popen(ev_cmd, cwd=str(project_root), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, universal_newlines=True)
+                    with _rla_auto_tune_lock:
+                        _rla_auto_tune_state['pid'] = proc2.pid
+                        _rla_auto_tune_state['cmd'] = ' '.join(ev_cmd)
+                    for line in proc2.stdout or []:
+                        _rla_log(line.rstrip())
+                    proc2.wait()
+                except Exception as e:
+                    _rla_log(f"Error running evaluation: {e}")
+                # Parse summary
+                summary = None
+                try:
+                    import csv
+                    s_csv = eval_out / 'summary.csv'
+                    if s_csv.exists():
+                        with open(s_csv, newline='', encoding='utf-8') as f:
+                            rows = list(csv.DictReader(f))
+                        # pick ppo_portfolio row
+                        for r in rows:
+                            if r.get('kind') == 'ppo_portfolio':
+                                summary = r
+                                break
+                except Exception:
+                    summary = None
+                trial = {'name': cand['name'], 'seed': sd, 'status': 'completed' if summary else 'no_summary', 'summary': summary}
+                with _rla_auto_tune_lock:
+                    trials = _rla_auto_tune_state.get('trials', [])
+                    trials.append(trial)
+                    _rla_auto_tune_state['trials'] = trials
+                # Update best
+                if summary:
+                    try:
+                        sharpe = float(summary.get('sharpe') or 0.0)
+                        mdd = abs(float(summary.get('max_drawdown') or summary.get('max_dd') or 0.0))
+                        score = sharpe - 0.5 * mdd
+                    except Exception:
+                        score = -1e9
+                    rec = {'trial': trial, 'score': score, 'dir': eval_out.as_posix()}
+                    if best is None or score > best.get('score', -1e9):
+                        best = rec
+                        with _rla_auto_tune_lock:
+                            _rla_auto_tune_state['best'] = rec
+        with _rla_auto_tune_lock:
+            _rla_auto_tune_state['status'] = 'completed'
+            _rla_auto_tune_state['pid'] = None
+            _rla_auto_tune_state['cmd'] = None
+    except KeyboardInterrupt:
+        with _rla_auto_tune_lock:
+            _rla_auto_tune_state['status'] = 'cancelled'
+            _rla_auto_tune_state['pid'] = None
+            _rla_auto_tune_state['cmd'] = None
+    except Exception as e:
+        _rla_log(f"Auto-tune failed: {e}")
+        with _rla_auto_tune_lock:
+            _rla_auto_tune_state['status'] = 'error'
+            _rla_auto_tune_state['stderr'] = str(e)
+            _rla_auto_tune_state['pid'] = None
+            _rla_auto_tune_state['cmd'] = None
+
+
+@app.post('/api/rl/auto-tune/start')
+async def rl_auto_tune_start(payload: Optional[Dict[str, Any]] = None):
+    try:
+        data = payload or {}
+        mode = (data.get('mode') or 'etf').lower()
+        job_id = f"rla-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+        symbols: List[str]
+        if mode == 'stock':
+            sym = str(data.get('symbol') or 'AAPL').strip().upper()
+            symbols = [sym]
+        else:
+            etfs = data.get('etfs') or ['QQQ','SPY']
+            if isinstance(etfs, list):
+                symbols = [str(s).strip().upper() for s in etfs if str(s).strip()]
+            else:
+                symbols = [s for s in str(etfs).split(',') if s]
+        cfg = {
+            'symbols': symbols,
+            'time_budget_hours': float(data.get('time_budget_hours') or 6.0),
+            'window': int(data.get('window') or 60),
+            'timesteps': int(data.get('timesteps') or 300_000),
+            'eval_start': data.get('eval_start'),
+            'eval_end': data.get('eval_end'),
+            'seeds': data.get('seeds') or [0],
+            'indicator_cols': data.get('indicator_cols'),
+            'vix_symbol': data.get('vix_symbol') or '^VIX',
+        }
+        with _rla_auto_tune_lock:
+            _rla_auto_tune_state.clear()
+            _rla_auto_tune_state.update({
+                'status': 'running',
+                'job_id': job_id,
+                'started_at': datetime.utcnow().isoformat() + 'Z',
+                'config': cfg,
+                'pid': None,
+                'cmd': None,
+                'stdout': 'Starting RL auto-tune...',
+                'stderr': '',
+                'trials': [],
+                'best': None,
+            })
+        th = threading.Thread(target=_auto_tune_runner, args=(cfg,), daemon=True)
+        th.start()
+        return {'status': 'ok', 'data': _rla_auto_tune_state}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Auto-tune start failed: {e}")
+
+
+@app.get('/api/rl/auto-tune/status')
+async def rl_auto_tune_status():
+    with _rla_auto_tune_lock:
+        data = dict(_rla_auto_tune_state)
+    return {'status': 'ok', 'data': data}
+
+
+@app.post('/api/rl/auto-tune/stop')
+async def rl_auto_tune_stop():
+    try:
+        with _rla_auto_tune_lock:
+            if _rla_auto_tune_state.get('status') == 'running':
+                _rla_auto_tune_state['stop'] = True
+                # attempt to kill current process if any
+                pid = _rla_auto_tune_state.get('pid')
+                if pid:
+                    try:
+                        if sys.platform.startswith('win'):
+                            subprocess.run(["taskkill", "/PID", str(pid), "/T", "/F"], capture_output=True)
+                        else:
+                            os.kill(int(pid), 15)
+                    except Exception:
+                        pass
+        return {'status': 'ok', 'data': _rla_auto_tune_state}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Auto-tune stop failed: {e}")
+
+
+# ============================================================
+# RL Live Preview and Paper Mode (migrated from Flask)
+# ============================================================
+
+def _rl_latest_model_path() -> Optional[str]:
+    try:
+        base = Path(__file__).parent.parent / 'rl' / 'models' / 'ppo_portfolio'
+        if not base.exists():
+            return None
+        zips = sorted(base.rglob('*.zip'), key=lambda p: p.stat().st_mtime, reverse=True)
+        return str(zips[0]) if zips else None
+    except Exception:
+        return None
+
+
+@app.get('/api/rl/live/latest-model')
+async def rl_live_latest_model():
+    p = _rl_latest_model_path()
+    if not p:
+        raise HTTPException(status_code=404, detail='no model found')
+    return {'status': 'ok', 'model_path': p}
+
+
+@app.post('/api/rl/live/preview')
+async def rl_live_preview(data: Dict[str, Any]):
+    """Compute today's target weights using a trained PPO model (no orders executed)."""
+    try:
+        symbols_raw = data.get('symbols') or ''
+        if isinstance(symbols_raw, str):
+            symbols_in = [s.strip().upper() for s in symbols_raw.split(',') if s.strip()]
+        elif isinstance(symbols_raw, list):
+            symbols_in = [str(s).strip().upper() for s in symbols_raw]
+        else:
+            symbols_in = []
+        if len(symbols_in) < 1:
+            raise HTTPException(status_code=400, detail='Provide at least one symbol')
+        symbols_env = symbols_in if len(symbols_in) >= 2 else [symbols_in[0], symbols_in[0]]
+
+        model_path = data.get('model_path') or _rl_latest_model_path()
+        if not model_path:
+            raise HTTPException(status_code=400, detail='Model path not provided and no latest model found')
+        window = int(data.get('window', 60) or 60)
+        band = float(data.get('no_trade_band', 0.0) or 0.0)
+        min_days = int(data.get('band_min_days', 0) or 0)
+        starting_cash = float(data.get('starting_cash', 10000.0) or 10000.0)
+        vix_symbol = str(data.get('vix_symbol') or '^VIX')
+
+        from stable_baselines3 import PPO  # type: ignore
+        import numpy as np  # type: ignore
+        import pandas as pd  # type: ignore
+        from rl.training.train_ppo_portfolio import make_env  # type: ignore
+        from rl.envs.wrappers_portfolio import NoTradeBandActionWrapper  # type: ignore
+
+        model = PPO.load(model_path)
+        try:
+            expected = int(getattr(model.policy.observation_space, 'shape', [None])[0])
+        except Exception:
+            expected = None
+
+        # Prepare default feature paths/cols
+        def _default_news_csv() -> Optional[str]:
+            try:
+                project_root = Path(__file__).parent.parent
+                cand1 = project_root / 'app' / 'ml' / 'data' / 'news_features.csv'
+                if cand1.exists():
+                    return cand1.as_posix()
+                cand2 = project_root / 'ml' / 'data' / 'news_features.csv'
+                if cand2.exists():
+                    return cand2.as_posix()
+            except Exception:
+                pass
+            return None
+
+        news_csv = _default_news_csv()
+        news_cols = ['news_count','llm_relevant_count','avg_score','fda_count','china_count','geopolitics_count','sentiment_avg']
+        ind_cols = ['rsi14','macd_hist','adx14','bb_pctb','bb_width','volume_sma_ratio','roc20','vol20']
+
+        # Try building envs with increasing feature richness until obs matches expected
+        tried: List[Dict[str, Any]] = []
+
+        def attempt(opts: Dict[str, Any]):
+            env = make_env(
+                symbols=symbols_env,
+                window=window,
+                start=None,
+                end=None,
+                starting_cash=starting_cash,
+                news_features_csv=opts.get('news_csv'),
+                news_cols=opts.get('news_cols'),
+                news_window=int(opts.get('news_window', 1)),
+                add_vix_feature=bool(opts.get('add_vix', False)),
+                vix_symbol=str(opts.get('vix_symbol', vix_symbol)),
+                use_indicator_features=bool(opts.get('use_indicators', False)),
+                indicator_cols=opts.get('indicator_cols'),
+            )
+            obs, _ = env.reset()
+            if isinstance(obs, tuple):
+                obs = obs[0]
+            cur_dim = int(np.array(obs, dtype=float).shape[0])
+            return env, cur_dim
+
+        candidates = []
+        candidates.append({'news_csv': None, 'news_cols': None, 'add_vix': False, 'use_indicators': False})
+        if news_csv:
+            candidates.append({'news_csv': news_csv, 'news_cols': news_cols, 'news_window': 1})
+            candidates.append({'news_csv': news_csv, 'news_cols': news_cols, 'news_window': 1, 'add_vix': True, 'vix_symbol': vix_symbol})
+            candidates.append({'news_csv': news_csv, 'news_cols': news_cols, 'news_window': 1, 'add_vix': True, 'vix_symbol': vix_symbol, 'use_indicators': True, 'indicator_cols': ind_cols})
+        candidates.append({'add_vix': True, 'vix_symbol': vix_symbol})
+        candidates.append({'use_indicators': True, 'indicator_cols': ind_cols})
+
+        env_gym = None
+        chosen = None
+        cur_dim = None
+        for opts in candidates:
+            try:
+                env, d = attempt(opts)
+                tried.append({'opts': opts, 'dim': d})
+                if expected is None or d == expected:
+                    env_gym = env
+                    chosen = opts
+                    cur_dim = d
+                    break
+            except Exception as _e:
+                tried.append({'opts': opts, 'error': str(_e)})
+                continue
+
+        if env_gym is None:
+            msg = f"Unexpected observation shape; model expects {expected}, tried: " + \
+                  ", ".join([str(t.get('dim') or t.get('error')) for t in tried])
+            raise HTTPException(status_code=400, detail=msg)
+
+        # Step to last observation with hold actions
+        obs, _ = env_gym.reset()
+        n = env_gym.action_space.shape[0]
+        hold = np.zeros((n,), dtype=np.float32)
+        done = False
+        while True:
+            obs, reward, terminated, truncated, info = env_gym.step(hold)
+            if terminated or truncated:
+                break
+
+        # Predict logits
+        action, _ = model.predict(obs, deterministic=True)
+
+        # Access underlying base env to map logits->weights and read timeline
+        base_env = getattr(env_gym, '_env', None) or getattr(env_gym, 'unwrapped', None) or env_gym
+        raw_w = base_env._to_weights(np.asarray(action, dtype=float)).tolist()
+
+        banded_w = None
+        if band > 0.0 or min_days > 0:
+            wrapper = NoTradeBandActionWrapper(env_gym, band=float(band), min_days=int(min_days))
+            banded_logits = wrapper.action(np.asarray(action, dtype=float))
+            banded_w = base_env._to_weights(np.asarray(banded_logits, dtype=float)).tolist()
+
+        # Latest date
+        try:
+            idx_dates = next(iter(base_env.df_map.values())).index
+            latest_dt = idx_dates[base_env._idx]
+            latest_date = str(pd.to_datetime(latest_dt).date())
+        except Exception:
+            latest_date = None
+
+        # Map weights to unique symbol list (sum duplicates)
+        unique_symbols: List[str] = []
+        for s in symbols_in:
+            if s not in unique_symbols:
+                unique_symbols.append(s)
+
+        def map_unique(w_list: Optional[List[float]]) -> Dict[str, float]:
+            if w_list is None:
+                return {}
+            agg = {s: 0.0 for s in unique_symbols}
+            for s, w in zip(symbols_env, w_list):
+                agg[s] += float(w)
+            return agg
+
+        resp = {
+            'status': 'ok',
+            'date': latest_date,
+            'symbols': unique_symbols,
+            'raw_weights': map_unique(raw_w),
+            'banded_weights': (map_unique(banded_w) if banded_w is not None else None),
+            'obs_dim': cur_dim,
+            'matched_opts': chosen,
+        }
+        # JSON-sanitize
+        def _safe(obj):
+            import math
+            if isinstance(obj, float):
+                return obj if math.isfinite(obj) else None
+            if isinstance(obj, dict):
+                return {str(k): _safe(v) for k, v in obj.items()}
+            if isinstance(obj, list):
+                return [_safe(x) for x in obj]
+            return obj
+        return _safe(resp)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# Paper mode state
+_paper_state: Dict[str, Any] = {
+    'running': False,
+    'thread': None,
+    'config': None,
+    'last_run_date': None,
+    'positions': {},
+    'cash': 0.0,
+    'equity': 0.0,
+    'peak_equity': 0.0,
+    'logs': [],
+    'last_decision': None,
+}
+_paper_lock = threading.Lock()
+
+
+def _append_paper_log(msg: str) -> None:
+    with _paper_lock:
+        _paper_state['logs'].append(f"{datetime.now().isoformat()} | {msg}")
+        if len(_paper_state['logs']) > 200:
+            _paper_state['logs'] = _paper_state['logs'][-200:]
+
+
+def _is_business_day(ts: datetime, cal_csv: Optional[Path]) -> bool:
+    try:
+        if cal_csv and cal_csv.exists():
+            import pandas as pd
+            cal = pd.read_csv(cal_csv)
+            cal['Date'] = pd.to_datetime(cal['Date'])
+            d = pd.Timestamp(ts.date())
+            return bool((cal['Date'] == d).any())
+        return ts.weekday() < 5
+    except Exception:
+        return ts.weekday() < 5
+
+
+def _paper_step(config: Dict[str, Any]) -> None:
+    from rl.envs.wrappers_portfolio import PortfolioEnvGym  # type: ignore
+    from stable_baselines3 import PPO  # type: ignore
+    import numpy as np  # type: ignore
+    import pandas as pd  # type: ignore
+    from rl.training.train_ppo_portfolio import make_env  # type: ignore
+
+    project_root = Path(__file__).parent.parent
+
+    symbols = config['symbols']
+    env_symbols = symbols if len(symbols) > 1 else [symbols[0], symbols[0]]
+    window = int(config.get('window', 60))
+    model_path = config['model_path']
+    band = float(config.get('no_trade_band', 0.0) or 0.0)
+    min_days = int(config.get('band_min_days', 0) or 0)
+    tcost = int(config.get('transaction_cost_bps', 5) or 5)
+    slip = int(config.get('slippage_bps', 5) or 5)
+    max_turnover_ratio = float(config.get('max_daily_turnover_ratio', 1.0) or 1.0)
+    max_drawdown_stop = float(config.get('max_drawdown_stop', 0.0) or 0.0)
+
+    model = PPO.load(model_path)
+    try:
+        expected = int(getattr(model.policy.observation_space, 'shape', [None])[0])
+    except Exception:
+        expected = None
+
+    def _default_news_csv() -> Optional[str]:
+        try:
+            c1 = project_root / 'app' / 'ml' / 'data' / 'news_features.csv'
+            if c1.exists():
+                return c1.as_posix()
+            c2 = project_root / 'ml' / 'data' / 'news_features.csv'
+            if c2.exists():
+                return c2.as_posix()
+        except Exception:
+            pass
+        return None
+
+    news_csv = _default_news_csv()
+    news_cols = ['news_count','llm_relevant_count','avg_score','fda_count','china_count','geopolitics_count','sentiment_avg']
+    ind_cols = ['rsi14','macd_hist','adx14','bb_pctb','bb_width','volume_sma_ratio','roc20','vol20']
+    candidates = []
+    candidates.append({'news_csv': None, 'news_cols': None, 'add_vix': False, 'use_indicators': False})
+    if news_csv:
+        candidates.append({'news_csv': news_csv, 'news_cols': news_cols, 'news_window': 1})
+        candidates.append({'news_csv': news_csv, 'news_cols': news_cols, 'news_window': 1, 'add_vix': True, 'vix_symbol': '^VIX'})
+        candidates.append({'news_csv': news_csv, 'news_cols': news_cols, 'news_window': 1, 'add_vix': True, 'vix_symbol': '^VIX', 'use_indicators': True, 'indicator_cols': ind_cols})
+    candidates.append({'add_vix': True, 'vix_symbol': '^VIX'})
+    candidates.append({'use_indicators': True, 'indicator_cols': ind_cols})
+
+    env_gym = None
+    for opts in candidates:
+        try:
+            env = make_env(
+                symbols=env_symbols,
+                window=window,
+                start=None,
+                end=None,
+                transaction_cost_bps=tcost,
+                slippage_bps=slip,
+                starting_cash=100.0,
+                news_features_csv=opts.get('news_csv'),
+                news_cols=opts.get('news_cols'),
+                news_window=int(opts.get('news_window', 1)),
+                add_vix_feature=bool(opts.get('add_vix', False)),
+                vix_symbol=str(opts.get('vix_symbol', '^VIX')),
+                use_indicator_features=bool(opts.get('use_indicators', False)),
+                indicator_cols=opts.get('indicator_cols'),
+            )
+            obs, _ = env.reset()
+            if isinstance(obs, tuple):
+                obs = obs[0]
+            dim = int(np.array(obs, dtype=float).shape[0])
+            if expected is None or dim == expected:
+                env_gym = env
+                break
+        except Exception:
+            continue
+    if env_gym is None:
+        env_gym = make_env(symbols=env_symbols, window=window, start=None, end=None, transaction_cost_bps=tcost, slippage_bps=slip, starting_cash=100.0)
+
+    obs, _ = env_gym.reset()
+    n = env_gym.action_space.shape[0]
+    hold = np.zeros((n,), dtype=np.float32)
+    last_idx = getattr(getattr(env_gym, '_env', None) or getattr(env_gym, 'unwrapped', None) or env_gym, '_idx', None)
+    while True:
+        obs, reward, terminated, truncated, info = env_gym.step(hold)
+        if terminated or truncated:
+            break
+        base_env_loop = getattr(env_gym, '_env', None) or getattr(env_gym, 'unwrapped', None) or env_gym
+        try:
+            last_idx = base_env_loop._idx
+        except Exception:
+            pass
+
+    action, _ = model.predict(obs, deterministic=True)
+    base_env = getattr(env_gym, '_env', None) or getattr(env_gym, 'unwrapped', None) or env_gym
+    target_w = base_env._to_weights(np.asarray(action, dtype=float))
+
+    unique_symbols: List[str] = []
+    for s in env_symbols:
+        if s not in unique_symbols:
+            unique_symbols.append(s)
+    agg_target = {s: 0.0 for s in unique_symbols}
+    for s, w in zip(env_symbols, target_w.tolist()):
+        agg_target[s] += float(w)
+
+    idx_dates = next(iter(base_env.df_map.values())).index
+    date_dt = pd.to_datetime(idx_dates[last_idx]).date()
+    prices_t = base_env.prices[last_idx]
+    price_map: Dict[str, float] = {}
+    for s, px in zip(env_symbols, prices_t.tolist()):
+        if s in price_map:
+            price_map[s] = max(price_map[s], float(px))
+        else:
+            price_map[s] = float(px)
+
+    with _paper_lock:
+        positions = dict(_paper_state['positions'])
+        cash = float(_paper_state['cash'])
+        peak_equity = float(_paper_state.get('peak_equity') or 0.0)
+
+    equity = float(cash)
+    for s in unique_symbols:
+        sh = float(positions.get(s, 0.0))
+        px = float(price_map.get(s, 0.0))
+        equity += sh * px
+
+    cur_w: Dict[str, float] = {}
+    for s in unique_symbols:
+        sh = float(positions.get(s, 0.0))
+        px = float(price_map.get(s, 0.0))
+        val = sh * px
+        cur_w[s] = (val / equity) if equity > 0 else 0.0
+
+    desired = dict(cur_w)
+    last_trades = (_paper_state.get('last_trade_date') or {})
+    allow_trade: Dict[str, bool] = {}
+    for s in unique_symbols:
+        last = last_trades.get(s)
+        if not last:
+            allow_trade[s] = True
+        else:
+            try:
+                from datetime import datetime as _dt
+                days = (_dt.combine(date_dt, _dt.min.time()) - _dt.fromisoformat(last)).days
+            except Exception:
+                days = 999
+            allow_trade[s] = (days >= min_days)
+
+    changed = False
+    for s in unique_symbols:
+        tw = float(agg_target.get(s, 0.0))
+        if allow_trade[s] and abs(tw - cur_w.get(s, 0.0)) >= band:
+            desired[s] = max(0.0, min(1.0, tw))
+            changed = True
+    ssum = sum(desired.values())
+    if ssum > 0:
+        for s in desired:
+            desired[s] = desired[s] / ssum
+    else:
+        k = len(unique_symbols)
+        for s in desired:
+            desired[s] = 1.0 / max(1, k)
+
+    trades = []
+    total_cost = 0.0
+    for s in unique_symbols:
+        cur_val = cur_w[s] * equity
+        tgt_val = desired[s] * equity
+        delta_val = tgt_val - cur_val
+        px = float(price_map.get(s, 0.0))
+        delta_sh = (delta_val / px) if px > 0 else 0.0
+        trade_cost = abs(delta_sh) * px * ((tcost + slip) / 10000.0)
+        total_cost += float(trade_cost)
+        trades.append({'symbol': s, 'px': float(px), 'delta_shares': float(delta_sh), 'trade_cost': float(trade_cost)})
+
+    return {
+        'status': 'ok',
+        'date': str(date_dt),
+        'symbols': unique_symbols,
+        'raw_weights': {k: float(agg_target.get(k, 0.0)) for k in unique_symbols},
+        'banded_weights': {k: float(desired.get(k, 0.0)) for k in unique_symbols},
+        'trades': trades,
+        'equity_before': float(equity),
+        'equity_after': float(equity),
+        'total_cost': float(total_cost),
+    }
+
+
+def _paper_loop():
+    cfg = None
+    from time import sleep
+    import pytz  # type: ignore
+    while True:
+        with _paper_lock:
+            if not _paper_state['running']:
+                break
+            cfg = dict(_paper_state['config']) if _paper_state['config'] else None
+        if not cfg:
+            sleep(1)
+            continue
+        tz_name = cfg.get('timezone', 'America/New_York')
+        schedule_time = cfg.get('schedule_time', '16:05')
+        try:
+            hh, mm = [int(x) for x in schedule_time.split(':', 1)]
+        except Exception:
+            hh, mm = 16, 5
+        try:
+            tz = pytz.timezone(tz_name)
+        except Exception:
+            tz = pytz.timezone('America/New_York')
+        now = datetime.now(tz)
+        cal_csv = (Path(__file__).parent.parent / 'data' / 'rl' / 'calendars' / 'market_calendar.csv')
+        if not _is_business_day(now, cal_csv):
+            sleep(30)
+            continue
+        run_today = False
+        try:
+            if now.hour > hh or (now.hour == hh and now.minute >= mm):
+                with _paper_lock:
+                    last = _paper_state.get('last_run_date')
+                if str(now.date()) != str(last):
+                    run_today = True
+        except Exception:
+            run_today = False
+
+        if run_today:
+            try:
+                _paper_step(cfg)
+            except Exception as e:
+                _append_paper_log(f"Error in paper step: {e}")
+            sleep(10)
+        else:
+            sleep(15)
+
+
+@app.post('/api/rl/live/paper/start')
+async def rl_live_paper_start(data: Dict[str, Any]):
+    symbols_raw = data.get('symbols') or ''
+    if isinstance(symbols_raw, str):
+        symbols = [s.strip().upper() for s in symbols_raw.split(',') if s.strip()]
+    elif isinstance(symbols_raw, list):
+        symbols = [str(s).strip().upper() for s in symbols_raw]
+    else:
+        symbols = []
+    if len(symbols) < 1:
+        raise HTTPException(status_code=400, detail='Provide at least one symbol')
+    model_path = data.get('model_path') or _rl_latest_model_path()
+    if not model_path:
+        raise HTTPException(status_code=400, detail='Model path not provided and no latest model found')
+    cfg = {
+        'symbols': symbols,
+        'model_path': model_path,
+        'starting_cash': float(data.get('starting_cash', 10000.0) or 10000.0),
+        'window': int(data.get('window', 60) or 60),
+        'no_trade_band': float(data.get('no_trade_band', 0.05) or 0.05),
+        'band_min_days': int(data.get('band_min_days', 5) or 5),
+        'transaction_cost_bps': int(data.get('transaction_cost_bps', 5) or 5),
+        'slippage_bps': int(data.get('slippage_bps', 5) or 5),
+        'schedule_time': str(data.get('schedule_time', '16:05') or '16:05'),
+        'timezone': str(data.get('timezone', 'America/New_York') or 'America/New_York'),
+        'max_daily_turnover_ratio': float(data.get('max_daily_turnover_ratio', 1.0) or 1.0),
+        'max_drawdown_stop': float(data.get('max_drawdown_stop', 0.0) or 0.0),
+        'resume': bool(data.get('resume', True)),
+    }
+    from threading import Thread
+    with _paper_lock:
+        _paper_state['positions'] = {}
+        _paper_state['cash'] = float(cfg['starting_cash'])
+        _paper_state['equity'] = float(cfg['starting_cash'])
+        _paper_state['peak_equity'] = float(cfg['starting_cash'])
+        _paper_state['config'] = cfg
+        _paper_state['running'] = True
+        _paper_state['logs'] = []
+        _paper_state['last_decision'] = None
+        _paper_state['last_run_date'] = None
+        _paper_state['last_trade_date'] = {}
+    # Attempt resume
+    try:
+        if cfg.get('resume'):
+            state_path = Path(__file__).parent.parent / 'data' / 'live_paper' / 'state.json'
+            if state_path.exists():
+                import json as _json
+                with open(state_path, 'r', encoding='utf-8') as f:
+                    saved = _json.load(f)
+                saved_cfg = saved.get('config') or {}
+                same_syms = sorted([s.upper() for s in (saved_cfg.get('symbols') or [])]) == sorted(symbols)
+                same_model = str(saved_cfg.get('model_path') or '') == str(model_path)
+                if same_syms and same_model:
+                    with _paper_lock:
+                        _paper_state['positions'] = saved.get('positions') or {}
+                        _paper_state['cash'] = float(saved.get('cash') or cfg['starting_cash'])
+                        _paper_state['equity'] = float(saved.get('equity') or _paper_state['cash'])
+                        _paper_state['peak_equity'] = float(saved.get('peak_equity') or _paper_state['equity'])
+                        _paper_state['last_run_date'] = saved.get('last_run_date')
+                        _paper_state['last_trade_date'] = saved.get('last_trade_date') or {}
+                    _append_paper_log("Resumed paper mode from previous state.json")
+                else:
+                    _append_paper_log("State.json found but symbols/model mismatch; starting fresh.")
+    except Exception as e:
+        _append_paper_log(f"Resume failed: {e}")
+    th = Thread(target=_paper_loop, daemon=True)
+    with _paper_lock:
+        _paper_state['thread'] = th
+    th.start()
+    _append_paper_log("Paper mode started")
+    return {'status': 'started', 'config': cfg}
+
+
+@app.post('/api/rl/live/paper/stop')
+async def rl_live_paper_stop():
+    with _paper_lock:
+        _paper_state['running'] = False
+        th = _paper_state.get('thread')
+    try:
+        if th:
+            th.join(timeout=1.0)
+    except Exception:
+        pass
+    _append_paper_log("Paper mode stopped")
+    return {'status': 'stopped'}
+
+
+@app.get('/api/rl/live/paper/status')
+async def rl_live_paper_status():
+    with _paper_lock:
+        snap = {
+            'running': _paper_state['running'],
+            'config': _paper_state['config'],
+            'last_run_date': _paper_state['last_run_date'],
+            'positions': _paper_state['positions'],
+            'cash': _paper_state['cash'],
+            'equity': _paper_state['equity'],
+            'last_decision': _paper_state['last_decision'],
+            'logs': _paper_state['logs'][-50:],
+        }
+    return snap
+
+
+@app.get("/api/rl/simulate/plan")
+async def rl_simulate_plan(symbol: str = Query("AAPL"), window: int = Query(60, ge=2, le=500)):
+    """Auto-plan start/end, window, and days for Quick Simulation from local data."""
+    try:
+        try:
+            from rl.envs.market_env import MarketEnv as RLMarketEnv  # type: ignore
+            import pandas as pd
+        except Exception:
+            raise HTTPException(status_code=500, detail="Planning unavailable: RL modules missing")
+
+        def _plan():
+            env = RLMarketEnv.load_from_local(symbol.upper(), window=max(2, window or 60), tail_days=None)
+            df = env.df
+            n = int(len(df))
+            if n < 2:
+                raise ValueError(f"Not enough data for {symbol}")
+            idx = df.index
+            if not isinstance(idx, pd.DatetimeIndex):
+                try:
+                    idx = pd.to_datetime(idx)
+                except Exception:
+                    pass
+            earliest = idx[0]
+            latest = idx[-1]
+            span = min(250, n)
+            start_idx = max(0, n - span)
+            start_dt = idx[start_idx]
+            end_dt = latest
+            plan = {
+                'start_date': str(getattr(start_dt, 'date', lambda: start_dt)()),
+                'end_date': str(getattr(end_dt, 'date', lambda: end_dt)()),
+                'window': int(window or 60),
+                'days': int(span),
+                'total_rows': n
+            }
+            return plan
+
+        plan = await asyncio.to_thread(_plan)
+        return {"status": "planned", "plan": plan}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/rl/ppo/plan")
+async def rl_ppo_plan(symbols: Optional[str] = None, symbol: Optional[str] = None, window: int = Query(60, ge=2, le=500)):
+    """Plan PPO training window and timesteps from local data.
+
+    Accepts either 'symbols' (comma-separated) or a single 'symbol'.
+    """
+    try:
+        try:
+            import pandas as pd
+            from rl.envs.market_env import MarketEnv as RLMarketEnv  # type: ignore
+            from rl.envs.portfolio_env import PortfolioEnv  # type: ignore
+        except Exception:
+            raise HTTPException(status_code=500, detail="Planning unavailable: RL modules missing")
+
+        syms: List[str] = []
+        if symbols:
+            syms = [s.strip().upper() for s in symbols.split(',') if s.strip()]
+        elif symbol:
+            syms = [symbol.strip().upper()]
+        else:
+            raise HTTPException(status_code=400, detail="symbol or symbols is required")
+
+        def _plan_many():
+            if len(syms) >= 2:
+                base = PortfolioEnv.load_from_local_universe(symbols=syms, window=max(2, window or 60))
+                idx = next(iter(base.df_map.values())).index
+                n = int(len(idx))
+                if n < 60:
+                    raise ValueError("Not enough aligned rows across symbols to plan PPO")
+                try:
+                    y2020 = pd.Timestamp('2020-01-01')
+                    first_idx = idx[0]
+                    train_start = y2020 if (y2020 > first_idx and y2020 < idx[-1]) else first_idx
+                except Exception:
+                    train_start = idx[0]
+                train_end = idx[-1]
+                days = int((pd.to_datetime(train_end) - pd.to_datetime(train_start)).days)
+                timesteps = int(max(300_000, min(1_200_000, days * 400)))
+                w = int(max(30, min(120, n // 6))) if not window else int(window)
+                return {
+                    'train_start_date': str(getattr(train_start, 'date', lambda: train_start)()),
+                    'train_end_date': str(getattr(train_end, 'date', lambda: train_end)()),
+                    'window': w,
+                    'training_days': days,
+                    'timesteps': timesteps,
+                    'total_rows': n,
+                    'symbols': syms,
+                }
+            else:
+                env = RLMarketEnv.load_from_local(syms[0], window=max(2, window or 60), tail_days=None)
+                df = env.df
+                n = int(len(df))
+                if n < 60:
+                    raise ValueError(f"Not enough rows to plan PPO for {syms[0]}")
+                idx = df.index
+                if not isinstance(idx, pd.DatetimeIndex):
+                    try:
+                        idx = pd.to_datetime(idx)
+                    except Exception:
+                        pass
+                try:
+                    y2020 = pd.Timestamp('2020-01-01')
+                    first_idx = idx[0]
+                    train_start = y2020 if (y2020 > first_idx and y2020 < idx[-1]) else first_idx
+                except Exception:
+                    train_start = idx[0]
+                train_end = idx[-1]
+                days = int((pd.to_datetime(train_end) - pd.to_datetime(train_start)).days)
+                timesteps = int(max(300_000, min(1_200_000, days * 400)))
+                w = int(max(30, min(120, n // 6))) if not window else int(window)
+                return {
+                    'train_start_date': str(getattr(train_start, 'date', lambda: train_start)()),
+                    'train_end_date': str(getattr(train_end, 'date', lambda: train_end)()),
+                    'window': w,
+                    'training_days': days,
+                    'timesteps': timesteps,
+                    'total_rows': n,
+                    'symbols': syms,
+                }
+
+        plan = await asyncio.to_thread(_plan_many)
+        return {"status": "planned", "plan": plan}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 # ============================================================
 # WebSocket Endpoint
@@ -1005,123 +2628,33 @@ async def get_sectors():
 @app.get("/api/scanner/hot-stocks")
 async def get_hot_stocks(limit: int = 10):
     """
-    Get dynamically scanned hot stocks with high potential
-    Uses sector scanner + ML to find opportunities
+    Get dynamically scanned hot stocks with high potential from local stock_data
+    No legacy sector_scanner; simple momentum/indicator heuristics
     """
     try:
-        from app.smart.sector_scanner import sector_scanner
-        from app.financial.market_data import financial_provider
-        
-        hot_stocks = []
-        
-        # Get all sectors
-        all_sectors = sector_scanner.get_all_sectors()
-        
-        # Scan tickers from top sectors
-        tickers_to_scan = set()
-        for sector in all_sectors[:5]:  # Top 5 sectors
-            sector_id = sector['sector_id']
-            tickers = sector_scanner.get_sector_tickers(sector_id)
-            tickers_to_scan.update(tickers[:5])  # Top 5 from each sector
-        
-        # Scan each ticker with ML
-        for ticker in list(tickers_to_scan)[:limit]:
-            try:
-                ml_result = await sector_scanner.scan_ticker_with_ml(ticker)
-                
-                if ml_result.get('has_potential'):
-                    stock_data = await financial_provider.get_stock_data(ticker)
-                    
-                    item = {
-                        'symbol': ticker,
-                        'name': stock_data.get('name', ticker) if stock_data else ticker,
-                        'current_price': ml_result.get('current_price'),
-                        'predicted_price': ml_result.get('predicted_price'),
-                        'expected_return': ml_result.get('expected_return'),
-                        'confidence': ml_result.get('confidence'),
-                        'recommendation': ml_result.get('recommendation'),
-                        'ml_score': ml_result.get('ml_score'),
-                        'change_percent': stock_data.get('change_percent', 0) if stock_data else 0
-                    }
-
-                    # Try to enrich with Progressive ML champion predictions (7d horizon) incl. SL/TP
-                    try:
-                        if PROGRESSIVE_ML_AVAILABLE:
-                            from app.ml.progressive.predictor import ProgressivePredictor as _Pred
-                            from app.ml.progressive.data_loader import ProgressiveDataLoader as _DL
-                            from pathlib import Path as _Path
-                            champions_root = _Path('app/ml/models/champions') / ticker
-                            if champions_root.exists():
-                                # Pick most recent champion directory
-                                dirs = [p for p in champions_root.iterdir() if p.is_dir()]
-                                dirs.sort(key=lambda p: p.stat().st_mtime, reverse=True)
-                                if dirs:
-                                    champ_dir = str(dirs[0])
-                                    _loader = _DL(stock_data_dir=_Path('stock_data'))
-                                    _pred = _Pred(data_loader=_loader, model_dir=champ_dir)
-                                    _res = _pred.predict_ensemble(symbol=ticker, mode='progressive')
-                                    if _res and _res.get('predictions'):
-                                        p7 = _res['predictions'].get('7d') or _res['predictions'].get('1d')
-                                        if p7:
-                                            item['expected_return'] = float(p7.get('price_change_pct', 0.0) * 100.0)
-                                            item['confidence'] = float(p7.get('confidence', 0.0))
-                                            item['recommendation'] = p7.get('signal') or item.get('recommendation')
-                                            # Risk enrich (ATR or volatility)
-                                            try:
-                                                import pandas as __pd
-                                                ind_path = _Path('stock_data') / ticker / f"{ticker}_indicators.csv"
-                                                price_path = _Path('stock_data') / ticker / f"{ticker}_price.csv"
-                                                close_price = float(_res.get('current_price', 0.0))
-                                                atr_pct = None
-                                                if ind_path.exists():
-                                                    ind_df = __pd.read_csv(ind_path, index_col=0)
-                                                    if 'ATR_14' in ind_df.columns and close_price > 0:
-                                                        atr_val = float(__pd.to_numeric(ind_df['ATR_14'], errors='coerce').dropna().iloc[-1])
-                                                        atr_pct = max(0.001, min(0.2, atr_val / close_price))
-                                                if atr_pct is None and price_path.exists():
-                                                    dfp = __pd.read_csv(price_path, index_col=0)
-                                                    dfp['Close'] = __pd.to_numeric(dfp['Close'], errors='coerce')
-                                                    dfp = dfp.dropna(subset=['Close'])
-                                                    rets = dfp['Close'].pct_change().dropna()
-                                                    vol = float(rets.rolling(14).std().dropna().iloc[-1]) if len(rets) > 14 else float(rets.std())
-                                                    atr_pct = max(0.001, min(0.2, vol * 1.5))
-                                                rr = 2.0
-                                                risk_pct = max(0.005, min(0.2, atr_pct or 0.01))
-                                                reward_pct = max(0.01, min(0.4, risk_pct * rr))
-                                                change_pct = float(p7.get('price_change_pct', 0.0))
-                                                sl = close_price * (1 - risk_pct)
-                                                tp = close_price * (1 + reward_pct)
-                                                if change_pct < 0:
-                                                    sl = close_price * (1 + risk_pct)
-                                                    tp = close_price * (1 - reward_pct)
-                                                item['risk_7d'] = {
-                                                    'stop_loss': round(sl, 4),
-                                                    'take_profit': round(tp, 4),
-                                                    'stop_loss_pct': -risk_pct if change_pct >= 0 else risk_pct,
-                                                    'take_profit_pct': reward_pct if change_pct >= 0 else -reward_pct,
-                                                    'basis': 'ATR_14' if atr_pct is not None else 'volatility',
-                                                    'rr': rr
-                                                }
-                                            except Exception:
-                                                pass
-                    except Exception as _e:
-                        logger.debug(f"Hot-stocks enrich failed for {ticker}: {_e}")
-
-                    hot_stocks.append(item)
-                    
-            except Exception as e:
-                logger.warning(f"Error scanning {ticker}: {e}")
+        # Build from local symbols
+        symbols = _iter_local_symbols(max_symbols=500)
+        items: List[Dict[str, Any]] = []
+        scanned = 0
+        for sym in symbols:
+            scanned += 1
+            m = _compute_local_metrics(sym)
+            if m is None:
                 continue
-        
-        # Sort by expected return
-        hot_stocks.sort(key=lambda x: x.get('expected_return', 0), reverse=True)
-        
+            # Name isn't available in local CSVs; mirror symbol
+            m['name'] = sym
+            items.append(m)
+            if len(items) >= max(limit * 5, 100):
+                break
+        # Sort by expected return desc
+        items.sort(key=lambda x: x.get('expected_return', 0.0), reverse=True)
+        hot_stocks = items[:limit]
         return {
             "status": "success",
             "data": {
-                "hot_stocks": hot_stocks[:limit],
-                "total_scanned": len(tickers_to_scan),
-                "total_potential": len(hot_stocks),
+                "hot_stocks": hot_stocks,
+                "total_scanned": scanned,
+                "total_potential": len(items),
                 "last_updated": datetime.now().isoformat()
             }
         }
@@ -1165,6 +2698,165 @@ async def get_sector_analysis(sector_id: str):
         logger.error(f"❌ Error getting sector analysis: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# -------------------------------------------------
+# Scanner Orchestration (placeholder compatibility)
+# -------------------------------------------------
+@app.get("/api/scanner/status")
+async def scanner_status():
+    return {"status": "success", "data": _scanner_state.to_status()}
+
+
+@app.get("/api/scanner/top")
+async def scanner_top(limit: int = 50):
+    # Return ranked items in shape expected by scanner.html (data.items + meta)
+    try:
+        items = _scanner_state.top
+        if not items:
+            r = await get_hot_stocks(limit=max(limit, 50))
+            if isinstance(r, dict) and r.get('status') == 'success':
+                items = (r.get('data') or {}).get('hot_stocks') or []
+        # Build ranked table rows
+        ranked = []
+        for i, it in enumerate(items[:limit], start=1):
+            ranked.append({
+                'rank': i,
+                'symbol': it.get('symbol'),
+                'final_score': it.get('expected_return'),
+                'ml_score': it.get('ml_score'),
+                'fallback_score': it.get('change_percent'),
+                'current_price': it.get('current_price'),
+            })
+        return {
+            "status": "success",
+            "data": {
+                "date": datetime.now().strftime('%Y-%m-%d'),
+                "total": len(items),
+                "items": ranked
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/scanner/run")
+async def scanner_run(mode: str = 'ml', limit: int = 50, background_tasks: BackgroundTasks = None):
+    # Start a background scan
+    try:
+        if background_tasks is not None:
+            background_tasks.add_task(_run_scan, mode, limit)
+        else:
+            # Fallback if BackgroundTasks not injected
+            asyncio.create_task(_run_scan(mode, limit))
+        return {"status": "success", "data": {"started": True, "mode": mode, "limit": limit}}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/scanner/filter/status")
+async def scanner_filter_status():
+    return {
+        "status": "success",
+        "data": {
+            "state": _scanner_state.filter_state,
+            "progress": _scanner_state.filter_progress,
+            "total_symbols": _scanner_state.total_symbols,
+            "processed_symbols": _scanner_state.processed_symbols,
+            "passed_count": _scanner_state.passed_count,
+            "trained_count": _scanner_state.trained_count,
+            "count": len(_scanner_state.filter_items)
+        }
+    }
+
+
+@app.post("/api/scanner/filter/run")
+async def scanner_filter_run(background_tasks: BackgroundTasks = None):
+    # Start real filter over local stock_data with thresholds
+    from datetime import datetime as _dt
+    try:
+        # Parse optional thresholds from query/body
+        price_min = 3.0
+        adv_min = 1_000_000.0
+        try:
+            import json as _json
+            body = None
+            if hasattr(background_tasks, 'request'):
+                # Not available in this context; keep for clarity
+                pass
+        except Exception:
+            body = None
+        if body and isinstance(body, dict):
+            price_min = float(body.get('price_min', price_min) or price_min)
+            adv_min = float(body.get('adv_min', adv_min) or adv_min)
+        # Launch background job
+        if background_tasks is not None:
+            background_tasks.add_task(_run_filter_job, price_min, adv_min)
+        else:
+            asyncio.create_task(_run_filter_job(price_min, adv_min))
+        return {"status": "success", "data": {"started": True, "started_at": _dt.now().isoformat(), "price_min": price_min, "adv_min": adv_min}}
+    except Exception as e:
+        _scanner_state.filter_state = 'error'
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/scanner/filter/results")
+async def scanner_filter_results():
+    return {
+        "status": "success",
+        "data": {
+            "items": _scanner_state.filter_items,
+            "total": len(_scanner_state.filter_items)
+        }
+    }
+
+
+@app.get("/api/scanner/train/status")
+async def scanner_train_status():
+    return {"status": "success", "data": {"status": _scanner_state.train_status, "current_symbol": _scanner_state.train_current_symbol}}
+
+
+@app.post("/api/scanner/train/start")
+async def scanner_train_start(symbol: Optional[str] = None, background_tasks: BackgroundTasks = None):
+    # Placeholder: mark running briefly then complete
+    try:
+        _scanner_state.train_status = 'running'
+        _scanner_state.train_current_symbol = (symbol or '').upper() or None
+        async def _finish():
+            await asyncio.sleep(1.0)
+            _scanner_state.train_status = 'completed'
+            _scanner_state.train_current_symbol = None
+        if background_tasks is not None:
+            background_tasks.add_task(_finish)
+        else:
+            asyncio.create_task(_finish())
+        return {"status": "success", "data": {"started": True, "symbol": symbol}}
+    except Exception as e:
+        _scanner_state.train_status = 'error'
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/scanner/train/start-all")
+async def scanner_train_start_all(background_tasks: BackgroundTasks = None):
+    # Placeholder: complete immediately
+    try:
+        _scanner_state.train_status = 'running'
+        async def _finish():
+            await asyncio.sleep(1.0)
+            _scanner_state.train_status = 'completed'
+        if background_tasks is not None:
+            background_tasks.add_task(_finish)
+        else:
+            asyncio.create_task(_finish())
+        return {"status": "success", "data": {"started": True}}
+    except Exception as e:
+        _scanner_state.train_status = 'error'
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/scanner/train/symbol/{symbol}/status")
+async def scanner_train_symbol_status(symbol: str):
+    # Placeholder: always completed
+    return {"status": "success", "data": {"symbol": symbol.upper(), "status": "completed"}}
+
 
 @app.get("/api/financial/historical/{symbol}")
 async def get_historical_data(symbol: str, timeframe: str = "1D"):
@@ -1176,6 +2868,7 @@ async def get_historical_data(symbol: str, timeframe: str = "1D"):
         import pandas as pd
         from datetime import datetime, timedelta
         from pathlib import Path
+        from app.integrations.ibkr_client import ibkr
         
         # Get stock_data directory (two levels up from app/)
         project_root = Path(__file__).parent.parent

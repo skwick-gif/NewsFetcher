@@ -349,8 +349,8 @@ class SectorScanner:
         """
         try:
             # DISABLED - Neural networks contain dummy data
-            # from financial.neural_networks import EnsembleNeuralNetwork
-            from financial.market_data import financial_provider  
+            # from app.financial.neural_networks import EnsembleNeuralNetwork
+            from app.financial.market_data import financial_provider  
             import pandas as pd
             import numpy as np
             from pathlib import Path

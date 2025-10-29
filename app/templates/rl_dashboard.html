@@ -227,6 +227,7 @@
         <button onclick="planPPO()" title="Auto-plan dates/window/steps from local data" style="background:#059669; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Plan</button>
         <button onclick="planAndTrainPPO()" title="Plan then Train" style="background:#0ea5e9; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Plan & Train</button>
         <button onclick="startPPO()" style="background:#8b5cf6; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Train PPO</button>
+  <button onclick="stopPPO()" style="background:#ef4444; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Stop</button>
       </div>
       <div id="ppo-plan-card" style="display:none; margin-top:8px; background: rgba(255,255,255,0.03); border:1px dashed rgba(255,255,255,0.12); padding:8px; border-radius:6px; font-size:12px; color:#cbd5e1;"></div>
       <div id="ppo-status" style="margin-top:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;"></div>
@@ -1082,6 +1083,7 @@
         return;
       }
       const jobId = j.job_id;
+      window._lastPPOJobId = jobId;
       document.getElementById('ppo-status').textContent = `Job ${jobId} — running...`;
       if(_ppoPoll) clearInterval(_ppoPoll);
       _ppoPoll = setInterval(()=> pollPPO(jobId), 2000);
@@ -1124,6 +1126,21 @@
       if(!sym){ alert('Please enter symbol(s)'); return; }
       await planPPO();
       await startPPO();
+    }
+    async function stopPPO(){
+      try{
+        const jobId = window._lastPPOJobId;
+        if(!jobId){ alert('No running PPO job found'); return; }
+        const r = await fetch(`/api/rl/ppo/train/stop/${encodeURIComponent(jobId)}`, { method:'POST' });
+        const j = await r.json();
+        if(!r.ok){ throw new Error(j?.detail || 'Failed to stop PPO'); }
+        if(_ppoPoll){ clearInterval(_ppoPoll); _ppoPoll = null; }
+        document.getElementById('ppo-status').textContent = `Job ${jobId} — ${j.status}`;
+        const logsEl = document.getElementById('ppo-logs');
+        logsEl.textContent = (logsEl.textContent || '') + '\n🛑 Stop requested.';
+      }catch(e){
+        alert('Stop failed: ' + (e?.message || e));
+      }
     }
     async function pollPPO(jobId){
       try{

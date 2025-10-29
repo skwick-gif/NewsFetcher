@@ -46,6 +46,92 @@ def _load_news_features(csv_path: str, symbols: List[str], start: str | None, en
     return out
 
 
+def _load_indicator_features(symbols: List[str], start: str | None, end: str | None, cols: List[str] | None) -> Dict[str, pd.DataFrame]:
+    """Load per-symbol technical indicator features from stock_data/<SYM>/<SYM>_indicators.csv.
+
+    - Robustly parses Date column to DateTimeIndex
+    - If cols is None or empty, includes all non-OHLCV columns
+    - If cols provided, matches case-insensitively using a normalized name heuristic
+    Returns mapping Symbol -> DataFrame indexed by Date with selected indicator columns.
+    """
+    import pandas as pd
+    from pathlib import Path
+
+    # repo root = this file ../../..
+    repo_root = Path(__file__).resolve().parents[2]
+    sd = repo_root / 'stock_data'
+
+    def _norm(name: str) -> str:
+        return ''.join(ch for ch in name.lower() if ch.isalnum())
+
+    out: Dict[str, pd.DataFrame] = {}
+    for s in symbols:
+        try:
+            p = sd / s / f"{s}_indicators.csv"
+            if not p.exists():
+                continue
+            df = pd.read_csv(p)
+            # detect date column
+            date_col = None
+            for cand in ['Date','Datetime','date','datetime','index']:
+                if cand in df.columns:
+                    date_col = cand
+                    break
+            if date_col is None:
+                # fallback to first column
+                date_col = df.columns[0]
+            if date_col != 'Date':
+                df = df.rename(columns={date_col: 'Date'})
+            # robust datetime parse
+            try:
+                df['Date'] = pd.to_datetime(df['Date'], format='ISO8601')
+            except Exception:
+                try:
+                    df['Date'] = pd.to_datetime(df['Date'], format='mixed')
+                except Exception:
+                    df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+            df = df.dropna(subset=['Date']).set_index('Date').sort_index()
+            # choose columns
+            select_cols: List[str]
+            if cols:
+                # map requested names to actual columns using normalized form
+                actual = list(df.columns)
+                norm_map = { _norm(c): c for c in actual }
+                wanted: List[str] = []
+                for c in cols:
+                    nc = _norm(str(c))
+                    if nc in norm_map:
+                        wanted.append(norm_map[nc])
+                    else:
+                        # try common alias patterns (e.g., rsi14 -> rsi_14)
+                        if nc.endswith('14') and ('rsi14' in nc or 'adx14' in nc or 'atr14' in nc):
+                            alt = nc[:-2] + '_14'
+                            if alt in norm_map:
+                                wanted.append(norm_map[alt])
+                                continue
+                        # if no match, skip silently
+                select_cols = [c for c in wanted if c in df.columns]
+            else:
+                # include everything except OHLCV duplicates if present
+                bad = {'open','high','low','close','adjclose','volume'}
+                select_cols = [c for c in df.columns if c.lower() not in bad]
+            if not select_cols:
+                continue
+            dfi = df[select_cols].copy()
+            # numeric
+            for c in dfi.columns:
+                dfi[c] = pd.to_numeric(dfi[c], errors='coerce').fillna(0.0)
+            # date slicing
+            if start:
+                dfi = dfi[dfi.index >= pd.to_datetime(start)]
+            if end:
+                dfi = dfi[dfi.index <= pd.to_datetime(end)]
+            out[s] = dfi
+        except Exception:
+            continue
+    return out
+
+
 def _load_vix_features(vix_symbol: str, start: str | None, end: str | None) -> pd.DataFrame:
     """Load VIX daily features as exogenous inputs (not tradable).
     Returns a DataFrame indexed by Date with columns like 'vix_ret'.
@@ -103,6 +189,9 @@ def make_env(
     # VIX feature
     add_vix_feature: bool = False,
     vix_symbol: str = '^VIX',
+    # Indicator features
+    use_indicator_features: bool = False,
+    indicator_cols: List[str] | None = None,
 ):
     from rl.envs.portfolio_env import PortfolioEnv
     from rl.envs.wrappers_portfolio import PortfolioEnvGym, NoTradeBandActionWrapper
@@ -123,6 +212,22 @@ def make_env(
                     extra_map[s] = extra_map[s].join(vdf, how='left').fillna(0.0)
                 else:
                     extra_map[s] = vdf.copy()
+    # Optionally load indicator features and merge
+    ind_cols: List[str] = []
+    if use_indicator_features:
+        ind_map = _load_indicator_features(symbols, start, end, indicator_cols)
+        if ind_map:
+            ind_cols = list(indicator_cols or [])
+            if extra_map is None:
+                extra_map = {}
+            # merge per-symbol
+            for s in symbols:
+                if s in ind_map:
+                    if s in extra_map:
+                        extra_map[s] = extra_map[s].join(ind_map[s], how='left').fillna(0.0)
+                    else:
+                        extra_map[s] = ind_map[s].copy()
+
     env = PortfolioEnv.load_from_local_universe(
         symbols=symbols,
         window=window,
@@ -133,7 +238,7 @@ def make_env(
         starting_cash=float(starting_cash),
         max_weight=(float(max_weight) if max_weight is not None else None),
         extra_features=extra_map,
-        extra_feature_cols=((news_cols or []) + vix_cols),
+        extra_feature_cols=((news_cols or []) + vix_cols + ind_cols),
         extra_window=int(news_window),
         turnover_penalty_bps=int(turnover_penalty_bps),
         broker=broker,
@@ -178,6 +283,9 @@ def main():
     # VIX feature
     parser.add_argument('--add-vix-feature', action='store_true', help='Include VIX as exogenous feature (vix_ret)')
     parser.add_argument('--vix-symbol', type=str, default='^VIX', help='Symbol to use for VIX features (default ^VIX)')
+    # Indicator features
+    parser.add_argument('--use-indicator-features', action='store_true', help='Include technical indicator features from stock_data/<SYM>_indicators.csv')
+    parser.add_argument('--indicator-cols', type=str, default=None, help='Comma list of indicator columns to include (case-insensitive); leave empty to include all')
     # Optional no-trade band (training-time constraint)
     parser.add_argument('--no-trade-band', type=float, default=0.0, help='Suppress rebalances below this per-symbol Δweight during training (0=disabled)')
     parser.add_argument('--band-min-days', type=int, default=0, help='Min business days between trades during training (0=disabled)')
@@ -216,6 +324,8 @@ def main():
         sec_fee_rate=args.sec_fee_rate,
         add_vix_feature=bool(args.add_vix_feature),
         vix_symbol=args.vix_symbol,
+        use_indicator_features=bool(args.use_indicator_features),
+        indicator_cols=([c.strip() for c in args.indicator_cols.split(',')] if args.indicator_cols else None),
     )
 
     # Model; PPO handles Box action spaces
@@ -290,6 +400,8 @@ def main():
             sec_fee_rate=args.sec_fee_rate,
             add_vix_feature=bool(args.add_vix_feature),
             vix_symbol=args.vix_symbol,
+            use_indicator_features=bool(args.use_indicator_features),
+            indicator_cols=([c.strip() for c in args.indicator_cols.split(',')] if args.indicator_cols else None),
         )
         callbacks.append(EvalCallback(eval_env, best_model_save_path=(out_dir / "best").as_posix(),
                                       log_path=(out_dir / "eval_logs").as_posix(), eval_freq=max(10000, args.checkpoint_freq or 10000),

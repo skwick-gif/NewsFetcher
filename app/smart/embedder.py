@@ -15,7 +15,7 @@ except ImportError:
     torch = None
     SentenceTransformer = None
     ML_AVAILABLE = False
-from storage.vector import get_vector_store
+from app.storage.vector import get_vector_store
 
 logger = logging.getLogger(__name__)
 

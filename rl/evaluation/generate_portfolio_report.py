@@ -104,6 +104,8 @@ def run_portfolio_policy(
     news_features_csv: Optional[str] = None,
     news_cols: Optional[List[str]] = None,
     news_window: int = 1,
+    use_indicator_features: bool = False,
+    indicator_cols: Optional[List[str]] = None,
 ) -> Tuple[List[pd.Timestamp], List[float]]:
     from rl.training.train_ppo_portfolio import make_env
     from stable_baselines3 import PPO  # type: ignore
@@ -120,6 +122,8 @@ def run_portfolio_policy(
         news_features_csv=news_features_csv,
         news_cols=news_cols,
         news_window=news_window,
+        use_indicator_features=bool(use_indicator_features),
+        indicator_cols=indicator_cols,
     )
     model = PPO.load(model_path.as_posix())
 
@@ -135,7 +139,7 @@ def run_portfolio_policy(
     cur_dim = int(np.array(obs, dtype=float).shape[0])
     if expected is not None and cur_dim != expected:
         # Try rebuild with no news extras as a common mismatch source
-        env = make_env(symbols, 60, start, end, news_features_csv=None, news_cols=None, news_window=1)
+    env = make_env(symbols, 60, start, end, news_features_csv=None, news_cols=None, news_window=1, use_indicator_features=False)
         obs2 = env.reset()
         if isinstance(obs2, tuple):
             obs2 = obs2[0]
@@ -150,7 +154,7 @@ def run_portfolio_policy(
                 default_cols = ['news_count','llm_relevant_count','avg_score','fda_count','china_count','geopolitics_count','sentiment_avg']
                 if default_csv.exists():
                     tried_default = True
-                    env = make_env(symbols, 60, start, end, news_features_csv=default_csv.as_posix(), news_cols=default_cols, news_window=1)
+                    env = make_env(symbols, 60, start, end, news_features_csv=default_csv.as_posix(), news_cols=default_cols, news_window=1, use_indicator_features=False)
                     obs3 = env.reset()
                     if isinstance(obs3, tuple):
                         obs3 = obs3[0]
@@ -231,6 +235,8 @@ def run_portfolio_policy_with_weights(
     news_features_csv: Optional[str] = None,
     news_cols: Optional[List[str]] = None,
     news_window: int = 1,
+    use_indicator_features: bool = False,
+    indicator_cols: Optional[List[str]] = None,
 ) -> Tuple[List[pd.Timestamp], List[float], pd.DataFrame]:
     dates, equities = run_portfolio_policy(
         repo_root,
@@ -240,13 +246,15 @@ def run_portfolio_policy_with_weights(
         news_features_csv=news_features_csv,
         news_cols=news_cols,
         news_window=news_window,
+        use_indicator_features=use_indicator_features,
+        indicator_cols=indicator_cols,
     )
     # Re-roll to extract weights aligned to dates
     from rl.training.train_ppo_portfolio import make_env
     from stable_baselines3 import PPO  # type: ignore
     model_dir = repo_root / "rl" / "models" / "ppo_portfolio"
     model_path = _find_model_for_symbols(model_dir, symbols)
-    env = make_env(symbols, 60, start, end, news_features_csv=news_features_csv, news_cols=news_cols, news_window=news_window)
+    env = make_env(symbols, 60, start, end, news_features_csv=news_features_csv, news_cols=news_cols, news_window=news_window, use_indicator_features=use_indicator_features, indicator_cols=indicator_cols)
     model = PPO.load(model_path.as_posix())
     # If obs mismatch, try drop news extras or default news (consistent with run_portfolio_policy)
     try:
@@ -257,7 +265,7 @@ def run_portfolio_policy_with_weights(
     if isinstance(obs, tuple):
         obs = obs[0]
     if expected is not None and int(np.array(obs).shape[0]) != expected:
-        env = make_env(symbols, 60, start, end, news_features_csv=None, news_cols=None, news_window=1)
+    env = make_env(symbols, 60, start, end, news_features_csv=None, news_cols=None, news_window=1, use_indicator_features=False)
         obs = env.reset()
         if isinstance(obs, tuple):
             obs = obs[0]
@@ -266,7 +274,7 @@ def run_portfolio_policy_with_weights(
             default_csv = (repo_root / 'ml' / 'data' / 'news_features.csv')
             default_cols = ['news_count','llm_relevant_count','avg_score','fda_count','china_count','geopolitics_count','sentiment_avg']
             if default_csv.exists():
-                env = make_env(symbols, 60, start, end, news_features_csv=default_csv.as_posix(), news_cols=default_cols, news_window=1)
+                env = make_env(symbols, 60, start, end, news_features_csv=default_csv.as_posix(), news_cols=default_cols, news_window=1, use_indicator_features=False)
                 obs = env.reset()
                 if isinstance(obs, tuple):
                     obs = obs[0]
@@ -488,6 +496,9 @@ def main():
     parser.add_argument("--news-features-csv", default=None, help="Path to ml/data/news_features.csv to include in observations")
     parser.add_argument("--news-cols", default=None, help="Comma list of news feature columns to include")
     parser.add_argument("--news-window", type=int, default=1, help="Number of recent days of news features to include per column")
+    # Optional indicator features to align env obs with training
+    parser.add_argument("--use-indicator-features", action="store_true", help="Include per-symbol indicator features from stock_data/<SYM>_indicators.csv")
+    parser.add_argument("--indicator-cols", default=None, help="Comma list of indicator columns to include (case-insensitive)")
     # Optional banded rebalancing at evaluation
     parser.add_argument("--no-trade-band", type=float, default=0.0, help="Suppress rebalances below this per-symbol Δweight during evaluation (0=disabled)")
     parser.add_argument("--band-min-days", type=int, default=0, help="Min business days between banded rebalances (0=disabled)")
@@ -513,6 +524,7 @@ def main():
 
     # PPO Portfolio (raw)
     news_cols = [c.strip() for c in args.news_cols.split(',')] if args.news_cols else None
+    indicator_cols = [c.strip() for c in args.indicator_cols.split(',')] if args.indicator_cols else None
     news_csv = args.news_features_csv
     p_dates, p_eq, p_w = run_portfolio_policy_with_weights(
         repo_root,
@@ -522,6 +534,8 @@ def main():
         news_features_csv=news_csv,
         news_cols=news_cols,
         news_window=int(args.news_window),
+        use_indicator_features=bool(args.use_indicator_features),
+        indicator_cols=indicator_cols,
     )
     results.append(summarize_series(repo_root, label='-'.join(symbols), kind='ppo_portfolio', dates=p_dates, equity_list=p_eq, rf=rf))
 

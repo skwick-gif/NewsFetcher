@@ -114,6 +114,48 @@
       <label for="zero_stop">Zero stop</label>
       <input id="zero_stop" type="checkbox" checked title="יציאה אם MACD חוצה מטה את קו האפס לאחר הכניסה (לוגי)" />
     </div>
+    <!-- Price-following overlays controls -->
+    <div class="col">
+      <label for="show_ma">Show EMA 20/50</label>
+      <input id="show_ma" type="checkbox" checked title="הצג ממוצעים נעים EMA(20/50) על המחיר" />
+    </div>
+    <div class="col">
+      <label for="ema_fast">EMA fast</label>
+      <input id="ema_fast" type="number" value="20" min="2" class="compact" title="חלון EMA מהיר (ברירת מחדל 20)" />
+    </div>
+    <div class="col">
+      <label for="ema_slow">EMA slow</label>
+      <input id="ema_slow" type="number" value="50" min="3" class="compact" title="חלון EMA איטי (ברירת מחדל 50)" />
+    </div>
+    <div class="col">
+      <label for="show_kama">Show KAMA</label>
+      <input id="show_kama" type="checkbox" title="הצג KAMA(10) אדפטיבי על המחיר" />
+    </div>
+    <div class="col">
+      <label for="kama_n">KAMA n</label>
+      <input id="kama_n" type="number" value="10" min="2" class="compact" title="חלון KAMA (ברירת מחדל 10)" />
+    </div>
+    <!-- Visualization-only indicators -->
+    <div class="col">
+      <label for="show_rsi">Show RSI</label>
+      <input id="show_rsi" type="checkbox" checked title="הצג RSI ויזואלי (לא חלק מכללי המסחר)" />
+    </div>
+    <div class="col">
+      <label for="rsi_period">RSI period</label>
+      <input id="rsi_period" type="number" value="14" min="2" class="compact" title="חלון RSI (ברירת מחדל 14)" />
+    </div>
+    <div class="col">
+      <label for="show_stoch">Show Stoch</label>
+      <input id="show_stoch" type="checkbox" checked title="הצג Stochastic %K/%D ויזואלי (לא חלק מכללי המסחר)" />
+    </div>
+    <div class="col">
+      <label for="stoch_k">Stoch K</label>
+      <input id="stoch_k" type="number" value="14" min="3" class="compact" title="חלון %K (ברירת מחדל 14)" />
+    </div>
+    <div class="col">
+      <label for="stoch_d">Stoch D</label>
+      <input id="stoch_d" type="number" value="3" min="2" class="compact" title="חלון ממוצע %D (ברירת מחדל 3)" />
+    </div>
     <div class="col">
       <label for="adx_min">ADX min</label>
       <input id="adx_min" type="number" value="25" min="0" class="compact" title="סף מגמתיות לכניסה (ברירת מחדל 25; אפשר 20 ללברג׳ד כמו TNA)" />
@@ -153,6 +195,10 @@
     <div class="col">
   <label for="show_eq">Equity</label>
   <input id="show_eq" type="checkbox" checked title="הצג/הסתר קו הון מצטבר של האסטרטגיה (Equity) על פנל המחיר" />
+    </div>
+    <div class="col">
+      <label for="skip_weekends">Skip weekends</label>
+      <input id="skip_weekends" type="checkbox" checked title="הסתר ימי סוף‑שבוע (שבת/ראשון) מציר הזמן" />
     </div>
     <div class="col">
   <button id="run" style="background:#22c55e; border:none; color:white; border-radius:6px;" title="הרצה עם הפרמטרים הנוכחיים">Run ▶</button>
@@ -224,6 +270,14 @@
         vol_sma_period: Number(document.getElementById('vol_v').value),
         vol_down_strict: !!document.getElementById('vol_strict').checked,
         macd_zero_stop: !!document.getElementById('zero_stop').checked,
+        // Visualization-only
+        rsi_period: Number(document.getElementById('rsi_period').value),
+        stoch_k: Number(document.getElementById('stoch_k').value),
+        stoch_d: Number(document.getElementById('stoch_d').value),
+        // Price overlays params
+        ema_fast: Number(document.getElementById('ema_fast').value),
+        ema_slow: Number(document.getElementById('ema_slow').value),
+        kama_n: Number(document.getElementById('kama_n').value),
       };
       // Derive date range from explicit inputs or last days
       const ds = document.getElementById('start').value;
@@ -240,9 +294,13 @@
         const res = await fetch('/api/strategy/backtest', {
           method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)
         });
-        const text = await res.text();
         let js;
-        try { js = JSON.parse(text); } catch(e) { throw new Error('Invalid JSON from server: '+text.slice(0,200)); }
+        try {
+          js = await res.json();
+        } catch(e) {
+          const text = await res.text().catch(()=> '');
+          throw new Error('Invalid JSON from server: '+ (text ? text.slice(0,200) : String(e)) );
+        }
         if (!res.ok || js.status !== 'ok') {
           throw new Error(js.detail || `HTTP ${res.status}`);
         }
@@ -284,6 +342,12 @@
       const eq = js.equity || [];
       const macd = js.macd || [];
       const macdSig = js.macd_signal || [];
+  const rsi = js.rsi || [];
+  const stochK = js.stoch_k || [];
+  const stochD = js.stoch_d || [];
+  const emaFastArr = js.ema_fast || [];
+  const emaSlowArr = js.ema_slow || [];
+  const kama = js.kama || [];
 
       const trades = js.trades || [];
       // Replace tiny arrows with vertical event lines + top badges (B/S)
@@ -324,9 +388,27 @@
 
   // Equity on price panel secondary right axis (to avoid squashing candles)
   const equityTrace = { x: dates, y: eq, name: 'Equity', yaxis: 'y4', line:{color:'#1f77b4', width:1.8}, visible: true };
+  // Price-following overlays on price panel
+  const showMA = !!document.getElementById('show_ma')?.checked;
+  const showKAMA = !!document.getElementById('show_kama')?.checked;
+  const emaFast = Number(document.getElementById('ema_fast').value) || 20;
+  const emaSlow = Number(document.getElementById('ema_slow').value) || 50;
+  const kamaN = Number(document.getElementById('kama_n').value) || 10;
+  const ema20Trace = { x: dates, y: emaFastArr, name: `EMA${emaFast}`, yaxis: 'y', type:'scatter', mode:'lines', line:{color:'#22c55e', width:1.4}, hovertemplate:`%{x|%Y-%m-%d}<br>EMA${emaFast}: %{y:.2f}<extra></extra>`, visible: showMA ? true : 'legendonly' };
+  const ema50Trace = { x: dates, y: emaSlowArr, name: `EMA${emaSlow}`, yaxis: 'y', type:'scatter', mode:'lines', line:{color:'#06b6d4', width:1.4}, hovertemplate:`%{x|%Y-%m-%d}<br>EMA${emaSlow}: %{y:.2f}<extra></extra>`, visible: showMA ? true : 'legendonly' };
+  const kamaTrace = { x: dates, y: kama, name: `KAMA${kamaN}`, yaxis: 'y', type:'scatter', mode:'lines', line:{color:'#f59e0b', width:1.2, dash:'dot'}, hovertemplate:`%{x|%Y-%m-%d}<br>KAMA${kamaN}: %{y:.2f}<extra></extra>`, visible: showKAMA ? true : 'legendonly' };
   const macdTrace = { x: dates, y: macd, name: 'MACD', yaxis: 'y3', line:{color:'#555', width:2.0}, hovertemplate:'%{x|%Y-%m-%d}<br>MACD: %{y:.2f}<extra></extra>' };
   const sigTrace = { x: dates, y: macdSig, name: 'Signal', yaxis: 'y3', line:{color:'#f39c12', width:2.0}, hovertemplate:'%{x|%Y-%m-%d}<br>Signal: %{y:.2f}<extra></extra>' };
       const zeroLine = { x: dates, y: macd.map(_=>0), name:'0', yaxis:'y3', line:{color:'#bbb', width:1, dash:'dot'}, showlegend:false, type:'scatter', mode:'lines' };
+
+    // Visualization: RSI + Stoch overlay on MACD panel with separate right axis (0-100)
+    const showRSI = !!document.getElementById('show_rsi')?.checked;
+    const showStoch = !!document.getElementById('show_stoch')?.checked;
+    const rsiTrace = { x: dates, y: rsi, name: 'RSI', yaxis: 'y5', type:'scatter', mode:'lines', line:{color:'#8b5cf6', width:1.6}, hovertemplate:'%{x|%Y-%m-%d}<br>RSI: %{y:.1f}<extra></extra>', visible: showRSI ? true : 'legendonly' };
+    const stochKTrace = { x: dates, y: stochK, name: '%K', yaxis: 'y5', type:'scatter', mode:'lines', line:{color:'#06b6d4', width:1.4}, hovertemplate:'%{x|%Y-%m-%d}<br>%K: %{y:.1f}<extra></extra>', visible: showStoch ? true : 'legendonly' };
+    const stochDTrace = { x: dates, y: stochD, name: '%D', yaxis: 'y5', type:'scatter', mode:'lines', line:{color:'#fb923c', width:1.2, dash:'dot'}, hovertemplate:'%{x|%Y-%m-%d}<br>%D: %{y:.1f}<extra></extra>', visible: showStoch ? true : 'legendonly' };
+    const rsi30 = { x: dates, y: dates.map(()=>30), name:'RSI 30', yaxis:'y5', type:'scatter', mode:'lines', line:{color:'rgba(255,255,255,0.2)', width:1, dash:'dot'}, showlegend:false };
+    const rsi70 = { x: dates, y: dates.map(()=>70), name:'RSI 70', yaxis:'y5', type:'scatter', mode:'lines', line:{color:'rgba(255,255,255,0.2)', width:1, dash:'dot'}, showlegend:false };
 
       // Shade in-position intervals under price pane
       const inpos = js.in_position || [];
@@ -347,7 +429,19 @@
       }
 
   const showEq = !!document.getElementById('show_eq')?.checked;
-  const data = [candleOrLine, volBars, advLine, ...(showEq? [equityTrace] : []), macdTrace, sigTrace, zeroLine];
+  const data = [
+    candleOrLine, volBars, advLine,
+    ...(showEq? [equityTrace] : []),
+    // Price overlays on price panel
+    ...(showMA ? [ema20Trace, ema50Trace] : []),
+    ...(showKAMA ? [kamaTrace] : []),
+    // MACD panel
+    macdTrace, sigTrace, zeroLine,
+    // Optional overlays on MACD panel
+    ...(showRSI ? [rsiTrace, rsi30, rsi70] : []),
+    ...(showStoch ? [stochKTrace, stochDTrace] : [])
+  ];
+      const hideWeekends = !!document.getElementById('skip_weekends')?.checked;
       const layout = {
         height: 820,
         margin: {l:50, r:20, t:20, b:30},
@@ -357,6 +451,8 @@
         xaxis: {
           domain: [0,1], rangeslider: {visible: false},
           showspikes: true, spikemode: 'across', spikedash: 'dot', spikethickness: 1, spikecolor: '#94a3b8', spikesnap: 'cursor',
+          // Hide Sat/Sun when enabled
+          ...(hideWeekends ? {rangebreaks: [{pattern: 'day of week', bounds: [6,1]}]} : {}),
           rangeselector: {buttons:[
             {count: 1, label: '1m', step: 'month', stepmode: 'backward'},
             {count: 3, label: '3m', step: 'month', stepmode: 'backward'},
@@ -369,12 +465,30 @@
   // Secondary axis for Equity, overlaid on the price panel with its own scale
   yaxis4: {title: 'Equity', side:'right', overlaying:'y', domain:[0.35, 1.0], showgrid:false, zeroline:false},
         yaxis2: {title: 'Volume', domain:[0.2, 0.35], fixedrange: true},
-        yaxis3: {title: 'MACD', domain:[0, 0.2], zeroline: false},
+  yaxis3: {title: 'MACD', domain:[0, 0.2], zeroline: false},
+  // Overlay axis for RSI/Stoch (0-100) on MACD panel
+  yaxis5: {title: 'RSI/Stoch', side:'right', overlaying:'y3', range:[0,100], showgrid:false, zeroline:false},
         shapes: [...shapes, ...tradeShapes],
         annotations: tradeAnnotations
       };
 
   Plotly.newPlot('chart', data, layout, {responsive: true, displaylogo:false, modeBarButtonsToRemove:['lasso2d']});
+  // Keep MACD/price in view on x-zoom by re-autorang­ing y-axes when x range changes
+  try {
+    const chartDiv = document.getElementById('chart');
+    if (chartDiv && chartDiv.on) {
+      chartDiv.on('plotly_relayout', (ev) => {
+        const keys = Object.keys(ev || {});
+        const xChanged = keys.some(k => k === 'xaxis.autorange' || k.startsWith('xaxis.range'));
+        if (xChanged) {
+          Plotly.relayout(chartDiv, {
+            'yaxis.autorange': true,
+            'yaxis3.autorange': true
+          });
+        }
+      });
+    }
+  } catch (_) {}
 
       const m = js.metrics || {};
       document.getElementById('metrics').innerHTML = `
@@ -410,55 +524,96 @@
     document.getElementById('symbol').addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); runBacktest(); }});
     document.getElementById('start').addEventListener('change', runBacktest);
     document.getElementById('end').addEventListener('change', runBacktest);
-    document.getElementById('strategy').addEventListener('change', ()=>{
+    // Re-render on overlay toggle changes (simple: re-run backtest to replot)
+    ['show_ma','show_kama','show_rsi','show_stoch','skip_weekends','show_eq','ema_fast','ema_slow','kama_n'].forEach(id=>{
+      const el = document.getElementById(id); if(el){ el.addEventListener('change', runBacktest); }
+    });
+    async function applyStrategyDefaultsFromServer(strat){
+      try{
+        const res = await fetch(`/api/strategy/defaults?id=${encodeURIComponent(strat)}`);
+        if(!res.ok) return false;
+        const js = await res.json();
+        if(js.status !== 'ok') return false;
+        const p = js.params || {};
+        const setVal = (id,val)=>{ const el=document.getElementById(id); if(el!=null && val!=null){ if(el.type==='checkbox'){ el.checked = !!val; } else { el.value = val; } } };
+        // Core params
+        setVal('macd_fast', p.macd_fast);
+        setVal('macd_slow', p.macd_slow);
+        setVal('macd_signal', p.macd_signal);
+        setVal('pre_bars', p.pre_bars);
+        setVal('sell_bars', p.sell_bars);
+        setVal('adx_min', p.adx_min);
+        setVal('stop_pct', p.stop_loss_pct);
+        setVal('trailing', p.trailing_stop);
+        setVal('conv_win', p.conv_window);
+        setVal('p_buy', p.p_buy);
+        setVal('e_buy', p.e_buy);
+        setVal('p_sell', p.p_sell);
+        setVal('vol_v', p.vol_sma_period);
+        setVal('vol_strict', p.vol_down_strict);
+        setVal('zero_stop', p.macd_zero_stop);
+        // Indicators
+        setVal('rsi_period', p.rsi_period);
+        setVal('stoch_k', p.stoch_k);
+        setVal('stoch_d', p.stoch_d);
+        setVal('ema_fast', p.ema_fast);
+        setVal('ema_slow', p.ema_slow);
+        setVal('kama_n', p.kama_n);
+        return true;
+      }catch{ return false; }
+    }
+
+    document.getElementById('strategy').addEventListener('change', async ()=>{
       const strat = document.getElementById('strategy').value;
-      // Apply per-strategy sensible defaults; user can change after
-      if (strat === 'macd_cross') {
-        document.getElementById('macd_fast').value = 12;
-        document.getElementById('macd_slow').value = 26;
-        document.getElementById('macd_signal').value = 9;
-        document.getElementById('pre_bars').value = 2;
-        document.getElementById('sell_bars').value = 2;
-        document.getElementById('adx_min').value = 0;
-        document.getElementById('stop_pct').value = 0;
-        document.getElementById('trailing').checked = false;
-        document.getElementById('conv_win').value = 60;
-        document.getElementById('p_buy').value = 35;
-        document.getElementById('e_buy').value = 20;
-        document.getElementById('p_sell').value = 40;
-      } else if (strat === 'macd_pre_cross_below_zero') {
-        document.getElementById('macd_fast').value = 5;
-        document.getElementById('macd_slow').value = 35;
-        document.getElementById('macd_signal').value = 5;
-        document.getElementById('pre_bars').value = 3;
-        document.getElementById('sell_bars').value = 2;
-        document.getElementById('adx_min').value = 25;
-        document.getElementById('stop_pct').value = 9;
-        document.getElementById('trailing').checked = true;
-        document.getElementById('conv_win').value = 60;
-        document.getElementById('p_buy').value = 35;
-        document.getElementById('e_buy').value = 20;
-        document.getElementById('p_sell').value = 40;
-        document.getElementById('vol_v').value = 20;
-        document.getElementById('vol_strict').checked = false;
-        document.getElementById('zero_stop').checked = false;
-      } else if (strat === 'macd_convergence_stock') {
-        // Assumption for stocks: MACD classic defaults
-        document.getElementById('macd_fast').value = 12;
-        document.getElementById('macd_slow').value = 26;
-        document.getElementById('macd_signal').value = 9;
-        document.getElementById('pre_bars').value = 3; // k_buy
-        document.getElementById('sell_bars').value = 2; // unused primarily
-        document.getElementById('adx_min').value = 20;
-        document.getElementById('stop_pct').value = 8; // fixed 8%
-        document.getElementById('trailing').checked = false;
-        document.getElementById('conv_win').value = 60;
-        document.getElementById('p_buy').value = 40;
-        document.getElementById('e_buy').value = 25;
-        document.getElementById('p_sell').value = 50; // not used
-        document.getElementById('vol_v').value = 20;
-        document.getElementById('vol_strict').checked = false; // optional stricter off
-        document.getElementById('zero_stop').checked = true;
+      const ok = await applyStrategyDefaultsFromServer(strat);
+      if(!ok){
+        // Fallback to hardcoded defaults if server/YAML not available
+        if (strat === 'macd_cross') {
+          document.getElementById('macd_fast').value = 12;
+          document.getElementById('macd_slow').value = 26;
+          document.getElementById('macd_signal').value = 9;
+          document.getElementById('pre_bars').value = 2;
+          document.getElementById('sell_bars').value = 2;
+          document.getElementById('adx_min').value = 0;
+          document.getElementById('stop_pct').value = 0;
+          document.getElementById('trailing').checked = false;
+          document.getElementById('conv_win').value = 60;
+          document.getElementById('p_buy').value = 35;
+          document.getElementById('e_buy').value = 20;
+          document.getElementById('p_sell').value = 40;
+        } else if (strat === 'macd_pre_cross_below_zero') {
+          document.getElementById('macd_fast').value = 5;
+          document.getElementById('macd_slow').value = 35;
+          document.getElementById('macd_signal').value = 5;
+          document.getElementById('pre_bars').value = 3;
+          document.getElementById('sell_bars').value = 2;
+          document.getElementById('adx_min').value = 25;
+          document.getElementById('stop_pct').value = 9;
+          document.getElementById('trailing').checked = true;
+          document.getElementById('conv_win').value = 60;
+          document.getElementById('p_buy').value = 35;
+          document.getElementById('e_buy').value = 20;
+          document.getElementById('p_sell').value = 40;
+          document.getElementById('vol_v').value = 20;
+          document.getElementById('vol_strict').checked = false;
+          document.getElementById('zero_stop').checked = false;
+        } else if (strat === 'macd_convergence_stock') {
+          document.getElementById('macd_fast').value = 12;
+          document.getElementById('macd_slow').value = 26;
+          document.getElementById('macd_signal').value = 9;
+          document.getElementById('pre_bars').value = 3;
+          document.getElementById('sell_bars').value = 2;
+          document.getElementById('adx_min').value = 20;
+          document.getElementById('stop_pct').value = 8;
+          document.getElementById('trailing').checked = false;
+          document.getElementById('conv_win').value = 60;
+          document.getElementById('p_buy').value = 40;
+          document.getElementById('e_buy').value = 25;
+          document.getElementById('p_sell').value = 50;
+          document.getElementById('vol_v').value = 20;
+          document.getElementById('vol_strict').checked = false;
+          document.getElementById('zero_stop').checked = true;
+        }
       }
       debouncedRun();
     });
