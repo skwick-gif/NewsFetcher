@@ -146,3 +146,9 @@ snapshots/
 scripts/*.log
 scripts/*.out
 scripts/*.tmp
+
+# IBKR local stack (ignore local generated content)
+IBKR/frontend/node_modules/
+IBKR/csharp_bridge/
+IBKR/python_adapter/.venv/
+IBKR/python_adapter/venv/
