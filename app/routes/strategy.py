@@ -206,6 +206,9 @@ def api_strategy_backtest():
         rsi_period = int(data.get('rsi_period', 14) or 14)
         stoch_k_p = int(data.get('stoch_k', 14) or 14)
         stoch_d_p = int(data.get('stoch_d', 3) or 3)
+        # New enhanced strategy parameters
+        atr_multiplier = float(data.get('atr_multiplier', 1.5) or 1.5)
+        take_profit_pct = float(data.get('take_profit_pct', 12.0) or 12.0)
 
         import pandas as pd
         import numpy as np
@@ -279,6 +282,9 @@ def api_strategy_backtest():
             'p_sell': float(p_sell),
             'vol_down_strict': bool(vol_down_strict),
             'macd_zero_stop': bool(macd_zero_stop),
+            'atr_multiplier': float(atr_multiplier),
+            'take_profit_pct': float(take_profit_pct),
+            'vol_sma_period': int(vol_sma_period),
         }
         result = strat_fn(df, strat_params) if strat_fn else None
         if result is None:

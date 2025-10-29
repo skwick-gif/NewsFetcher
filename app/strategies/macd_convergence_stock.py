@@ -26,18 +26,47 @@ def _rising_hist(hist, i: int, k: int) -> bool:
     return True
 
 
+def _falling_hist(hist, i: int, k: int) -> bool:
+    """Check if histogram has been falling for k consecutive days."""
+    if i - k < 1:
+        return False
+    for j in range(i - k + 1, i + 1):
+        if not (np.isfinite(hist.iloc[j]) and np.isfinite(hist.iloc[j-1])):
+            return False
+        if not (hist.iloc[j] < hist.iloc[j-1]):
+            return False
+    return True
+
+
 def run(df, params: Dict) -> StrategyResult:
+    """
+    MACD Convergence Stock Strategy - Enhanced with ATR-based trailing stops.
+    
+    Entry Logic (State: Looking for Buy):
+    - Filter 1: ADX > 20 (trending market)
+    - Filter 2: MACD < 0 AND Signal < 0 (negative zone)
+    - Filter 3: Volume < VOL_SMA (seller exhaustion)
+    - Filter 4: Histogram rising for k_buy days
+    - Filter 5: conv_ratio <= 40%
+    - Trigger: conv_ratio <= 25% OR MACD > Signal (bullish cross)
+    
+    Exit Logic (State: Managing Position):
+    - Check 1: Price <= Trailing Stop (T_Stop = max(T_Stop, Price - 2*ATR))
+    - Check 2: Price >= buy_price * 1.20 (20% take profit)
+    - Check 3 (MACD < 0): Histogram falling for k_sell days → Failed Rally
+    - Check 3 (MACD >= 0): MACD < Signal (bearish cross) → End of Trend
+    """
     initial_cash = float(params.get('initial_cash', 10000.0) or 10000.0)
     tcost = int(params.get('transaction_cost_bps', 5) or 5)
     slip = int(params.get('slippage_bps', 5) or 5)
-    pre_bars = int(params.get('pre_bars', 3) or 3)
-    adx_min = float(params.get('adx_min', 25) or 25)
-    stop_loss_pct = float(params.get('stop_loss_pct', 0) or 0)
-    trailing_stop = bool(params.get('trailing_stop', True))
-    p_buy = float(params.get('p_buy', 35) or 35)
-    e_buy = float(params.get('e_buy', 20) or 20)
-    vol_down_strict = bool(params.get('vol_down_strict', False))
-    macd_zero_stop = bool(params.get('macd_zero_stop', False))
+    k_buy = int(params.get('pre_bars', 3) or 3)
+    k_sell = int(params.get('sell_bars', 2) or 2)
+    adx_min = float(params.get('adx_min', 20) or 20)
+    atr_multiplier = float(params.get('atr_multiplier', 2.0) or 2.0)
+    take_profit_pct = float(params.get('take_profit_pct', 20.0) or 20.0)
+    p_buy = float(params.get('p_buy', 40) or 40)
+    e_buy = float(params.get('e_buy', 25) or 25)
+    vol_sma_period = int(params.get('vol_sma_period', 20) or 20)
 
     cash = float(initial_cash)
     shares = 0.0
@@ -46,90 +75,137 @@ def run(df, params: Dict) -> StrategyResult:
     in_position: List[int] = []
     stops_count = 0
     entry_px = None
-    peak_px_in_pos = None
+    trailing_stop_px = None
 
     prev_macd = None
     prev_sig = None
     dates = df['Date'].dt.date.tolist() if 'Date' in df.columns else [None] * len(df)
     hist = (df['macd'] - df['macd_signal']).astype(float)
 
+    # Pre-calculate ATR and Volume SMA
+    if 'High' in df.columns and 'Low' in df.columns:
+        df['TR'] = df[['High', 'Low', 'Close']].apply(
+            lambda row: max(row['High'] - row['Low'], 
+                          abs(row['High'] - row['Close']), 
+                          abs(row['Low'] - row['Close'])), 
+            axis=1
+        )
+        df['ATR'] = df['TR'].rolling(window=14).mean()
+    else:
+        df['ATR'] = np.nan
+
+    if 'Volume' in df.columns:
+        df['VOL_SMA'] = df['Volume'].rolling(window=vol_sma_period).mean()
+    else:
+        df['VOL_SMA'] = np.nan
+
     for i in range(len(df)):
         px = float(df.loc[i, 'Close'])
         m = float(df.loc[i, 'macd'])
         s = float(df.loc[i, 'macd_signal'])
+        h = float(hist.iloc[i])
+        atr = float(df.loc[i, 'ATR']) if np.isfinite(df.loc[i, 'ATR']) else 0.0
         action = None
         reason = None
 
-        if np.isfinite(m) and np.isfinite(s) and prev_macd is not None and prev_sig is not None:
-            crossed_up = (prev_macd <= prev_sig) and (m > s)
-            crossed_dn = (prev_macd >= prev_sig) and (m < s)
+        # ===== STATE 2: Managing Position (IN_MARKET) =====
+        if shares > 0:
+            # Update trailing stop: T_Stop = max(T_Stop, Price - (atr_multiplier * ATR))
+            new_stop = px - (atr_multiplier * atr) if atr > 0 else px * 0.92  # fallback 8% fixed stop
+            if trailing_stop_px is None:
+                trailing_stop_px = new_stop
+            else:
+                trailing_stop_px = max(trailing_stop_px, new_stop)
 
-            # Exit: protective stops
-            if shares > 0 and stop_loss_pct > 0:
-                basis = entry_px if (not trailing_stop) else (peak_px_in_pos if peak_px_in_pos is not None else entry_px)
-                if basis is None:
-                    basis = px
-                trigger_px = float(basis) * (1.0 - float(stop_loss_pct)/100.0)
-                if px <= trigger_px:
-                    fee = _apply_costs(_notional(shares, px), tcost, slip)
-                    cash += (shares * px - fee)
-                    shares = 0.0
-                    action = 'SELL'; reason = 'stoploss'
-                    stops_count += 1
-
-            # Optional: zero-cross stop
-            if action is None and shares > 0 and macd_zero_stop and (prev_macd is not None) and (prev_macd >= 0.0) and (m < 0.0):
+            # Check 1: Trailing Stop Hit
+            if px <= trailing_stop_px:
                 fee = _apply_costs(_notional(shares, px), tcost, slip)
                 cash += (shares * px - fee)
                 shares = 0.0
-                action = 'SELL'; reason = 'macd_below_zero'
+                action = 'SELL'
+                reason = 'trailing_stop_hit'
+                stops_count += 1
 
-            # Main exit on cross down
-            if action is None and shares > 0 and crossed_dn:
+            # Check 2: Take Profit Hit
+            elif entry_px is not None and px >= entry_px * (1.0 + take_profit_pct / 100.0):
                 fee = _apply_costs(_notional(shares, px), tcost, slip)
                 cash += (shares * px - fee)
                 shares = 0.0
-                action = 'SELL'; reason = 'cross_down'
+                action = 'SELL'
+                reason = 'take_profit_hit'
 
-            # Entry
-            if action is None:
-                in_bear_zone = (m < 0.0) and (s < 0.0)
-                hist_up = _rising_hist(hist, i, max(2, pre_bars))
-                cr = df.loc[i, 'conv_ratio'] if 'conv_ratio' in df.columns else np.nan
-                conv_ok = (np.isfinite(cr) and cr <= float(p_buy)/100.0)
-                adx_ok = (('adx' not in df.columns) or (not np.isfinite(df.loc[i, 'adx'])) or (float(df.loc[i, 'adx']) >= float(adx_min)))
-                # Volume dryness
-                vol_ok = True
-                try:
-                    v = float(df.loc[i, 'Volume'])
-                    v_sma = float(df.loc[i, 'VOL_SMA']) if ('VOL_SMA' in df.columns and np.isfinite(df.loc[i, 'VOL_SMA'])) else np.nan
-                    cond1 = (np.isfinite(v) and np.isfinite(v_sma) and (v < v_sma))
-                    if vol_down_strict:
-                        v_prev = float(df.loc[i-1, 'Volume']) if i-1 >= 0 else np.nan
-                        cond2 = (np.isfinite(v_prev) and v < v_prev)
-                        vol_ok = cond1 and cond2
-                    else:
-                        vol_ok = cond1
-                except Exception:
-                    vol_ok = True
+            # Check 3: Logical Exit (MACD-based)
+            elif np.isfinite(m) and np.isfinite(s):
+                if m < 0:
+                    # MACD still negative: Check for failed rally (histogram falling)
+                    if _falling_hist(hist, i, k_sell):
+                        fee = _apply_costs(_notional(shares, px), tcost, slip)
+                        cash += (shares * px - fee)
+                        shares = 0.0
+                        action = 'SELL'
+                        reason = 'failed_rally_macd_negative'
+                else:
+                    # MACD turned positive: Check for bearish cross (trend reversal)
+                    if prev_macd is not None and prev_sig is not None:
+                        crossed_dn = (prev_macd >= prev_sig) and (m < s)
+                        if crossed_dn:
+                            fee = _apply_costs(_notional(shares, px), tcost, slip)
+                            cash += (shares * px - fee)
+                            shares = 0.0
+                            action = 'SELL'
+                            reason = 'end_of_trend_bearish_cross'
 
-                setup_ok = in_bear_zone and hist_up and conv_ok and adx_ok and vol_ok and (cash > 0)
-                trigger_ok = False
+        # ===== STATE 1: Looking for Buy (NO POSITION) =====
+        elif cash > 0 and action is None:
+            if not (np.isfinite(m) and np.isfinite(s)):
+                pass  # Skip if MACD not available
+            else:
+                # Filter 1: ADX > 20 (trending market)
+                adx_val = float(df.loc[i, 'adx']) if 'adx' in df.columns and np.isfinite(df.loc[i, 'adx']) else 0.0
+                adx_ok = (adx_val >= adx_min)
+
+                # Filter 2: MACD < 0 AND Signal < 0 (negative zone)
+                in_negative_zone = (m < 0.0) and (s < 0.0)
+
+                # Filter 3: Volume < VOL_SMA (seller exhaustion)
+                vol = float(df.loc[i, 'Volume']) if 'Volume' in df.columns and np.isfinite(df.loc[i, 'Volume']) else 0.0
+                vol_sma = float(df.loc[i, 'VOL_SMA']) if np.isfinite(df.loc[i, 'VOL_SMA']) else 0.0
+                seller_exhaustion = (vol < vol_sma) if (vol > 0 and vol_sma > 0) else False
+
+                # Filter 4: Histogram rising for k_buy days
+                hist_rising = _rising_hist(hist, i, k_buy)
+
+                # Filter 5: conv_ratio <= 40%
+                cr = float(df.loc[i, 'conv_ratio']) if 'conv_ratio' in df.columns and np.isfinite(df.loc[i, 'conv_ratio']) else 100.0
+                conv_ok = (cr <= p_buy / 100.0)
+
+                # All filters must pass
+                setup_ok = adx_ok and in_negative_zone and seller_exhaustion and hist_rising and conv_ok
+
+                # Trigger: conv_ratio <= 25% OR MACD > Signal (bullish cross)
                 if setup_ok:
-                    trigger_ok = crossed_up or (np.isfinite(cr) and cr <= float(e_buy)/100.0)
+                    trigger_conv = (cr <= e_buy / 100.0)
+                    trigger_cross = False
+                    if prev_macd is not None and prev_sig is not None:
+                        trigger_cross = (prev_macd <= prev_sig) and (m > s)
+                    
+                    if trigger_conv or trigger_cross:
+                        # Execute Buy
+                        qty = cash / px
+                        fee = _apply_costs(_notional(qty, px), tcost, slip)
+                        cash -= (qty * px + fee)
+                        shares += qty
+                        action = 'BUY'
+                        reason = 'stock_conv_entry'
+                        entry_px = px
+                        # Initialize trailing stop: Price - (atr_multiplier * ATR)
+                        trailing_stop_px = px - (atr_multiplier * atr) if atr > 0 else px * 0.92
 
-                if setup_ok and trigger_ok:
-                    qty = cash / px
-                    fee = _apply_costs(_notional(qty, px), tcost, slip)
-                    cash -= (qty * px + fee)
-                    shares += qty
-                    action = 'BUY'; reason = 'stock_conv_entry'
-                    entry_px = px
-                    peak_px_in_pos = px
-
+        # ===== Record Equity and Trades =====
         equity = cash + shares * px
         equity_curve.append(float(equity))
         in_position.append(1 if shares > 0 else 0)
+        
         if action:
             trades.append({
                 'date': str(dates[i]) if dates[i] is not None else None,
@@ -141,14 +217,12 @@ def run(df, params: Dict) -> StrategyResult:
                 'equity': float(equity),
             })
 
-        # Track peak while in position for trailing stop
-        if shares > 0:
-            if peak_px_in_pos is None or px > peak_px_in_pos:
-                peak_px_in_pos = px
-        else:
+        # Reset state when exiting position
+        if shares == 0:
             entry_px = None
-            peak_px_in_pos = None
+            trailing_stop_px = None
 
+        # Track previous MACD values for cross detection
         prev_macd = m if np.isfinite(m) else prev_macd
         prev_sig = s if np.isfinite(s) else prev_sig
 
