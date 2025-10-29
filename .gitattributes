@@ -1,3 +1,4 @@
+# Use Git LFS for large/binary artifacts and model files
 *.pth filter=lfs diff=lfs merge=lfs -text
 *.pt filter=lfs diff=lfs merge=lfs -text
 *.h5 filter=lfs diff=lfs merge=lfs -text
@@ -8,7 +9,13 @@
 *.bin filter=lfs diff=lfs merge=lfs -text
 *.ckpt filter=lfs diff=lfs merge=lfs -text
 *.zip filter=lfs diff=lfs merge=lfs -text
+
+# Data containers
 *.parquet filter=lfs diff=lfs merge=lfs -text
 *.feather filter=lfs diff=lfs merge=lfs -text
 *.npz filter=lfs diff=lfs merge=lfs -text
 *.npy filter=lfs diff=lfs merge=lfs -text
+# Explicit folders commonly holding big files
+app/ml/models/** filter=lfs diff=lfs merge=lfs -text
+rl/models/** filter=lfs diff=lfs merge=lfs -text
+rl/tb/** filter=lfs diff=lfs merge=lfs -text
