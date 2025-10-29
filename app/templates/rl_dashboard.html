@@ -4,18 +4,90 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RL Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { background:#0b1220; color:#e2e8f0; font-family: Inter, system-ui; margin:0; }
     .container { max-width: 1000px; margin: 20px auto; padding: 20px; }
+    .header { display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; }
+    .nav { display:flex; gap:8px; }
+    .nav a { text-decoration:none; color:#e2e8f0; background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); padding:8px 12px; border-radius:6px; }
+    .nav a.active { background: rgba(34,197,94,0.2); border-color:#22c55e; }
     .card { background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px; margin-bottom:16px; }
     .row { display:flex; gap:16px; }
     .row > .card { flex:1; }
     .title { margin:0 0 12px; }
+    .tabs { display: flex; gap: 4px; margin-bottom: 16px; }
+    .tab-button { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+    .tab-button.active { background: rgba(34,197,94,0.2); border-color: #22c55e; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    /* Progressive ML visual parity (copied from dashboard.html) */
+    .section { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.08); }
+    .section h3 { color: #ffd700; border-bottom: 2px solid rgba(255,255,255,0.15); padding-bottom: 6px; margin-bottom: 12px; font-size: 1.1em; }
+    .ai-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px; }
+    .ai-card { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
+    .ai-card h4 { color: #ffd700; font-size: 0.95em; margin-bottom: 8px; }
+    @media (max-width: 1200px) { .ai-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px) { .ai-grid { grid-template-columns: 1fr; } }
+    /* Single-line ML readiness strip: hide verbose details injected by JS */
+    .ml-ready-line { display:flex; align-items:center; gap:8px; font-weight:600; }
+    #progressive-ml-status-display > div:nth-child(2) { display: none !important; }
+    /* RL Auto-Tune layout tweaks */
+    .rla-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:14px; align-items:end; }
+    .rla-actions { display:flex; gap:8px; align-items:center; }
+    .rla-actions button { white-space:nowrap; }
+    .rla-time input { width: 120px !important; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2 class="title">RL Agent (Paper) — Preview</h2>
+    <div class="header">
+      <h2 class="title" style="margin:0;">RL Dashboard</h2>
+      <div class="nav">
+        <a href="/rl" class="active">RL</a>
+        <a href="/rl#ml">ML</a>
+        <a href="/scanner">Scanner</a>
+        <a href="/strategy">Strategy</a>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab-button" onclick="switchTab('rl')">RL</button>
+      <button class="tab-button active" onclick="switchTab('ml')">ML</button>
+      <button class="tab-button" onclick="window.location.href='/scanner'">Scanner ↗</button>
+      <button class="tab-button" onclick="window.location.href='/strategy'">Strategy ↗</button>
+    </div>
+    <div id="rl-tab" class="tab-content">
+    <div class="card">
+      <h3>RL Auto-Tune Runner</h3>
+      <p style="opacity:0.9; margin-bottom:10px;">Launch an auto-tune session with presets for Stock-focused or Leveraged ETF-focused runs. Configure a time budget.</p>
+      <div class="rla-grid">
+        <div>
+          <label style="display:block; margin-bottom:4px;">Mode</label>
+          <select id="rla-mode" onchange="onRLModeChangeRLPage()" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+            <option value="stock" selected>Stock-focused (base + one symbol)</option>
+            <option value="etf">Leveraged ETF-focused</option>
+          </select>
+        </div>
+        <div id="rla-stock-wrap">
+          <label style="display:block; margin-bottom:4px;">Stock Symbol</label>
+          <input id="rla-stock" placeholder="MBLY" value="MBLY" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        </div>
+        <div id="rla-etf-wrap" style="display:none;">
+          <label style="display:block; margin-bottom:4px;">ETFs (comma-separated)</label>
+          <input id="rla-etfs" placeholder="TQQQ,SPXL,TNA" value="TQQQ,SPXL,TNA" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        </div>
+        <div class="rla-time">
+          <label style="display:block; margin-bottom:4px;">Time Budget (hours)</label>
+          <input id="rla-time" type="number" min="1" max="48" value="6" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        </div>
+        <div class="rla-actions">
+          <button onclick="startRLAutoTuneRLPage()" style="background:#22c55e; border:none; padding:10px 12px; border-radius:6px; color:white; cursor:pointer;">Start</button>
+          <button onclick="refreshRLAutoTuneStatusRLPage()" style="background:#4b5563; border:none; padding:10px 12px; border-radius:6px; color:white; cursor:pointer;">Refresh</button>
+          <button onclick="stopRLAutoTuneRLPage()" style="background:#ef4444; border:none; padding:10px 12px; border-radius:6px; color:white; cursor:pointer;">Stop</button>
+        </div>
+      </div>
+      <div id="rla-status" style="margin-top:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Courier New', monospace;"></div>
+    </div>
     <div class="card">
       <h3>Data Ensure</h3>
       <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
@@ -25,7 +97,8 @@
         <input id="ens-start" type="date" value="2020-01-01" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
         <label>End</label>
         <input id="ens-end" type="date" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
-        <button onclick="ensureData()" style="background:#22c55e; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Ensure</button>
+  <button onclick="ensureData()" style="background:#22c55e; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Ensure</button>
+  <button onclick="ensureDataAll()" title="Ensure missing data for ALL symbols under stock_data (incremental)" style="background:#0ea5e9; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Ensure All (stock_data)</button>
       </div>
       <details style="margin-top:8px;">
         <summary style="cursor:pointer; opacity:0.9;">Advanced indicator params (optional)</summary>
@@ -146,6 +219,11 @@
         <input id="ppo-end" type="date" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
         <label>Timesteps</label>
         <input id="ppo-steps" type="number" value="100000" style="width:120px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+  <label title="Include News features if available (news_features.csv)"><input id="ppo-use-news" type="checkbox" checked style="margin-right:6px;">News</label>
+  <label title="Include VIX as exogenous feature (vix_ret)"><input id="ppo-use-vix" type="checkbox" checked style="margin-right:6px;">VIX</label>
+        <input id="ppo-vix-symbol" placeholder="^VIX" value="^VIX" title="VIX symbol" style="width:90px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label title="Use indicator columns from Ensure (_indicators.csv)"><input id="ppo-use-ind" type="checkbox" checked style="margin-right:6px;">Indicators</label>
+        <input id="ppo-ind-cols" placeholder="indicator cols" value="rsi14,macd_hist,adx14,bb_pctb,bb_width,volume_sma_ratio,roc20,vol20" title="Indicator columns to include" style="min-width:320px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
         <button onclick="planPPO()" title="Auto-plan dates/window/steps from local data" style="background:#059669; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Plan</button>
         <button onclick="planAndTrainPPO()" title="Plan then Train" style="background:#0ea5e9; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Plan & Train</button>
         <button onclick="startPPO()" style="background:#8b5cf6; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Train PPO</button>
@@ -155,36 +233,36 @@
       <pre id="ppo-logs" style="max-height:200px; overflow:auto; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px; font-size:12px;"></pre>
     </div>
     <div class="card">
-      <h3>Portfolio — Evaluate (2024)</h3>
+      <h3 title="מריץ את מודל ה‑PPO על הטווח ומחשב מדדים מול EW/QQQ. אם המודל אומן על סט סמלים אחר — יווצר שגיאה מתאימה.">Portfolio — Evaluate (2024)</h3>
       <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-        <label>Symbols</label>
-        <input id="pf-syms" placeholder="QQQ,MBLY,TNA" value="QQQ,MBLY,TNA" style="min-width:300px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
-        <label>Eval Start</label>
-        <input id="pf-start" type="date" value="2024-01-01" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
-        <label>Eval End</label>
-        <input id="pf-end" type="date" value="2024-12-31" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
-        <button onclick="startPortfolioEval()" style="background:#22c55e; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Run Report</button>
+        <label title="סט סמלים זהה לאימון (הסדר לא משנה).">Symbols</label>
+        <input id="pf-syms" placeholder="QQQ,MBLY,TNA" value="QQQ,MBLY,TNA" title="דוגמה: QQQ,MBLY,TNA — חייב להתאים לסט האימון כדי שמודל ייטען נכון." style="min-width:300px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label title="תחילת תקופת הערכה">Eval Start</label>
+        <input id="pf-start" type="date" value="2024-01-01" title="תאריך התחלה להערכת התשואה/Sharpe/Drawdown" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label title="סיום תקופת הערכה">Eval End</label>
+        <input id="pf-end" type="date" value="2024-12-31" title="תאריך סיום להערכת התשואה/Sharpe/Drawdown" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <button onclick="startPortfolioEval()" title="מייצר דוח הכולל PPO, EW (יומי/שבועי) ו‑QQQ; נשמר בתיקיית reports/rl." style="background:#22c55e; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Run Report</button>
       </div>
       <div id="pf-status" style="margin-top:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;"></div>
       <pre id="pf-logs" style="max-height:200px; overflow:auto; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px; font-size:12px;"></pre>
       <div id="pf-summary" style="margin-top:10px;"></div>
     </div>
     <div class="card">
-      <h3>Walk-forward Evaluation</h3>
+      <h3 title="בדיקה על כמה חלונות עוקבים. מחפשים עקביות בתוצאות (Sharpe>0, DD בשליטה).">Walk-forward Evaluation</h3>
       <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-        <label>Symbols</label>
-        <input id="wf-syms" placeholder="QQQ,MBLY,TNA" value="QQQ,MBLY,TNA" style="min-width:300px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
-        <label>Start</label>
-        <input id="wf-start" type="date" value="2021-01-01" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
-        <label>End</label>
-        <input id="wf-end" type="date" value="2024-12-31" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
-        <label>Segments</label>
-        <input id="wf-seg" type="number" value="4" style="width:90px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
-        <label>Band</label>
-        <input id="wf-band" type="number" step="0.01" value="0.05" style="width:90px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
-        <label>Min Days</label>
-        <input id="wf-min-days" type="number" value="5" style="width:80px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
-        <button onclick="startWalkForward()" style="background:#22c55e; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Run Walk-forward</button>
+        <label title="סט סמלים זהה לאימון">Symbols</label>
+        <input id="wf-syms" placeholder="QQQ,MBLY,TNA" value="QQQ,MBLY,TNA" title="דוגמה: QQQ,MBLY,TNA" style="min-width:300px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label title="תחילת התקופה לחלוקה לתת‑חלונות">Start</label>
+        <input id="wf-start" type="date" value="2021-01-01" title="תאריך התחלה לחלוקת החלונות" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label title="סיום התקופה לחלוקה לתת‑חלונות">End</label>
+        <input id="wf-end" type="date" value="2024-12-31" title="תאריך סיום לחלוקת החלונות" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label title="מספר החלונות (Segments)">Segments</label>
+        <input id="wf-seg" type="number" value="4" title="כמה חתכים לחלון הראשי" style="width:90px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label title="No‑Trade Band — לא לבצע ריבלנס אם שינוי משקל קטן מהסף">Band</label>
+        <input id="wf-band" type="number" step="0.01" value="0.05" title="מפחית תחלופה ועלויות; 0.05 = 5%" style="width:90px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <label title="מספר ימי מינימום בין ריבלנסים (עם ה‑Band)">Min Days</label>
+        <input id="wf-min-days" type="number" value="5" title="מפחית תדירות מסחר; לדוגמה 5" style="width:80px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
+        <button onclick="startWalkForward()" title="מריץ Walk‑forward ושומר סיכום/גרפים בתיקייה" style="background:#22c55e; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Run Walk-forward</button>
       </div>
       <div id="wf-status" style="margin-top:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;"></div>
       <pre id="wf-logs" style="max-height:200px; overflow:auto; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px; font-size:12px;"></pre>
@@ -206,7 +284,7 @@
    <label title="מספר ימי מינימום בין שינויים עקב ה-Band. מפחית תדירות עסקאות. מומלץ: 5.">Min Days</label>
    <input id="live-min-days" type="number" value="5" title="מומלץ: 5. העלאה תקטין תדירות התאמות."
      style="width:80px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px;">
-        <button onclick="livePreview()" style="background:#22c55e; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Preview</button>
+  <button onclick="livePreview()" title="מחשב משקולות להיום לפי המודל האחרון/המסופק; אם מתקבלת שגיאת Shape — אמתו שהאימון וה‑Preview עם אותם פיצ'רים." style="background:#22c55e; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Preview</button>
       </div>
       <div id="live-out" style="margin-top:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;"></div>
     </div>
@@ -285,9 +363,331 @@
       <div id="news-status" style="margin-top:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;"></div>
       <pre id="news-logs" style="max-height:200px; overflow:auto; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px; font-size:12px;"></pre>
     </div>
+    </div>
+    <div id="ml-tab" class="tab-content active">
+      <div class="section">
+        <h3>🚀 Progressive ML Training System</h3>
+
+        <!-- Simplified readiness: single status line -->
+        <div id="ml-ready-strip" style="margin-bottom:16px; padding:8px 12px; background: rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.35); border-radius:8px;">
+          <div id="progressive-ml-status-display" class="ml-ready-line">Loading status…</div>
+        </div>
+
+        <!-- Row 2: Advanced Backtesting (Full Width, Parameters in Row) -->
+        <div style="background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(59,130,246,0.1)); border: 1px solid rgba(139,92,246,0.3); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+          <div style="display:flex; align-items:center; justify-content: space-between; gap: 10px;">
+            <h4 style="color: #ffd700; margin-bottom: 15px; font-size: 1.1em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; flex:1;">🔬 Advanced Backtesting Training</h4>
+            <div style="display:flex; align-items:center; gap:10px; white-space: nowrap;">
+              <a href="#" onclick="openBacktestExplainer(); return false;" style="color:#93c5fd; font-size:0.9em;">What does this mean?</a>
+              <span style="opacity:0.5;">|</span>
+              <a href="/docs/progressive-ml" target="_blank" style="color:#10b981; font-size:0.9em;">📘 Progressive ML Guide</a>
+            </div>
+          </div>
+          <p style="font-size: 0.9em; opacity: 0.8; margin-bottom: 15px;">Train with expanding date windows and automatic accuracy improvement</p>
+
+          <!-- Parameters Grid - All in Row including buttons -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; align-items: end;">
+            <div>
+              <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Start Date:</label>
+              <input type="date" id="backtest-start-date" value="2024-01-01" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+            </div>
+
+            <div>
+              <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">End Date:</label>
+              <input type="date" id="backtest-end-date" value="2025-10-07" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+            </div>
+
+            <div>
+              <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Test Period:</label>
+              <input type="number" id="backtest-test-period" value="14" min="1" max="365" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+            </div>
+
+            <div>
+              <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Iterations:</label>
+              <input type="number" id="backtest-max-iterations" value="10" min="1" max="50" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+            </div>
+
+            <div>
+              <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Target: <span id="accuracy-display" style="font-weight: bold; color: #10b981;">85%</span></label>
+              <input type="range" id="backtest-target-accuracy" min="50" max="100" value="85" style="width: 100%;">
+            </div>
+
+            <div>
+              <label style="font-size: 0.75em; color: #cbd5e0; display: flex; align-items: center; cursor: pointer; padding: 8px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                <input type="checkbox" id="backtest-auto-stop" checked style="width: 16px; height: 16px; margin-left: 5px; accent-color: #3b82f6;">
+                Auto-stop
+              </label>
+            </div>
+
+            <div>
+              <button onclick="startBacktesting()" style="width: 100%; background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer; font-weight: bold; font-size: 0.85em;">
+                🔬 Start
+              </button>
+              <button onclick="startAutoBacktesting()" style="width: 100%; background: linear-gradient(135deg, #10b981, #3b82f6); border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer; font-weight: bold; font-size: 0.85em; margin-top:6px;">
+                🤖 Auto (Plan & Run)
+              </button>
+            </div>
+
+            <div>
+              <button onclick="stopBacktesting()" style="width: 100%; background: #ef4444; border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer; font-size: 0.85em;">
+                ⏹ Stop
+              </button>
+            </div>
+          </div>
+
+          <!-- Indicator Parameters -->
+          <div style="margin-top: 12px; background: rgba(0,0,0,0.25); border-radius: 8px; padding: 12px;">
+            <details>
+              <summary style="cursor: pointer; color: #cbd5e0;">🧩 Indicator Parameters (optional)</summary>
+              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:10px; margin-top:10px;">
+                <div>
+                  <label style="font-size:0.8em; color:#cbd5e0; display:block; margin-bottom:4px;">RSI Period</label>
+                  <input id="ind-rsi-period" type="number" min="2" max="200" value="14" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+                </div>
+                <div>
+                  <label style="font-size:0.8em; color:#cbd5e0; display:block; margin-bottom:4px;">MACD Fast</label>
+                  <input id="ind-macd-fast" type="number" min="2" max="200" value="12" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+                </div>
+                <div>
+                  <label style="font-size:0.8em; color:#cbd5e0; display:block; margin-bottom:4px;">MACD Slow</label>
+                  <input id="ind-macd-slow" type="number" min="3" max="400" value="26" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+                </div>
+                <div>
+                  <label style="font-size:0.8em; color:#cbd5e0; display:block; margin-bottom:4px;">MACD Signal</label>
+                  <input id="ind-macd-signal" type="number" min="2" max="200" value="9" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+                </div>
+                <div>
+                  <label style="font-size:0.8em; color:#cbd5e0; display:block; margin-bottom:4px;">SMA Periods (CSV)</label>
+                  <input id="ind-sma-periods" type="text" value="5,10,20,50" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+                </div>
+                <div>
+                  <label style="font-size:0.8em; color:#cbd5e0; display:block; margin-bottom:4px;">EMA Periods (CSV)</label>
+                  <input id="ind-ema-periods" type="text" value="5,10,20,50" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+                </div>
+                <div>
+                  <label style="font-size:0.8em; color:#cbd5e0; display:block; margin-bottom:4px;">BB Period</label>
+                  <input id="ind-bb-period" type="number" min="5" max="200" value="20" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+                </div>
+                <div>
+                  <label style="font-size:0.8em; color:#cbd5e0; display:block; margin-bottom:4px;">BB Std Dev</label>
+                  <input id="ind-bb-std" type="number" min="0.5" max="5" step="0.1" value="2" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <!-- Progress Display -->
+          <div id="backtest-progress" style="margin-top: 20px; display: none;">
+            <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px; margin-bottom: 10px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span id="backtest-status-text">Starting backtest...</span>
+                <span id="backtest-iteration-text">Iteration 0/10</span>
+              </div>
+              <div style="background: rgba(255,255,255,0.1); border-radius: 10px; height: 10px; overflow: hidden;">
+                <div id="backtest-progress-fill" style="background: linear-gradient(90deg, #10b981, #3b82f6); height: 100%; width: 0%; transition: width 0.3s;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Plan & Preflight Card -->
+          <div id="backtest-plan-card" style="margin-top: 12px; display:none; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px;">
+            <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:6px;">
+              <h5 style="margin:0;">🧭 Plan & Preflight</h5>
+              <span id="backtest-preflight-badge" style="background:#2563eb; color:#fff; padding:2px 8px; border-radius:999px; font-size:0.75em;">Planning…</span>
+            </div>
+            <div id="backtest-plan-content" style="font-size:0.9em; opacity:0.95;"></div>
+          </div>
+
+          <!-- Champion Card -->
+          <div id="backtest-champion-card" style="margin-top: 12px; display:none; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.35); border-radius: 8px; padding: 10px;">
+            <div style="display:flex; justify-content: space-between; align-items:center;">
+              <h5 style="margin:0;">🏆 Champion</h5>
+              <button id="champion-forward-btn" onclick="runChampionForwardTest()" style="background:#059669; border:none; color:#fff; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:0.85em;">Run Forward Test</button>
+            </div>
+            <div id="backtest-champion-content" style="margin-top:6px; font-size:0.9em;"></div>
+            <div id="backtest-current-preds" style="margin-top:6px; font-size:0.9em;"></div>
+            <div id="backtest-forward-results" style="margin-top:6px; font-size:0.9em;"></div>
+          </div>
+
+          <!-- Results Table -->
+          <div id="backtest-results-container" style="margin-top: 20px; display: none;">
+            <h5 style="margin-bottom: 10px;">📊 Backtest Results</h5>
+            <div style="overflow-x: auto; background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px;">
+              <table id="backtest-results-table" style="width: 100%; color: #e2e8f0; font-size: 0.9em;">
+                <thead>
+                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <th style="padding: 8px; text-align: left;">#</th>
+                    <th style="padding: 8px; text-align: left;">Train Until</th>
+                    <th style="padding: 8px; text-align: left;">Accuracy</th>
+                    <th style="padding: 8px; text-align: left;">Loss</th>
+                    <th style="padding: 8px; text-align: left;">Time</th>
+                    <th style="padding: 8px; text-align: left;">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="backtest-results-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Backtest History Panel -->
+          <div id="backtest-history-container" style="margin-top: 20px; display: block;">
+            <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:8px;">
+              <h5 style="margin:0;">🕘 Backtest History</h5>
+              <button onclick="loadBacktestHistory()" style="background:#4b5563; border:none; color:#fff; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:0.85em;">Refresh</button>
+            </div>
+            <div id="backtest-history-list" style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px; max-height:180px; overflow:auto;">
+              <div style="opacity:0.7; font-size:0.9em;">No history yet. Run a backtest, then click Refresh.</div>
+            </div>
+          </div>
+
+          <!-- Chart -->
+          <div id="backtest-chart-container" style="margin-top: 20px; display: none;">
+            <canvas id="backtest-chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Row 3: Progressive Training Interface (2 Boxes) -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+          <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px;">
+            <h4 style="color: #ffd700; margin-bottom: 12px; font-size: 1em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px;">🎯 Progressive Model Training</h4>
+
+            <!-- All inputs in one row -->
+            <div style="display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 10px; margin-bottom: 10px; align-items: start;">
+              <div>
+                <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Stock Symbol:</label>
+                <input type="text" id="progressive-symbol" placeholder="Enter symbol (e.g., TSLA, NVDA)" value="" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.9em;">
+              </div>
+              <div>
+                <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Model Types:</label>
+                <select id="progressive-model-types" multiple style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 6px 8px; color: #e2e8f0; height: 60px; font-size: 0.85em;">
+                  <option value="lstm" selected>LSTM</option>
+                  <option value="cnn_lstm">CNN-LSTM</option>
+                  <option value="transformer">Transformer</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Training Mode:</label>
+                <select id="progressive-mode" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.9em;">
+                  <option value="progressive" selected>Progressive</option>
+                  <option value="unified">Unified</option>
+                </select>
+              </div>
+            </div>
+
+            <small style="opacity: 0.7; font-size: 0.8em; display: block; margin-bottom: 10px;">💡 Enter any stock symbol from your stock_data folder</small>
+
+            <div style="display: flex; gap: 10px;">
+              <button onclick="getProgressivePrediction()" style="flex: 1; background: #8b5cf6; border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer; font-weight: 600; font-size: 0.85em;">
+                🔮 Get Prediction
+              </button>
+              <button onclick="startProgressiveTraining()" style="flex: 1; background: #f59e0b; border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer; font-weight: 600; font-size: 0.85em;">
+                🚀 Start Training
+              </button>
+            </div>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px;">
+            <h4 style="color: #ffd700; margin-bottom: 6px; font-size: 1em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px;">🏋️ Training Progress</h4>
+            <div style="margin-bottom: 6px; font-size: 0.8em; opacity: 0.7;">Progress is approximate and may jump to 100% when training completes.</div>
+            <div id="progressive-training-results" style="min-height: 100px; background: rgba(255,255,255,0.03); border-radius: 8px; padding: 15px; border: 1px solid rgba(255,255,255,0.1);">
+              <p style="opacity: 0.6; text-align: center; font-size: 0.9em;">Training results will appear here</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prediction Results (Full Width) -->
+        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px;">
+          <h4 style="color: #ffd700; margin-bottom: 12px; font-size: 1em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px;">📈 Progressive Prediction Results</h4>
+          <div id="progressive-prediction-results" style="min-height: 150px; background: rgba(255,255,255,0.03); border-radius: 8px; padding: 15px; border: 1px solid rgba(255,255,255,0.1);">
+            <p style="opacity: 0.6; text-align: center; font-size: 0.9em;">Select a symbol and click "Get Progressive Prediction" to see advanced ML predictions with multiple time horizons</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="scanner-tab" class="tab-content" style="display:none;"></div>
+  </div>
+  <!-- Backtest Explainer Modal (required by Progressive ML UI) -->
+  <div id="backtest-explainer-modal" style="display:none; position:fixed; inset:0; background: rgba(0,0,0,0.6); z-index:1000;">
+    <div style="max-width:700px; margin: 60px auto; background:#111827; color:#e5e7eb; border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h4 style="color:#ffd700; margin:0;">Backtest Results: What do these mean?</h4>
+        <button onclick="closeBacktestExplainer()" style="background:#374151; color:#fff; border:none; padding:6px 10px; border-radius:6px; cursor:pointer;">Close</button>
+      </div>
+      <div style="margin-top:10px; font-size:0.95em; line-height:1.5;">
+        <p><strong>Iteration:</strong> Each loop trains on an expanding window, then tests forward for the selected period.</p>
+        <p><strong>Accuracy:</strong> Direction accuracy on the test window. 80%+ is generally solid; 85%+ is strong.</p>
+        <p><strong>Loss:</strong> Validation loss from training; lower is better. We use the best checkpoint per horizon.</p>
+        <p><strong>Best:</strong> The iteration with the highest test accuracy. Consider using its checkpoint when deploying.</p>
+        <p style="opacity:0.85;">See the Backtest Guide in the docs folder (docs/BACKTEST_GUIDE.md) for deeper details, zero-accuracy causes, and tips.</p>
+      </div>
+    </div>
   </div>
   <script src="/static/js/rl.js"></script>
+  <script src="/static/js/progressive-ml.js"></script>
   <script>
+    // RL Auto-Tune (RL page)
+    function onRLModeChangeRLPage(){
+      const mode = document.getElementById('rla-mode').value;
+      const sw = document.getElementById('rla-stock-wrap');
+      const ew = document.getElementById('rla-etf-wrap');
+      if(mode==='stock'){ sw.style.display=''; ew.style.display='none'; }
+      else { sw.style.display='none'; ew.style.display=''; }
+    }
+    async function startRLAutoTuneRLPage(){
+      const mode = document.getElementById('rla-mode').value;
+      const budget = parseFloat(document.getElementById('rla-time').value || '6');
+      const payload = { mode, time_budget_hours: budget };
+      if(mode==='stock'){
+        payload.symbol = (document.getElementById('rla-stock').value || '').trim().toUpperCase();
+        if(!payload.symbol){ alert('Please enter a stock symbol'); return; }
+      } else {
+        const etfs = (document.getElementById('rla-etfs').value || '').split(',').map(s=>s.trim().toUpperCase()).filter(Boolean);
+        if(!etfs.length){ alert('Please enter at least one ETF'); return; }
+        payload.etfs = etfs;
+      }
+      try{
+        const r = await fetch('/api/rl/auto-tune/start', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(payload) });
+        const j = await r.json();
+        updateRLAutoTuneStatusBoxRLPage(j);
+      }catch(e){
+        document.getElementById('rla-status').innerHTML = `<span style="color:#ef4444;">Failed to start: ${e.message}</span>`;
+      }
+    }
+    async function refreshRLAutoTuneStatusRLPage(){
+      try{
+        const r = await fetch('/api/rl/auto-tune/status');
+        const j = await r.json();
+        updateRLAutoTuneStatusBoxRLPage(j);
+      }catch(e){
+        document.getElementById('rla-status').innerHTML = `<span style="color:#ef4444;">Failed to fetch status: ${e.message}</span>`;
+      }
+    }
+    async function stopRLAutoTuneRLPage(){
+      try{
+        const r = await fetch('/api/rl/auto-tune/stop', { method:'POST' });
+        const j = await r.json();
+        updateRLAutoTuneStatusBoxRLPage(j);
+      }catch(e){
+        document.getElementById('rla-status').innerHTML = `<span style="color:#ef4444;">Failed to stop: ${e.message}</span>`;
+      }
+    }
+    function updateRLAutoTuneStatusBoxRLPage(resp){
+      const el = document.getElementById('rla-status');
+      if(!resp || !resp.data){ el.textContent = 'Idle'; return; }
+      const d = resp.data;
+      if(d.status==='idle'){ el.textContent = 'Idle'; return; }
+      const color = d.status==='running' ? '#ffd700' : (d.status==='completed' ? '#22c55e' : '#ef4444');
+      const parts = [];
+      parts.push(`<div><strong>Status:</strong> <span style="color:${color}">${(d.status||'').toUpperCase()}</span></div>`);
+      if(d.job_id) parts.push(`<div><strong>Job:</strong> ${d.job_id}</div>`);
+      if(d.started_at) parts.push(`<div><strong>Started:</strong> ${new Date(d.started_at).toLocaleString()}</div>`);
+      if(typeof d.pid==='number') parts.push(`<div><strong>PID:</strong> ${d.pid}</div>`);
+      if(d.cmd) parts.push(`<div style="margin-top:6px; word-break:break-all;"><strong>Cmd:</strong> <code>${d.cmd}</code></div>`);
+      if(typeof d.return_code!=='undefined') parts.push(`<div><strong>Return code:</strong> ${d.return_code}</div>`);
+      if(d.stdout) parts.push(`<div><strong>Stdout:</strong> <code>${d.stdout}</code></div>`);
+      if(d.stderr) parts.push(`<div><strong>Stderr:</strong> <code>${d.stderr}</code></div>`);
+      el.innerHTML = parts.join('');
+    }
     let _lastDecisions = [];
     let _lastIndicators = null;
     let _hoverIndex = null;
@@ -330,7 +730,11 @@
       try{
         const r = await fetch(`/api/rl/simulate/plan?symbol=${encodeURIComponent(sym)}`);
         const j = await r.json();
-        if(j.status !== 'planned'){ alert(j.detail || 'Planning failed'); return; }
+        if(j.status !== 'planned'){
+          const msg = (j && typeof j.detail === 'object') ? JSON.stringify(j.detail) : (j?.detail || j?.message || 'Planning failed');
+          alert(msg);
+          return;
+        }
         const p = j.plan || {};
         if(p.start_date) document.getElementById('rl-start').value = p.start_date;
         if(p.end_date) document.getElementById('rl-end').value = p.end_date;
@@ -645,6 +1049,7 @@
     // PPO train UI
     let _ppoPoll = null;
     async function startPPO(){
+        // optional features from UI
       const symsRaw = (document.getElementById('ppo-syms').value || '').toUpperCase();
       if(!symsRaw){ alert('Please enter symbol(s)'); return; }
       const windowSize = parseInt(document.getElementById('ppo-window').value || '60', 10);
@@ -654,9 +1059,28 @@
       const params = new URLSearchParams({ symbols: symsRaw, window: String(windowSize), timesteps: String(steps) });
       if(sd) params.set('start_date', sd);
       if(ed) params.set('end_date', ed);
+        const useVix = !!document.getElementById('ppo-use-vix')?.checked;
+        if(useVix){
+          params.set('add_vix', '1');
+          const vixSym = (document.getElementById('ppo-vix-symbol').value || '^VIX').trim();
+          if(vixSym) params.set('vix_symbol', vixSym);
+        }
+        const useInd = !!document.getElementById('ppo-use-ind')?.checked;
+        if(useInd){
+          params.set('use_indicators', '1');
+          const cols = (document.getElementById('ppo-ind-cols').value || '').trim();
+          if(cols) params.set('indicator_cols', cols);
+        }
+      // optional news toggle
+      const useNews = !!document.getElementById('ppo-use-news')?.checked;
+      params.set('use_news', useNews ? '1' : '0');
       const resp = await fetch(`/api/rl/ppo/train?${params.toString()}`, { method: 'POST' });
       const j = await resp.json();
-      if(j.status !== 'started'){ alert(j.detail || 'Failed to start PPO'); return; }
+      if(j.status !== 'started'){
+        const msg = (j && typeof j.detail === 'object') ? JSON.stringify(j.detail) : (j?.detail || j?.message || 'Failed to start PPO');
+        alert(msg);
+        return;
+      }
       const jobId = j.job_id;
       document.getElementById('ppo-status').textContent = `Job ${jobId} — running...`;
       if(_ppoPoll) clearInterval(_ppoPoll);
@@ -1176,9 +1600,17 @@
       const body = { symbols: syms, model_path: model || undefined, no_trade_band: band, band_min_days: minDays };
       try{
         const r = await fetch('/api/rl/live/preview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-        const j = await r.json();
+        let j = null;
+        try { j = await r.json(); }
+        catch(_){
+          const txt = await r.text();
+          j = { status: r.ok ? 'ok' : 'error', detail: txt };
+        }
         const out = document.getElementById('live-out');
-        if(j.status!=='ok'){ out.textContent = `Error: ${j.detail||'preview failed'}`; return; }
+        if(j.status!=='ok'){
+          out.textContent = `Error: ${j.detail||'preview failed'}${j.obs_dim?` (obs_dim=${j.obs_dim})`:''}`;
+          return;
+        }
         const sy = j.symbols||[];
         const rw = j.raw_weights || {}; const bw = j.banded_weights || null;
         let html = '';
@@ -1281,6 +1713,9 @@
       const sd = (document.getElementById('ens-start').value || '').trim();
       const ed = (document.getElementById('ens-end').value || '').trim();
       const body = { symbols: syms, start: sd || undefined, end: ed || undefined };
+      // Immediate UI feedback
+      const stEl = document.getElementById('ens-status'); if(stEl){ stEl.textContent = 'Starting ensure...'; }
+      const logEl = document.getElementById('ens-logs'); if(logEl){ logEl.textContent = ''; }
       // collect optional indicator params
       const grabInt = (id)=>{ const el = document.getElementById(id); if(!el) return undefined; const v = (el.value||'').trim(); if(!v) return undefined; const n = parseInt(v, 10); return Number.isFinite(n)? n : undefined; };
       const grabFloat = (id)=>{ const el = document.getElementById(id); if(!el) return undefined; const v = (el.value||'').trim(); if(!v) return undefined; const n = parseFloat(v); return Number.isFinite(n)? n : undefined; };
@@ -1309,15 +1744,38 @@
       // remove undefineds
       const cleaned = {}; Object.keys(ip).forEach(k=>{ if(ip[k] !== undefined) cleaned[k] = ip[k]; });
       if(Object.keys(cleaned).length){ body.indicator_params = cleaned; }
-      const r = await fetch('/api/rl/data/ensure', { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(body) });
-      const j = await r.json();
+      // Resolve API base: try current origin first, then fallback to port 5000
+      const tryStart = async (base) => fetch(base + '/api/rl/data/ensure', { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(body) });
+      let apiBase = '';
+      let resp;
+      try {
+        resp = await tryStart('');
+      } catch(_) { /* ignore */ }
+      if(!resp || !resp.ok){
+        const loc = window.location;
+        const fbBase = loc.protocol + '//' + loc.hostname + ':5000';
+        try { resp = await tryStart(fbBase); if(resp && resp.ok){ apiBase = fbBase; } } catch(_) { /* ignore */ }
+      }
+      if(!resp || !resp.ok){ alert('Failed to start ensure (endpoint not found)'); return; }
+      const j = await resp.json();
       if(j.status !== 'started'){ alert(j.detail || 'Failed to start ensure'); return; }
       const jobId = j.job_id;
+      // remember base for polling
+      window._ensApiBase = apiBase;
       document.getElementById('ens-status').textContent = `Ensure job ${jobId} — running...`;
       if(window._ensPoll){ clearInterval(window._ensPoll); }
       const poll = async ()=>{
         try{
-          const rs = await fetch(`/api/rl/data/ensure/status/${jobId}`);
+          const base = window._ensApiBase || '';
+          let rs = await fetch(base + `/api/rl/data/ensure/status/${jobId}`);
+          if(!rs.ok){
+            // try fallback to port 5000 once if not already
+            if(!base){
+              const loc = window.location; const fb = loc.protocol + '//' + loc.hostname + ':5000';
+              try { rs = await fetch(fb + `/api/rl/data/ensure/status/${jobId}`); if(rs.ok){ window._ensApiBase = fb; } } catch(_) { /* ignore */ }
+            }
+          }
+          if(!rs.ok){ throw new Error('status not found'); }
           const js = await rs.json();
           document.getElementById('ens-status').textContent = `Ensure job ${jobId} — ${js.status}`;
           document.getElementById('ens-logs').textContent = (js.logs||[]).join('\n');
@@ -1329,6 +1787,98 @@
       window._ensPoll = setInterval(poll, 2000); poll();
     }
     window.ensureData = ensureData;
+    async function ensureDataAll(){
+      const stEl = document.getElementById('ens-status'); if(stEl){ stEl.textContent = 'Starting ensure-all...'; }
+      const logEl = document.getElementById('ens-logs'); if(logEl){ logEl.textContent = ''; }
+      // collect optional indicator params same as ensureData
+      const grabInt = (id)=>{ const el = document.getElementById(id); if(!el) return undefined; const v = (el.value||'').trim(); if(!v) return undefined; const n = parseInt(v, 10); return Number.isFinite(n)? n : undefined; };
+      const grabFloat = (id)=>{ const el = document.getElementById(id); if(!el) return undefined; const v = (el.value||'').trim(); if(!v) return undefined; const n = parseFloat(v); return Number.isFinite(n)? n : undefined; };
+      const ip = {
+        rsi_period: grabInt('ip-rsi'),
+        macd_fast: grabInt('ip-macd-fast'),
+        macd_slow: grabInt('ip-macd-slow'),
+        macd_signal: grabInt('ip-macd-signal'),
+        atr_period: grabInt('ip-atr'),
+        bb_period: grabInt('ip-bb-p'),
+        bb_std: grabFloat('ip-bb-k'),
+        sma_short: grabInt('ip-sma-short'),
+        sma_mid: grabInt('ip-sma-mid'),
+        sma_long: grabInt('ip-sma-long'),
+        ema_main: grabInt('ip-ema'),
+        roc_period: grabInt('ip-roc'),
+        vol_period: grabInt('ip-vol'),
+        volume_ma_period: grabInt('ip-volma'),
+        adx_period: grabInt('ip-adx'),
+        kama_n: grabInt('ip-kama-n'),
+        kama_fast: grabInt('ip-kama-fast'),
+        kama_slow: grabInt('ip-kama-slow'),
+        stoch_k: grabInt('ip-stoch-k'),
+        stoch_d: grabInt('ip-stoch-d'),
+      };
+      const cleaned = {}; Object.keys(ip).forEach(k=>{ if(ip[k] !== undefined) cleaned[k] = ip[k]; });
+      const body = Object.keys(cleaned).length ? { indicator_params: cleaned } : {};
+      const tryStart = async (base) => fetch(base + '/api/rl/data/ensure-all', { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(body) });
+      let apiBase = '';
+      let resp;
+      try { resp = await tryStart(''); } catch(_) {}
+      if(!resp || !resp.ok){
+        const loc = window.location; const fbBase = loc.protocol + '//' + loc.hostname + ':5000';
+        try { resp = await tryStart(fbBase); if(resp && resp.ok){ apiBase = fbBase; } } catch(_) {}
+      }
+      if(!resp || !resp.ok){ alert('Failed to start ensure-all (endpoint not found)'); return; }
+      const j = await resp.json();
+      if(j.status !== 'started'){ alert(j.detail || 'Failed to start ensure-all'); return; }
+      const jobId = j.job_id;
+      window._ensApiBase = apiBase;
+      document.getElementById('ens-status').textContent = `Ensure ALL job ${jobId} — running...`;
+      if(window._ensPoll){ clearInterval(window._ensPoll); }
+      const poll = async ()=>{
+        try{
+          const base = window._ensApiBase || '';
+          let rs = await fetch(base + `/api/rl/data/ensure/status/${jobId}`);
+          if(!rs.ok && !base){
+            const loc = window.location; const fb = loc.protocol + '//' + loc.hostname + ':5000';
+            try { rs = await fetch(fb + `/api/rl/data/ensure/status/${jobId}`); if(rs.ok){ window._ensApiBase = fb; } } catch(_) {}
+          }
+          if(!rs.ok){ throw new Error('status not found'); }
+          const js = await rs.json();
+          document.getElementById('ens-status').textContent = `Ensure ALL job ${jobId} — ${js.status}`;
+          document.getElementById('ens-logs').textContent = (js.logs||[]).join('\n');
+          if(js.status==='completed' || js.status==='failed' || js.status==='error'){
+            clearInterval(window._ensPoll); window._ensPoll = null;
+          }
+        }catch(e){ clearInterval(window._ensPoll); window._ensPoll = null; }
+      };
+      window._ensPoll = setInterval(poll, 2000); poll();
+    }
+    window.ensureDataAll = ensureDataAll;
+    // Tab switching
+    function switchTab(tab, el) {
+      const contents = document.querySelectorAll('.tab-content');
+      contents.forEach(c => c.classList.remove('active'));
+      const buttons = document.querySelectorAll('.tab-button');
+      buttons.forEach(b => b.classList.remove('active'));
+      const targetTab = document.getElementById(tab + '-tab');
+      if (targetTab) targetTab.classList.add('active');
+      if (el && el.classList) {
+        el.classList.add('active');
+      } else if (typeof event !== 'undefined' && event && event.target && event.target.classList) {
+        event.target.classList.add('active');
+      } else {
+        // Fallback: mark button by label
+        buttons.forEach(b => {
+          const label = (b.textContent || '').trim().toLowerCase();
+          if (label === tab) b.classList.add('active');
+        });
+      }
+    }
+
+    // Initialize Progressive ML on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      onRLModeChangeRLPage();
+      refreshRLAutoTuneStatusRLPage();
+      initProgressiveML();
+    });
   </script>
 </body>
 </html>

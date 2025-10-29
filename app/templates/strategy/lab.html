@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Strategy Lab</title>
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+  <style>
+    body { background:#0b1220; color:#e2e8f0; font-family: Inter, system-ui; margin:0; color-scheme: dark; }
+    .container { max-width: 1400px; margin: 20px auto; padding: 20px; }
+    .header { display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; }
+    .nav { display:flex; gap:8px; }
+    .nav a { text-decoration:none; color:#e2e8f0; background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); padding:8px 12px; border-radius:6px; }
+    .nav a.active { background: rgba(34,197,94,0.2); border-color:#22c55e; }
+    .card { background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px; margin-bottom:16px; }
+    .row { display:flex; flex-wrap:wrap; gap:12px; align-items:end; }
+    .col { display:flex; flex-direction:column; }
+    label { font-size: 12px; color:#cbd5e1; }
+  input, select { padding:6px 8px; font-size:14px; background:#0f172a; border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; border-radius:6px; }
+  select option { background:#0b1220; color:#e2e8f0; }
+    button { padding:8px 12px; font-size:14px; cursor:pointer; }
+    #chart { width:100%; height:520px; }
+    #metrics { margin-top:10px; font-size:14px; }
+    .pill { display:inline-block; padding:2px 8px; border-radius:12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); margin-right:6px; }
+    .trade-list { max-height: 200px; overflow:auto; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:6px; border-radius:6px; }
+    .trade-buy { color:#10b981; }
+    .trade-sell { color:#ef4444; }
+    /* Compact numeric inputs for MACD/ADV/Slippage/etc */
+    .compact { width: 90px; }
+    /* Short text/selects (symbol/strategy) */
+    .short { width: 120px; }
+    .short-sel { width: 170px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2 style="margin:0;">Strategy Lab</h2>
+      <div class="nav">
+        <a href="/rl">RL</a>
+        <a href="/rl#ml" class="">ML</a>
+        <a href="/scanner">Scanner</a>
+        <a href="/strategy" class="active">Strategy</a>
+      </div>
+    </div>
+
+    <div class="card">
+  <div class="row">
+    <div class="col">
+  <label for="symbol">Symbol</label>
+  <input id="symbol" placeholder="AAPL" value="AAPL" class="short" title="סימבול מניה/ETF לדוגמה: AAPL, NVDA, QQQ" />
+    </div>
+    <div class="col">
+  <label for="start">Start date</label>
+  <input id="start" type="date" value="2025-01-01" title="תאריך התחלה. אם נשאר ריק, משתמשים בשדה Days כדי לקבוע טווח" />
+    </div>
+    <div class="col">
+  <label for="end">End date</label>
+  <input id="end" type="date" title="תאריך סיום. אם נשאר ריק, נשתמש ביום המסחר האחרון" />
+    </div>
+    <div class="col">
+      <label for="strategy">Strategy</label>
+      <select id="strategy" class="short-sel" title="אסטרטגיית מסחר. MACD Cross — כניסה ביציאת MACD מעל ה‑Signal; Pre-cross — ניסיון כניסה לפני החציה כשהכול מתחת לאפס">
+        <option value="macd_cross" selected>MACD Cross</option>
+        <option value="macd_pre_cross_below_zero">MACD Pre-cross ETF (5-35-5)</option>
+        <option value="macd_convergence_stock">MACD Convergence Stock</option>
+      </select>
+    </div>
+    <div class="col">
+  <label for="macd_fast">MACD fast</label>
+  <input id="macd_fast" type="number" value="12" min="2" class="compact" title="EMA מהיר ל‑MACD (ברירת מחדל 12)" />
+    </div>
+    <div class="col">
+  <label for="macd_slow">MACD slow</label>
+  <input id="macd_slow" type="number" value="26" min="3" class="compact" title="EMA איטי ל‑MACD (ברירת מחדל 26)" />
+    </div>
+    <div class="col">
+  <label for="macd_signal">MACD signal</label>
+  <input id="macd_signal" type="number" value="9" min="2" class="compact" title="חלון סיגנל ל‑MACD (ברירת מחדל 9)" />
+    </div>
+    <div class="col">
+  <label for="pre_bars">Pre bars</label>
+  <input id="pre_bars" type="number" value="3" min="2" class="compact" title="מס׳ נרות לפני חצייה לנסות כניסה (רלוונטי ל‑Pre‑cross)" />
+    </div>
+    <div class="col">
+      <label for="sell_bars">Sell bars</label>
+      <input id="sell_bars" type="number" value="2" min="1" class="compact" title="מס׳ נרות היסטוגרמה יורד לצורך יציאת SELL (ברירת מחדל ≥2)" />
+    </div>
+    <div class="col">
+      <label for="conv_win">Conv W</label>
+      <input id="conv_win" type="number" value="60" min="10" max="252" class="compact" title="חלון לרולינג מקסימום של מרחק MACD‑Signal לצורך יחס התכנסות (ברירת מחדל 60)" />
+    </div>
+    <div class="col">
+      <label for="p_buy">P_buy %</label>
+      <input id="p_buy" type="number" value="35" min="1" max="100" step="1" class="compact" title="סף התכווצות לסט־אפ קנייה: conv_ratio ≤ P_buy% (ברירת מחדל 35%)" />
+    </div>
+    <div class="col">
+      <label for="e_buy">E_buy %</label>
+      <input id="e_buy" type="number" value="20" min="1" max="100" step="1" class="compact" title="סף "קרוב מספיק" לטריגר כניסה לפני חציה: conv_ratio ≤ E_buy% (ברירת מחדל 20%)" />
+    </div>
+    <div class="col">
+      <label for="p_sell">P_sell %</label>
+      <input id="p_sell" type="number" value="40" min="1" max="100" step="1" class="compact" title="סף התכווצות ליציאה: conv_ratio ≤ P_sell% יחד עם ירידת היסטוגרמה (ברירת מחדל 40%)" />
+    </div>
+    <div class="col">
+      <label for="vol_v">Vol SMA V</label>
+      <input id="vol_v" type="number" value="20" min="5" max="120" class="compact" title="חלון ממוצע נע לווליום יומי (ברירת מחדל V=20) — בשימוש באסטרטגיית מניות" />
+    </div>
+    <div class="col">
+      <label for="vol_strict">Vol down</label>
+      <input id="vol_strict" type="checkbox" title="חומרה: בנוסף ל‑Vol < VolSMA, דרוש גם Vol היום < Vol אתמול" />
+    </div>
+    <div class="col">
+      <label for="zero_stop">Zero stop</label>
+      <input id="zero_stop" type="checkbox" checked title="יציאה אם MACD חוצה מטה את קו האפס לאחר הכניסה (לוגי)" />
+    </div>
+    <div class="col">
+      <label for="adx_min">ADX min</label>
+      <input id="adx_min" type="number" value="25" min="0" class="compact" title="סף מגמתיות לכניסה (ברירת מחדל 25; אפשר 20 ללברג׳ד כמו TNA)" />
+    </div>
+    <div class="col">
+  <label for="cash">Initial cash</label>
+  <input id="cash" type="number" value="10000" step="100" class="compact" title="הון התחלתי לסימולציה ($)" />
+    </div>
+    <div class="col">
+  <label for="tcost">Tx cost (bps)</label>
+  <input id="tcost" type="number" value="5" min="0" class="compact" title="עלות עסקה בבסיס נקודות (bps = 0.01%). לדוגמה 5 = 0.05%" />
+    </div>
+    <div class="col">
+  <label for="slip">Slippage (bps)</label>
+  <input id="slip" type="number" value="5" min="0" class="compact" title="סליפג׳ מוערך בבסיס נקודות (bps). לדוגמה 5 = 0.05%" />
+    </div>
+    <div class="col">
+      <label for="stop_pct">Stop‑loss %</label>
+      <input id="stop_pct" type="number" value="9" min="0" step="0.5" class="compact" title="אחוז סטופ לוס (Trailing). 9% מתאים יותר ל‑TNA ודומים" />
+    </div>
+    <div class="col">
+      <label for="trailing">Trailing</label>
+      <input id="trailing" type="checkbox" checked title="סטופ עוקב לפי השיא מאז הכניסה (מומלץ בלברג׳ד)" />
+    </div>
+    <div class="col">
+  <label for="days">Last days</label>
+  <input id="days" type="number" value="250" min="30" class="compact" title="כששדות התאריך ריקים — משך החלון לאחור (ימים)" />
+    </div>
+    <div class="col">
+  <label for="advp">ADV period</label>
+  <input id="advp" type="number" value="20" min="2" class="compact" title="חלון חישוב ממוצע מחזור (Average Daily Volume) בימים" />
+    </div>
+    <div class="col">
+  <label for="cwidth">Candle line width</label>
+  <input id="cwidth" type="number" value="1.8" step="0.2" min="0.6" class="compact" title="עובי קווי הנרות (כדי לשפר קריאות בצפיפות)" />
+    </div>
+    <div class="col">
+  <label for="show_eq">Equity</label>
+  <input id="show_eq" type="checkbox" checked title="הצג/הסתר קו הון מצטבר של האסטרטגיה (Equity) על פנל המחיר" />
+    </div>
+    <div class="col">
+  <button id="run" style="background:#22c55e; border:none; color:white; border-radius:6px;" title="הרצה עם הפרמטרים הנוכחיים">Run ▶</button>
+    </div>
+  </div>
+    </div>
+
+    <div class="card">
+      <div id="status" style="font-family: ui-monospace, Consolas, monospace; font-size: 12px; opacity:0.85; margin-bottom:6px;"></div>
+      <div id="quick" style="margin-bottom:8px;"></div>
+      <div id="chart"></div>
+    </div>
+    <div class="card">
+      <div id="metrics"></div>
+      <div class="trade-list" id="trades" style="margin-top:8px;"></div>
+    </div>
+
+  </div>
+
+  <script>
+    function formatPct(x) { return (x ?? 0).toFixed(2) + '%'; }
+    function fmtMoney(x) { return (x).toLocaleString(undefined, {maximumFractionDigits:2}); }
+    function lastBusinessDateISO() {
+      const d = new Date();
+      const day = d.getDay();
+      if (day === 0) d.setDate(d.getDate() - 2); // Sunday -> Friday
+      else if (day === 6) d.setDate(d.getDate() - 1); // Saturday -> Friday
+      return d.toISOString().slice(0,10);
+    }
+    function initDefaultDates() {
+      const s = document.getElementById('start');
+      const e = document.getElementById('end');
+      if (!s.value) s.value = '2025-01-01';
+      if (!e.value) e.value = lastBusinessDateISO();
+    }
+    function debounce(fn, ms) { let t; return (...args) => { clearTimeout(t); t = setTimeout(()=>fn(...args), ms); }; }
+
+    async function runBacktest() {
+      const btn = document.getElementById('run');
+      const status = document.getElementById('status');
+      status.textContent = 'Running…';
+      btn.disabled = true;
+      // show placeholders while loading
+      const metricsBox = document.getElementById('metrics');
+      const tradesBox = document.getElementById('trades');
+      if(metricsBox) metricsBox.innerHTML = '<span style="opacity:0.8;">Loading metrics…</span>';
+      if(tradesBox) tradesBox.textContent = 'Loading trades…';
+      const body = {
+  symbol: (document.getElementById('symbol').value || '').trim().toUpperCase(),
+        start_date: undefined,
+        end_date: undefined,
+        strategy: document.getElementById('strategy').value,
+        macd_fast: Number(document.getElementById('macd_fast').value),
+        macd_slow: Number(document.getElementById('macd_slow').value),
+        macd_signal: Number(document.getElementById('macd_signal').value),
+        pre_bars: Number(document.getElementById('pre_bars').value),
+        sell_bars: Number(document.getElementById('sell_bars').value),
+        initial_cash: Number(document.getElementById('cash').value),
+        transaction_cost_bps: Number(document.getElementById('tcost').value),
+        slippage_bps: Number(document.getElementById('slip').value),
+        adv_period: Number(document.getElementById('advp').value),
+        adx_min: Number(document.getElementById('adx_min').value),
+        stop_loss_pct: Number(document.getElementById('stop_pct').value),
+        trailing_stop: !!document.getElementById('trailing').checked,
+        conv_window: Number(document.getElementById('conv_win').value),
+        p_buy: Number(document.getElementById('p_buy').value),
+        e_buy: Number(document.getElementById('e_buy').value),
+        p_sell: Number(document.getElementById('p_sell').value),
+        vol_sma_period: Number(document.getElementById('vol_v').value),
+        vol_down_strict: !!document.getElementById('vol_strict').checked,
+        macd_zero_stop: !!document.getElementById('zero_stop').checked,
+      };
+      // Derive date range from explicit inputs or last days
+      const ds = document.getElementById('start').value;
+      const de = document.getElementById('end').value;
+      const lastDays = Number(document.getElementById('days').value);
+      if (ds) body.start_date = ds;
+      if (de) body.end_date = de;
+      if (!ds && !de && lastDays) {
+        const d = new Date();
+        d.setDate(d.getDate() - lastDays);
+        body.start_date = d.toISOString().slice(0,10);
+      }
+      try {
+        const res = await fetch('/api/strategy/backtest', {
+          method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)
+        });
+        const text = await res.text();
+        let js;
+        try { js = JSON.parse(text); } catch(e) { throw new Error('Invalid JSON from server: '+text.slice(0,200)); }
+        if (!res.ok || js.status !== 'ok') {
+          throw new Error(js.detail || `HTTP ${res.status}`);
+        }
+        render(js);
+        // scroll to metrics so the user sees the results "למטה" (ensure layout finished)
+        try {
+          const mEl = document.getElementById('metrics');
+          if(mEl){ setTimeout(()=> mEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 30); }
+        } catch(_) {}
+  const m = js.metrics || {};
+  const tr = (typeof m.total_return_pct === 'number') ? `${m.total_return_pct.toFixed(2)}%` : 'n/a';
+  const nt = (typeof m.num_trades === 'number') ? m.num_trades : '0';
+  status.textContent = `OK — ${body.symbol} ${body.start_date || ''} → ${body.end_date || ''} | Trades ${nt} | Return ${tr}`;
+        // Quick summary pill
+        const quick = document.getElementById('quick');
+        if (quick) {
+          const wr = (m.win_rate != null) ? (m.win_rate*100).toFixed(1)+'%' : 'n/a';
+          const dd = (typeof m.max_drawdown_pct === 'number') ? m.max_drawdown_pct.toFixed(2)+'%' : 'n/a';
+          quick.innerHTML = `<span class="pill">Ret ${tr}</span><span class="pill">Win ${wr}</span><span class="pill">DD ${dd}</span>`;
+        }
+      } catch (err) {
+        console.error(err);
+        status.textContent = `Error: ${err.message || err}`;
+        if(tradesBox) tradesBox.textContent = '—';
+        alert(`Backtest failed: ${err.message || err}`);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function render(js) {
+      const dates = js.dates || [];
+      const open = js.open || [];
+      const high = js.high || [];
+      const low = js.low || [];
+      const close = js.close || [];
+      const vol = js.volume || [];
+      const adv = js.adv || [];
+      const eq = js.equity || [];
+      const macd = js.macd || [];
+      const macdSig = js.macd_signal || [];
+
+      const trades = js.trades || [];
+      // Replace tiny arrows with vertical event lines + top badges (B/S)
+      const tradeShapes = [];
+      const tradeAnnotations = [];
+      for (const t of trades) {
+        const isBuy = t.action === 'BUY';
+        tradeShapes.push({
+          type:'line', xref:'x', yref:'paper', x0:t.date, x1:t.date, y0:0.35, y1:1.0,
+          line:{ color: isBuy? 'rgba(34,197,94,0.6)' : 'rgba(239,68,68,0.6)', width:1.4, dash: isBuy? 'solid' : 'dot' }
+        });
+        tradeAnnotations.push({
+          x: t.date, y: 1.0, xref:'x', yref:'paper', xanchor:'center', yanchor:'bottom',
+          text: isBuy? 'B' : 'S', showarrow:false,
+          font:{ color: isBuy? '#10b981' : '#ef4444', size:11, family:'ui-sans-serif, system-ui' },
+          bgcolor: isBuy? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)', bordercolor: 'rgba(255,255,255,0.15)', borderwidth:1,
+          align:'center'
+        });
+      }
+
+      // Candlestick for price
+      const cwidth = Number(document.getElementById('cwidth').value) || 1.6;
+      const hasOHLC = (open || []).some(v => v != null) && (high || []).some(v => v != null) && (low || []).some(v => v != null);
+      const candleOrLine = hasOHLC
+        ? {
+            type: 'candlestick', x: dates,
+            open: open, high: high, low: low, close: close,
+            name: 'Price', yaxis: 'y',
+            increasing: {line: {color: '#2ca02c', width: cwidth}, fillcolor: 'rgba(46, 204, 113, 0.4)'},
+            decreasing: {line: {color: '#d62728', width: cwidth}, fillcolor: 'rgba(231, 76, 60, 0.35)'},
+            hovertemplate: '%{x|%Y-%m-%d}<br>O: %{open:.2f}<br>H: %{high:.2f}<br>L: %{low:.2f}<br>C: %{close:.2f}<extra></extra>'
+          }
+        : { x: dates, y: close, type:'scatter', mode:'lines', name:'Close', yaxis:'y', line:{color:'#93c5fd', width:2.0}, hovertemplate: '%{x|%Y-%m-%d}<br>Close: %{y:.2f}<extra></extra>' };
+
+      // Volume bars + ADV line on middle pane
+  const volBars = { x: dates, y: vol, type:'bar', name:'Volume', yaxis:'y2', marker:{color:'#9aa3b2'}, hovertemplate:'%{x|%Y-%m-%d}<br>Vol: %{y:,}<extra></extra>' };
+  const advLine = { x: dates, y: adv, type:'scatter', mode:'lines', name:`ADV`, yaxis:'y2', line:{color:'#34495e', width:1.5}, hovertemplate:'%{x|%Y-%m-%d}<br>ADV: %{y:,}<extra></extra>' };
+
+  // Equity on price panel secondary right axis (to avoid squashing candles)
+  const equityTrace = { x: dates, y: eq, name: 'Equity', yaxis: 'y4', line:{color:'#1f77b4', width:1.8}, visible: true };
+  const macdTrace = { x: dates, y: macd, name: 'MACD', yaxis: 'y3', line:{color:'#555', width:2.0}, hovertemplate:'%{x|%Y-%m-%d}<br>MACD: %{y:.2f}<extra></extra>' };
+  const sigTrace = { x: dates, y: macdSig, name: 'Signal', yaxis: 'y3', line:{color:'#f39c12', width:2.0}, hovertemplate:'%{x|%Y-%m-%d}<br>Signal: %{y:.2f}<extra></extra>' };
+      const zeroLine = { x: dates, y: macd.map(_=>0), name:'0', yaxis:'y3', line:{color:'#bbb', width:1, dash:'dot'}, showlegend:false, type:'scatter', mode:'lines' };
+
+      // Shade in-position intervals under price pane
+      const inpos = js.in_position || [];
+      const shapes = [];
+      let start = null;
+      for (let i=0;i<inpos.length;i++) {
+        const on = inpos[i] === 1;
+        const d = dates[i];
+        if (on && start == null) start = d;
+        if ((!on || i === inpos.length-1) && start != null) {
+          const end = on && i === inpos.length-1 ? d : dates[i-1];
+          shapes.push({
+            type:'rect', xref:'x', yref:'paper', x0:start, x1:end, y0:0.35, y1:1.0,
+            fillcolor:'rgba(46, 204, 113, 0.06)', line:{width:0}
+          });
+          start = null;
+        }
+      }
+
+  const showEq = !!document.getElementById('show_eq')?.checked;
+  const data = [candleOrLine, volBars, advLine, ...(showEq? [equityTrace] : []), macdTrace, sigTrace, zeroLine];
+      const layout = {
+        height: 820,
+        margin: {l:50, r:20, t:20, b:30},
+        legend: {orientation: 'h'},
+        hovermode: 'x unified',
+  hoverlabel: { bgcolor: 'rgba(17,24,39,0.9)', bordercolor: 'rgba(255,255,255,0.15)', font: { color: '#ffffff', family: 'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto' } },
+        xaxis: {
+          domain: [0,1], rangeslider: {visible: false},
+          showspikes: true, spikemode: 'across', spikedash: 'dot', spikethickness: 1, spikecolor: '#94a3b8', spikesnap: 'cursor',
+          rangeselector: {buttons:[
+            {count: 1, label: '1m', step: 'month', stepmode: 'backward'},
+            {count: 3, label: '3m', step: 'month', stepmode: 'backward'},
+            {count: 6, label: '6m', step: 'month', stepmode: 'backward'},
+            {count: 1, label: '1y', step: 'year', stepmode: 'backward'},
+            {step: 'all'}
+          ]}
+        },
+  yaxis: {title: 'Price', side:'left', domain:[0.35, 1.0], nticks: 12},
+  // Secondary axis for Equity, overlaid on the price panel with its own scale
+  yaxis4: {title: 'Equity', side:'right', overlaying:'y', domain:[0.35, 1.0], showgrid:false, zeroline:false},
+        yaxis2: {title: 'Volume', domain:[0.2, 0.35], fixedrange: true},
+        yaxis3: {title: 'MACD', domain:[0, 0.2], zeroline: false},
+        shapes: [...shapes, ...tradeShapes],
+        annotations: tradeAnnotations
+      };
+
+  Plotly.newPlot('chart', data, layout, {responsive: true, displaylogo:false, modeBarButtonsToRemove:['lasso2d']});
+
+      const m = js.metrics || {};
+      document.getElementById('metrics').innerHTML = `
+        <span class="pill">Initial $${fmtMoney(m.initial_cash || 0)}</span>
+        <span class="pill">Final $${fmtMoney(m.final_equity || 0)}</span>
+        <span class="pill">Return ${formatPct(m.total_return_pct)}</span>
+        <span class="pill">Max DD ${formatPct(m.max_drawdown_pct)}</span>
+        <span class="pill">Trades ${m.num_trades || 0}</span>
+        <span class="pill">Round-trips ${m.round_trips || 0}</span>
+        <span class="pill">Win-rate ${m.win_rate != null ? (m.win_rate*100).toFixed(1)+'%' : 'n/a'}</span>
+        <span class="pill">ADV ${m.adv_period || 20}d</span>
+        <span class="pill">Stops ${m.num_stops || 0}</span>
+        <span class="pill" title="סף ADX לכניסה">ADX≥${m.adx_min ?? 25}</span>
+        <span class="pill" title="סטופ‑לוס עוקב באחוזים">SL ${m.stop_loss_pct ?? 0}%${m.trailing_stop? ' (T)':''}</span>
+        <span class="pill" title="מס׳ נרות היסטוגרמה יורד ל‑SELL">SellK ${m.sell_bars ?? 2}</span>
+        <span class="pill" title="חלון התכנסות">W ${m.conv_window ?? 60}</span>
+        <span class="pill" title="סף התכווצות לסט־אפ קנייה">Pbuy ${m.p_buy ?? 35}%</span>
+        <span class="pill" title="סף Trigger לפרה‑קרוס">Ebuy ${m.e_buy ?? 20}%</span>
+        <span class="pill" title="סף התכווצות ליציאה">Psell ${m.p_sell ?? 40}%</span>
+        <span class="pill" title="חלון ממוצע נע לווליום">VolV ${m.vol_sma_period ?? 20}</span>
+        <span class="pill" title="ווליום היום קטן מאתמול?">VolDown ${m.vol_down_strict ? 'on' : 'off'}</span>
+        <span class="pill" title="יציאה בחציית MACD מטה את האפס">ZeroStop ${m.macd_zero_stop ? 'on' : 'off'}</span>
+        <span class="pill">Strategy ${m.strategy || ''}</span>
+      `;
+
+  const lines = trades.map(t => `<div class="${t.action==='BUY'?'trade-buy':'trade-sell'}">${t.date} ${t.action}${t.reason?` [${t.reason}]`:''} @ ${t.price.toFixed(2)} | cash ${fmtMoney(t.cash)} | eq ${fmtMoney(t.equity)}</div>`).join('');
+      document.getElementById('trades').innerHTML = lines || '<i>No trades</i>';
+    }
+
+    document.getElementById('run').addEventListener('click', runBacktest);
+    const debouncedRun = debounce(runBacktest, 400);
+    document.getElementById('symbol').addEventListener('input', debouncedRun);
+    document.getElementById('symbol').addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); runBacktest(); }});
+    document.getElementById('start').addEventListener('change', runBacktest);
+    document.getElementById('end').addEventListener('change', runBacktest);
+    document.getElementById('strategy').addEventListener('change', ()=>{
+      const strat = document.getElementById('strategy').value;
+      // Apply per-strategy sensible defaults; user can change after
+      if (strat === 'macd_cross') {
+        document.getElementById('macd_fast').value = 12;
+        document.getElementById('macd_slow').value = 26;
+        document.getElementById('macd_signal').value = 9;
+        document.getElementById('pre_bars').value = 2;
+        document.getElementById('sell_bars').value = 2;
+        document.getElementById('adx_min').value = 0;
+        document.getElementById('stop_pct').value = 0;
+        document.getElementById('trailing').checked = false;
+        document.getElementById('conv_win').value = 60;
+        document.getElementById('p_buy').value = 35;
+        document.getElementById('e_buy').value = 20;
+        document.getElementById('p_sell').value = 40;
+      } else if (strat === 'macd_pre_cross_below_zero') {
+        document.getElementById('macd_fast').value = 5;
+        document.getElementById('macd_slow').value = 35;
+        document.getElementById('macd_signal').value = 5;
+        document.getElementById('pre_bars').value = 3;
+        document.getElementById('sell_bars').value = 2;
+        document.getElementById('adx_min').value = 25;
+        document.getElementById('stop_pct').value = 9;
+        document.getElementById('trailing').checked = true;
+        document.getElementById('conv_win').value = 60;
+        document.getElementById('p_buy').value = 35;
+        document.getElementById('e_buy').value = 20;
+        document.getElementById('p_sell').value = 40;
+        document.getElementById('vol_v').value = 20;
+        document.getElementById('vol_strict').checked = false;
+        document.getElementById('zero_stop').checked = false;
+      } else if (strat === 'macd_convergence_stock') {
+        // Assumption for stocks: MACD classic defaults
+        document.getElementById('macd_fast').value = 12;
+        document.getElementById('macd_slow').value = 26;
+        document.getElementById('macd_signal').value = 9;
+        document.getElementById('pre_bars').value = 3; // k_buy
+        document.getElementById('sell_bars').value = 2; // unused primarily
+        document.getElementById('adx_min').value = 20;
+        document.getElementById('stop_pct').value = 8; // fixed 8%
+        document.getElementById('trailing').checked = false;
+        document.getElementById('conv_win').value = 60;
+        document.getElementById('p_buy').value = 40;
+        document.getElementById('e_buy').value = 25;
+        document.getElementById('p_sell').value = 50; // not used
+        document.getElementById('vol_v').value = 20;
+        document.getElementById('vol_strict').checked = false; // optional stricter off
+        document.getElementById('zero_stop').checked = true;
+      }
+      debouncedRun();
+    });
+    initDefaultDates();
+    runBacktest();
+  </script>
+</body>
+</html>

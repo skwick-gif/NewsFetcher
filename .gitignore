@@ -121,3 +121,28 @@ app/logs/
 FinRL/
 FINRL/
 finrl/
+
+# RL training artifacts and logs
+rl/models/
+rl/tb/
+rl/evaluation/*_report*.json
+rl/evaluation/*_trace*.json
+rl/**/*.zip
+
+# Reports and snapshots
+reports/
+snapshots/
+
+# Misc large artifacts
+*.parquet
+*.feather
+*.xz
+*.lz4
+*.zst
+*.npz
+*.npy
+
+# Do not track local scripts outputs
+scripts/*.log
+scripts/*.out
+scripts/*.tmp

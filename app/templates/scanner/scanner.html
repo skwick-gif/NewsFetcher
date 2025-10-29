@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Market Scanner</title>
+  <style>
+    body { background:#0b1220; color:#e2e8f0; font-family: Inter, system-ui; margin:0; }
+    .container { max-width: 1200px; margin: 20px auto; padding: 20px; }
+    .header { display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; }
+    .nav { display:flex; gap:8px; }
+    .nav a { text-decoration:none; color:#e2e8f0; background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); padding:8px 12px; border-radius:6px; }
+    .nav a.active { background: rgba(34,197,94,0.2); border-color:#22c55e; }
+    .card { background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px; margin-bottom:16px; }
+  .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; }
+  .badge-green { background: rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.55); color:#10b981; }
+  .badge-red { background: rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.55); color:#ef4444; }
+    a.link { color:#93c5fd; text-decoration:none; }
+    a.link:hover { text-decoration:underline; }
+    table { width:100%; border-collapse:collapse; }
+    th, td { padding:8px; border-bottom:1px solid rgba(255,255,255,0.08); text-align:left; }
+    th { color:#ffd700; }
+    .muted { opacity:0.7; }
+    .progress { width:100%; height:10px; background:rgba(255,255,255,0.08); border-radius:6px; overflow:hidden; }
+    .progress > div { height:100%; background:#3b82f6; width:0%; transition: width 0.5s ease; }
+  </style>
+  <!-- Renamed from index.html to scanner.html to reduce confusion. Served at /scanner. -->
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2 style="margin:0;">Stocks Scanner</h2>
+      <div class="nav">
+        <a href="/rl">RL</a>
+        <a href="/rl#ml">ML</a>
+        <a href="/scanner" class="active">Scanner</a>
+        <a href="/strategy">Strategy</a>
+      </div>
+    </div>
+
+    <!-- Filter Stage -->
+    <div class="card" id="filter-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+        <div>
+          <strong>Filter Status:</strong> <span id="filter-status-text" class="muted">Idle</span>
+        </div>
+        <div>
+          <button id="btn-run-filter" style="background:#f59e0b; border:none; padding:8px 12px; border-radius:6px; color:#0b1220; cursor:pointer;">Run Filter</button>
+          <button id="btn-refresh-filter" style="margin-left:6px; background:#334155; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Refresh</button>
+          <button id="btn-train-all" style="margin-left:6px; background:#8b5cf6; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Train All (Transformer)</button>
+        </div>
+      </div>
+      <div id="filter-counts" class="muted" style="margin-top:8px;">—</div>
+      <div class="progress" style="margin-top:8px;"><div id="filter-progress-bar"></div></div>
+      <div id="filter-table" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="card" id="train-status-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+        <div>
+          <strong>Training Queue:</strong> <span id="train-status-text" class="muted">Idle</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="scan-status-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+        <div>
+          <strong>Status:</strong> <span id="scan-status-text" class="muted">Idle</span>
+          <span class="muted" id="scan-status-eta" style="margin-left:8px;"></span>
+        </div>
+        <div>
+          <label class="muted" for="scan-mode">Mode</label>
+          <select id="scan-mode" style="margin-right:8px; background:#0f172a; color:#e2e8f0; border:1px solid rgba(255,255,255,0.1); padding:6px 8px; border-radius:6px;">
+            <option value="ml" selected>ML-only</option>
+            <option value="technical">Technical-only</option>
+          </select>
+          <button id="btn-run-scan" style="background:#10b981; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Run Daily Scan</button>
+          <button id="btn-refresh-status" style="margin-left:6px; background:#334155; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Refresh Status</button>
+          <button id="btn-refresh-top" style="margin-left:6px; background:#3b82f6; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Refresh Top</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="top-ranked-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <h3 style="margin:0;">🏆 Top Ranked (Latest)</h3>
+        <label class="muted" id="top-meta"></label>
+      </div>
+      <div id="top-ranked"><div class="muted">No results yet. Run Daily Scan to generate rankings.</div></div>
+    </div>
+
+    <!-- Removed Hot Stocks and Sectors sections per request -->
+  </div>
+
+  <!-- Removed legacy scanner.js include (hot stocks/sectors) -->
+  <script>
+  (function(){
+    let filterFastTimer = null;
+    async function fetchJSON(url, opts){
+      const r = await fetch(url, opts);
+      if(!r.ok) throw new Error(`HTTP ${r.status}`);
+      return await r.json();
+    }
+    // ---------- Filter UI ----------
+    function renderFilterStatus(d){
+      const el = document.getElementById('filter-status-text');
+      const counts = document.getElementById('filter-counts');
+      const bar = document.getElementById('filter-progress-bar');
+      if(!el) return;
+      const pct = Math.round((d?.progress||0)*100);
+      el.textContent = `${d?.state||'idle'} · ${pct}%` + (d?.message?` · ${d.message}`:'');
+      if(counts){
+        counts.textContent = `Total=${d?.total_symbols??0} · Processed=${d?.processed_symbols??0} · Passed=${d?.passed_count??0} · Trained=${d?.trained_count??0}`;
+      }
+      if(bar){ bar.style.width = `${pct}%`; }
+      // Auto-manage faster polling while running
+      const runBtn = document.getElementById('btn-run-filter');
+      const isRunning = (d?.state === 'running');
+      if(runBtn) runBtn.disabled = isRunning;
+      if(isRunning && !filterFastTimer){
+        filterFastTimer = setInterval(pollFilter, 1000);
+      } else if(!isRunning && filterFastTimer){
+        clearInterval(filterFastTimer);
+        filterFastTimer = null;
+      }
+    }
+    function renderFilterTable(items){
+      const root = document.getElementById('filter-table');
+      if(!root) return;
+      if(!items || !items.length){ root.innerHTML = '<div class="muted">No results. Run Filter.</div>'; return; }
+      let html = '<div style="max-height:420px; overflow:auto;"><table><thead><tr>'+
+        '<th>Symbol</th><th>Model</th><th>Train</th><th>Status</th></tr></thead><tbody>';
+      for(const r of items){
+        const statId = `s-${r.symbol}`;
+        html += `<tr>`+
+          `<td style="font-weight:600;">${r.symbol}</td>`+
+          `<td>${r.has_model?'<span class="badge badge-green">yes</span>':'<span class="badge badge-red">no</span>'}</td>`+
+          `<td><button data-sym="${r.symbol}" class="btn-train" style="background:#22c55e; border:none; padding:6px 10px; border-radius:6px; color:white; cursor:pointer;">Train</button></td>`+
+          `<td id="${statId}" class="muted">${r.has_model?'trained':'not-started'}</td>`+
+        `</tr>`;
+      }
+      html += '</tbody></table></div>';
+      root.innerHTML = html;
+      // bind train buttons
+      document.querySelectorAll('.btn-train').forEach(btn=>{
+        if(btn._b) return; btn._b = true;
+        btn.addEventListener('click', async (e)=>{
+          const sym = e.currentTarget.getAttribute('data-sym');
+          try{
+            const cell = document.getElementById(`s-${sym}`); if(cell) cell.textContent = 'queued';
+            await fetchJSON(`/api/scanner/train/start?symbol=${encodeURIComponent(sym)}`, {method:'POST'});
+            // poll per-symbol status briefly
+            pollSymbol(sym);
+          }catch(err){ alert('Failed to queue training: '+err); }
+        });
+      });
+    }
+    async function pollFilter(){ try{ const j = await fetchJSON('/api/scanner/filter/status'); renderFilterStatus(j?.data||{}); }catch(e){} }
+    async function loadFilter(){ try{ const j = await fetchJSON('/api/scanner/filter/results'); renderFilterTable(j?.data?.items||[]); }catch(e){} }
+    async function runFilter(){
+      try{ const btn = document.getElementById('btn-run-filter'); if(btn) btn.disabled = true; await fetchJSON('/api/scanner/filter/run', {method:'POST'}); await pollFilter(); }
+      catch(e){ alert('Failed to start filter: '+e); }
+      finally{ const btn = document.getElementById('btn-run-filter'); if(btn) btn.disabled = false; }
+    }
+    async function trainAll(){
+      try{ const btn = document.getElementById('btn-train-all'); if(btn) btn.disabled = true; await fetchJSON('/api/scanner/train/start-all', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({})}); pollTrain(); }
+      catch(e){ alert('Failed to queue train-all: '+e); }
+      finally{ const btn = document.getElementById('btn-train-all'); if(btn) btn.disabled = false; }
+    }
+    async function pollSymbol(sym){
+      try{ const r = await fetchJSON(`/api/scanner/train/symbol/${encodeURIComponent(sym)}/status`); const st = r?.data?.status||'not-started'; const el = document.getElementById(`s-${sym}`); if(el) el.textContent = st; }
+      catch(e){}
+    }
+    function renderTrainStatus(m){
+      const el = document.getElementById('train-status-text');
+      if(!m || !el) return;
+      const parts = [];
+      parts.push(m.state||'idle');
+      parts.push(`queued=${m.queued||0}`);
+      parts.push(`completed=${m.completed||0}`);
+      parts.push(`failed=${m.failed||0}`);
+      if(m.current_symbol) parts.push(`current=${m.current_symbol}`);
+      if(m.restored){
+        const ts = m.last_persisted_at? new Date(m.last_persisted_at*1000).toLocaleString() : '';
+        parts.push(`restored${ts?` @ ${ts}`:''}`);
+      }
+      el.textContent = parts.join(' · ');
+      if(m.symbols){
+        for(const [sym, st] of Object.entries(m.symbols)){
+          const cell = document.getElementById(`s-${sym}`);
+          if(cell) cell.textContent = st;
+        }
+      }
+    }
+    async function pollTrain(){
+      try{ const j = await fetchJSON('/api/scanner/train/status'); const m = j?.data; if(!m) return; renderTrainStatus(m); const cur = m.current_symbol; if(cur) pollSymbol(cur); }
+      catch(e){}
+    }
+    function secsToHms(s){ if(s==null) return ''; const m=Math.floor(s/60), sec=Math.max(0,Math.floor(s%60)); const h=Math.floor(m/60); const mm=m%60; return h>0?`${h}h ${mm}m ${sec}s`:`${mm}m ${sec}s`; }
+    function renderStatus(d){
+      const t = document.getElementById('scan-status-text');
+      const eta = document.getElementById('scan-status-eta');
+      if(!t||!eta) return;
+      const state = (d?.state||'idle');
+      const pct = Math.round((d?.progress||0)*100);
+      const msg = d?.message?` · ${d.message}`:'';
+      t.textContent = `${state} · ${pct}%${msg}`;
+      const etaSec = d?.eta_seconds; eta.textContent = (state==='running'&&etaSec!=null)?`ETA ${secsToHms(etaSec)}`:'';
+    }
+    function renderTop(items, meta){
+      const root = document.getElementById('top-ranked');
+      const metaEl = document.getElementById('top-meta');
+      if(metaEl) metaEl.textContent = meta?.date?`Date: ${meta.date} · Total=${meta.total}`:'';
+      if(!root) return;
+      if(!items || !items.length){ root.innerHTML = '<div class="muted">No ranked results available.</div>'; return; }
+      let html = '<div style="overflow-x:auto;"><table><thead><tr>'+ 
+        '<th>Rank</th><th>Symbol</th><th>Final Score</th><th>ML Score</th><th>Fallback</th><th>Price</th>'+
+        '</tr></thead><tbody>';
+      for(const r of items){
+        html += '<tr>'+
+          `<td>${r.rank??'—'}</td>`+
+          `<td style="font-weight:600;">${r.symbol||''}</td>`+
+          `<td>${(r.final_score!=null)?Number(r.final_score).toFixed(3):'—'}</td>`+
+          `<td>${(r.ml_score!=null)?Number(r.ml_score).toFixed(3):'—'}</td>`+
+          `<td>${(r.fallback_score!=null)?Number(r.fallback_score).toFixed(3):'—'}</td>`+
+          `<td>${(r.current_price!=null)?('$'+Number(r.current_price).toFixed(2)):'—'}</td>`+
+        '</tr>';
+      }
+      html += '</tbody></table></div>';
+      root.innerHTML = html;
+    }
+    async function pollStatus(){ try{ const j = await fetchJSON('/api/scanner/status'); renderStatus(j?.data||{}); }catch(e){} }
+    async function loadTop(){
+      try{
+        // today_only=true to avoid showing stale runs on initial load
+        const j = await fetchJSON('/api/scanner/top?limit=50');
+        renderTop(j?.data?.items||[], j?.data);
+      }catch(e){
+        // Show nothing on error; user can run a new scan
+      }
+    }
+    async function runScan(){
+      try{ const btn = document.getElementById('btn-run-scan'); const sel = document.getElementById('scan-mode'); const mode = sel? sel.value : 'ml'; if(btn) btn.disabled = true; await fetchJSON(`/api/scanner/run?mode=${encodeURIComponent(mode)}`, {method:'POST'}); await pollStatus(); }
+      catch(e){ alert('Failed to start scan: '+e); }
+      finally{ const btn = document.getElementById('btn-run-scan'); if(btn) btn.disabled = false; }
+    }
+    function bind(){
+      const rf = document.getElementById('btn-run-filter'); if(rf && !rf._b){ rf.addEventListener('click', runFilter); rf._b=true; }
+      const rff = document.getElementById('btn-refresh-filter'); if(rff && !rff._b){ rff.addEventListener('click', ()=>{pollFilter(); loadFilter();}); rff._b=true; }
+      const tal = document.getElementById('btn-train-all'); if(tal && !tal._b){ tal.addEventListener('click', trainAll); tal._b=true; }
+      const run = document.getElementById('btn-run-scan'); if(run && !run._b){ run.addEventListener('click', runScan); run._b=true; }
+      const ref = document.getElementById('btn-refresh-status'); if(ref && !ref._b){ ref.addEventListener('click', pollStatus); ref._b=true; }
+      const top = document.getElementById('btn-refresh-top'); if(top && !top._b){ top.addEventListener('click', loadTop); top._b=true; }
+    }
+    window.addEventListener('DOMContentLoaded', ()=>{ bind(); pollFilter(); loadFilter(); pollStatus(); loadTop(); setInterval(pollFilter, 5000); setInterval(pollTrain, 5000); setInterval(pollStatus, 6000); });
+  })();
+  </script>
+</body>
+</html>

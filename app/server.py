@@ -329,6 +329,11 @@ def api_rl_ppo_train():
         timesteps = 100000
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
+    # Optional feature flags from UI
+    add_vix = (request.args.get('add_vix') or '').strip() in ('1','true','True','yes','on')
+    vix_symbol = (request.args.get('vix_symbol') or '^VIX').strip()
+    use_indicators = (request.args.get('use_indicators') or '').strip() in ('1','true','True','yes','on')
+    indicator_cols = (request.args.get('indicator_cols') or '').strip()
 
     # Build command
     cmd = [
@@ -342,15 +347,31 @@ def api_rl_ppo_train():
     if end_date:
         cmd += ['--end', end_date]
 
-    # Optional: if news features file exists, pass it along with default cols
+    # Optional: News features (respect UI toggle)
     try:
         nf = (project_root / 'ml' / 'data' / 'news_features.csv')
-        if nf.exists():
+        use_news = (request.args.get('use_news') or '').strip() in ('1','true','True','yes','on','')
+        # default True when param missing; explicit '0' disables
+        if request.args.get('use_news') is not None:
+            use_news = (request.args.get('use_news') or '').strip() in ('1','true','True','yes','on')
+        if use_news and nf.exists():
             cmd += ['--news-features-csv', str(nf)]
             cols = 'news_count,llm_relevant_count,avg_score,fda_count,china_count,geopolitics_count,sentiment_avg'
             cmd += ['--news-cols', cols]
     except Exception:
         pass
+
+    # VIX feature
+    if add_vix:
+        cmd += ['--add-vix-feature']
+        if vix_symbol:
+            cmd += ['--vix-symbol', vix_symbol]
+
+    # Indicator features
+    if use_indicators:
+        cmd += ['--use-indicator-features']
+        if indicator_cols:
+            cmd += ['--indicator-cols', indicator_cols]
 
     # If only one symbol supplied to a portfolio trainer, duplicate it to satisfy >=2 requirement
     try:
@@ -431,17 +452,16 @@ def api_rl_live_preview():
         data = request.get_json(silent=True) or {}
         symbols_raw = data.get('symbols') or ''
         if isinstance(symbols_raw, str):
-            symbols = [s.strip().upper() for s in symbols_raw.split(',') if s.strip()]
+            symbols_in = [s.strip().upper() for s in symbols_raw.split(',') if s.strip()]
         elif isinstance(symbols_raw, list):
-            symbols = [str(s).strip().upper() for s in symbols_raw]
+            symbols_in = [str(s).strip().upper() for s in symbols_raw]
         else:
-            symbols = []
-        if len(symbols) < 2:
-            # portfolio env requires >=2; if single provided, duplicate
-            if len(symbols) == 1:
-                symbols = [symbols[0], symbols[0]]
-            else:
-                return jsonify({'status': 'error', 'detail': 'Provide at least one symbol'}), 400
+            symbols_in = []
+        if len(symbols_in) < 1:
+            return jsonify({'status': 'error', 'detail': 'Provide at least one symbol'}), 400
+        # Env needs >=2; duplicate if single
+        symbols_env = symbols_in if len(symbols_in) >= 2 else [symbols_in[0], symbols_in[0]]
+
         model_path = data.get('model_path') or _latest_model_path()
         if not model_path:
             return jsonify({'status': 'error', 'detail': 'Model path not provided and no latest model found'}), 400
@@ -449,22 +469,98 @@ def api_rl_live_preview():
         band = float(data.get('no_trade_band', 0.0) or 0.0)
         min_days = int(data.get('band_min_days', 0) or 0)
         starting_cash = float(data.get('starting_cash', 10000.0) or 10000.0)
+        vix_symbol = str(data.get('vix_symbol') or '^VIX')
 
-        # Build env
-        from rl.envs.portfolio_env import PortfolioEnv
-        from rl.envs.wrappers_portfolio import PortfolioEnvGym, NoTradeBandActionWrapper
         from stable_baselines3 import PPO  # type: ignore
         import numpy as np
         import pandas as pd
+        from rl.training.train_ppo_portfolio import make_env
+        from rl.envs.wrappers_portfolio import NoTradeBandActionWrapper
 
-        base = PortfolioEnv.load_from_local_universe(
-            symbols=symbols,
-            window=window,
-            start_date=None,
-            end_date=None,
-            starting_cash=starting_cash,
-        )
-        env_gym = PortfolioEnvGym(base)
+        model = PPO.load(model_path)
+        try:
+            expected = int(getattr(model.policy.observation_space, 'shape', [None])[0])
+        except Exception:
+            expected = None
+
+        # Prepare default feature paths/cols
+        def _default_news_csv() -> str | None:
+            try:
+                cand1 = project_root / 'app' / 'ml' / 'data' / 'news_features.csv'
+                if cand1.exists():
+                    return cand1.as_posix()
+                cand2 = project_root / 'ml' / 'data' / 'news_features.csv'
+                if cand2.exists():
+                    return cand2.as_posix()
+            except Exception:
+                pass
+            return None
+
+        news_csv = _default_news_csv()
+        news_cols = ['news_count','llm_relevant_count','avg_score','fda_count','china_count','geopolitics_count','sentiment_avg']
+        ind_cols = ['rsi14','macd_hist','adx14','bb_pctb','bb_width','volume_sma_ratio','roc20','vol20']
+
+        # Try building envs with increasing feature richness until obs matches expected
+        tried: list[dict] = []
+        def attempt(opts: dict):
+            env = make_env(
+                symbols=symbols_env,
+                window=window,
+                start=None,
+                end=None,
+                starting_cash=starting_cash,
+                news_features_csv=opts.get('news_csv'),
+                news_cols=opts.get('news_cols'),
+                news_window=int(opts.get('news_window', 1)),
+                add_vix_feature=bool(opts.get('add_vix', False)),
+                vix_symbol=str(opts.get('vix_symbol', vix_symbol)),
+                use_indicator_features=bool(opts.get('use_indicators', False)),
+                indicator_cols=opts.get('indicator_cols'),
+            )
+            obs, _ = env.reset()
+            if isinstance(obs, tuple):
+                obs = obs[0]
+            cur_dim = int(np.array(obs, dtype=float).shape[0])
+            return env, cur_dim
+
+        candidates = []
+        # 1) Base only
+        candidates.append({'news_csv': None, 'news_cols': None, 'add_vix': False, 'use_indicators': False})
+        # 2) News only (if available)
+        if news_csv:
+            candidates.append({'news_csv': news_csv, 'news_cols': news_cols, 'news_window': 1})
+        # 3) News + VIX
+        if news_csv:
+            candidates.append({'news_csv': news_csv, 'news_cols': news_cols, 'news_window': 1, 'add_vix': True, 'vix_symbol': vix_symbol})
+        # 4) News + VIX + Indicators
+        if news_csv:
+            candidates.append({'news_csv': news_csv, 'news_cols': news_cols, 'news_window': 1, 'add_vix': True, 'vix_symbol': vix_symbol, 'use_indicators': True, 'indicator_cols': ind_cols})
+        # 5) VIX only
+        candidates.append({'add_vix': True, 'vix_symbol': vix_symbol})
+        # 6) Indicators only
+        candidates.append({'use_indicators': True, 'indicator_cols': ind_cols})
+
+        env_gym = None
+        chosen = None
+        cur_dim = None
+        for opts in candidates:
+            try:
+                env, d = attempt(opts)
+                tried.append({'opts': opts, 'dim': d})
+                if expected is None or d == expected:
+                    env_gym = env
+                    chosen = opts
+                    cur_dim = d
+                    break
+            except Exception as _e:
+                tried.append({'opts': opts, 'error': str(_e)})
+                continue
+
+        # If none matched and we had an expected, return helpful error
+        if env_gym is None:
+            msg = f"Unexpected observation shape; model expects {expected}, tried: " + \
+                  ", ".join([str(t.get('dim') or t.get('error')) for t in tried])
+            return jsonify({'status': 'error', 'detail': msg}), 400
 
         # Step to last observation with hold actions
         obs, _ = env_gym.reset()
@@ -476,39 +572,37 @@ def api_rl_live_preview():
             if terminated or truncated:
                 break
 
-        # Load model and predict action logits
-        model = PPO.load(model_path)
+        # Predict logits
         action, _ = model.predict(obs, deterministic=True)
 
-        # Raw weights
-        raw_w = base._to_weights(np.asarray(action, dtype=float)).tolist()
+        # Access underlying base env to map logits->weights and read timeline
+        base_env = getattr(env_gym, '_env', None) or getattr(env_gym, 'unwrapped', None) or env_gym
+        raw_w = base_env._to_weights(np.asarray(action, dtype=float)).tolist()
 
-        # Banded weights (optional): transform logits using wrapper logic
         banded_w = None
         if band > 0.0 or min_days > 0:
-            wrapper = NoTradeBandActionWrapper(env_gym, band=band, min_days=min_days)
+            wrapper = NoTradeBandActionWrapper(env_gym, band=float(band), min_days=int(min_days))
             banded_logits = wrapper.action(np.asarray(action, dtype=float))
-            banded_w = base._to_weights(np.asarray(banded_logits, dtype=float)).tolist()
+            banded_w = base_env._to_weights(np.asarray(banded_logits, dtype=float)).tolist()
 
         # Latest date
         try:
-            idx_dates = next(iter(base.df_map.values())).index
-            latest_dt = idx_dates[base._idx]
+            idx_dates = next(iter(base_env.df_map.values())).index
+            latest_dt = idx_dates[base_env._idx]
             latest_date = str(pd.to_datetime(latest_dt).date())
         except Exception:
             latest_date = None
 
-        # If the list was duplicated for single symbol, show unique in response mapping
+        # Map weights to unique symbol list (sum duplicates)
         unique_symbols = []
-        for s in symbols:
+        for s in symbols_in:
             if s not in unique_symbols:
                 unique_symbols.append(s)
-        # Map weights to unique symbols by summing duplicates
         def map_unique(w_list: list[float]) -> dict:
             if w_list is None:
                 return {}
             agg = {s: 0.0 for s in unique_symbols}
-            for s, w in zip(symbols, w_list):
+            for s, w in zip(symbols_env, w_list):
                 agg[s] += float(w)
             return agg
 
@@ -517,7 +611,9 @@ def api_rl_live_preview():
             'date': latest_date,
             'symbols': unique_symbols,
             'raw_weights': map_unique(raw_w),
-            'banded_weights': (map_unique(banded_w) if banded_w is not None else None)
+            'banded_weights': (map_unique(banded_w) if banded_w is not None else None),
+            'obs_dim': cur_dim,
+            'matched_opts': chosen,
         }
         return jsonify(resp)
     except Exception as e:
@@ -551,11 +647,11 @@ def _is_business_day(ts: datetime, cal_csv: Path | None) -> bool:
 
 def _paper_step(config: dict) -> None:
     """Run one paper step: compute target weights and simulate trades, update positions/equity."""
-    from rl.envs.portfolio_env import PortfolioEnv
     from rl.envs.wrappers_portfolio import PortfolioEnvGym
     from stable_baselines3 import PPO  # type: ignore
     import numpy as np
     import pandas as pd
+    from rl.training.train_ppo_portfolio import make_env
 
     symbols = config['symbols']
     if len(symbols) == 1:
@@ -572,17 +668,66 @@ def _paper_step(config: dict) -> None:
     max_turnover_ratio = float(config.get('max_daily_turnover_ratio', 1.0) or 1.0)  # fraction of equity
     max_drawdown_stop = float(config.get('max_drawdown_stop', 0.0) or 0.0)  # e.g., 0.25 for 25%
 
-    # Build env to the latest date
-    base = PortfolioEnv.load_from_local_universe(
-        symbols=env_symbols,
-        window=window,
-        start_date=None,
-        end_date=None,
-        starting_cash=100.0,  # placeholder; we'll use our own cash/positions bookkeeping
-        transaction_cost_bps=tcost,
-        slippage_bps=slip,
-    )
-    env_gym = PortfolioEnvGym(base)
+    # Build env to the latest date — match model's expected observation dim by trying feature combos
+    model = PPO.load(model_path)
+    try:
+        expected = int(getattr(model.policy.observation_space, 'shape', [None])[0])
+    except Exception:
+        expected = None
+    # Defaults
+    def _default_news_csv() -> str | None:
+        try:
+            c1 = project_root / 'app' / 'ml' / 'data' / 'news_features.csv'
+            if c1.exists():
+                return c1.as_posix()
+            c2 = project_root / 'ml' / 'data' / 'news_features.csv'
+            if c2.exists():
+                return c2.as_posix()
+        except Exception:
+            pass
+        return None
+    news_csv = _default_news_csv()
+    news_cols = ['news_count','llm_relevant_count','avg_score','fda_count','china_count','geopolitics_count','sentiment_avg']
+    ind_cols = ['rsi14','macd_hist','adx14','bb_pctb','bb_width','volume_sma_ratio','roc20','vol20']
+    candidates = []
+    candidates.append({'news_csv': None, 'news_cols': None, 'add_vix': False, 'use_indicators': False})
+    if news_csv:
+        candidates.append({'news_csv': news_csv, 'news_cols': news_cols, 'news_window': 1})
+        candidates.append({'news_csv': news_csv, 'news_cols': news_cols, 'news_window': 1, 'add_vix': True, 'vix_symbol': '^VIX'})
+        candidates.append({'news_csv': news_csv, 'news_cols': news_cols, 'news_window': 1, 'add_vix': True, 'vix_symbol': '^VIX', 'use_indicators': True, 'indicator_cols': ind_cols})
+    candidates.append({'add_vix': True, 'vix_symbol': '^VIX'})
+    candidates.append({'use_indicators': True, 'indicator_cols': ind_cols})
+    env_gym = None
+    for opts in candidates:
+        try:
+            env = make_env(
+                symbols=env_symbols,
+                window=window,
+                start=None,
+                end=None,
+                transaction_cost_bps=tcost,
+                slippage_bps=slip,
+                starting_cash=100.0,
+                news_features_csv=opts.get('news_csv'),
+                news_cols=opts.get('news_cols'),
+                news_window=int(opts.get('news_window', 1)),
+                add_vix_feature=bool(opts.get('add_vix', False)),
+                vix_symbol=str(opts.get('vix_symbol', '^VIX')),
+                use_indicator_features=bool(opts.get('use_indicators', False)),
+                indicator_cols=opts.get('indicator_cols'),
+            )
+            obs, _ = env.reset()
+            if isinstance(obs, tuple):
+                obs = obs[0]
+            dim = int(np.array(obs, dtype=float).shape[0])
+            if expected is None or dim == expected:
+                env_gym = env
+                break
+        except Exception:
+            continue
+    if env_gym is None:
+        # Fallback to simplest env
+        env_gym = make_env(symbols=env_symbols, window=window, start=None, end=None, transaction_cost_bps=tcost, slippage_bps=slip, starting_cash=100.0)
 
     # Step to last observation
     obs, _ = env_gym.reset()
@@ -595,10 +740,9 @@ def _paper_step(config: dict) -> None:
             break
         last_idx = base._idx
 
-    # Load model and predict logits
-    model = PPO.load(model_path)
     action, _ = model.predict(obs, deterministic=True)
-    target_w = base._to_weights(np.asarray(action, dtype=float))  # env order
+    base_env = getattr(env_gym, '_env', None) or getattr(env_gym, 'unwrapped', None) or env_gym
+    target_w = base_env._to_weights(np.asarray(action, dtype=float))  # env order
 
     # Map to unique symbols
     unique_symbols = []
@@ -610,9 +754,9 @@ def _paper_step(config: dict) -> None:
         agg_target[s] += float(w)
 
     # Get latest prices
-    idx_dates = next(iter(base.df_map.values())).index
+    idx_dates = next(iter(base_env.df_map.values())).index
     date_dt = pd.to_datetime(idx_dates[last_idx]).date()
-    prices_t = base.prices[last_idx]  # aligned to env_symbols
+    prices_t = base_env.prices[last_idx]  # aligned to env_symbols
     price_map = {}
     for s, px in zip(env_symbols, prices_t.tolist()):
         if s in price_map:
@@ -927,6 +1071,26 @@ def api_rl_live_paper_status():
         }
     return jsonify(snap)
 
+# ===========================
+# RL Auto-Tune Proxies (to FastAPI)
+# ===========================
+
+@app.route('/api/rl/auto-tune/start', methods=['POST'])
+def api_rl_auto_tune_start_proxy():
+    """Proxy to FastAPI: Start RL auto-tune job"""
+    data = request.get_json(silent=True) or {}
+    return proxy_to_backend('/api/rl/auto-tune/start', method='POST', json=data)
+
+@app.route('/api/rl/auto-tune/status')
+def api_rl_auto_tune_status_proxy():
+    """Proxy to FastAPI: RL auto-tune status"""
+    return proxy_to_backend('/api/rl/auto-tune/status')
+
+@app.route('/api/rl/auto-tune/stop', methods=['POST'])
+def api_rl_auto_tune_stop_proxy():
+    """Proxy to FastAPI: Stop RL auto-tune job"""
+    return proxy_to_backend('/api/rl/auto-tune/stop', method='POST')
+
 
 # ===========================
 # Data Ensure pipeline (prices + indicators + basic news counts)
@@ -993,12 +1157,97 @@ def _ensure_symbol_data(symbol: str, start: str | None, end: str | None, root_di
             _log_job(job_id, 'WARN', f"[{sym}] Missing columns: {missing} — proceeding with available data")
         price_cols = ['Date'] + [c for c in ['Open','High','Low','Close','Volume'] if c in df.columns]
         price_df = df[price_cols].copy()
-        # Write price CSV
+        # Merge with existing CSV (if any) and ensure coverage from 2020-01-01
         sdir = root_dir / sym
         sdir.mkdir(parents=True, exist_ok=True)
         price_path = sdir / f"{sym}_price.csv"
-        price_df.to_csv(price_path, index=False)
-        _log_job(job_id, 'INFO', f"[{sym}] Wrote price CSV: {price_path}")
+
+        def _normalize_price_df(df_in):
+            import pandas as _pd
+            df2 = df_in.copy()
+            # Normalize date column name and dtype
+            date_col = None
+            for cand in ['Date','Datetime','date','datetime','index']:
+                if cand in df2.columns:
+                    date_col = cand
+                    break
+            if date_col is None and df2.shape[1] >= 1:
+                date_col = df2.columns[0]
+            if date_col != 'Date':
+                df2 = df2.rename(columns={date_col: 'Date'})
+            df2['Date'] = _pd.to_datetime(df2['Date'], errors='coerce')
+            # Keep only standard OHLCV columns (ignore Adj Close)
+            keep_cols = ['Date'] + [c for c in ['Open','High','Low','Close','Volume'] if c in df2.columns]
+            df2 = df2[keep_cols].dropna(subset=['Date']).drop_duplicates(subset=['Date'])
+            return df2
+
+        merged_df = _normalize_price_df(price_df)
+        # Merge with existing prices if exists
+        try:
+            if price_path.exists():
+                import pandas as _pd
+                old_df = _pd.read_csv(price_path)
+                old_df = _normalize_price_df(old_df)
+                merged_df = _pd.concat([old_df, merged_df], ignore_index=True)
+                merged_df = merged_df.drop_duplicates(subset=['Date']).sort_values('Date')
+        except Exception as _e:
+            _log_job(job_id, 'WARN', f"[{sym}] Failed to merge with existing CSV; overwriting. Error: {_e}")
+
+        # Ensure coverage from 2020-01-01 by backfilling if needed
+        try:
+            import pandas as _pd
+            min_needed = _pd.Timestamp('2020-01-01')
+            if not merged_df.empty:
+                cur_min = _pd.to_datetime(merged_df['Date']).min()
+                if _pd.isna(cur_min) or cur_min > min_needed:
+                    # Backfill from 2020-01-01 to current earliest date (exclusive)
+                    back_end = None
+                    try:
+                        back_end = cur_min.date().isoformat()
+                    except Exception:
+                        back_end = cur_min.strftime('%Y-%m-%d') if cur_min is not None else None
+                    _log_job(job_id, 'INFO', f"[{sym}] Backfilling history from 2020-01-01 to {back_end}")
+                    df_back = yf.download(sym, start='2020-01-01', end=back_end, progress=False)
+                    if df_back is not None and not df_back.empty:
+                        df_back = df_back.reset_index()
+                        if isinstance(df_back.columns, _pd.MultiIndex):
+                            std_fields = ['Open','High','Low','Close','Adj Close','Volume']
+                            std_lower = [s.lower() for s in std_fields]
+                            def _pick_name(col):
+                                parts = [str(x).strip() for x in (list(col) if isinstance(col, tuple) else [col])]
+                                for p in parts:
+                                    pl = p.lower()
+                                    if pl in std_lower:
+                                        return std_fields[std_lower.index(pl)]
+                                return str(parts[0]) if parts else str(col)
+                            df_back.columns = [_pick_name(c) for c in df_back.columns]
+                        df_back.columns = [str(c).strip() for c in df_back.columns]
+                        df_back = df_back.loc[:, ~_pd.Index(df_back.columns).duplicated()]
+                        if 'Close' not in df_back.columns and 'Adj Close' in df_back.columns:
+                            df_back['Close'] = df_back['Adj Close']
+                        back_cols = ['Date'] + [c for c in ['Open','High','Low','Close','Volume'] if c in df_back.columns]
+                        try:
+                            # Normalize 'Date'
+                            if 'Date' not in df_back.columns:
+                                # Detect date-col
+                                for cand in ['Date','Datetime','date','datetime','index']:
+                                    if cand in df_back.columns:
+                                        df_back = df_back.rename(columns={cand: 'Date'})
+                                        break
+                            df_back['Date'] = _pd.to_datetime(df_back['Date'], errors='coerce')
+                        except Exception:
+                            pass
+                        back_df = df_back[back_cols].dropna(subset=['Date'])
+                        merged_df = _pd.concat([back_df, merged_df], ignore_index=True)
+                        merged_df = merged_df.drop_duplicates(subset=['Date']).sort_values('Date')
+                    else:
+                        _log_job(job_id, 'WARN', f"[{sym}] Backfill returned no data")
+        except Exception as _e:
+            _log_job(job_id, 'WARN', f"[{sym}] Backfill step failed: {_e}")
+
+        # Write merged price CSV
+        merged_df.to_csv(price_path, index=False)
+        _log_job(job_id, 'INFO', f"[{sym}] Wrote price CSV: {price_path} (rows={len(merged_df)})")
 
         # Indicators (SMA20, EMA50, RSI14, MACD) + extras; optional override via indicator_params
         ip = indicator_params or {}
@@ -1053,10 +1302,12 @@ def _ensure_symbol_data(symbol: str, start: str | None, end: str | None, root_di
                     arr = arr.reshape(-1)
                 return pd.Series(arr, index=df_.index)
 
-            close = pd.to_numeric(_col_to_series(price_df, 'Close'), errors='coerce').astype(float)
-            high = pd.to_numeric(_col_to_series(price_df, 'High'), errors='coerce').astype(float)
-            low = pd.to_numeric(_col_to_series(price_df, 'Low'), errors='coerce').astype(float)
-            volume = pd.to_numeric(_col_to_series(price_df, 'Volume'), errors='coerce').astype(float)
+            # Use merged_df for indicators to ensure full history
+            price_df_full = merged_df.copy()
+            close = pd.to_numeric(_col_to_series(price_df_full, 'Close'), errors='coerce').astype(float)
+            high = pd.to_numeric(_col_to_series(price_df_full, 'High'), errors='coerce').astype(float)
+            low = pd.to_numeric(_col_to_series(price_df_full, 'Low'), errors='coerce').astype(float)
+            volume = pd.to_numeric(_col_to_series(price_df_full, 'Volume'), errors='coerce').astype(float)
             def sma(series, n):
                 return series.rolling(n, min_periods=n).mean()
             def ema(series, n):
@@ -1164,7 +1415,7 @@ def _ensure_symbol_data(symbol: str, start: str | None, end: str | None, root_di
             stoch_d14_3 = stoch_k14.rolling(stoch_d_p, min_periods=stoch_d_p).mean()
 
             ind = pd.DataFrame({
-                'Date': price_df['Date'],
+                'Date': price_df_full['Date'],
                 'sma20': sma20,
                 'sma50': sma50,
                 'sma200': sma200,
@@ -1288,6 +1539,84 @@ def api_rl_data_ensure_status(job_id):
         return jsonify({'status':'error','detail':'unknown job_id'}), 404
     return jsonify({'status': info.get('status'), 'job_id': job_id, 'logs': [l.get('message') for l in logs]})
 
+@app.route('/api/rl/data/ensure-all', methods=['POST'])
+def api_rl_data_ensure_all():
+    """Ensure data for ALL symbols under stock_data directory.
+    Incremental: for each symbol, start from last available date + 1 day if CSV exists; otherwise full history.
+    Runs in background and reuses the same status endpoint.
+    """
+    data = request.get_json(silent=True) or {}
+    indicator_params = data.get('indicator_params') or None
+
+    job_id = f"ensure-all-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+    running_jobs[job_id] = {"status":"running","start_time": datetime.now().isoformat(), "job_type": "ensure-all"}
+    job_logs[job_id] = []
+
+    def _runner():
+        root_dir = project_root / 'stock_data'
+        syms = []
+        try:
+            for p in root_dir.iterdir():
+                if p.is_dir():
+                    try:
+                        syms.append(p.name.upper())
+                    except Exception:
+                        continue
+        except Exception as e:
+            _log_job(job_id, 'ERROR', f"Failed to list stock_data: {e}")
+        total = len(syms)
+        if total == 0:
+            running_jobs[job_id]["status"] = "completed"
+            _log_job(job_id, 'INFO', "No symbols found under stock_data")
+            return
+        ok_all = True
+        success = 0
+        for i, sym in enumerate(sorted(syms)):
+            # Compute incremental start date
+            start = None
+            try:
+                import pandas as pd
+                price_path = root_dir / sym / f"{sym}_price.csv"
+                if price_path.exists():
+                    df = pd.read_csv(price_path)
+                    # Find date column robustly
+                    date_col = None
+                    for cand in ['Date','Datetime','date','datetime','index']:
+                        if cand in df.columns:
+                            date_col = cand
+                            break
+                    if date_col is None and df.shape[1] >= 1:
+                        date_col = df.columns[0]
+                    if date_col is not None and len(df) > 0:
+                        try:
+                            ds = pd.to_datetime(df[date_col], errors='coerce').dropna()
+                            if len(ds) > 0:
+                                last_dt = pd.to_datetime(ds.iloc[-1]).date()
+                                from datetime import timedelta as _td
+                                start = (last_dt + _td(days=1)).isoformat()
+                        except Exception:
+                            start = None
+            except Exception:
+                start = None
+
+            _log_job(job_id, 'INFO', f"[{i+1}/{total}] Ensuring {sym} from {start or 'beginning'}")
+            try:
+                res = _ensure_symbol_data(sym, start, None, root_dir, job_id, indicator_params=indicator_params)
+                if res:
+                    success += 1
+                else:
+                    ok_all = False
+            except Exception as e:
+                ok_all = False
+                _log_job(job_id, 'ERROR', f"[{sym}] Ensure failed: {e}")
+        # Mark done with summary
+        running_jobs[job_id]["status"] = "completed" if ok_all else "completed"
+        _log_job(job_id, 'INFO', f"Done ensure-all: {success}/{total} succeeded")
+
+    th = threading.Thread(target=_runner, daemon=True)
+    th.start()
+    return jsonify({'status':'started','job_id': job_id, 'mode': 'all', 'indicator_params': indicator_params}), 202
+
 # ===========================
 # Dashboard Routes
 # ===========================
@@ -1302,10 +1631,497 @@ def rl_dashboard():
     """RL Dashboard page (experimental)"""
     return render_template('rl_dashboard.html')
 
+@app.route('/scanner')
+def scanner_page():
+    """Scanner page (served by Flask to match FastAPI /scanner)."""
+    return render_template('scanner/scanner.html')
+
 @app.route('/docs/progressive-ml')
 def docs_progressive_ml():
     """Serve the Progressive ML Guide (static HTML) from templates/docs."""
     return render_template('docs/progressive_ml_guide.html')
+
+# ===========================
+# Strategy Lab (manual backtests on local CSVs)
+# ===========================
+
+@app.route('/strategy')
+def strategy_lab_page():
+    """Serve the Strategy Lab page."""
+    return render_template('strategy/lab.html')
+
+
+def _list_local_symbols_with_prices(max_symbols: int | None = None) -> list[str]:
+    """Return symbols that have a price CSV under stock_data/<SYM>/<SYM>_price.csv
+    Sorted alphabetically; limited by max_symbols when provided.
+    """
+    syms: list[str] = []
+    try:
+        root = project_root / 'stock_data'
+        if not root.exists():
+            return []
+        for p in root.iterdir():
+            if not p.is_dir():
+                continue
+            sym = p.name.upper()
+            price_path = p / f"{sym}_price.csv"
+            if price_path.exists():
+                syms.append(sym)
+    except Exception:
+        return []
+    syms = sorted(set(syms))
+    if max_symbols is not None and max_symbols > 0:
+        return syms[:max_symbols]
+    return syms
+
+
+@app.route('/api/strategy/symbols')
+def api_strategy_symbols():
+    """List available symbols from local stock_data that have price CSVs."""
+    try:
+        n = request.args.get('limit')
+        limit = int(n) if n is not None else None
+    except Exception:
+        limit = None
+    syms = _list_local_symbols_with_prices(limit)
+    return jsonify({'status': 'ok', 'symbols': syms, 'count': len(syms)})
+
+
+def _load_price_df(sym: str):
+    """Load a symbol's price CSV with robust date parsing and standard columns.
+    Returns pandas DataFrame with columns: Date, Open, High, Low, Close, Volume (subset may exist), sorted by Date.
+    """
+    import pandas as pd  # local import to avoid global dependency on cold start
+    sym = sym.upper().strip()
+    root = project_root / 'stock_data' / sym
+    price_path = root / f"{sym}_price.csv"
+    if not price_path.exists():
+        raise FileNotFoundError(f"price csv not found: {price_path}")
+    df = pd.read_csv(price_path)
+    # Detect date column
+    date_col = None
+    for cand in ['Date','Datetime','date','datetime','index']:
+        if cand in df.columns:
+            date_col = cand
+            break
+    if date_col is None and df.shape[1] >= 1:
+        date_col = df.columns[0]
+    if date_col != 'Date':
+        df = df.rename(columns={date_col: 'Date'})
+    df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+    keep = ['Date'] + [c for c in ['Open','High','Low','Close','Volume'] if c in df.columns]
+    out = df[keep].dropna(subset=['Date']).drop_duplicates(subset=['Date']).sort_values('Date').reset_index(drop=True)
+    # If Close missing but Adj Close exists, synthesize Close
+    if 'Close' not in out.columns and 'Adj Close' in df.columns:
+        out['Close'] = df['Adj Close']
+    return out
+
+
+def _macd_series(close, fast=12, slow=26, signal=9):
+    import pandas as pd
+    ema_fast = close.ewm(span=int(fast), adjust=False).mean()
+    ema_slow = close.ewm(span=int(slow), adjust=False).mean()
+    macd = ema_fast - ema_slow
+    macd_sig = macd.ewm(span=int(signal), adjust=False).mean()
+    macd_hist = macd - macd_sig
+    return pd.DataFrame({'macd': macd, 'macd_signal': macd_sig, 'macd_hist': macd_hist})
+
+def _adx_series(high, low, close, period: int = 14):
+    """Compute ADX (Wilder) and return a pandas Series with 'adx'.
+    Requires high/low/close columns. Values for the first (period*2) rows may be NaN.
+    """
+    import pandas as pd
+    import numpy as np
+    high = pd.Series(high, dtype=float)
+    low = pd.Series(low, dtype=float)
+    close = pd.Series(close, dtype=float)
+    # True Range
+    prev_close = close.shift(1)
+    tr = pd.concat([
+        (high - low).abs(),
+        (high - prev_close).abs(),
+        (low - prev_close).abs()
+    ], axis=1).max(axis=1)
+    # Directional Movement
+    up_move = high.diff()
+    down_move = -low.diff()
+    plus_dm = np.where((up_move > down_move) & (up_move > 0), up_move, 0.0)
+    minus_dm = np.where((down_move > up_move) & (down_move > 0), down_move, 0.0)
+    # Wilder smoothing
+    tr_s = tr.ewm(alpha=1/period, adjust=False).mean()
+    plus_dm_s = pd.Series(plus_dm).ewm(alpha=1/period, adjust=False).mean()
+    minus_dm_s = pd.Series(minus_dm).ewm(alpha=1/period, adjust=False).mean()
+    # DX and ADX
+    plus_di = 100 * (plus_dm_s / tr_s).replace({0: np.nan})
+    minus_di = 100 * (minus_dm_s / tr_s).replace({0: np.nan})
+    dx = ( (plus_di - minus_di).abs() / (plus_di + minus_di).abs() ) * 100.0
+    adx = dx.ewm(alpha=1/period, adjust=False).mean()
+    return pd.Series(adx, name='adx')
+
+
+@app.route('/api/strategy/backtest', methods=['POST'])
+def api_strategy_backtest():
+    """Run a quick backtest on local CSV data (MACD-based strategies)."""
+    try:
+        data = request.get_json(silent=True) or {}
+        sym = (data.get('symbol') or '').strip().upper()
+        if not sym:
+            return jsonify({'status': 'error', 'detail': 'symbol is required'}), 400
+        start_date = data.get('start_date')
+        end_date = data.get('end_date')
+        strat = (data.get('strategy') or 'macd_cross').strip()
+        macd_fast = int(data.get('macd_fast', 12) or 12)
+        macd_slow = int(data.get('macd_slow', 26) or 26)
+        macd_sig = int(data.get('macd_signal', 9) or 9)
+        initial_cash = float(data.get('initial_cash', 10000.0) or 10000.0)
+        tcost = int(data.get('transaction_cost_bps', 5) or 5)
+        slip = int(data.get('slippage_bps', 5) or 5)
+        adv_period = int(data.get('adv_period', 20) or 20)
+        pre_bars = int(data.get('pre_bars', 3) or 3)  # k_buy
+        sell_bars = int(data.get('sell_bars', 2) or 2)  # k_sell
+        adx_min = float(data.get('adx_min', 25) or 25)
+        stop_loss_pct = float(data.get('stop_loss_pct', 0) or 0)  # percent, e.g., 9 = 9%
+        trailing_stop = bool(data.get('trailing_stop', True))
+        conv_window = int(data.get('conv_window', 60) or 60)
+        p_buy = float(data.get('p_buy', 35) or 35)
+        e_buy = float(data.get('e_buy', 20) or 20)
+        p_sell = float(data.get('p_sell', 40) or 40)
+        vol_sma_period = int(data.get('vol_sma_period', 20) or 20)
+        vol_down_strict = bool(data.get('vol_down_strict', False))
+        macd_zero_stop = bool(data.get('macd_zero_stop', False))
+
+        import pandas as pd
+        import numpy as np
+
+        df = _load_price_df(sym)
+        if start_date:
+            df = df[df['Date'] >= pd.to_datetime(start_date)]
+        if end_date:
+            df = df[df['Date'] <= pd.to_datetime(end_date)]
+        df = df.dropna(subset=['Close']).reset_index(drop=True)
+        if len(df) < max(macd_fast, macd_slow, macd_sig) + 5:
+            return jsonify({'status': 'error', 'detail': f'Not enough rows for MACD on {sym}'}), 400
+
+        macd_df = _macd_series(df['Close'].astype(float), macd_fast, macd_slow, macd_sig)
+        # ADX needs H/L/C; compute only if High/Low exist, else fill NaN
+        if 'High' in df.columns and 'Low' in df.columns:
+            adx = _adx_series(df['High'].astype(float), df['Low'].astype(float), df['Close'].astype(float), 14)
+        else:
+            import pandas as _pd
+            adx = _pd.Series([float('nan')]*len(df), name='adx')
+        df = pd.concat([df, macd_df, adx], axis=1)
+        # Ensure volume and ADV
+        if 'Volume' not in df.columns:
+            df['Volume'] = np.nan
+        df['ADV'] = df['Volume'].rolling(adv_period, min_periods=adv_period).mean()
+        # Volume SMA for stock strategy
+        try:
+            df['VOL_SMA'] = df['Volume'].rolling(vol_sma_period, min_periods=vol_sma_period).mean()
+        except Exception:
+            df['VOL_SMA'] = np.nan
+
+        dates = df['Date'].dt.date.tolist()
+
+        # Pre-compute histogram and convergence ratio for pre-cross logic
+        hist = (df['macd'] - df['macd_signal']).astype(float)
+        g = hist.abs()
+        # Rolling max of distance (use prior value to avoid leaking current bar)
+        minp = max(3, int(conv_window//3)) if conv_window and conv_window > 0 else 3
+        rollmax = g.rolling(int(conv_window or 60), min_periods=minp).max().shift(1)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            conv_ratio = g / rollmax
+        df['conv_ratio'] = conv_ratio.replace([np.inf, -np.inf], np.nan)
+        def _rising_hist(i: int, k: int) -> bool:
+            if i - k < 1:
+                return False
+            for j in range(i - k + 1, i + 1):
+                if not (np.isfinite(hist.iloc[j]) and np.isfinite(hist.iloc[j-1])):
+                    return False
+                if not (hist.iloc[j] > hist.iloc[j-1]):
+                    return False
+            return True
+
+        def _falling_hist(i: int, k: int) -> bool:
+            if i - k < 1:
+                return False
+            for j in range(i - k + 1, i + 1):
+                if not (np.isfinite(hist.iloc[j]) and np.isfinite(hist.iloc[j-1])):
+                    return False
+                if not (hist.iloc[j] < hist.iloc[j-1]):
+                    return False
+            return True
+
+        # Trading loop
+        cash = float(initial_cash)
+        shares = 0.0
+        equity_curve: list[float] = []
+        trades: list[dict] = []
+        in_position: list[int] = []
+        stops_count = 0
+        entry_px: float | None = None
+        peak_px_in_pos: float | None = None
+
+        def _notional(qty, px):
+            return abs(float(qty) * float(px))
+
+        def _apply_costs(notional: float) -> float:
+            return float(notional) * (((tcost or 0) + (slip or 0)) / 10000.0)
+
+        prev_macd = None
+        prev_sig = None
+        for i in range(len(df)):
+            px = float(df.loc[i, 'Close'])
+            m = float(df.loc[i, 'macd'])
+            s = float(df.loc[i, 'macd_signal'])
+            action = None
+            reason = None
+            if np.isfinite(m) and np.isfinite(s) and prev_macd is not None and prev_sig is not None:
+                crossed_up = (prev_macd <= prev_sig) and (m > s)
+                crossed_dn = (prev_macd >= prev_sig) and (m < s)
+                if strat == 'macd_cross':
+                    if crossed_up and cash > 0:
+                        qty = cash / px
+                        fee = _apply_costs(_notional(qty, px))
+                        cash -= (qty * px + fee)
+                        shares += qty
+                        action = 'BUY'; reason = 'cross_up'
+                    elif crossed_dn and shares > 0:
+                        fee = _apply_costs(_notional(shares, px))
+                        cash += (shares * px - fee)
+                        shares = 0.0
+                        action = 'SELL'; reason = 'cross_down'
+                elif strat == 'macd_pre_cross_below_zero':
+                    # Stop-loss check first (if in position)
+                    if shares > 0 and stop_loss_pct > 0:
+                        basis = peak_px_in_pos if (trailing_stop and peak_px_in_pos is not None) else (entry_px if entry_px is not None else px)
+                        trigger_px = float(basis) * (1.0 - float(stop_loss_pct)/100.0)
+                        if px <= trigger_px:
+                            fee = _apply_costs(_notional(shares, px))
+                            cash += (shares * px - fee)
+                            shares = 0.0
+                            action = 'SELL'; reason = 'stoploss'
+                            stops_count += 1
+                    # If not stopped, evaluate new SELL rule:
+                    # Option A: cross down → SELL immediately
+                    if action is None and shares > 0 and crossed_dn:
+                        fee = _apply_costs(_notional(shares, px))
+                        cash += (shares * px - fee)
+                        shares = 0.0
+                        action = 'SELL'; reason = 'cross_down'
+                    # Option B: hist falling k_sell days AND convergence tight enough while above signal
+                    if action is None and shares > 0 and (m > s):
+                        cr = df.loc[i, 'conv_ratio']
+                        if _falling_hist(i, max(2, sell_bars)) and (np.isfinite(cr) and cr <= float(p_sell)/100.0):
+                            fee = _apply_costs(_notional(shares, px))
+                            cash += (shares * px - fee)
+                            shares = 0.0
+                            action = 'SELL'; reason = 'hist_falling_conv'
+                    # BUY rule (pre-cross below zero + rising hist + ADX filter + convergence small)
+                    if action is None and (m <= s) and (m < 0.0) and (s < 0.0):
+                        cr = df.loc[i, 'conv_ratio']
+                        buy_setup = _rising_hist(i, max(2, pre_bars)) and (np.isfinite(cr) and cr <= float(p_buy)/100.0)
+                        buy_trigger = crossed_up or (np.isfinite(cr) and cr <= float(e_buy)/100.0)
+                        adx_ok = (not np.isfinite(df.loc[i, 'adx'])) or (float(df.loc[i, 'adx']) >= float(adx_min))
+                        if buy_setup and buy_trigger and adx_ok and cash > 0:
+                            qty = cash / px
+                            fee = _apply_costs(_notional(qty, px))
+                            cash -= (qty * px + fee)
+                            shares += qty
+                            action = 'BUY'; reason = 'pre_cross_convergence'
+                            entry_px = px
+                            peak_px_in_pos = px
+                elif strat == 'macd_convergence_stock':
+                    # Exit logic first: protective stops
+                    if shares > 0 and stop_loss_pct > 0:
+                        fee = _apply_costs(_notional(shares, px)) if False else 0.0
+                        basis = entry_px if (not trailing_stop) else (peak_px_in_pos if peak_px_in_pos is not None else entry_px)
+                        if basis is None:
+                            basis = px
+                        trigger_px = float(basis) * (1.0 - float(stop_loss_pct)/100.0)
+                        if px <= trigger_px:
+                            fee = _apply_costs(_notional(shares, px))
+                            cash += (shares * px - fee)
+                            shares = 0.0
+                            action = 'SELL'; reason = 'stoploss'
+                            stops_count += 1
+                    # Optional logical zero-cross stop: MACD crosses below zero after being >= 0 prior bar
+                    if action is None and shares > 0 and macd_zero_stop and (prev_macd is not None) and (prev_macd >= 0.0) and (m < 0.0):
+                        fee = _apply_costs(_notional(shares, px))
+                        cash += (shares * px - fee)
+                        shares = 0.0
+                        action = 'SELL'; reason = 'macd_below_zero'
+
+                    # Main exit: full bearish cross down
+                    if action is None and shares > 0 and crossed_dn:
+                        fee = _apply_costs(_notional(shares, px))
+                        cash += (shares * px - fee)
+                        shares = 0.0
+                        action = 'SELL'; reason = 'cross_down'
+
+                    # Entry: setup + trigger
+                    if action is None:
+                        # Setup conditions
+                        in_bear_zone = (m < 0.0) and (s < 0.0)
+                        hist_up = _rising_hist(i, max(2, pre_bars))
+                        cr = df.loc[i, 'conv_ratio']
+                        conv_ok = (np.isfinite(cr) and cr <= float(p_buy)/100.0)
+                        adx_ok = (not np.isfinite(df.loc[i, 'adx'])) or (float(df.loc[i, 'adx']) >= float(adx_min))
+                        # Volume “seller drying”
+                        vol_ok = True
+                        try:
+                            v = float(df.loc[i, 'Volume'])
+                            v_sma = float(df.loc[i, 'VOL_SMA']) if np.isfinite(df.loc[i, 'VOL_SMA']) else np.nan
+                            cond1 = (np.isfinite(v) and np.isfinite(v_sma) and (v < v_sma))
+                            if vol_down_strict:
+                                v_prev = float(df.loc[i-1, 'Volume']) if i-1 >= 0 else np.nan
+                                cond2 = (np.isfinite(v_prev) and v < v_prev)
+                                vol_ok = cond1 and cond2
+                            else:
+                                vol_ok = cond1
+                        except Exception:
+                            vol_ok = True  # if not available, don't block
+
+                        setup_ok = in_bear_zone and hist_up and conv_ok and adx_ok and vol_ok and (cash > 0)
+                        # Trigger: near enough (E_buy) or full cross up
+                        trigger_ok = False
+                        if setup_ok:
+                            trigger_ok = crossed_up or (np.isfinite(cr) and cr <= float(e_buy)/100.0)
+
+                        if setup_ok and trigger_ok:
+                            qty = cash / px
+                            fee = _apply_costs(_notional(qty, px))
+                            cash -= (qty * px + fee)
+                            shares += qty
+                            action = 'BUY'; reason = 'stock_conv_entry'
+                            entry_px = px
+                            peak_px_in_pos = px
+
+                else:
+                    if crossed_up and cash > 0:
+                        qty = cash / px
+                        fee = _apply_costs(_notional(qty, px))
+                        cash -= (qty * px + fee)
+                        shares += qty
+                        action = 'BUY'; reason = 'cross_up'
+                    elif crossed_dn and shares > 0:
+                        fee = _apply_costs(_notional(shares, px))
+                        cash += (shares * px - fee)
+                        shares = 0.0
+                        action = 'SELL'; reason = 'cross_down'
+
+            equity = cash + shares * px
+            equity_curve.append(float(equity))
+            in_position.append(1 if shares > 0 else 0)
+            if action:
+                trades.append({
+                    'date': str(dates[i]),
+                    'action': action,
+                    'reason': reason,
+                    'price': px,
+                    'shares': float(shares),
+                    'cash': float(cash),
+                    'equity': float(equity),
+                })
+            # Track peak price while in position for trailing stop
+            if shares > 0:
+                if peak_px_in_pos is None or px > peak_px_in_pos:
+                    peak_px_in_pos = px
+            else:
+                entry_px = None
+                peak_px_in_pos = None
+            prev_macd = m if np.isfinite(m) else prev_macd
+            prev_sig = s if np.isfinite(s) else prev_sig
+
+        # Metrics
+        eq = np.array(equity_curve, dtype=float)
+        ret_total = (eq[-1] / float(initial_cash)) - 1.0 if len(eq) else 0.0
+        if len(eq):
+            peaks = np.maximum.accumulate(eq)
+            dd = (eq - peaks) / peaks
+            max_dd = float(dd.min()) if np.isfinite(dd).any() else 0.0
+        else:
+            max_dd = 0.0
+        win = 0
+        tot = 0
+        last_buy_equity = None
+        for t in trades:
+            if t['action'] == 'BUY':
+                last_buy_equity = t['equity']
+            elif t['action'] == 'SELL' and last_buy_equity is not None:
+                tot += 1
+                if t['equity'] > last_buy_equity:
+                    win += 1
+                last_buy_equity = None
+        win_rate = (win / tot) if tot > 0 else None
+
+        # OHLCV/ADV arrays (ensure valid JSON: replace NaN with None)
+        def _series_to_list_none(s):
+            import pandas as _pd
+            return [ (None if _pd.isna(x) else float(x)) for x in s.tolist() ]
+
+        if 'Open' in df.columns:
+            open_arr = _series_to_list_none(df['Open'])
+        else:
+            open_arr = [None] * len(df)
+        if 'High' in df.columns:
+            high_arr = _series_to_list_none(df['High'])
+        else:
+            high_arr = [None] * len(df)
+        if 'Low' in df.columns:
+            low_arr = _series_to_list_none(df['Low'])
+        else:
+            low_arr = [None] * len(df)
+        close_arr = _series_to_list_none(df['Close'])
+        vol_arr = df['Volume'].astype(float).fillna(0.0).tolist()
+        adv_arr = _series_to_list_none(df['ADV'])
+
+        resp = {
+            'status': 'ok',
+            'symbol': sym,
+            'dates': [str(d) for d in dates],
+            'open': open_arr,
+            'high': high_arr,
+            'low': low_arr,
+            'close': close_arr,
+            'volume': vol_arr,
+            'adv': adv_arr,
+            'equity': [float(x) for x in equity_curve],
+            'macd': df['macd'].astype(float).fillna(0.0).tolist(),
+            'macd_signal': df['macd_signal'].astype(float).fillna(0.0).tolist(),
+            'trades': trades,
+            'in_position': in_position,
+            'metrics': {
+                'initial_cash': float(initial_cash),
+                'final_equity': float(eq[-1]) if len(eq) else float(initial_cash),
+                'total_return_pct': float(ret_total * 100.0),
+                'max_drawdown_pct': float(max_dd * 100.0),
+                'num_trades': int(len(trades)),
+                'round_trips': int(tot),
+                'win_rate': float(win_rate) if win_rate is not None else None,
+                'tcost_bps': int(tcost),
+                'slippage_bps': int(slip),
+                'adv_period': int(adv_period),
+                'strategy': strat,
+                'pre_bars': int(pre_bars),
+                'sell_bars': int(sell_bars),
+                'adx_min': float(adx_min),
+                'stop_loss_pct': float(stop_loss_pct),
+                'trailing_stop': bool(trailing_stop),
+                'num_stops': int(stops_count),
+                'conv_window': int(conv_window),
+                'p_buy': float(p_buy),
+                'e_buy': float(e_buy),
+                'p_sell': float(p_sell),
+                'vol_sma_period': int(vol_sma_period),
+                'vol_down_strict': bool(vol_down_strict),
+                'macd_zero_stop': bool(macd_zero_stop),
+            }
+        }
+        return jsonify(resp)
+    except FileNotFoundError as e:
+        return jsonify({'status': 'error', 'detail': str(e)}), 404
+    except Exception as e:
+        return jsonify({'status': 'error', 'detail': str(e)}), 500
 
 @app.route('/health')
 def health():
@@ -1551,15 +2367,14 @@ def api_predictions_stats():
 @app.route('/api/predictions/list')
 def api_predictions_list():
     """Proxy to FastAPI: List predictions with filters"""
-    params = []
-    for param in ['status', 'symbol', 'source', 'limit']:
-        value = request.args.get(param)
-        if value:
-            params.append(f'{param}={value}')
-    
+    # Forward query string as-is to the backend
+    try:
+        qs = request.query_string.decode('utf-8') if request.query_string else ''
+    except Exception:
+        qs = ''
     endpoint = '/api/predictions/list'
-    if params:
-        endpoint += '?' + '&'.join(params)
+    if qs:
+        endpoint += f'?{qs}'
     return proxy_to_backend(endpoint)
 
 # ===========================
@@ -1575,6 +2390,60 @@ def api_scanner_sectors():
 def api_scanner_sector_detail(sector_id):
     """Proxy to FastAPI: Detailed sector analysis"""
     return proxy_to_backend(f'/api/scanner/sector/{sector_id}')
+
+# Additional Scanner proxies used by the Scanner page
+@app.route('/api/scanner/status')
+def api_scanner_status_proxy():
+    qs = request.query_string.decode('utf-8') if request.query_string else ''
+    endpoint = '/api/scanner/status' + (f'?{qs}' if qs else '')
+    return proxy_to_backend(endpoint)
+
+@app.route('/api/scanner/top')
+def api_scanner_top_proxy():
+    qs = request.query_string.decode('utf-8') if request.query_string else ''
+    endpoint = '/api/scanner/top' + (f'?{qs}' if qs else '')
+    return proxy_to_backend(endpoint)
+
+@app.route('/api/scanner/run', methods=['POST'])
+def api_scanner_run_proxy():
+    qs = request.query_string.decode('utf-8') if request.query_string else ''
+    endpoint = '/api/scanner/run' + (f'?{qs}' if qs else '')
+    return proxy_to_backend(endpoint, method='POST')
+
+@app.route('/api/scanner/filter/run', methods=['POST'])
+def api_scanner_filter_run_proxy():
+    body = request.get_json(silent=True) or {}
+    return proxy_to_backend('/api/scanner/filter/run', method='POST', json=body)
+
+@app.route('/api/scanner/filter/status')
+def api_scanner_filter_status_proxy():
+    qs = request.query_string.decode('utf-8') if request.query_string else ''
+    endpoint = '/api/scanner/filter/status' + (f'?{qs}' if qs else '')
+    return proxy_to_backend(endpoint)
+
+@app.route('/api/scanner/filter/results')
+def api_scanner_filter_results_proxy():
+    return proxy_to_backend('/api/scanner/filter/results')
+
+@app.route('/api/scanner/train/status')
+def api_scanner_train_status_proxy():
+    return proxy_to_backend('/api/scanner/train/status')
+
+@app.route('/api/scanner/train/start', methods=['POST'])
+def api_scanner_train_start_proxy():
+    # Symbol is passed as query parameter
+    qs = request.query_string.decode('utf-8') if request.query_string else ''
+    endpoint = '/api/scanner/train/start' + (f'?{qs}' if qs else '')
+    return proxy_to_backend(endpoint, method='POST')
+
+@app.route('/api/scanner/train/start-all', methods=['POST'])
+def api_scanner_train_start_all_proxy():
+    body = request.get_json(silent=True) or {}
+    return proxy_to_backend('/api/scanner/train/start-all', method='POST', json=body)
+
+@app.route('/api/scanner/train/symbol/<symbol>/status')
+def api_scanner_train_symbol_status_proxy(symbol):
+    return proxy_to_backend(f'/api/scanner/train/symbol/{symbol}/status')
 
 # ===========================
 # Jobs & Feeds API Proxies
