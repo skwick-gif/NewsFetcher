@@ -236,7 +236,14 @@ def _compute_convergence_score(symbol: str, df: pd.DataFrame) -> Dict[str, Any]:
         
         # Determine if meets criteria (at least 4/5 filters + reasonable score)
         meets_criteria = (passed_filters >= 4) and (final_score >= 60.0)
-        
+
+        # Ensure all filter values are native Python types (no numpy.bool_ etc.)
+        try:
+            filters = {k: bool(v) for k, v in filters.items()}
+        except Exception:
+            # Fallback: coerce via simple truthiness
+            filters = {k: (True if v else False) for k, v in filters.items()}
+
         return {
             'score': float(final_score),
             'meets_criteria': bool(meets_criteria),
