@@ -253,7 +253,17 @@
       const ref = document.getElementById('btn-refresh-status'); if(ref && !ref._b){ ref.addEventListener('click', pollStatus); ref._b=true; }
       const top = document.getElementById('btn-refresh-top'); if(top && !top._b){ top.addEventListener('click', loadTop); top._b=true; }
     }
-    window.addEventListener('DOMContentLoaded', ()=>{ bind(); pollFilter(); loadFilter(); pollStatus(); loadTop(); setInterval(pollFilter, 5000); setInterval(pollTrain, 5000); setInterval(pollStatus, 6000); });
+    window.addEventListener('DOMContentLoaded', ()=>{ 
+      bind(); 
+      pollFilter(); 
+      loadFilter(); 
+      pollStatus(); 
+      // Don't auto-load top on page load - expensive operation
+      // User must click "Run Daily Scan" or "Refresh Top" button
+      setInterval(pollFilter, 5000); 
+      setInterval(pollTrain, 5000); 
+      setInterval(pollStatus, 6000); 
+    });
   })();
   </script>
 </body>

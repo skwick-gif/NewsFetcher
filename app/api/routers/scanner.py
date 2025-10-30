@@ -239,7 +239,7 @@ def _compute_convergence_score(symbol: str, df: pd.DataFrame) -> Dict[str, Any]:
         
         return {
             'score': float(final_score),
-            'meets_criteria': meets_criteria,
+            'meets_criteria': bool(meets_criteria),
             'filters': filters,
             'passed_filters': f"{passed_filters}/{total_filters}",
             'conv_ratio': float(conv_ratio * 100.0),  # as percentage
@@ -380,15 +380,15 @@ def _compute_local_metrics(symbol: str) -> Optional[Dict[str, Any]]:
             'avg_volume': int(avg_volume) if avg_volume else 0,
             'avg_dollar_volume': float(avg_dollar_volume),
             'market_cap': int(market_cap),
-            'is_micro_cap': is_micro_cap,
+            'is_micro_cap': bool(is_micro_cap),
             'sector': sector,
             'industry': industry,
             'momentum': float(momentum),
             'expected_return': float(expected_return),
-            'ml_score': ml_score,  # Real ML prediction if available, else heuristic
-            'technical_score': technical_score,  # Convergence strategy score (0-100)
-            'convergence_data': convergence_data,  # Detailed breakdown
-            'has_model': has_model,
+            'ml_score': float(ml_score),
+            'technical_score': float(technical_score),
+            'convergence_data': convergence_data,
+            'has_model': bool(has_model),
         }
         
     except Exception as e:

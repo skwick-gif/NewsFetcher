@@ -54,7 +54,7 @@ def api_scanner_sector_detail(sector_id):
 def api_scanner_status_proxy():
     qs = request.query_string.decode('utf-8') if request.query_string else ''
     endpoint = '/api/scanner/status' + (f'?{qs}' if qs else '')
-    return proxy_to_backend(endpoint)
+    return proxy_to_backend(endpoint, timeout=15)
 
 
 @scanner_bp.route('/api/scanner/top')
