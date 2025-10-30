@@ -300,6 +300,30 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# Include modular routers (start with RL PPO + Auto‑Tune)
+try:
+    from app.api.routers.rl import router as rl_router
+    app.include_router(rl_router)
+    logger.info("✅ Included RL router (PPO & Auto‑Tune)")
+except Exception as e:
+    logger.warning(f"⚠️ Failed to include RL router: {e}")
+
+# Include ML router (Batch 1: status + models + training status)
+try:
+    from app.api.routers.ml import router as ml_router
+    app.include_router(ml_router)
+    logger.info("✅ Included ML router (status/models/training status)")
+except Exception as e:
+    logger.warning(f"⚠️ Failed to include ML router: {e}")
+
+# Include Scanner router (filter, train, scan)
+try:
+    from app.api.routers.scanner import router as scanner_router
+    app.include_router(scanner_router)
+    logger.info("✅ Included Scanner router (filter/train/scan)")
+except Exception as e:
+    logger.warning(f"⚠️ Failed to include Scanner router: {e}")
+
 # ============================================================
 # IBKR Bridge Endpoints (stubs for C# integration)
 # ============================================================
@@ -309,506 +333,7 @@ class IBKRConnectRequest(BaseModel):
     client_id: Optional[int] = None
 
 
-class IBKROrderRequest(BaseModel):
-    symbol: str
-    quantity: float
-    side: str  # BUY or SELL
-    order_type: str = "MKT"  # MKT or LMT
-    limit_price: Optional[float] = None
-
-
-@app.post("/api/ibkr/connect", tags=["IBKR"])
-async def ibkr_connect(req: IBKRConnectRequest):
-    try:
-        data = ibkr.connect(req.host, req.port, req.client_id)
-        return {"status": "success", "data": data}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/api/ibkr/status", tags=["IBKR"])
-async def ibkr_status():
-    try:
-        return {"status": "success", "data": ibkr.status()}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/api/ibkr/place_order", tags=["IBKR"])
-async def ibkr_place_order(req: IBKROrderRequest):
-    try:
-        side = req.side.upper()
-        order_type = req.order_type.upper() if req.order_type else "MKT"
-        if side not in ("BUY", "SELL"):
-            raise HTTPException(status_code=400, detail="Invalid side. Use BUY or SELL")
-        if order_type not in ("MKT", "LMT"):
-            raise HTTPException(status_code=400, detail="Invalid order_type. Use MKT or LMT")
-
-        res = ibkr.place_order(req.symbol, req.quantity, side, order_type, req.limit_price)
-        if not res.get("ok"):
-            raise HTTPException(status_code=503, detail=res.get("error") or "IBKR unavailable")
-        return {"status": "success", "data": res}
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/api/ibkr/positions", tags=["IBKR"])
-async def ibkr_positions():
-    try:
-        return {"status": "success", "data": {"positions": ibkr.positions()}}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/api/ibkr/disconnect", tags=["IBKR"])
-async def ibkr_disconnect():
-    try:
-        return {"status": "success", "data": ibkr.disconnect()}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-# ---------------------------------------------
-# Local stock_data-backed Scanner implementation (no legacy auto-scan)
-# ---------------------------------------------
-from typing import Optional, Dict, Any
-import asyncio
-
-STOCK_DATA_DIR = Path('stock_data')
-
-
-def _iter_local_symbols(max_symbols: int = 1000) -> List[str]:
-    """List symbols that have local CSV data under stock_data/.
-
-    Returns at most max_symbols sorted alphabetically.
-    """
-    try:
-        root = STOCK_DATA_DIR
-        if not root.exists():
-            return []
-        syms: List[str] = []
-        for p in root.iterdir():
-            if not p.is_dir():
-                continue
-            sym = p.name
-            price = p / f"{sym}_price.csv"
-            if price.exists():
-                syms.append(sym)
-        syms.sort()
-        return syms[:max_symbols]
-    except Exception:
-        return []
-
-
-def _compute_local_metrics(symbol: str) -> Optional[Dict[str, Any]]:
-    """Compute simple metrics from local CSVs for a symbol.
-
-    Produces a dict compatible with hot-stocks items and scanner top rendering.
-    """
-    try:
-        import pandas as pd
-        sym = symbol.upper()
-        price_path = STOCK_DATA_DIR / sym / f"{sym}_price.csv"
-        ind_path = STOCK_DATA_DIR / sym / f"{sym}_indicators.csv"
-        if not price_path.exists():
-            return None
-        df = pd.read_csv(price_path)
-        # Normalize column names access
-        close_col = 'Close' if 'Close' in df.columns else ('close' if 'close' in df.columns else None)
-        open_col = 'Open' if 'Open' in df.columns else ('open' if 'open' in df.columns else None)
-        high_col = 'High' if 'High' in df.columns else ('high' if 'high' in df.columns else None)
-        low_col = 'Low' if 'Low' in df.columns else ('low' if 'low' in df.columns else None)
-        vol_col = 'Volume' if 'Volume' in df.columns else ('volume' if 'volume' in df.columns else None)
-        if close_col is None or len(df) < 3:
-            return None
-        # Use last and previous values
-        close_vals = pd.to_numeric(df[close_col], errors='coerce').dropna()
-        if len(close_vals) < 3:
-            return None
-        current_price = float(close_vals.iloc[-1])
-        prev_price = float(close_vals.iloc[-2])
-        change_pct = ((current_price - prev_price) / prev_price * 100.0) if prev_price else 0.0
-        # ADV(20) if volume available
-        avg_volume_20 = None
-        if vol_col and vol_col in df.columns:
-            vol_series = pd.to_numeric(df[vol_col], errors='coerce').dropna()
-            if len(vol_series) >= 20:
-                avg_volume_20 = float(vol_series.tail(20).mean())
-
-        # 5-day return as expected_return proxy
-        last5 = close_vals.tail(6)
-        if len(last5) >= 2:
-            base = float(last5.iloc[0])
-            expected_return = ((current_price - base) / base * 100.0) if base else 0.0
-        else:
-            expected_return = change_pct
-
-        # Load indicators if available for basic ml_score/confidence
-        rsi = None
-        atr_pct = None
-        if ind_path.exists():
-            try:
-                ind = pd.read_csv(ind_path)
-                if 'RSI_14' in ind.columns:
-                    rsi_series = pd.to_numeric(ind['RSI_14'], errors='coerce').dropna()
-                    if len(rsi_series):
-                        rsi = float(rsi_series.iloc[-1])
-                # ATR% approximation if ATR and price present
-                if 'ATR_14' in ind.columns and current_price > 0:
-                    atr_series = pd.to_numeric(ind['ATR_14'], errors='coerce').dropna()
-                    if len(atr_series):
-                        atr = float(atr_series.iloc[-1])
-                        atr_pct = max(0.001, min(0.2, atr / current_price))
-            except Exception:
-                pass
-
-        # Derive a simple ml_score 0..100 from momentum and RSI
-        # Base score from 5d momentum clipped [-5, +5] -> [0, 100]
-        mom = max(-5.0, min(5.0, expected_return))
-        base_score = (mom + 5.0) * 10.0  # -5->0, 0->50, +5->100
-        # RSI contribution: favor 50-70 mildly, penalize >80 or <20
-        rsi_adj = 0.0
-        if rsi is not None:
-            if 50 <= rsi <= 70:
-                rsi_adj = 5.0
-            elif rsi > 80:
-                rsi_adj = -10.0
-            elif rsi < 20:
-                rsi_adj = -5.0
-        ml_score = max(0.0, min(100.0, base_score + rsi_adj))
-
-        # Confidence from volatility (ATR%) if available, else modest default
-        if atr_pct is not None:
-            confidence = max(0.5, min(0.95, 1.0 - atr_pct * 2.5))
-        else:
-            confidence = 0.7
-
-        # Recommendation heuristic
-        recommendation = 'HOLD'
-        if expected_return > 1.0 and confidence >= 0.6:
-            recommendation = 'BUY'
-        if expected_return > 3.0 and confidence >= 0.7:
-            recommendation = 'STRONG BUY'
-        if expected_return < -2.0:
-            recommendation = 'SELL'
-
-        predicted_price = current_price * (1.0 + expected_return / 100.0)
-
-        return {
-            'symbol': sym,
-            'current_price': round(current_price, 4),
-            'predicted_price': round(predicted_price, 4),
-            'expected_return': round(expected_return, 3),
-            'confidence': round(confidence, 3),
-            'recommendation': recommendation,
-            'ml_score': round(ml_score, 2),
-            'change_percent': round(change_pct, 3),
-            'avg_volume_20': avg_volume_20
-        }
-    except Exception:
-        return None
-
-
-class _ScannerState:
-    def __init__(self) -> None:
-        # Scan
-        self.status: str = 'idle'  # idle|running|completed|error
-        self.mode: str = 'ml'
-        self.started_at: Optional[str] = None
-        self.finished_at: Optional[str] = None
-        self.last_error: Optional[str] = None
-        self.progress: float = 0.0
-        self.message: Optional[str] = None
-        self.eta_seconds: Optional[int] = None
-        self.total_symbols: int = 0
-        self.processed_symbols: int = 0
-        self.top: List[Dict[str, Any]] = []
-        # Filter
-        self.filter_state: str = 'not-started'  # not-started|running|completed|error
-        self.filter_progress: float = 0.0
-        self.filter_items: List[Dict[str, Any]] = []
-        self.passed_count: int = 0
-        self.trained_count: int = 0
-        # Train
-        self.train_status: str = 'idle'  # idle|running|completed|error
-        self.train_current_symbol: Optional[str] = None
-
-    def to_status(self) -> Dict[str, Any]:
-        return {
-            'state': self.status,
-            'mode': self.mode,
-            'started_at': self.started_at,
-            'finished_at': self.finished_at,
-            'error': self.last_error,
-            'progress': self.progress,
-            'message': self.message,
-            'eta_seconds': self.eta_seconds,
-            'total_symbols': self.total_symbols,
-            'processed_symbols': self.processed_symbols,
-            'count_top': len(self.top),
-        }
-
-
-_scanner_state = _ScannerState()
-
-
-async def _run_scan(mode: str, limit: int = 50) -> None:
-    from datetime import datetime as _dt
-    _scanner_state.status = 'running'
-    _scanner_state.mode = mode
-    _scanner_state.started_at = _dt.now().isoformat()
-    _scanner_state.finished_at = None
-    _scanner_state.last_error = None
-    _scanner_state.progress = 0.0
-    _scanner_state.message = 'Scanning local symbols'
-    _scanner_state.eta_seconds = None
-    _scanner_state.top = []
-    _scanner_state.total_symbols = 0
-    _scanner_state.processed_symbols = 0
-    try:
-        syms = _iter_local_symbols(max_symbols=500)
-        _scanner_state.total_symbols = len(syms)
-        results: List[Dict[str, Any]] = []
-        # Process a subset quickly; compute simple metrics and build list
-        for idx, sym in enumerate(syms):
-            m = _compute_local_metrics(sym)
-            if m is not None:
-                results.append(m)
-            _scanner_state.processed_symbols = idx + 1
-            # Update progress and simple ETA
-            if _scanner_state.total_symbols:
-                _scanner_state.progress = (_scanner_state.processed_symbols / _scanner_state.total_symbols)
-                remaining = _scanner_state.total_symbols - _scanner_state.processed_symbols
-                # Assume ~2ms per symbol average – safe small ETA
-                _scanner_state.eta_seconds = max(0, int(remaining * 0.002))
-            if idx % 50 == 0:
-                await asyncio.sleep(0)  # yield to event loop
-            # Early stop if we have more than we need for ranking diversity
-            if len(results) >= max(limit * 5, 100):
-                break
-        # Rank by expected return desc
-        results.sort(key=lambda x: x.get('expected_return', 0.0), reverse=True)
-        _scanner_state.top = results[: max(limit, 50)]
-        _scanner_state.status = 'completed'
-        _scanner_state.message = f"Completed: {len(_scanner_state.top)} candidates"
-    except Exception as _e:
-        _scanner_state.status = 'error'
-        _scanner_state.last_error = str(_e)
-        _scanner_state.message = 'Scan failed'
-    finally:
-        _scanner_state.finished_at = _dt.now().isoformat()
-
-
-async def _run_filter_job(price_min: float = 3.0, adv_min: float = 1_000_000.0) -> None:
-    """Filter local symbols by last close and ADV thresholds; enrich with training status.
-
-    - price_min: minimum last close
-    - adv_min: minimum average daily volume (20d)
-    """
-    try:
-        _scanner_state.filter_state = 'running'
-        _scanner_state.filter_progress = 0.0
-        _scanner_state.filter_items = []
-        _scanner_state.passed_count = 0
-        _scanner_state.last_error = None
-        syms = _iter_local_symbols(max_symbols=50_000)
-        _scanner_state.total_symbols = len(syms)
-        _scanner_state.processed_symbols = 0
-        items: List[Dict[str, Any]] = []
-        from pathlib import Path as _Path
-        champions_root = _Path('app/ml/models/champions')
-        for idx, sym in enumerate(syms):
-            _scanner_state.processed_symbols = idx + 1
-            m = _compute_local_metrics(sym)
-            if m is None:
-                # Update progress and yield
-                if _scanner_state.total_symbols:
-                    _scanner_state.filter_progress = _scanner_state.processed_symbols / _scanner_state.total_symbols
-                if idx % 50 == 0:
-                    await asyncio.sleep(0)
-                continue
-            # Apply filters
-            ok_price = (m.get('current_price') is not None and float(m['current_price']) >= float(price_min))
-            adv = m.get('avg_volume_20')
-            ok_adv = (adv is not None and float(adv) >= float(adv_min))
-            # TODO: micro-cap exclusion if fundamentals available; skipped for now
-            if ok_price and ok_adv:
-                # Determine training state by presence of champion dir for symbol
-                trained = False
-                try:
-                    sym_dir = (champions_root / sym)
-                    if sym_dir.exists():
-                        # Heuristic: any subdir implies at least one champion
-                        trained = any(p.is_dir() for p in sym_dir.iterdir())
-                except Exception:
-                    trained = False
-                item = {
-                    'symbol': sym,
-                    'current_price': m.get('current_price'),
-                    'avg_volume_20': m.get('avg_volume_20'),
-                    'trained': trained,
-                    'train_status': 'completed' if trained else 'not-started'
-                }
-                items.append(item)
-                _scanner_state.passed_count = len(items)
-            # Progress + yield
-            if _scanner_state.total_symbols:
-                _scanner_state.filter_progress = _scanner_state.processed_symbols / _scanner_state.total_symbols
-            if idx % 50 == 0:
-                await asyncio.sleep(0)
-        _scanner_state.filter_items = items
-        _scanner_state.filter_state = 'completed'
-    except Exception as e:
-        _scanner_state.filter_state = 'error'
-        _scanner_state.last_error = str(e)
-
-
-# Add CORS (explicit localhost origins to avoid browser "Failed to fetch" on POSTs)
-_allowed_origins = [
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-]
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=_allowed_origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Mount static files directory for CSS/JS modules
-static_dir = os.path.join(os.path.dirname(__file__), "static")
-app.mount("/static", StaticFiles(directory=static_dir), name="static")
-
-# ============================================================
-# RL Endpoints (migrated from Flask)
-# ============================================================
-@app.get("/api/rl/status")
-async def rl_status():
-    """Simple RL service status for the dashboard."""
-    return {
-        'status': 'ok',
-        'service': 'fastapi-rl',
-        'timestamp': datetime.now().isoformat()
-    }
-
-
-@app.get("/api/rl/simulate")
-async def rl_simulate(
-    symbol: str = Query("AAPL"),
-    policy: str = Query("follow_trend"),
-    window: int = Query(60, ge=2, le=500),
-    start_date: Optional[str] = None,
-    end_date: Optional[str] = None,
-    days: Optional[int] = Query(None, ge=1, le=5000),
-):
-    """Run a quick, non-learning RL simulation for a single symbol."""
-    try:
-        try:
-            from rl.simulation import run_simulation as rl_run_simulation  # type: ignore
-        except Exception:
-            raise HTTPException(status_code=500, detail="RL simulation module not available")
-
-        data = await asyncio.to_thread(
-            rl_run_simulation,
-            symbol=symbol.upper(),
-            days=days,
-            window=window,
-            cost_bps=5,
-            slip_bps=5,
-            policy=policy,
-            start_date=start_date,
-            end_date=end_date
-        )
-        return {"status": "success", "data": data}
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-# ============================================================
-# RL PPO Training: background process runner + endpoints
-# ============================================================
-_rl_job_logs: Dict[str, List[Dict[str, Any]]] = {}
-_rl_running_jobs: Dict[str, Dict[str, Any]] = {}
-
-
-def _rl_run_command_in_background(job_type: str, cmd_args: List[str], job_id: str) -> bool:
-    _rl_job_logs[job_id] = []
-    _rl_running_jobs[job_id] = {"status": "running", "start_time": datetime.now().isoformat(), "job_type": job_type}
-
-    def _target():
-        try:
-            # Launch as a separate process group for safe termination on all OSes
-            creationflags = 0
-            preexec_fn = None
-            try:
-                import os as _os
-                import sys as _sys
-                if _sys.platform.startswith('win'):
-                    # CREATE_NEW_PROCESS_GROUP = 0x00000200
-                    creationflags = 0x00000200
-                else:
-                    import os
-                    import signal as _signal  # noqa: F401
-                    preexec_fn = os.setsid
-            except Exception:
-                pass
-
-            process = subprocess.Popen(
-                cmd_args,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                bufsize=0,
-                universal_newlines=True,
-                cwd=str(Path(__file__).parent.parent),
-                creationflags=creationflags,
-                preexec_fn=preexec_fn,
-            )
-            # Save process reference and pid for future cancellation
-            try:
-                _rl_running_jobs[job_id]['pid'] = process.pid
-                _rl_running_jobs[job_id]['_popen'] = process  # non-serializable, internal use
-            except Exception:
-                pass
-            out_dir = None
-            for line in process.stdout or []:
-                line = line.strip()
-                if not line:
-                    continue
-                # Parse model saved hints
-                if 'Saved model' in line or 'Model saved' in line or 'saved to' in line.lower():
-                    try:
-                        parts = line.split(':', 1)
-                        if len(parts) == 2:
-                            cand = parts[1].strip()
-                            if cand:
-                                _rl_running_jobs[job_id]['model_path'] = cand
-                    except Exception:
-                        pass
-                _rl_job_logs[job_id].append({"timestamp": datetime.now().isoformat(), "level": "INFO", "message": line})
-                if len(_rl_job_logs[job_id]) > 400:
-                    _rl_job_logs[job_id] = _rl_job_logs[job_id][-400:]
-            process.wait()
-            if process.returncode == 0:
-                _rl_running_jobs[job_id]["status"] = "completed"
-                _rl_job_logs[job_id].append({"timestamp": datetime.now().isoformat(), "level": "SUCCESS", "message": "✅ Job completed successfully!"})
-            else:
-                _rl_running_jobs[job_id]["status"] = "failed"
-                _rl_job_logs[job_id].append({"timestamp": datetime.now().isoformat(), "level": "ERROR", "message": f"❌ Job failed with exit code {process.returncode}"})
-        except Exception as e:
-            _rl_running_jobs[job_id]["status"] = "error"
-            _rl_job_logs[job_id].append({"timestamp": datetime.now().isoformat(), "level": "ERROR", "message": f"❌ Error: {str(e)}"})
-
-    th = threading.Thread(target=_target, daemon=True)
-    th.start()
-    return True
-
-
-@app.post("/api/rl/ppo/train")
+@app.post("/__deprecated/api/rl/ppo/train")
 async def rl_ppo_train(
     symbols: Optional[str] = Query(None),
     symbol: Optional[str] = Query(None),
@@ -887,7 +412,7 @@ async def rl_ppo_train(
     return {"status": "started", "job_id": job_id, "cmd": cmd}
 
 
-@app.get("/api/rl/ppo/train/status/{job_id}")
+@app.get("/__deprecated/api/rl/ppo/train/status/{job_id}")
 async def rl_ppo_train_status(job_id: str):
     info = _rl_running_jobs.get(job_id)
     logs = _rl_job_logs.get(job_id, [])
@@ -902,7 +427,7 @@ async def rl_ppo_train_status(job_id: str):
     }
 
 
-@app.post("/api/rl/ppo/train/stop/{job_id}")
+@app.post("/__deprecated/api/rl/ppo/train/stop/{job_id}")
 async def rl_ppo_train_stop(job_id: str):
     """Attempt to stop a running PPO training job by job_id."""
     info = _rl_running_jobs.get(job_id)
@@ -1151,7 +676,7 @@ def _auto_tune_runner(config: Dict[str, Any]) -> None:
             _rla_auto_tune_state['cmd'] = None
 
 
-@app.post('/api/rl/auto-tune/start')
+@app.post('/__deprecated/api/rl/auto-tune/start')
 async def rl_auto_tune_start(payload: Optional[Dict[str, Any]] = None):
     try:
         data = payload or {}
@@ -1199,14 +724,14 @@ async def rl_auto_tune_start(payload: Optional[Dict[str, Any]] = None):
         raise HTTPException(status_code=500, detail=f"Auto-tune start failed: {e}")
 
 
-@app.get('/api/rl/auto-tune/status')
+@app.get('/__deprecated/api/rl/auto-tune/status')
 async def rl_auto_tune_status():
     with _rla_auto_tune_lock:
         data = dict(_rla_auto_tune_state)
     return {'status': 'ok', 'data': data}
 
 
-@app.post('/api/rl/auto-tune/stop')
+@app.post('/__deprecated/api/rl/auto-tune/stop')
 async def rl_auto_tune_stop():
     try:
         with _rla_auto_tune_lock:
@@ -1242,7 +767,7 @@ def _rl_latest_model_path() -> Optional[str]:
         return None
 
 
-@app.get('/api/rl/live/latest-model')
+@app.get('/__deprecated/api/rl/live/latest-model')
 async def rl_live_latest_model():
     p = _rl_latest_model_path()
     if not p:
@@ -1250,7 +775,7 @@ async def rl_live_latest_model():
     return {'status': 'ok', 'model_path': p}
 
 
-@app.post('/api/rl/live/preview')
+@app.post('/__deprecated/api/rl/live/preview')
 async def rl_live_preview(data: Dict[str, Any]):
     """Compute today's target weights using a trained PPO model (no orders executed)."""
     try:
@@ -1702,7 +1227,7 @@ def _paper_loop():
             sleep(15)
 
 
-@app.post('/api/rl/live/paper/start')
+@app.post('/__deprecated/api/rl/live/paper/start')
 async def rl_live_paper_start(data: Dict[str, Any]):
     symbols_raw = data.get('symbols') or ''
     if isinstance(symbols_raw, str):
@@ -1775,7 +1300,7 @@ async def rl_live_paper_start(data: Dict[str, Any]):
     return {'status': 'started', 'config': cfg}
 
 
-@app.post('/api/rl/live/paper/stop')
+@app.post('/__deprecated/api/rl/live/paper/stop')
 async def rl_live_paper_stop():
     with _paper_lock:
         _paper_state['running'] = False
@@ -1789,7 +1314,7 @@ async def rl_live_paper_stop():
     return {'status': 'stopped'}
 
 
-@app.get('/api/rl/live/paper/status')
+@app.get('/__deprecated/api/rl/live/paper/status')
 async def rl_live_paper_status():
     with _paper_lock:
         snap = {
@@ -1850,7 +1375,7 @@ async def rl_simulate_plan(symbol: str = Query("AAPL"), window: int = Query(60, 
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.get("/api/rl/ppo/plan")
+@app.get("/__deprecated/api/rl/ppo/plan")
 async def rl_ppo_plan(symbols: Optional[str] = None, symbol: Optional[str] = None, window: int = Query(60, ge=2, le=500)):
     """Plan PPO training window and timesteps from local data.
 
@@ -2403,7 +1928,7 @@ async def get_ml_prediction(symbol: str, horizon: str = "1d"):
         logger.error(f"❌ Error in ML prediction for {symbol}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/api/ml/status")
+@app.get("/__deprecated/api/ml/status")
 async def get_ml_status():
     """
     Get ML system status and capabilities
@@ -2605,258 +2130,8 @@ async def get_market_intelligence():
         raise HTTPException(status_code=500, detail=str(e))
 
 # ============================================================
-# Sector Scanner & Dynamic Stock Discovery
+# NOTE: Scanner endpoints moved to app/api/routers/scanner.py
 # ============================================================
-@app.get("/api/scanner/sectors")
-async def get_sectors():
-    """Get all monitored sectors"""
-    try:
-        from app.smart.sector_scanner import sector_scanner
-        sectors = sector_scanner.get_all_sectors()
-        
-        return {
-            "status": "success",
-            "data": {
-                "sectors": sectors,
-                "total": len(sectors)
-            }
-        }
-    except Exception as e:
-        logger.error(f"❌ Error getting sectors: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/api/scanner/hot-stocks")
-async def get_hot_stocks(limit: int = 10):
-    """
-    Get dynamically scanned hot stocks with high potential from local stock_data
-    No legacy sector_scanner; simple momentum/indicator heuristics
-    """
-    try:
-        # Build from local symbols
-        symbols = _iter_local_symbols(max_symbols=500)
-        items: List[Dict[str, Any]] = []
-        scanned = 0
-        for sym in symbols:
-            scanned += 1
-            m = _compute_local_metrics(sym)
-            if m is None:
-                continue
-            # Name isn't available in local CSVs; mirror symbol
-            m['name'] = sym
-            items.append(m)
-            if len(items) >= max(limit * 5, 100):
-                break
-        # Sort by expected return desc
-        items.sort(key=lambda x: x.get('expected_return', 0.0), reverse=True)
-        hot_stocks = items[:limit]
-        return {
-            "status": "success",
-            "data": {
-                "hot_stocks": hot_stocks,
-                "total_scanned": scanned,
-                "total_potential": len(items),
-                "last_updated": datetime.now().isoformat()
-            }
-        }
-        
-    except Exception as e:
-        logger.error(f"❌ Error getting hot stocks: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/api/scanner/sector/{sector_id}")
-async def get_sector_analysis(sector_id: str):
-    """Get analysis for a specific sector"""
-    try:
-        from app.smart.sector_scanner import sector_scanner
-        
-        tickers = sector_scanner.get_sector_tickers(sector_id)
-        
-        # Scan top tickers in this sector
-        sector_stocks = []
-        for ticker in tickers[:10]:
-            try:
-                ml_result = await sector_scanner.scan_ticker_with_ml(ticker)
-                if ml_result.get('ticker'):
-                    sector_stocks.append(ml_result)
-            except Exception as e:
-                logger.warning(f"Error analyzing {ticker}: {e}")
-                continue
-        
-        # Sort by ML score
-        sector_stocks.sort(key=lambda x: x.get('ml_score', 0), reverse=True)
-        
-        return {
-            "status": "success",
-            "data": {
-                "sector_id": sector_id,
-                "stocks": sector_stocks,
-                "total": len(sector_stocks)
-            }
-        }
-        
-    except Exception as e:
-        logger.error(f"❌ Error getting sector analysis: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-# -------------------------------------------------
-# Scanner Orchestration (placeholder compatibility)
-# -------------------------------------------------
-@app.get("/api/scanner/status")
-async def scanner_status():
-    return {"status": "success", "data": _scanner_state.to_status()}
-
-
-@app.get("/api/scanner/top")
-async def scanner_top(limit: int = 50):
-    # Return ranked items in shape expected by scanner.html (data.items + meta)
-    try:
-        items = _scanner_state.top
-        if not items:
-            r = await get_hot_stocks(limit=max(limit, 50))
-            if isinstance(r, dict) and r.get('status') == 'success':
-                items = (r.get('data') or {}).get('hot_stocks') or []
-        # Build ranked table rows
-        ranked = []
-        for i, it in enumerate(items[:limit], start=1):
-            ranked.append({
-                'rank': i,
-                'symbol': it.get('symbol'),
-                'final_score': it.get('expected_return'),
-                'ml_score': it.get('ml_score'),
-                'fallback_score': it.get('change_percent'),
-                'current_price': it.get('current_price'),
-            })
-        return {
-            "status": "success",
-            "data": {
-                "date": datetime.now().strftime('%Y-%m-%d'),
-                "total": len(items),
-                "items": ranked
-            }
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/api/scanner/run")
-async def scanner_run(mode: str = 'ml', limit: int = 50, background_tasks: BackgroundTasks = None):
-    # Start a background scan
-    try:
-        if background_tasks is not None:
-            background_tasks.add_task(_run_scan, mode, limit)
-        else:
-            # Fallback if BackgroundTasks not injected
-            asyncio.create_task(_run_scan(mode, limit))
-        return {"status": "success", "data": {"started": True, "mode": mode, "limit": limit}}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/api/scanner/filter/status")
-async def scanner_filter_status():
-    return {
-        "status": "success",
-        "data": {
-            "state": _scanner_state.filter_state,
-            "progress": _scanner_state.filter_progress,
-            "total_symbols": _scanner_state.total_symbols,
-            "processed_symbols": _scanner_state.processed_symbols,
-            "passed_count": _scanner_state.passed_count,
-            "trained_count": _scanner_state.trained_count,
-            "count": len(_scanner_state.filter_items)
-        }
-    }
-
-
-@app.post("/api/scanner/filter/run")
-async def scanner_filter_run(background_tasks: BackgroundTasks = None):
-    # Start real filter over local stock_data with thresholds
-    from datetime import datetime as _dt
-    try:
-        # Parse optional thresholds from query/body
-        price_min = 3.0
-        adv_min = 1_000_000.0
-        try:
-            import json as _json
-            body = None
-            if hasattr(background_tasks, 'request'):
-                # Not available in this context; keep for clarity
-                pass
-        except Exception:
-            body = None
-        if body and isinstance(body, dict):
-            price_min = float(body.get('price_min', price_min) or price_min)
-            adv_min = float(body.get('adv_min', adv_min) or adv_min)
-        # Launch background job
-        if background_tasks is not None:
-            background_tasks.add_task(_run_filter_job, price_min, adv_min)
-        else:
-            asyncio.create_task(_run_filter_job(price_min, adv_min))
-        return {"status": "success", "data": {"started": True, "started_at": _dt.now().isoformat(), "price_min": price_min, "adv_min": adv_min}}
-    except Exception as e:
-        _scanner_state.filter_state = 'error'
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/api/scanner/filter/results")
-async def scanner_filter_results():
-    return {
-        "status": "success",
-        "data": {
-            "items": _scanner_state.filter_items,
-            "total": len(_scanner_state.filter_items)
-        }
-    }
-
-
-@app.get("/api/scanner/train/status")
-async def scanner_train_status():
-    return {"status": "success", "data": {"status": _scanner_state.train_status, "current_symbol": _scanner_state.train_current_symbol}}
-
-
-@app.post("/api/scanner/train/start")
-async def scanner_train_start(symbol: Optional[str] = None, background_tasks: BackgroundTasks = None):
-    # Placeholder: mark running briefly then complete
-    try:
-        _scanner_state.train_status = 'running'
-        _scanner_state.train_current_symbol = (symbol or '').upper() or None
-        async def _finish():
-            await asyncio.sleep(1.0)
-            _scanner_state.train_status = 'completed'
-            _scanner_state.train_current_symbol = None
-        if background_tasks is not None:
-            background_tasks.add_task(_finish)
-        else:
-            asyncio.create_task(_finish())
-        return {"status": "success", "data": {"started": True, "symbol": symbol}}
-    except Exception as e:
-        _scanner_state.train_status = 'error'
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/api/scanner/train/start-all")
-async def scanner_train_start_all(background_tasks: BackgroundTasks = None):
-    # Placeholder: complete immediately
-    try:
-        _scanner_state.train_status = 'running'
-        async def _finish():
-            await asyncio.sleep(1.0)
-            _scanner_state.train_status = 'completed'
-        if background_tasks is not None:
-            background_tasks.add_task(_finish)
-        else:
-            asyncio.create_task(_finish())
-        return {"status": "success", "data": {"started": True}}
-    except Exception as e:
-        _scanner_state.train_status = 'error'
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/api/scanner/train/symbol/{symbol}/status")
-async def scanner_train_symbol_status(symbol: str):
-    # Placeholder: always completed
-    return {"status": "success", "data": {"symbol": symbol.upper(), "status": "completed"}}
-
 
 @app.get("/api/financial/historical/{symbol}")
 async def get_historical_data(symbol: str, timeframe: str = "1D"):
@@ -3644,7 +2919,7 @@ async def train_ml_model(symbol: str, days_back: int = 365):
         raise HTTPException(status_code=500, detail=f"Failed to train models for {symbol}")
 
 # Progressive ML endpoints
-@app.get("/api/ml/progressive/status", tags=["Progressive ML"])
+@app.get("/__deprecated/api/ml/progressive/status", tags=["Progressive ML"])
 async def get_progressive_ml_status():
     """Get Progressive ML system status"""
     try:
@@ -3686,7 +2961,7 @@ async def get_progressive_ml_status():
 # Global training jobs tracking
 training_jobs = {}
 
-@app.post("/api/ml/progressive/train", tags=["Progressive ML"])
+@app.post("/__deprecated/api/ml/progressive/train", tags=["Progressive ML"])
 async def start_progressive_training(
     background_tasks: BackgroundTasks,
     symbol: str = Query(..., description="Stock symbol to train"),
@@ -3884,7 +3159,7 @@ async def run_training_job(job_id: str, symbol: str, model_types: List[str], mod
             "eta_seconds": 0
         })
 
-@app.get("/api/ml/progressive/training/status/{job_id}", tags=["Progressive ML"])
+@app.get("/__deprecated/api/ml/progressive/training/status/{job_id}", tags=["Progressive ML"])
 async def get_training_job_status(job_id: str):
     """Get status of specific training job"""
     try:
@@ -3903,7 +3178,7 @@ async def get_training_job_status(job_id: str):
         logger.error(f"Failed to get training status: {e}")
         raise HTTPException(status_code=500, detail="Failed to get training status")
 
-@app.get("/api/ml/progressive/training/status", tags=["Progressive ML"])
+@app.get("/__deprecated/api/ml/progressive/training/status", tags=["Progressive ML"])
 async def get_all_training_status():
     """Get status of all training jobs"""
     try:
@@ -3926,7 +3201,7 @@ async def get_all_training_status():
         logger.error(f"Failed to get training status: {e}")
         raise HTTPException(status_code=500, detail="Failed to get training status")
 
-@app.post("/api/ml/progressive/predict/{symbol}", tags=["Progressive ML"])
+@app.post("/__deprecated/api/ml/progressive/predict/{symbol}", tags=["Progressive ML"])
 async def progressive_predict(symbol: str, mode: str = "progressive", include_risk: bool = True):
     """Get progressive ML predictions for a symbol"""
     try:
@@ -4016,7 +3291,7 @@ async def progressive_predict(symbol: str, mode: str = "progressive", include_ri
         logger.error(f"❌ Failed to get progressive predictions for {symbol}: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to get progressive predictions: {str(e)}")
 
-@app.get("/api/ml/progressive/models", tags=["Progressive ML"])
+@app.get("/__deprecated/api/ml/progressive/models", tags=["Progressive ML"])
 async def get_progressive_models():
     """Get available progressive ML models"""
     try:
@@ -4098,7 +3373,7 @@ class BacktestRequest(BaseModel):
 
 backtest_jobs = {}
 
-@app.post("/api/ml/progressive/backtest", tags=["Progressive ML"])
+@app.post("/__deprecated/api/ml/progressive/backtest", tags=["Progressive ML"])
 async def start_backtest(request: BacktestRequest, raw_request: Request = None, background_tasks: BackgroundTasks = None):
     """
     Start progressive backtesting with date-range training
@@ -4316,7 +3591,7 @@ async def start_backtest(request: BacktestRequest, raw_request: Request = None, 
         logger.error(f"Failed to start backtest: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to start backtest: {str(e)}")
 
-@app.get("/api/ml/progressive/backtest/status/{job_id}", tags=["Progressive ML"])
+@app.get("/__deprecated/api/ml/progressive/backtest/status/{job_id}", tags=["Progressive ML"])
 async def get_backtest_status(job_id: str):
     """Get status of running backtest"""
     try:
@@ -4331,7 +3606,7 @@ async def get_backtest_status(job_id: str):
         logger.error(f"Failed to get backtest status: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to get backtest status: {str(e)}")
 
-@app.post("/api/ml/progressive/backtest/cancel/{job_id}", tags=["Progressive ML"])
+@app.post("/__deprecated/api/ml/progressive/backtest/cancel/{job_id}", tags=["Progressive ML"])
 async def cancel_backtest(job_id: str):
     """Request cancellation of a running backtest job"""
     try:
@@ -4887,7 +4162,7 @@ async def api_ensure_symbol_data(symbol: str):
         logger.error(f"Ensure data failed for {symbol}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/api/ml/progressive/backtest/results/{symbol}", tags=["Progressive ML"])
+@app.get("/__deprecated/api/ml/progressive/backtest/results/{symbol}", tags=["Progressive ML"])
 async def get_backtest_results(symbol: str):
     """
     Get backtest results for a symbol
@@ -4961,7 +4236,7 @@ async def get_backtest_results(symbol: str):
         logger.error(f"Failed to get backtest results: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to get backtest results: {str(e)}")
 
-@app.get("/api/ml/progressive/backtest/history/{symbol}", tags=["Progressive ML"])
+@app.get("/__deprecated/api/ml/progressive/backtest/history/{symbol}", tags=["Progressive ML"])
 async def list_backtest_history(symbol: str, limit: int = Query(20, ge=1, le=100)):
     """
     List recent backtest result files for a symbol with brief metadata
@@ -5005,7 +4280,7 @@ async def list_backtest_history(symbol: str, limit: int = Query(20, ge=1, le=100
         logger.error(f"Failed to list backtest history: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to list backtest history: {str(e)}")
 
-@app.get("/api/ml/progressive/backtest/result_by_file/{symbol}/{file_name}", tags=["Progressive ML"])
+@app.get("/__deprecated/api/ml/progressive/backtest/result_by_file/{symbol}/{file_name}", tags=["Progressive ML"])
 async def get_backtest_result_by_file(symbol: str, file_name: str):
     """
     Fetch a specific backtest results file by name for a symbol
@@ -5043,7 +4318,7 @@ async def get_backtest_result_by_file(symbol: str, file_name: str):
         raise HTTPException(status_code=500, detail=f"Failed to get backtest result: {str(e)}")
 
 # Champions utilities
-@app.get("/api/ml/progressive/champions/{symbol}", tags=["Progressive ML"])
+@app.get("/__deprecated/api/ml/progressive/champions/{symbol}", tags=["Progressive ML"])
 async def list_champions(symbol: str):
     try:
         from pathlib import Path
@@ -5071,7 +4346,7 @@ async def list_champions(symbol: str):
         logger.error(f"Failed to list champions: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to list champions: {e}")
 
-@app.post("/api/ml/progressive/champion/forward_test/{symbol}", tags=["Progressive ML"])
+@app.post("/__deprecated/api/ml/progressive/champion/forward_test/{symbol}", tags=["Progressive ML"])
 async def champion_forward_test(symbol: str, job_id: str | None = None):
     """Run a forward test using the champion checkpoints from the specified job_id or latest champion.
 
@@ -5816,7 +5091,7 @@ def _run_ppo_job(job_id: str, args: list[str], cwd: str) -> None:
         PPO_TRAIN_JOBS[job_id]["ended_at"] = datetime.utcnow().isoformat() + "Z"
 
 
-@app.post("/api/rl/ppo/train")
+@app.post("/__deprecated/api/rl/ppo/train")
 async def rl_ppo_train(symbol: str, timesteps: int = 100000, window: int = 60,
                        start_date: Optional[str] = None, end_date: Optional[str] = None,
                        seed: int = 42):
@@ -5843,7 +5118,7 @@ async def rl_ppo_train(symbol: str, timesteps: int = 100000, window: int = 60,
         raise HTTPException(status_code=500, detail=f"Failed to start PPO training: {str(e)}")
 
 
-@app.get("/api/rl/ppo/plan")
+@app.get("/__deprecated/api/rl/ppo/plan")
 async def rl_ppo_plan(symbol: str, window: Optional[int] = None) -> Dict[str, Any]:
     """Plan sensible training dates, window size, and timesteps from local data.
 
@@ -5910,7 +5185,7 @@ async def rl_ppo_plan(symbol: str, window: Optional[int] = None) -> Dict[str, An
         raise HTTPException(status_code=500, detail=f"Failed to plan PPO training: {str(e)}")
 
 
-@app.get("/api/rl/ppo/train/status")
+@app.get("/__deprecated/api/rl/ppo/train/status")
 async def rl_ppo_train_status_all():
     """Return status of all PPO jobs (summary)."""
     out = {}
@@ -5924,7 +5199,7 @@ async def rl_ppo_train_status_all():
     return out
 
 
-@app.get("/api/rl/ppo/train/status/{job_id}")
+@app.get("/__deprecated/api/rl/ppo/train/status/{job_id}")
 async def rl_ppo_train_status(job_id: str):
     """Return detailed status of a specific PPO job, including last logs."""
     info = PPO_TRAIN_JOBS.get(job_id)
@@ -5947,18 +5222,55 @@ async def rl_ppo_train_status(job_id: str):
 def run_server():
     """Run the server with uvicorn"""
     import uvicorn
+    import socket
+    import json as _json
+    from contextlib import closing
+    try:
+        import requests as _req
+    except Exception:
+        _req = None
     
     logger.info("🚀 Starting MarketPulse server...")
     logger.info("   Dashboard: http://localhost:8000")
     logger.info("   WebSocket: ws://localhost:8000/ws/alerts")
     logger.info("   API Docs: http://localhost:8000/docs")
+
+    # If port 8000 already serves a healthy backend, do not start a second instance
+    def _backend_alive() -> bool:
+        url = "http://127.0.0.1:8000/health"
+        try:
+            if _req is None:
+                return False
+            r = _req.get(url, timeout=1.2)
+            if r.status_code == 200:
+                try:
+                    j = r.json()
+                except Exception:
+                    return False
+                return isinstance(j, dict) and str(j.get('status','')).lower() == 'healthy'
+            return False
+        except Exception:
+            return False
+
+    if _backend_alive():
+        logger.info("✅ Detected an existing healthy backend on port 8000; skipping new instance.")
+        return
     
-    uvicorn.run(
-        app,
-        host="0.0.0.0",
-        port=8000,
-        log_level="info"
-    )
+    try:
+        uvicorn.run(
+            app,
+            host="0.0.0.0",
+            port=8000,
+            log_level="info"
+        )
+    except OSError as _e:
+        # If address in use, but backend now appears healthy, exit gracefully
+        msg = str(_e)
+        if "address ('0.0.0.0', 8000)" in msg or 'EADDRINUSE' in msg or 'WinError 10048' in msg:
+            if _backend_alive():
+                logger.info("ℹ️ Port 8000 in use, and an existing healthy backend is running. Exiting without error.")
+                return
+        raise
 
 if __name__ == "__main__":
     run_server()

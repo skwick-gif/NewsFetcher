@@ -259,7 +259,7 @@ def _compute_local_metrics(symbol: str) -> Optional[Dict[str, Any]]:
     """Compute basic metrics from local stock data CSV and fundamentals"""
     try:
         project_root = Path(__file__).resolve().parents[3]
-        csv_path = project_root / 'stock_data' / symbol / f'{symbol}_historical_data.csv'
+        csv_path = project_root / 'stock_data' / symbol / f'{symbol}_price.csv'
         
         if not csv_path.exists():
             return None
