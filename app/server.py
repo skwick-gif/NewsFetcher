@@ -898,10 +898,10 @@ def data_management_logs():
 """RL walk-forward endpoints moved to app.routes.rl_tools"""
 
 if __name__ == '__main__':
-    print("🚀 Starting MarketPulse Dashboard Server...")
-    print("📊 Dashboard will be available at: http://localhost:5000")
-    print("🔗 Health check: http://localhost:5000/health")
-    print("📈 API endpoint: http://localhost:5000/api/market-data")
+    print("Starting MarketPulse Dashboard Server...")
+    print("Dashboard will be available at: http://localhost:5000")
+    print("Health check: http://localhost:5000/health")
+    print("API endpoint: http://localhost:5000/api/market-data")
     
     app.run(
         host='0.0.0.0',

@@ -25,6 +25,11 @@ import logging
 from pathlib import Path
 import json
 import pickle
+
+# Initialize logging BEFORE optional imports to avoid NameError in except handlers
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # Matplotlib is optional; avoid hard import errors in headless/minimal environments
 try:
     import matplotlib
@@ -34,14 +39,13 @@ try:
     MATPLOTLIB_AVAILABLE = True
 except Exception:
     MATPLOTLIB_AVAILABLE = False
+    # logger is available now
     logger.warning("📉 Matplotlib not available; plotting disabled.")
+
 from datetime import datetime
 import time
 from sklearn.model_selection import KFold, TimeSeriesSplit
 from sklearn.metrics import mean_squared_error, mean_absolute_error, accuracy_score, classification_report
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 # Set device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -653,9 +657,14 @@ class ProgressiveTrainer:
             else:
                 patience_counter += 1
             
-            # Print progress
-            if (epoch + 1) % 10 == 0:
-                logger.info(f"      Epoch {epoch+1}/{epochs} - Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}")
+            # Print progress every epoch for real-time feedback
+            logger.info(
+                "      Epoch %s/%s - Loss: %.4f, Val Loss: %.4f",
+                epoch + 1,
+                epochs,
+                train_loss,
+                val_loss,
+            )
             
             # Early stopping
             if patience_counter >= self.training_config['early_stopping_patience']:

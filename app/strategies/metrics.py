@@ -3,7 +3,7 @@ Shared metrics computation functions for scanner strategies.
 """
 
 import logging
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 from pathlib import Path
 import pandas as pd
 import numpy as np
@@ -159,13 +159,13 @@ def _compute_convergence_score(symbol: str, df: pd.DataFrame) -> Dict[str, Any]:
 def _compute_local_metrics(symbol: str) -> Optional[Dict[str, Any]]:
     """Compute basic metrics from local stock data CSV and fundamentals"""
     try:
-        project_root = Path(__file__).resolve().parents[3]
+        # metrics.py lives at app/strategies/, so project root is parents[2]
+        project_root = Path(__file__).resolve().parents[2]
         csv_path = project_root / 'stock_data' / symbol / f'{symbol}_price.csv'
 
         if not csv_path.exists():
             return None
 
-        import pandas as pd
         df = pd.read_csv(csv_path)
 
         if df.empty or len(df) < 5:
@@ -228,19 +228,18 @@ def _compute_local_metrics(symbol: str) -> Optional[Dict[str, Any]]:
         # Expected return heuristic (combine change% and momentum)
         expected_return = (change_percent * 0.6) + (momentum * 0.4)
 
-        # Check if trained model exists and get ML prediction if available
+        # Check if trained model exists (126d only for UI alignment) and get ML prediction if available
         has_model = False
         ml_score = float(expected_return)  # Default to heuristic score
 
         try:
             model_dir = project_root / 'app' / 'ml' / 'models'
-            for model_type in ['transformer', 'lstm', 'cnn']:
-                model_file = model_dir / f"{symbol}_{model_type}_progressive.pt"
-                if model_file.exists():
-                    has_model = True
-                    break
+            sym = symbol.upper()
+            # For consistency with Scanner UI, consider only the 126d transformer checkpoint
+            patterns = [model_dir / f"transformer_{sym}_126d_best.pth"]
+            has_model = any(p.exists() for p in patterns)
 
-            # If model exists, try to get real ML prediction
+            # If model exists, try to get real ML prediction (best-effort)
             if has_model:
                 try:
                     # Get cached predictor instance
@@ -295,6 +294,29 @@ def _compute_local_metrics(symbol: str) -> Optional[Dict[str, Any]]:
     except Exception as e:
         logger.debug(f"Error computing metrics for {symbol}: {e}")
         return None
+
+
+def _iter_local_symbols(max_symbols: int = None) -> List[str]:
+    """Iterate over symbols backed by local stock_data directories."""
+    try:
+        project_root = Path(__file__).resolve().parents[2]
+        stock_data_dir = project_root / 'stock_data'
+        if not stock_data_dir.exists():
+            logger.warning(f"stock_data directory not found: {stock_data_dir}")
+            return []
+
+        symbols: List[str] = []
+        for item in stock_data_dir.iterdir():
+            if item.is_dir() and item.name.isupper():
+                symbols.append(item.name)
+                if max_symbols and len(symbols) >= max_symbols:
+                    break
+
+        logger.info(f"📊 Found {len(symbols)} total symbols in stock_data")
+        return symbols
+    except Exception as e:
+        logger.error(f"Error iterating local symbols: {e}")
+        return []
 
 
 def _get_progressive_predictor():

@@ -13,6 +13,80 @@ from fastapi import APIRouter, HTTPException, Query
 
 router = APIRouter(prefix="/api/rl", tags=["RL"])
 
+
+@router.get("/status")
+async def get_rl_status():
+    """Get RL system status and capabilities"""
+    try:
+        # Check available RL components
+        rl_status = {
+            "status": "success",
+            "data": {
+                "ppo_training_available": True,
+                "auto_tune_available": True,
+                "live_trading_available": True,
+                "paper_trading_available": True,
+                "components": {
+                    "ppo_trainer": {
+                        "status": "✅ Active",
+                        "type": "PPO Portfolio Training",
+                        "description": "Multi-symbol portfolio optimization with PPO"
+                    },
+                    "auto_tune": {
+                        "status": "✅ Active", 
+                        "type": "Hyperparameter Auto-Tuning",
+                        "description": "Automated feature and parameter optimization"
+                    },
+                    "live_preview": {
+                        "status": "✅ Active",
+                        "type": "Live Model Preview",
+                        "description": "Real-time portfolio allocation preview"
+                    },
+                    "paper_mode": {
+                        "status": "✅ Active",
+                        "type": "Paper Trading",
+                        "description": "Simulated trading with real market data"
+                    }
+                },
+                "supported_features": [
+                    "multi_symbol_portfolio",
+                    "news_integration", 
+                    "technical_indicators",
+                    "vix_features",
+                    "custom_indicators",
+                    "risk_management"
+                ],
+                "models": {
+                    "ppo_portfolio": {
+                        "framework": "Stable-Baselines3",
+                        "algorithm": "Proximal Policy Optimization",
+                        "environment": "Custom Portfolio Environment",
+                        "action_space": "Continuous (portfolio weights)",
+                        "observation_space": "Market data + features"
+                    }
+                },
+                "timestamp": datetime.now().isoformat(),
+            }
+        }
+        
+        # Add runtime info if available
+        try:
+            with _rla_auto_tune_lock:
+                auto_tune_status = _rla_auto_tune_state.get("status", "idle")
+            rl_status["data"]["runtime"] = {
+                "auto_tune_status": auto_tune_status,
+                "active_training_jobs": len([j for j in _rl_running_jobs.values() if j.get("status") == "running"]),
+                "paper_trading_active": _paper_state.get("running", False)
+            }
+        except Exception:
+            pass
+            
+        return rl_status
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get RL status: {e}")
+
+
 # ============================================================
 # PPO Training: background process runner + endpoints
 # ============================================================

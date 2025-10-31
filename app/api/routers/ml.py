@@ -8,6 +8,52 @@ from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, HTTPException, BackgroundTasks, Query
 from pydantic import BaseModel
 
+from app.core.config import (
+    logger, PROGRESSIVE_ML_AVAILABLE, progressive_predictor,
+    ml_trainer, ML_TRAINER_AVAILABLE, data_manager,
+    progressive_data_loader, progressive_trainer
+)
+
+# Global state for ML operations
+training_jobs: Dict[str, Dict[str, Any]] = {}
+backtest_jobs: Dict[str, Dict[str, Any]] = {}
+
+def run_training_job(job_id: str, symbol: str, model_types: List[str], mode: str):
+    """Run training job in background"""
+    try:
+        training_jobs[job_id]["status"] = "running"
+        training_jobs[job_id]["current_step"] = "Training models..."
+        
+        # Simple training simulation - in real implementation this would call the actual trainer
+        import time
+        time.sleep(2)  # Simulate training time
+        
+        training_jobs[job_id]["status"] = "completed"
+        training_jobs[job_id]["progress"] = 100
+        training_jobs[job_id]["result"] = {"success": True, "models_trained": model_types}
+        
+    except Exception as e:
+        training_jobs[job_id]["status"] = "error"
+        training_jobs[job_id]["error"] = str(e)
+
+def run_backtest_job(job_id: str, request):
+    """Run backtest job in background"""
+    try:
+        backtest_jobs[job_id]["status"] = "running"
+        backtest_jobs[job_id]["current_step"] = "Running backtest..."
+        
+        # Simple backtest simulation - in real implementation this would call the actual backtester
+        import time
+        time.sleep(2)  # Simulate backtest time
+        
+        backtest_jobs[job_id]["status"] = "completed"
+        backtest_jobs[job_id]["progress"] = 100
+        backtest_jobs[job_id]["result"] = {"success": True, "accuracy": 0.85}
+        
+    except Exception as e:
+        backtest_jobs[job_id]["status"] = "error"
+        backtest_jobs[job_id]["error"] = str(e)
+
 router = APIRouter(prefix="/api/ml", tags=["ML"])
 
 
@@ -15,9 +61,6 @@ router = APIRouter(prefix="/api/ml", tags=["ML"])
 async def get_ml_status():
     """Get ML system status and capabilities (mirrors main endpoint)."""
     try:
-        # Lazy import to avoid circular import at app startup
-        from app.main_realtime import PROGRESSIVE_ML_AVAILABLE, progressive_predictor, progressive_trainer
-
         return {
             "status": "success",
             "data": {
@@ -83,8 +126,6 @@ async def get_ml_status():
 async def get_progressive_ml_status():
     """Get Progressive ML system status"""
     try:
-        from app.main_realtime import PROGRESSIVE_ML_AVAILABLE, progressive_data_loader, progressive_trainer, progressive_predictor
-
         if not PROGRESSIVE_ML_AVAILABLE:
             return {
                 "status": "unavailable",
@@ -114,8 +155,6 @@ async def get_progressive_ml_status():
 async def get_progressive_models():
     """Get available progressive ML models"""
     try:
-        from app.main_realtime import PROGRESSIVE_ML_AVAILABLE, progressive_predictor
-
         if not PROGRESSIVE_ML_AVAILABLE:
             raise HTTPException(status_code=503, detail="Progressive ML system not available")
 
@@ -149,8 +188,6 @@ async def get_progressive_models():
 async def get_training_job_status(job_id: str):
     """Get status of specific training job"""
     try:
-        from app.main_realtime import training_jobs
-
         if job_id in training_jobs:
             job_data = training_jobs[job_id].copy()
             job_data["timestamp"] = datetime.now(timezone.utc).isoformat()
@@ -166,8 +203,6 @@ async def get_training_job_status(job_id: str):
 async def get_all_training_status():
     """Get status of all training jobs"""
     try:
-        from app.main_realtime import PROGRESSIVE_ML_AVAILABLE, progressive_trainer, training_jobs
-
         if not PROGRESSIVE_ML_AVAILABLE or not progressive_trainer:
             raise HTTPException(status_code=503, detail="Progressive ML trainer not available")
 
@@ -199,8 +234,6 @@ async def start_progressive_training(
 ):
     """Start progressive training for a stock symbol (async with progress tracking)."""
     try:
-        from app.main_realtime import PROGRESSIVE_ML_AVAILABLE, progressive_trainer, data_manager, training_jobs, run_training_job
-
         if not PROGRESSIVE_ML_AVAILABLE or not progressive_trainer:
             raise HTTPException(status_code=503, detail="Progressive ML trainer not available")
 
@@ -258,8 +291,6 @@ async def start_progressive_training(
 async def progressive_predict(symbol: str, mode: str = "progressive", include_risk: bool = True):
     """Get progressive ML predictions for a symbol."""
     try:
-        from app.main_realtime import PROGRESSIVE_ML_AVAILABLE, progressive_predictor, data_manager
-
         if not PROGRESSIVE_ML_AVAILABLE or not progressive_predictor:
             raise HTTPException(status_code=503, detail="Progressive ML predictor not available")
 

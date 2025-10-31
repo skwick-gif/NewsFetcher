@@ -61,6 +61,11 @@
           <strong>Training Queue:</strong> <span id="train-status-text" class="muted">Idle</span>
         </div>
       </div>
+      <div class="muted" style="margin-top:6px; font-size:12px;">
+        הערה (SCANNER): מודלי 126d נשמרים תחת <code>app/ml/models</code> בתבנית
+        <code>transformer_{"{"}SYMBOL{"}"}_126d_best.pth</code> (לדוגמה: <code>transformer_AAPL_126d_best.pth</code>).<br />
+        עמודת <strong>Model</strong> בטבלה מציגה סטטוס אימון עבור 126d בלבד.
+      </div>
     </div>
 
     <div class="card" id="scan-status-card">
@@ -97,6 +102,8 @@
   <script>
   (function(){
     let filterFastTimer = null;
+    let lastFilterLoadedCount = null;
+    let lastScanState = null;
     async function fetchJSON(url, opts){
       const r = await fetch(url, opts);
       if(!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -124,6 +131,17 @@
         clearInterval(filterFastTimer);
         filterFastTimer = null;
       }
+
+      // Auto-load results when a run completes and counts changed
+      const passed = d?.passed_count ?? null;
+      if(!isRunning && d?.state === 'completed'){
+        // Only reload if we haven't loaded yet for this run or the count increased
+        if(passed != null && passed !== lastFilterLoadedCount){
+          lastFilterLoadedCount = passed;
+          // fire-and-forget; errors are harmless
+          loadFilter().catch(()=>{});
+        }
+      }
     }
     function renderFilterTable(items){
       const root = document.getElementById('filter-table');
@@ -133,9 +151,10 @@
         '<th>Symbol</th><th>Model</th><th>Train</th><th>Status</th></tr></thead><tbody>';
       for(const r of items){
         const statId = `s-${r.symbol}`;
+        const modelId = `m-${r.symbol}`;
         html += `<tr>`+
           `<td style="font-weight:600;">${r.symbol}</td>`+
-          `<td>${r.has_model?'<span class="badge badge-green">yes</span>':'<span class="badge badge-red">no</span>'}</td>`+
+          `<td id="${modelId}">${r.has_model?'<span class="badge badge-green">yes</span>':'<span class="badge badge-red">no</span>'}</td>`+
           `<td><button data-sym="${r.symbol}" class="btn-train" style="background:#22c55e; border:none; padding:6px 10px; border-radius:6px; color:white; cursor:pointer;">Train</button></td>`+
           `<td id="${statId}" class="muted">${r.has_model?'trained':'not-started'}</td>`+
         `</tr>`;
@@ -169,14 +188,21 @@
       finally{ const btn = document.getElementById('btn-train-all'); if(btn) btn.disabled = false; }
     }
     async function pollSymbol(sym){
-      try{ const r = await fetchJSON(`/api/scanner/train/symbol/${encodeURIComponent(sym)}/status`); const st = r?.data?.status||'not-started'; const el = document.getElementById(`s-${sym}`); if(el) el.textContent = st; }
-      catch(e){}
+      try{
+        const r = await fetchJSON(`/api/scanner/train/symbol/${encodeURIComponent(sym)}/status`);
+        const st = r?.data?.status||'not-started';
+        const has = !!(r?.data?.has_model);
+        const stEl = document.getElementById(`s-${sym}`);
+        if(stEl) stEl.textContent = st;
+        const mEl = document.getElementById(`m-${sym}`);
+        if(mEl){ mEl.innerHTML = has ? '<span class="badge badge-green">yes</span>' : '<span class="badge badge-red">no</span>'; }
+      }catch(e){}
     }
     function renderTrainStatus(m){
       const el = document.getElementById('train-status-text');
       if(!m || !el) return;
       const parts = [];
-      parts.push(m.state||'idle');
+      parts.push((m.state||m.status||'idle'));
       parts.push(`queued=${m.queued||0}`);
       parts.push(`completed=${m.completed||0}`);
       parts.push(`failed=${m.failed||0}`);
@@ -190,6 +216,8 @@
         for(const [sym, st] of Object.entries(m.symbols)){
           const cell = document.getElementById(`s-${sym}`);
           if(cell) cell.textContent = st;
+          // Also try to refresh model badge for this symbol
+          pollSymbol(sym).catch(()=>{});
         }
       }
     }
@@ -207,6 +235,10 @@
       const msg = d?.message?` · ${d.message}`:'';
       t.textContent = `${state} · ${pct}%${msg}`;
       const etaSec = d?.eta_seconds; eta.textContent = (state==='running'&&etaSec!=null)?`ETA ${secsToHms(etaSec)}`:'';
+      if(state === 'completed' && lastScanState !== 'completed'){
+        loadTop().catch(()=>{});
+      }
+      lastScanState = state;
     }
     function renderTop(items, meta){
       const root = document.getElementById('top-ranked');
@@ -233,8 +265,7 @@
     async function pollStatus(){ try{ const j = await fetchJSON('/api/scanner/status'); renderStatus(j?.data||{}); }catch(e){} }
     async function loadTop(){
       try{
-        // today_only=true to avoid showing stale runs on initial load
-        const j = await fetchJSON('/api/scanner/top?limit=50');
+        const j = await fetchJSON('/api/scanner/top');
         renderTop(j?.data?.items||[], j?.data);
       }catch(e){
         // Show nothing on error; user can run a new scan
