@@ -65,6 +65,19 @@ class NotificationConfig:
 
 
 @dataclass
+class IBKRConfig:
+    """Interactive Brokers bridge connectivity settings"""
+    rest_base_url: str = "http://localhost:5080"
+    signalr_url: str = "http://localhost:5080/marketDataHub"
+    host: str = "127.0.0.1"
+    port: int = 7497
+    client_id: int = 1
+    connect_timeout_seconds: int = 5
+    request_timeout_seconds: int = 10
+    heartbeat_interval_seconds: int = 30
+
+
+@dataclass
 class AIConfig:
     """AI/LLM service configuration"""
     openai_api_key: Optional[str] = None
@@ -117,6 +130,7 @@ class AppConfig:
     ai: AIConfig = None
     processing: ProcessingConfig = None
     monitoring: MonitoringConfig = None
+    ibkr: IBKRConfig = None
     
     def __post_init__(self):
         """Initialize sub-configurations if not provided"""
@@ -142,6 +156,9 @@ class AppConfig:
         
         if self.monitoring is None:
             self.monitoring = MonitoringConfig()
+
+        if self.ibkr is None:
+            self.ibkr = IBKRConfig()
 
 
 class ConfigManager:
@@ -202,7 +219,8 @@ class ConfigManager:
             notifications=self._create_notification_config(config_data),
             ai=self._create_ai_config(config_data),
             processing=self._create_processing_config(config_data),
-            monitoring=self._create_monitoring_config(config_data)
+            monitoring=self._create_monitoring_config(config_data),
+            ibkr=self._create_ibkr_config(config_data)
         )
     
     def _load_from_environment(self) -> Dict[str, Any]:
@@ -246,6 +264,16 @@ class ConfigManager:
             "ANTHROPIC_API_KEY": "anthropic_api_key",
             "PERPLEXITY_API_KEY": "perplexity_api_key",
             "LLM_PROVIDER": "llm_provider",
+
+            # IBKR Bridge
+            "IBKR_REST_BASE_URL": "ibkr_rest_base_url",
+            "IBKR_SIGNALR_URL": "ibkr_signalr_url",
+            "IBKR_HOST": "ibkr_host",
+            "IBKR_PORT": ("ibkr_port", int),
+            "IBKR_CLIENT_ID": ("ibkr_client_id", int),
+            "IBKR_CONNECT_TIMEOUT": ("ibkr_connect_timeout", int),
+            "IBKR_REQUEST_TIMEOUT": ("ibkr_request_timeout", int),
+            "IBKR_HEARTBEAT_INTERVAL": ("ibkr_heartbeat_interval", int),
             
             # Processing
             "MAX_ARTICLES_PER_RUN": ("max_articles_per_run", int),
@@ -346,6 +374,25 @@ class ConfigManager:
             log_level=config_data.get("log_level", "INFO"),
             sentry_dsn=config_data.get("sentry_dsn")
         )
+
+    def _create_ibkr_config(self, config_data: Dict) -> IBKRConfig:
+        """Create IBKR integration configuration"""
+        ibkr_cfg = config_data.get("ibkr", {}) or {}
+
+        def _resolve(key: str, default: Any) -> Any:
+            value = ibkr_cfg.get(key, config_data.get(f"ibkr_{key}", default))
+            return default if value is None else value
+
+        return IBKRConfig(
+            rest_base_url=_resolve("rest_base_url", "http://localhost:5080"),
+            signalr_url=_resolve("signalr_url", "http://localhost:5080/marketDataHub"),
+            host=_resolve("host", "127.0.0.1"),
+            port=int(_resolve("port", 7497)),
+            client_id=int(_resolve("client_id", 1)),
+            connect_timeout_seconds=int(_resolve("connect_timeout_seconds", 5)),
+            request_timeout_seconds=int(_resolve("request_timeout_seconds", 10)),
+            heartbeat_interval_seconds=int(_resolve("heartbeat_interval_seconds", 30)),
+        )
     
     def _validate_config(self):
         """Validate configuration values"""
@@ -365,6 +412,20 @@ class ConfigManager:
         if not 0 <= self._config.processing.keyword_score_threshold <= 1:
             errors.append("KEYWORD_SCORE_THRESHOLD must be between 0 and 1")
         
+        # IBKR validation
+        try:
+            if int(self._config.ibkr.port) <= 0:
+                errors.append("IBKR port must be positive")
+        except Exception:
+            errors.append("IBKR port must be an integer")
+
+        for field_name in ("connect_timeout_seconds", "request_timeout_seconds", "heartbeat_interval_seconds"):
+            try:
+                if int(getattr(self._config.ibkr, field_name)) <= 0:
+                    errors.append(f"IBKR {field_name} must be positive")
+            except Exception:
+                errors.append(f"IBKR {field_name} must be an integer")
+
         # Environment-specific validations
         if self._config.environment == "production":
             if self._config.debug:

@@ -16,6 +16,21 @@ router = APIRouter()
 # Global for PPO training jobs
 PPO_TRAIN_JOBS: Dict[str, Dict[str, Any]] = {}
 
+
+@router.get("/ml", response_class=HTMLResponse)
+async def ml_dashboard_page() -> HTMLResponse:
+    """Serve Progressive ML dashboard page."""
+    page_path = Path(__file__).parent.parent / "templates" / "ml_dashboard.html"
+    try:
+        with open(page_path, "r", encoding="utf-8") as f:
+            html = f.read()
+        return HTMLResponse(content=html)
+    except FileNotFoundError:
+        return HTMLResponse(
+            content="<h3>ML Dashboard</h3><p>Page not found.</p>",
+            status_code=404,
+        )
+
 # Helper functions for data management
 def _get_next_daily_run():
     """Calculate next daily run time (17:10)"""
@@ -68,7 +83,6 @@ async def run_weekly_fundamentals():
     try:
         import subprocess
         import sys
-
         logger.info("🚀 Starting weekly fundamentals update...")
 
         # Run the weekly fundamentals script via canonical downloader in app/data

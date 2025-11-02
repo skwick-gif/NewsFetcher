@@ -4,6 +4,15 @@
  * stock selection, timeframe changes, and real-time data loading.
  */
 
+const TIMEFRAME_CONFIG = {
+    '1D': { timeframe: '1D', bar_size: '5 mins', duration: '1 D', include_outside_rth: false },
+    '1W': { timeframe: '1W', bar_size: '30 mins', duration: '5 D', include_outside_rth: false },
+    '1M': { timeframe: '1M', bar_size: '1 day', duration: '1 M' },
+    '3M': { timeframe: '3M', bar_size: '1 day', duration: '3 M' },
+    '6M': { timeframe: '6M', bar_size: '1 day', duration: '6 M' },
+    '1Y': { timeframe: '1Y', bar_size: '1 day', duration: '12 M' },
+};
+
 class ChartManager {
     constructor() {
         this.chart = null;
@@ -46,14 +55,53 @@ class ChartManager {
             return;
         }
 
-        try {
-            const response = await fetch(`/api/financial/historical/${symbol}?timeframe=${timeframe}`);
-            const result = await response.json();
+        const params = new URLSearchParams({ symbol });
+        const cfg = TIMEFRAME_CONFIG[timeframe] || {};
+        if (cfg.timeframe) {
+            params.set('timeframe', cfg.timeframe);
+        } else {
+            params.set('timeframe', timeframe);
+        }
+        if (cfg.bar_size) {
+            params.set('bar_size', cfg.bar_size);
+        }
+        if (cfg.duration) {
+            params.set('duration', cfg.duration);
+        }
+        if (cfg.bar_count) {
+            params.set('bar_count', String(cfg.bar_count));
+        }
+        if (typeof cfg.include_outside_rth === 'boolean') {
+            params.set('include_outside_rth', String(cfg.include_outside_rth));
+        }
+        if (cfg.what_to_show) {
+            params.set('what_to_show', cfg.what_to_show);
+        }
 
-            if (result.status === 'success' && result.data) {
-                const data = result.data;
-                this._refreshChartWithData(symbol, timeframe, data);
-                console.log(`✅ Loaded ${symbol} chart data (${data.data_points} points)`);
+        try {
+            const response = await fetch(`/api/ibkr/market/historical?${params.toString()}`);
+            let payload = null;
+            let fallbackText = '';
+            try {
+                payload = await response.json();
+            } catch (jsonError) {
+                try {
+                    fallbackText = await response.text();
+                } catch (textError) {
+                    fallbackText = '';
+                }
+            }
+            if (!response.ok) {
+                const detail = (payload && (payload.detail || payload.error || payload.message)) || fallbackText || `HTTP ${response.status}`;
+                throw new Error(detail);
+            }
+            const result = payload || {};
+
+            if (result.success && Array.isArray(result.bars)) {
+                const chartData = this._prepareChartSeries(timeframe, result.bars);
+                this.latestBars = result.bars;
+                this._refreshChartWithData(symbol, timeframe, chartData);
+                console.log(`✅ Loaded ${symbol} chart data (${result.count ?? result.bars.length} bars)`);
             } else {
                 console.error('❌ Failed to load chart data:', result);
             }
@@ -154,6 +202,88 @@ class ChartManager {
     }
 
     // ----- Helpers -----
+    _parseNumeric(value) {
+        if (value === null || value === undefined) {
+            return null;
+        }
+        if (typeof value === 'number') {
+            return Number.isFinite(value) ? value : null;
+        }
+        if (typeof value === 'string') {
+            const cleaned = value.replace(/[^0-9.\-]/g, '');
+            if (!cleaned) {
+                return null;
+            }
+            const parsed = Number(cleaned);
+            return Number.isFinite(parsed) ? parsed : null;
+        }
+        return null;
+    }
+
+    _prepareChartSeries(timeframe, bars) {
+        const safeBars = Array.isArray(bars) ? bars : [];
+        const resolveClose = (bar) => {
+            if (!bar) {
+                return null;
+            }
+            const candidates = [bar.close, bar.last, bar.price, bar.c];
+            for (const candidate of candidates) {
+                const parsed = this._parseNumeric(candidate);
+                if (parsed !== null) {
+                    return parsed;
+                }
+            }
+            return null;
+        };
+
+        const labels = safeBars.map((bar) => {
+            const raw = bar.time || bar.timestamp || bar.date || bar.t;
+            if (!raw) {
+                return '';
+            }
+            const dt = new Date(raw);
+            if (Number.isNaN(dt.getTime())) {
+                return String(raw);
+            }
+            if (timeframe === '1D') {
+                return dt.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+            }
+            if (timeframe === '1W') {
+                return dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+            }
+            return dt.toLocaleDateString();
+        });
+
+        const ohlc = safeBars.map((bar, index) => {
+            const raw = bar.time || bar.timestamp || bar.date || bar.t || labels[index] || index;
+            const parsedDate = new Date(raw);
+            const timeValue = Number.isNaN(parsedDate.getTime()) ? raw : parsedDate;
+            return {
+                t: timeValue,
+                o: this._parseNumeric(bar.open ?? bar.o),
+                h: this._parseNumeric(bar.high ?? bar.h),
+                l: this._parseNumeric(bar.low ?? bar.l),
+                c: resolveClose(bar),
+                v: this._parseNumeric(bar.volume ?? bar.vol ?? bar.v),
+            };
+        });
+
+        const prices = ohlc.map(entry => entry.c);
+        const volumes = ohlc.map(entry => entry.v);
+
+        const firstClose = resolveClose(safeBars[0]);
+        const lastClose = resolveClose(safeBars[safeBars.length - 1]);
+        const isPositive = firstClose === null || lastClose === null ? true : lastClose >= firstClose;
+
+        return {
+            labels,
+            prices,
+            ohlc,
+            volumes,
+            isPositive,
+        };
+    }
+
     _createChart(ctx) {
         // Destroy existing if any
         if (this.chart) { this.chart.destroy(); }
@@ -225,21 +355,25 @@ class ChartManager {
 
     _refreshChartWithData(symbol, timeframe, data) {
         if (this.currentType === 'candlestick' && this.chart.config.type === 'candlestick') {
-            // Expect data.ohlc: [{t, o,h,l,c}]
+            this.chart.data.labels = Array.isArray(data.labels) ? data.labels : [];
             const ds = this.chart.data.datasets[0];
             ds.label = `${symbol} - ${timeframe}`;
-            ds.data = (data.ohlc || []).map(d => ({ x: d.t, o: d.o, h: d.h, l: d.l, c: d.c }));
+            ds.data = (data.ohlc || [])
+                .filter(entry => entry && entry.c !== null && entry.o !== null && entry.h !== null && entry.l !== null)
+                .map(d => ({ x: d.t, o: d.o, h: d.h, l: d.l, c: d.c }));
             this.chart.update();
         } else {
-            // Line mode uses labels + prices
-            this.chart.data.labels = data.labels;
+            const labels = Array.isArray(data.labels) ? data.labels : [];
+            this.chart.data.labels = labels;
             const ds = this.chart.data.datasets[0];
             ds.label = `${symbol} - ${timeframe}`;
-            ds.data = data.prices;
-            if (data.is_positive) {
-                ds.borderColor = '#10b981'; ds.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+            ds.data = (data.prices || []).map(val => (val === null ? null : Number(val)));
+            if (data.isPositive) {
+                ds.borderColor = '#10b981';
+                ds.backgroundColor = 'rgba(16, 185, 129, 0.1)';
             } else {
-                ds.borderColor = '#ef4444'; ds.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+                ds.borderColor = '#ef4444';
+                ds.backgroundColor = 'rgba(239, 68, 68, 0.1)';
             }
             this.chart.update();
         }

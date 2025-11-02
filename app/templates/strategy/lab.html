@@ -30,6 +30,12 @@
     /* Short text/selects (symbol/strategy) */
     .short { width: 120px; }
     .short-sel { width: 170px; }
+    .playback-panel { display:none; margin-top:12px; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); background:rgba(15,23,42,0.55); box-shadow:0 6px 14px rgba(15,23,42,0.35); display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .playback-panel button { background:rgba(34,197,94,0.18); border:1px solid rgba(34,197,94,0.45); color:#22c55e; border-radius:6px; padding:6px 10px; min-width:56px; font-size:13px; }
+    .playback-panel button.secondary { background:rgba(148,163,184,0.14); border-color:rgba(148,163,184,0.35); color:#cbd5f5; }
+    .playback-panel button:disabled { opacity:0.45; cursor:not-allowed; }
+    .playback-speed { width:auto; padding:6px 8px; font-size:13px; background:#0f172a; border:1px solid rgba(255,255,255,0.12); color:#e2e8f0; border-radius:6px; }
+    .playback-date { font-size:12px; color:#cbd5e1; margin-left:4px; }
   </style>
 </head>
 <body>
@@ -37,8 +43,8 @@
     <div class="header">
       <h2 style="margin:0;">Strategy Lab</h2>
       <div class="nav">
-        <a href="/rl">RL</a>
-        <a href="/rl#ml" class="">ML</a>
+    <a href="/rl">RL</a>
+    <a href="/ml" class="">ML</a>
         <a href="/scanner">Scanner</a>
         <a href="/strategy" class="active">Strategy</a>
       </div>
@@ -201,8 +207,21 @@
       <input id="skip_weekends" type="checkbox" checked title="הסתר ימי סוף‑שבוע (שבת/ראשון) מציר הזמן" />
     </div>
     <div class="col">
-  <button id="run" style="background:#22c55e; border:none; color:white; border-radius:6px;" title="הרצה עם הפרמטרים הנוכחיים">Run ▶</button>
+  <button id="run" style="background:#22c55e; border:none; color:white; border-radius:6px;" title="הרצה עם הפרמטרים הנוכחיים">Run ></button>
     </div>
+  </div>
+  <div id="playback-panel" class="playback-panel" aria-live="polite">
+    <span class="muted" style="font-size:12px;">Playback</span>
+  <button id="pb-step-back" class="secondary" title="צעד יום אחד אחורה" type="button">&lt;</button>
+  <button id="pb-toggle" title="Play/Pause" type="button">Play &gt;</button>
+  <button id="pb-step-forward" class="secondary" title="צעד יום אחד קדימה" type="button">&gt;</button>
+    <label for="pb-speed" class="muted" style="font-size:12px; margin-left:4px;">Speed</label>
+    <select id="pb-speed" class="playback-speed" title="מספר ימים בכל צעד בזמן Play">
+  <option value="1">x1</option>
+  <option value="2">x2</option>
+  <option value="5">x5</option>
+    </select>
+    <span id="pb-date" class="playback-date">—</span>
   </div>
     </div>
 
@@ -236,18 +255,226 @@
     }
     function debounce(fn, ms) { let t; return (...args) => { clearTimeout(t); t = setTimeout(()=>fn(...args), ms); }; }
 
+    const playbackState = {
+      latestResult: null,
+      requestBody: null,
+      pointer: null,
+      maxIndex: -1,
+      playing: false,
+      timer: null,
+      speed: 1,
+      pending: false,
+      timeline: [],
+      timelineTimes: [],
+      canExtend: false,
+      minIndex: 0,
+      rangeStartIdx: 0,
+      rangeStartISO: null,
+      actualStartISO: null,
+    };
+
+    const playbackControls = {
+      container: null,
+      playBtn: null,
+      stepForwardBtn: null,
+      stepBackBtn: null,
+      speedSelect: null,
+      dateLabel: null,
+    };
+
+    function cloneBody(body) {
+      return JSON.parse(JSON.stringify(body || {}));
+    }
+
+    function toTimestamp(value) {
+      if (value == null) return NaN;
+      if (typeof value === 'number') return Number.isFinite(value) ? value : NaN;
+      if (value instanceof Date) return value.getTime();
+      let str = String(value).trim();
+      if (!str) return NaN;
+      if (str.length <= 10 && !str.includes('T')) {
+        str = `${str}T00:00:00Z`;
+      } else if (str.includes(' ')) {
+        str = str.replace(' ', 'T');
+      }
+      const ts = Date.parse(str);
+      if (!Number.isNaN(ts)) return ts;
+      return Date.parse(String(value));
+    }
+
+    function findTimelineIndex(timeline, targetISO, prefer = 'forward') {
+      if (!Array.isArray(timeline) || !timeline.length || !targetISO) return -1;
+      const times = playbackState.timelineTimes && playbackState.timelineTimes.length === timeline.length
+        ? playbackState.timelineTimes
+        : timeline.map(toTimestamp);
+      const targetTs = toTimestamp(targetISO);
+      if (!Number.isFinite(targetTs)) return -1;
+      if (prefer === 'forward') {
+        for (let i = 0; i < times.length; i++) {
+          if (times[i] >= targetTs) return i;
+        }
+        return times.length - 1;
+      }
+      if (prefer === 'backward') {
+        for (let i = times.length - 1; i >= 0; i--) {
+          if (times[i] <= targetTs) return i;
+        }
+        return 0;
+      }
+      return -1;
+    }
+
+    function trimBacktestResult(data, fromIdx) {
+      if (!data || !Array.isArray(data.dates) || fromIdx <= 0) return data;
+      const originalDates = data.dates;
+      const trimmed = {...data};
+      const keys = Object.keys(trimmed);
+      for (const key of keys) {
+        const value = trimmed[key];
+        if (Array.isArray(value) && value.length === originalDates.length) {
+          trimmed[key] = value.slice(fromIdx);
+        }
+      }
+      if (Array.isArray(trimmed.trades)) {
+        const startTs = toTimestamp(trimmed.dates?.[0]);
+        trimmed.trades = trimmed.trades.filter(tr => toTimestamp(tr.date) >= startTs);
+      }
+      return trimmed;
+    }
+
+    function deriveMinPlayableIndex(js) {
+      const timelineLen = Array.isArray(js.dates) ? js.dates.length : 0;
+      if (!timelineLen) return 0;
+      let minIdx = 0;
+      const indicators = [js.macd, js.macd_signal, js.equity, js.rsi, js.stoch_k, js.stoch_d];
+      for (const arr of indicators) {
+        if (!Array.isArray(arr)) continue;
+        const idx = arr.findIndex((v) => v != null && !Number.isNaN(v));
+        if (idx > minIdx) minIdx = idx;
+      }
+      if (minIdx >= timelineLen) {
+        minIdx = timelineLen - 1;
+      }
+      return Math.max(0, minIdx);
+    }
+
+    async function fetchBacktest(body) {
+      const res = await fetch('/api/strategy/backtest', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(body),
+      });
+      let js;
+      try {
+        js = await res.json();
+      } catch (e) {
+        const text = await res.text().catch(() => '');
+        throw new Error('Invalid JSON from server: ' + (text ? text.slice(0, 200) : String(e)));
+      }
+      if (!res.ok || js.status !== 'ok') {
+        throw new Error(js.detail || `HTTP ${res.status}`);
+      }
+      return js;
+    }
+
+    function handleBacktestSuccess(js, requestBody, opts = {}) {
+      const status = document.getElementById('status');
+      const quick = document.getElementById('quick');
+      const dates = js.dates || [];
+      const metrics = js.metrics || {};
+      const symbol = requestBody.symbol || playbackState.requestBody?.symbol || '';
+      const firstDate = requestBody.start_date || dates[0] || '';
+      const lastDate = requestBody.end_date || dates[dates.length - 1] || '';
+      const totalReturn = typeof metrics.total_return_pct === 'number' ? `${metrics.total_return_pct.toFixed(2)}%` : 'n/a';
+      const numTrades = typeof metrics.num_trades === 'number' ? metrics.num_trades : '0';
+      if (status) {
+        status.textContent = `OK — ${symbol} ${firstDate} → ${lastDate} | Trades ${numTrades} | Return ${totalReturn}`;
+      }
+      if (quick) {
+        const winRate = metrics.win_rate != null ? `${(metrics.win_rate * 100).toFixed(1)}%` : 'n/a';
+        const maxDD = typeof metrics.max_drawdown_pct === 'number' ? `${metrics.max_drawdown_pct.toFixed(2)}%` : 'n/a';
+        quick.innerHTML = `<span class="pill">Ret ${totalReturn}</span><span class="pill">Win ${winRate}</span><span class="pill">DD ${maxDD}</span>`;
+      }
+
+      let result = js || {};
+      const rawTimeline = Array.isArray(result.dates) ? result.dates.slice() : [];
+      const shouldRebaseline = opts.resetTimeline || !playbackState.timeline || (rawTimeline.length > (playbackState.timeline?.length || 0));
+
+      const requestedStartISO = requestBody.start_date || playbackState.rangeStartISO || null;
+      const desiredStartISO = requestedStartISO || playbackState.actualStartISO || rawTimeline[0] || null;
+      let trimIdxRaw = -1;
+      if (desiredStartISO) {
+        trimIdxRaw = findTimelineIndex(rawTimeline, desiredStartISO, 'forward');
+      }
+      if (trimIdxRaw > 0) {
+        result = trimBacktestResult(result, trimIdxRaw);
+      }
+
+      if (shouldRebaseline) {
+        const baselineIdx = trimIdxRaw > 0 ? trimIdxRaw : 0;
+        playbackState.timeline = rawTimeline.slice(baselineIdx);
+        playbackState.timelineTimes = playbackState.timeline.map(toTimestamp);
+      }
+
+      const timeline = playbackState.timeline || [];
+      playbackState.latestResult = result;
+      playbackState.maxIndex = timeline.length - 1;
+
+  playbackState.minIndex = deriveMinPlayableIndex(result);
+      if (playbackState.minIndex > playbackState.maxIndex) {
+        playbackState.minIndex = playbackState.maxIndex;
+      }
+
+      if (opts.resetTimeline) {
+        if (requestedStartISO) {
+          const idx = findTimelineIndex(timeline, requestedStartISO, 'forward');
+          playbackState.rangeStartIdx = idx >= 0 ? idx : playbackState.minIndex ?? 0;
+        } else {
+          playbackState.rangeStartIdx = playbackState.minIndex ?? 0;
+        }
+      }
+
+      const startBound = Math.max(playbackState.minIndex ?? 0, playbackState.rangeStartIdx ?? 0);
+      playbackState.actualStartISO = timeline[startBound] || timeline[0] || null;
+
+      const pointerFallback = opts.pointerFallback || 'end';
+      const defaultPointerISO = pointerFallback === 'start'
+        ? (requestedStartISO || playbackState.actualStartISO || timeline[0] || null)
+        : (timeline[timeline.length - 1] || null);
+      const pointerDate = opts.pointerDate ?? defaultPointerISO;
+      const preferMode = pointerFallback === 'start' ? 'forward' : 'backward';
+      let pointerIdx = pointerDate ? findTimelineIndex(timeline, pointerDate, preferMode) : -1;
+      if (pointerIdx < startBound) pointerIdx = startBound;
+      if (pointerIdx > playbackState.maxIndex) pointerIdx = playbackState.maxIndex;
+      playbackState.pointer = Number.isFinite(pointerIdx) && pointerIdx >= 0 ? pointerIdx : null;
+
+      if (opts.resetTimeline && status && playbackState.actualStartISO) {
+        status.textContent += ` | Playback start ${playbackState.actualStartISO}`;
+      }
+
+      if (!opts.preserveRequest) {
+        playbackState.requestBody = cloneBody(requestBody);
+      }
+
+      render(result);
+    }
+
     async function runBacktest() {
       const btn = document.getElementById('run');
       const status = document.getElementById('status');
-      status.textContent = 'Running…';
-      btn.disabled = true;
-      // show placeholders while loading
       const metricsBox = document.getElementById('metrics');
       const tradesBox = document.getElementById('trades');
-      if(metricsBox) metricsBox.innerHTML = '<span style="opacity:0.8;">Loading metrics…</span>';
-      if(tradesBox) tradesBox.textContent = 'Loading trades…';
+
+      stopPlayback();
+      if (playbackControls.container) playbackControls.container.style.display = 'none';
+
+      status.textContent = 'Running…';
+      btn.disabled = true;
+      if (metricsBox) metricsBox.innerHTML = '<span style="opacity:0.8;">Loading metrics…</span>';
+      if (tradesBox) tradesBox.textContent = 'Loading trades…';
+
       const body = {
-  symbol: (document.getElementById('symbol').value || '').trim().toUpperCase(),
+        symbol: (document.getElementById('symbol').value || '').trim().toUpperCase(),
         start_date: undefined,
         end_date: undefined,
         strategy: document.getElementById('strategy').value,
@@ -270,16 +497,14 @@
         vol_sma_period: Number(document.getElementById('vol_v').value),
         vol_down_strict: !!document.getElementById('vol_strict').checked,
         macd_zero_stop: !!document.getElementById('zero_stop').checked,
-        // Visualization-only
         rsi_period: Number(document.getElementById('rsi_period').value),
         stoch_k: Number(document.getElementById('stoch_k').value),
         stoch_d: Number(document.getElementById('stoch_d').value),
-        // Price overlays params
         ema_fast: Number(document.getElementById('ema_fast').value),
         ema_slow: Number(document.getElementById('ema_slow').value),
         kama_n: Number(document.getElementById('kama_n').value),
       };
-      // Derive date range from explicit inputs or last days
+
       const ds = document.getElementById('start').value;
       const de = document.getElementById('end').value;
       const lastDays = Number(document.getElementById('days').value);
@@ -288,43 +513,34 @@
       if (!ds && !de && lastDays) {
         const d = new Date();
         d.setDate(d.getDate() - lastDays);
-        body.start_date = d.toISOString().slice(0,10);
+        body.start_date = d.toISOString().slice(0, 10);
       }
+
+      playbackState.requestBody = cloneBody(body);
+      playbackState.latestResult = null;
+      playbackState.pointer = null;
+      playbackState.maxIndex = -1;
+    playbackState.timeline = [];
+    playbackState.timelineTimes = [];
+    playbackState.canExtend = false;
+    playbackState.minIndex = 0;
+      playbackState.rangeStartISO = ds || null;
+      playbackState.rangeStartIdx = 0;
+    playbackState.actualStartISO = null;
+
       try {
-        const res = await fetch('/api/strategy/backtest', {
-          method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)
-        });
-        let js;
-        try {
-          js = await res.json();
-        } catch(e) {
-          const text = await res.text().catch(()=> '');
-          throw new Error('Invalid JSON from server: '+ (text ? text.slice(0,200) : String(e)) );
-        }
-        if (!res.ok || js.status !== 'ok') {
-          throw new Error(js.detail || `HTTP ${res.status}`);
-        }
-        render(js);
-        // scroll to metrics so the user sees the results "למטה" (ensure layout finished)
+  const js = await fetchBacktest(body);
+  handleBacktestSuccess(js, body, { pointerDate: ds || null, pointerFallback: 'start', resetTimeline: true });
         try {
           const mEl = document.getElementById('metrics');
-          if(mEl){ setTimeout(()=> mEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 30); }
-        } catch(_) {}
-  const m = js.metrics || {};
-  const tr = (typeof m.total_return_pct === 'number') ? `${m.total_return_pct.toFixed(2)}%` : 'n/a';
-  const nt = (typeof m.num_trades === 'number') ? m.num_trades : '0';
-  status.textContent = `OK — ${body.symbol} ${body.start_date || ''} → ${body.end_date || ''} | Trades ${nt} | Return ${tr}`;
-        // Quick summary pill
-        const quick = document.getElementById('quick');
-        if (quick) {
-          const wr = (m.win_rate != null) ? (m.win_rate*100).toFixed(1)+'%' : 'n/a';
-          const dd = (typeof m.max_drawdown_pct === 'number') ? m.max_drawdown_pct.toFixed(2)+'%' : 'n/a';
-          quick.innerHTML = `<span class="pill">Ret ${tr}</span><span class="pill">Win ${wr}</span><span class="pill">DD ${dd}</span>`;
-        }
+          if (mEl) {
+            setTimeout(() => mEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 30);
+          }
+        } catch (_) {}
       } catch (err) {
         console.error(err);
         status.textContent = `Error: ${err.message || err}`;
-        if(tradesBox) tradesBox.textContent = '—';
+        if (tradesBox) tradesBox.textContent = '—';
         alert(`Backtest failed: ${err.message || err}`);
       } finally {
         btn.disabled = false;
@@ -472,23 +688,23 @@
         annotations: tradeAnnotations
       };
 
-  Plotly.newPlot('chart', data, layout, {responsive: true, displaylogo:false, modeBarButtonsToRemove:['lasso2d']});
-  // Keep MACD/price in view on x-zoom by re-autorang­ing y-axes when x range changes
-  try {
-    const chartDiv = document.getElementById('chart');
-    if (chartDiv && chartDiv.on) {
-      chartDiv.on('plotly_relayout', (ev) => {
-        const keys = Object.keys(ev || {});
-        const xChanged = keys.some(k => k === 'xaxis.autorange' || k.startsWith('xaxis.range'));
-        if (xChanged) {
-          Plotly.relayout(chartDiv, {
-            'yaxis.autorange': true,
-            'yaxis3.autorange': true
+      Plotly.newPlot('chart', data, layout, {responsive: true, displaylogo:false, modeBarButtonsToRemove:['lasso2d']});
+      // Keep MACD/price in view on x-zoom by re-auto ranging y-axes when x range changes
+      try {
+        const chartDiv = document.getElementById('chart');
+        if (chartDiv && chartDiv.on) {
+          chartDiv.on('plotly_relayout', (ev) => {
+            const keys = Object.keys(ev || {});
+            const xChanged = keys.some(k => k === 'xaxis.autorange' || k.startsWith('xaxis.range'));
+            if (xChanged) {
+              Plotly.relayout(chartDiv, {
+                'yaxis.autorange': true,
+                'yaxis3.autorange': true
+              });
+            }
           });
         }
-      });
-    }
-  } catch (_) {}
+      } catch (_) {}
 
       const m = js.metrics || {};
       document.getElementById('metrics').innerHTML = `
@@ -515,10 +731,203 @@
       `;
 
   const lines = trades.map(t => `<div class="${t.action==='BUY'?'trade-buy':'trade-sell'}">${t.date} ${t.action}${t.reason?` [${t.reason}]`:''} @ ${t.price.toFixed(2)} | cash ${fmtMoney(t.cash)} | eq ${fmtMoney(t.equity)}</div>`).join('');
-      document.getElementById('trades').innerHTML = lines || '<i>No trades</i>';
+  document.getElementById('trades').innerHTML = lines || '<i>No trades</i>';
+
+  postRender(js);
     }
 
-    document.getElementById('run').addEventListener('click', runBacktest);
+    function postRender() {
+      updatePlaybackUI();
+    }
+
+    function setupPlaybackControls() {
+      playbackControls.container = document.getElementById('playback-panel');
+      if (!playbackControls.container) return;
+      playbackControls.playBtn = document.getElementById('pb-toggle');
+      playbackControls.stepForwardBtn = document.getElementById('pb-step-forward');
+      playbackControls.stepBackBtn = document.getElementById('pb-step-back');
+      playbackControls.speedSelect = document.getElementById('pb-speed');
+      playbackControls.dateLabel = document.getElementById('pb-date');
+
+      playbackState.speed = Number(playbackControls.speedSelect?.value) || 1;
+
+      playbackControls.playBtn?.addEventListener('click', togglePlayback);
+      playbackControls.stepForwardBtn?.addEventListener('click', () => stepPlayback(1));
+      playbackControls.stepBackBtn?.addEventListener('click', () => stepPlayback(-1));
+      playbackControls.speedSelect?.addEventListener('change', handlePlaybackSpeedChange);
+
+      updatePlaybackUI();
+    }
+
+    function updatePlaybackUI() {
+      const panel = playbackControls.container;
+      if (!panel) return;
+      const timeline = playbackState.timeline || [];
+      if (!timeline.length || timeline.length < 2) {
+        panel.style.display = 'none';
+        if (playbackControls.dateLabel) {
+          playbackControls.dateLabel.textContent = timeline.length ? timeline[timeline.length - 1] : '—';
+        }
+        return;
+      }
+
+      panel.style.display = 'flex';
+      const pointer = playbackState.pointer;
+  const minIdx = Math.max(playbackState.minIndex ?? 0, playbackState.rangeStartIdx ?? 0);
+  const atStart = pointer == null || pointer <= minIdx;
+      const atEnd = pointer == null || pointer >= playbackState.maxIndex;
+
+      if (playbackControls.dateLabel) {
+        playbackControls.dateLabel.textContent = pointer != null && pointer >= 0 ? timeline[pointer] : '—';
+      }
+      if (playbackControls.stepBackBtn) {
+        playbackControls.stepBackBtn.disabled = playbackState.pending || playbackState.playing || atStart;
+      }
+      if (playbackControls.stepForwardBtn) {
+        playbackControls.stepForwardBtn.disabled = playbackState.pending || playbackState.playing || atEnd;
+      }
+      if (playbackControls.playBtn) {
+        const span = playbackState.maxIndex - minIdx;
+        playbackControls.playBtn.disabled = playbackState.pending || span <= 0;
+        playbackControls.playBtn.textContent = playbackState.playing ? 'Pause ||' : 'Play >';
+      }
+      if (playbackControls.speedSelect) {
+        const val = playbackControls.speedSelect.value || '1';
+        playbackState.speed = Number(val) || 1;
+      }
+    }
+
+    function handlePlaybackSpeedChange() {
+      playbackState.speed = Number(playbackControls.speedSelect?.value) || 1;
+      if (playbackState.playing) {
+        schedulePlaybackTick();
+      }
+    }
+
+    async function togglePlayback() {
+      if (playbackState.pending) return;
+      const timeline = playbackState.timeline || [];
+      if (!timeline.length) return;
+
+      if (playbackState.playing) {
+        stopPlayback();
+        return;
+      }
+
+      const startBound = Math.max(playbackState.minIndex ?? 0, playbackState.rangeStartIdx ?? 0);
+      const span = playbackState.maxIndex - startBound;
+      if (span <= 0) {
+        updatePlaybackUI();
+        return;
+      }
+
+      if (playbackState.pointer == null) {
+        playbackState.pointer = startBound;
+      }
+
+      const atEnd = playbackState.pointer != null && playbackState.pointer >= playbackState.maxIndex;
+      if (atEnd) {
+        if (startBound < playbackState.maxIndex) {
+          playbackState.pointer = startBound;
+        } else {
+          stopPlayback();
+          const status = document.getElementById('status');
+          if (status) {
+            const hint = playbackState.actualStartISO ? `Playback range: ${playbackState.actualStartISO} → ${timeline[playbackState.maxIndex] || 'latest'}` : '';
+            status.textContent = `Playback already at end of selected range. Clear the End date or pick an earlier pointer to play. ${hint}`.trim();
+          }
+          return;
+        }
+      }
+
+      playbackState.playing = true;
+      updatePlaybackUI();
+      schedulePlaybackTick();
+    }
+
+    function schedulePlaybackTick() {
+      if (playbackState.timer) {
+        clearTimeout(playbackState.timer);
+      }
+      if (!playbackState.playing) return;
+      const intervalMs = 900;
+      playbackState.timer = setTimeout(async () => {
+        const amount = playbackState.speed || 1;
+        const ok = await stepPlayback(1, amount);
+        if (!ok) {
+          stopPlayback();
+          return;
+        }
+        if (playbackState.playing) {
+          schedulePlaybackTick();
+        }
+      }, intervalMs);
+    }
+
+    function stopPlayback() {
+      playbackState.playing = false;
+      if (playbackState.timer) {
+        clearTimeout(playbackState.timer);
+        playbackState.timer = null;
+      }
+      updatePlaybackUI();
+    }
+
+    async function stepPlayback(direction, amountOverride) {
+      const timeline = playbackState.timeline || [];
+      if (!timeline.length) return false;
+      if (playbackState.pending) return false;
+      const stepSize = amountOverride != null ? amountOverride : 1;
+      if (!stepSize) return false;
+      const current = playbackState.pointer != null ? playbackState.pointer : timeline.length - 1;
+      let next = current + direction * stepSize;
+  const minIdx = Math.max(playbackState.minIndex ?? 0, playbackState.rangeStartIdx ?? 0);
+  if (next < minIdx) next = minIdx;
+      if (next > timeline.length - 1) next = timeline.length - 1;
+      if (next === current) return false;
+
+      playbackState.pending = true;
+      updatePlaybackUI();
+      const targetDate = timeline[next];
+      try {
+        const baseBody = cloneBody(playbackState.requestBody || {});
+        baseBody.end_date = targetDate;
+        const js = await fetchBacktest(baseBody);
+        handleBacktestSuccess(js, baseBody, { pointerDate: targetDate, preserveRequest: true });
+        playbackState.pointer = next;
+        return true;
+      } catch (err) {
+        console.error(err);
+        const status = document.getElementById('status');
+        if (status) status.textContent = `Playback error: ${err.message || err}`;
+        const msg = String(err?.message || '').toLowerCase();
+        if (msg.includes('not enough rows')) {
+          const timeline = playbackState.timeline || [];
+          const idx = timeline.indexOf(targetDate);
+          const candidate = idx >= 0 ? idx + 1 : next + 1;
+          const newMin = Math.min(playbackState.maxIndex, Math.max(playbackState.minIndex ?? 0, candidate));
+          playbackState.minIndex = Number.isFinite(newMin) ? newMin : (playbackState.minIndex ?? 0);
+          if ((playbackState.rangeStartIdx ?? 0) < playbackState.minIndex) {
+            playbackState.rangeStartIdx = playbackState.minIndex;
+          }
+          playbackState.pointer = playbackState.minIndex;
+          stopPlayback();
+        }
+        return false;
+      } finally {
+        playbackState.pending = false;
+        updatePlaybackUI();
+      }
+    }
+
+  setupPlaybackControls();
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      stopPlayback();
+    }
+  });
+
+  document.getElementById('run').addEventListener('click', runBacktest);
     const debouncedRun = debounce(runBacktest, 400);
     document.getElementById('symbol').addEventListener('input', debouncedRun);
     document.getElementById('symbol').addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); runBacktest(); }});

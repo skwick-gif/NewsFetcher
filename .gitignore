@@ -89,6 +89,7 @@ stock_data/
 app/ml/models/backtests/
 app/ml/models/backtest_results/
 app/ml/models/checkpoints/
+app/ml/models/champions/
 app/ml/models/**/*.pth
 app/ml/models/**/*.pt
 app/ml/models/**/*.keras

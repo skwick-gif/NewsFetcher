@@ -57,7 +57,7 @@ try:
 except ImportError:
     print("⚠️ Keywords engine not available")
 from app.ingest.rss_loader import FinancialDataLoader
-from app.integrations.ibkr_client import ibkr
+# NOTE: Legacy real-time module still references deprecated IBKR stub.
 
 # Financial modules imports
 try:

@@ -46,6 +46,8 @@ pytest==7.4.2
 # Scheduler and async support
 apscheduler==3.10.4
 websockets==12.0
+signalrcore==0.0.9
+msgpack==1.0.8
 
 # Additional dependencies for advanced financial AI
 tweepy==4.14.0

@@ -1,10 +1,8 @@
-"""
-Lightweight in-memory IBKR client stub.
+"""DEPRECATED IBKR stub.
 
-This provides a minimal interface for connecting, placing orders, fetching
-positions, and disconnecting. It's intended as a placeholder until the
-external C# bridge is integrated. Thread-safety is not guaranteed; FastAPI
-should run with a single event loop for now, and we keep this simple.
+This in-memory placeholder is kept temporarily while the real IBKR bridge
+integration is implemented. New code should depend on the upcoming bridge
+client (`app.integrations.ibkr_bridge`) rather than this module.
 """
 
 from __future__ import annotations

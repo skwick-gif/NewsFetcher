@@ -4,14 +4,83 @@ import os
 import sys
 import subprocess
 import threading
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, HTTPException, Query
 
+_ibkr_import_error: Optional[Exception] = None
+_executor_import_error: Optional[Exception] = None
+
+try:  # IBKR bridge dependency (SignalR client)
+    from app.integrations.ibkr_bridge import get_ibkr_bridge, IBKRBridgeError
+except Exception as exc:  # pragma: no cover - runtime dependency missing
+    _ibkr_import_error = exc
+
+    class IBKRBridgeError(RuntimeError):
+        """Fallback error when bridge client cannot be imported."""
+
+    async def get_ibkr_bridge():  # type: ignore[override]
+        raise IBKRBridgeError(f"IBKR bridge integration unavailable: {exc}")
+else:
+    _ibkr_import_error = None
+
+
+try:  # RL broker executor dependency (wraps IBKR bridge)
+    from rl.live.broker_executor import get_executor, TradeRequest
+except Exception as exc:  # pragma: no cover - runtime dependency missing
+    _executor_import_error = exc
+
+    @dataclass
+    class TradeRequest:  # minimal fallback needed for type compatibility
+        symbol: str
+        quantity: float
+        side: str
+        order_type: str = "MKT"
+        limit_price: Optional[float] = None
+        stop_price: Optional[float] = None
+        exchange: str = "SMART"
+        time_in_force: str = "DAY"
+        outside_rth: bool = False
+        allow_partial_fills: bool = True
+
+        def __post_init__(self) -> None:
+            self.symbol = str(self.symbol).upper()
+            self.side = str(self.side).upper()
+            self.order_type = str(self.order_type).upper()
+            self.exchange = str(self.exchange).upper()
+            self.time_in_force = str(self.time_in_force).upper()
+            self.quantity = abs(float(self.quantity))
+
+    async def get_executor():  # type: ignore[override]
+        raise IBKRBridgeError(f"RL broker executor unavailable: {exc}")
+else:
+    _executor_import_error = None
+
 
 router = APIRouter(prefix="/api/rl", tags=["RL"])
+
+
+def _executor_unavailable_detail() -> Optional[str]:
+    if _executor_import_error is not None:
+        return f"RL live trading dependencies missing: {_executor_import_error}"
+    if _ibkr_import_error is not None:
+        return f"IBKR bridge integration unavailable: {_ibkr_import_error}"
+    return None
+
+
+def _coerce_bool(value: Any, default: bool = False) -> bool:
+    if value is None:
+        return default
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        return value != 0
+    if isinstance(value, str):
+        return value.strip().lower() in {"true", "1", "yes", "y", "on"}
+    return default
 
 
 @router.get("/status")
@@ -967,6 +1036,219 @@ def _paper_step(config: Dict[str, Any]) -> None:
         'equity_after': float(equity),
         'total_cost': float(total_cost),
     }
+
+
+@router.post('/live/orders')
+async def rl_live_orders(data: Dict[str, Any]):
+    orders_payload = data.get('orders')
+    if not isinstance(orders_payload, list) or not orders_payload:
+        raise HTTPException(status_code=400, detail='orders list required')
+
+    unavailable_detail = _executor_unavailable_detail()
+    if unavailable_detail:
+        return {'status': 'bridge_unavailable', 'detail': unavailable_detail, 'results': []}
+
+    trades: List[TradeRequest] = []
+    for entry in orders_payload:
+        if not isinstance(entry, dict):
+            raise HTTPException(status_code=400, detail='invalid order entry')
+        try:
+            trade = TradeRequest(
+                symbol=str(entry['symbol']).upper(),
+                quantity=float(entry['quantity']),
+                side=str(entry['side']).upper(),
+                order_type=str(entry.get('order_type') or entry.get('orderType') or 'MKT').upper(),
+                limit_price=float(entry['limit_price']) if entry.get('limit_price') is not None else None,
+                stop_price=float(entry['stop_price']) if entry.get('stop_price') is not None else None,
+                exchange=str(entry.get('exchange') or 'SMART'),
+                time_in_force=str(entry.get('time_in_force') or entry.get('timeInForce') or 'DAY').upper(),
+                outside_rth=_coerce_bool(entry.get('outside_rth') or entry.get('outsideRth')),
+                allow_partial_fills=_coerce_bool(entry.get('allow_partial_fills') or entry.get('allowPartialFills'), default=True),
+            )
+        except (KeyError, ValueError, TypeError):
+            raise HTTPException(status_code=400, detail='symbol, quantity, side required')
+        trades.append(trade)
+
+    try:
+        executor = await get_executor()
+    except IBKRBridgeError as exc:
+        return {'status': 'bridge_unavailable', 'detail': str(exc), 'results': []}
+    try:
+        results = await executor.place_trades(trades)
+    except IBKRBridgeError as exc:
+        return {'status': 'bridge_unavailable', 'detail': str(exc), 'results': []}
+    except Exception as exc:  # pragma: no cover - unexpected runtime failure
+        return {'status': 'bridge_unavailable', 'detail': str(exc), 'results': []}
+    return {'status': 'ok', 'results': results}
+
+
+@router.get('/live/account')
+async def rl_live_account():
+    unavailable_detail = _executor_unavailable_detail()
+    if unavailable_detail:
+        return {'status': 'bridge_unavailable', 'detail': unavailable_detail, 'account': {}, 'portfolio': []}
+
+    try:
+        executor = await get_executor()
+    except IBKRBridgeError as exc:
+        return {'status': 'bridge_unavailable', 'detail': str(exc), 'account': {}, 'portfolio': []}
+    try:
+        snapshot = await executor.sync_account()
+    except IBKRBridgeError as exc:
+        return {'status': 'bridge_unavailable', 'detail': str(exc), 'account': {}, 'portfolio': []}
+    except Exception as exc:  # pragma: no cover - unexpected runtime failure
+        return {'status': 'bridge_unavailable', 'detail': str(exc), 'account': {}, 'portfolio': []}
+    return {'status': 'ok', **snapshot}
+
+
+@router.get('/live/summary')
+async def rl_live_summary():
+    unavailable_detail = _executor_unavailable_detail()
+    if unavailable_detail:
+        return {
+            'status': 'bridge_unavailable',
+            'detail': unavailable_detail,
+            'account': {},
+            'portfolio': [],
+            'metrics': {
+                'cashBalance': 0.0,
+                'positionsValue': 0.0,
+                'buyingPower': 0.0,
+                'totalValue': 0.0,
+                'cashAvailableForTrading': 0.0,
+            },
+            'openOrders': None,
+        }
+
+    try:
+        executor = await get_executor()
+    except IBKRBridgeError as exc:
+        detail = str(exc)
+        return {
+            'status': 'bridge_unavailable',
+            'detail': detail,
+            'account': {},
+            'portfolio': [],
+            'metrics': {
+                'cashBalance': 0.0,
+                'positionsValue': 0.0,
+                'buyingPower': 0.0,
+                'totalValue': 0.0,
+                'cashAvailableForTrading': 0.0,
+            },
+            'openOrders': None,
+        }
+    except Exception as exc:  # pragma: no cover - unexpected runtime failure
+        detail = str(exc)
+        return {
+            'status': 'bridge_unavailable',
+            'detail': detail,
+            'account': {},
+            'portfolio': [],
+            'metrics': {
+                'cashBalance': 0.0,
+                'positionsValue': 0.0,
+                'buyingPower': 0.0,
+                'totalValue': 0.0,
+                'cashAvailableForTrading': 0.0,
+            },
+            'openOrders': None,
+        }
+    try:
+        snapshot = await executor.sync_account()
+    except IBKRBridgeError as exc:
+        detail = str(exc)
+        return {
+            'status': 'bridge_unavailable',
+            'detail': detail,
+            'account': {},
+            'portfolio': [],
+            'metrics': {
+                'cashBalance': 0.0,
+                'positionsValue': 0.0,
+                'buyingPower': 0.0,
+                'totalValue': 0.0,
+                'cashAvailableForTrading': 0.0,
+            },
+            'openOrders': None,
+        }
+    except Exception as exc:  # pragma: no cover - unexpected runtime failure
+        detail = str(exc)
+        return {
+            'status': 'bridge_unavailable',
+            'detail': detail,
+            'account': {},
+            'portfolio': [],
+            'metrics': {
+                'cashBalance': 0.0,
+                'positionsValue': 0.0,
+                'buyingPower': 0.0,
+                'totalValue': 0.0,
+                'cashAvailableForTrading': 0.0,
+            },
+            'openOrders': None,
+        }
+    account = snapshot.get('account') or {}
+    portfolio = snapshot.get('portfolio') or []
+
+    def _as_float(value: Any) -> float:
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return 0.0
+
+    cash_balance = _as_float(account.get('cashBalance') or account.get('cash') or account.get('availableFunds'))
+    total_value = _as_float(account.get('totalValue') or account.get('netLiquidation') or cash_balance)
+    buying_power = _as_float(account.get('buyingPower') or account.get('buying_power'))
+
+    positions_value = 0.0
+    for position in portfolio:
+        qty = _as_float(position.get('quantity'))
+        price = _as_float(position.get('currentPrice') or position.get('marketPrice'))
+        positions_value += qty * price
+
+    try:
+        bridge = await get_ibkr_bridge()
+        open_orders_payload = await bridge.stock_orders_active()
+        if isinstance(open_orders_payload, dict):
+            open_orders = open_orders_payload.get('orders', open_orders_payload)
+        else:
+            open_orders = open_orders_payload
+    except Exception:
+        open_orders = None
+
+    return {
+        'status': 'ok',
+        'account': account,
+        'portfolio': portfolio,
+        'metrics': {
+            'cashBalance': cash_balance,
+            'positionsValue': positions_value,
+            'buyingPower': buying_power,
+            'totalValue': total_value,
+            'cashAvailableForTrading': max(total_value - positions_value, 0.0) if total_value else cash_balance,
+        },
+        'openOrders': open_orders,
+    }
+
+
+@router.get('/live/orders/updates')
+async def rl_live_order_updates(limit: int = 50):
+    unavailable_detail = _executor_unavailable_detail()
+    if unavailable_detail:
+        return {'status': 'bridge_unavailable', 'detail': unavailable_detail, 'updates': []}
+
+    try:
+        executor = await get_executor()
+    except IBKRBridgeError as exc:
+        return {'status': 'bridge_unavailable', 'detail': str(exc), 'updates': []}
+    try:
+        updates = await executor.order_updates(limit=limit)
+    except IBKRBridgeError as exc:
+        return {'status': 'bridge_unavailable', 'detail': str(exc), 'updates': []}
+    except Exception as exc:  # pragma: no cover - unexpected runtime failure
+        return {'status': 'bridge_unavailable', 'detail': str(exc), 'updates': []}
+    return {'status': 'ok', 'updates': updates}
 
 
 def _paper_loop():

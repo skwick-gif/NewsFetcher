@@ -52,6 +52,24 @@ def api_rl_live_latest_model_proxy():
     return proxy_to_backend('/api/rl/live/latest-model')
 
 
+@rl_bp.route('/api/rl/live/account')
+def api_rl_live_account_proxy():
+    params = request.args.to_dict(flat=True)
+    return proxy_to_backend('/api/rl/live/account', params=params)
+
+
+@rl_bp.route('/api/rl/live/summary')
+def api_rl_live_summary_proxy():
+    params = request.args.to_dict(flat=True)
+    return proxy_to_backend('/api/rl/live/summary', params=params)
+
+
+@rl_bp.route('/api/rl/live/orders/updates')
+def api_rl_live_orders_updates_proxy():
+    params = request.args.to_dict(flat=True)
+    return proxy_to_backend('/api/rl/live/orders/updates', params=params)
+
+
 @rl_bp.route('/api/rl/live/preview', methods=['POST'])
 def api_rl_live_preview_proxy():
     data = request.get_json(silent=True) or {}

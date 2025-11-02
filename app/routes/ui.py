@@ -25,6 +25,12 @@ def rl_dashboard():
     return render_template('rl_dashboard.html')
 
 
+@ui_bp.route('/ml')
+def ml_dashboard():
+    """Progressive ML dashboard page."""
+    return render_template('ml_dashboard.html')
+
+
 @ui_bp.route('/scanner')
 def scanner_page():
     """Scanner page (modern scanner UI)."""

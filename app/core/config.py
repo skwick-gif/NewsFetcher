@@ -57,7 +57,8 @@ try:
 except ImportError:
     print("⚠️ Keywords engine not available")
 from app.ingest.rss_loader import FinancialDataLoader
-from app.integrations.ibkr_client import ibkr
+# NOTE: IBKR bridge integration is handled via dedicated service modules.
+# Legacy in-memory stub import removed pending bridge wiring (see TODO IBKR).
 
 # Financial modules imports
 try:

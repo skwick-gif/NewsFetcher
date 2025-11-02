@@ -49,7 +49,9 @@ def api_progressive_train():
     symbol = request.args.get('symbol', 'AAPL')
     model_types = request.args.get('model_types', 'lstm').split(',')
     mode = request.args.get('mode', 'progressive')
-    return proxy_to_backend(f'/api/ml/progressive/train?symbol={symbol}&model_types={" ,".join(model_types).replace(" ","")}&mode={mode}', method='POST')
+    cleaned_models = ','.join(mt.strip() for mt in model_types if mt.strip())
+    endpoint = f'/api/ml/progressive/train?symbol={symbol}&model_types={cleaned_models}&mode={mode}'
+    return proxy_to_backend(endpoint, method='POST')
 
 
 @ml_bp.route('/api/ml/progressive/predict/<symbol>', methods=['POST'])
@@ -61,7 +63,7 @@ def api_progressive_predict(symbol):
 @ml_bp.route('/api/ml/progressive/backtest', methods=['POST'])
 def api_progressive_backtest():
     data = request.get_json(silent=True) or {}
-    return proxy_to_backend('/api/ml/progressive/backtest', method='POST', timeout=60, json=data)
+    return proxy_to_backend('/api/ml/progressive/backtest', method='POST', timeout=180, json=data)
 
 
 @ml_bp.route('/api/ml/progressive/backtest/status/<job_id>')

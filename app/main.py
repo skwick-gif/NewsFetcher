@@ -18,6 +18,8 @@ from app.api.routers.scanner import router as scanner_router
 from app.api.routers.rl import router as rl_router
 from app.api.routers.ml import router as ml_router
 from app.api.routers.news import router as news_router
+# IBKR bridge router
+from app.api.routers.ibkr import router as ibkr_router
 # Note: Removed duplicate ML and RL routers from app.routes.* to avoid conflicts
 from app.routes.system import router as system_router
 from app.routes.websocket import router as websocket_router
@@ -60,6 +62,7 @@ app.include_router(scanner_router, tags=["Scanner"])
 app.include_router(news_router, tags=["News"])
 app.include_router(system_router, tags=["System"])
 app.include_router(websocket_router, tags=["WebSocket"])
+app.include_router(ibkr_router, tags=["IBKR Trading"])
 
 # Future IBKR Integration (as per MODULARIZATION_PLAN.md):
 # When IBKR connection is implemented, add here:
@@ -84,7 +87,7 @@ async def backend_info():
             "rl_auto_tune_status": "/api/rl/auto-tune/status"
         },
         "modularization_complete": True,
-        "ibkr_ready": False,  # Will be True when IBKR integration is complete
+        "ibkr_ready": True,
         "message": "Modular backend operational"
     }
 
