@@ -79,6 +79,9 @@
           <select id="scan-mode" style="margin-right:8px; background:#0f172a; color:#e2e8f0; border:1px solid rgba(255,255,255,0.1); padding:6px 8px; border-radius:6px;">
             <option value="ml" selected>ML-only</option>
             <option value="technical">Technical-only</option>
+            <option value="growth">Growth Leaders</option>
+            <option value="quality">Quality Compounders</option>
+            <option value="value">Value &amp; Income</option>
           </select>
           <button id="btn-run-scan" style="background:#10b981; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Run Daily Scan</button>
           <button id="btn-refresh-status" style="margin-left:6px; background:#334155; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;">Refresh Status</button>
@@ -247,12 +250,13 @@
       if(!root) return;
       if(!items || !items.length){ root.innerHTML = '<div class="muted">No ranked results available.</div>'; return; }
       let html = '<div style="overflow-x:auto;"><table><thead><tr>'+ 
-        '<th>Rank</th><th>Symbol</th><th>Final Score</th><th>ML Score</th><th>Fallback</th><th>Price</th>'+
+        '<th>Rank</th><th>Symbol</th><th>Strategy</th><th>Final Score</th><th>Secondary</th><th>Fallback</th><th>Price</th>'+ 
         '</tr></thead><tbody>';
       for(const r of items){
         html += '<tr>'+
           `<td>${r.rank??'—'}</td>`+
           `<td style="font-weight:600;">${r.symbol||''}</td>`+
+          `<td>${r.strategy?String(r.strategy).toUpperCase():'—'}</td>`+
           `<td>${(r.final_score!=null)?Number(r.final_score).toFixed(3):'—'}</td>`+
           `<td>${(r.ml_score!=null)?Number(r.ml_score).toFixed(3):'—'}</td>`+
           `<td>${(r.fallback_score!=null)?Number(r.fallback_score).toFixed(3):'—'}</td>`+

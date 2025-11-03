@@ -11,6 +11,49 @@
   const RETRY_LABEL = 'Retry Connect';
   const CONNECTING_LABEL = 'Connecting…';
   const IBKR_STATUS_INTERVAL_MS = 20000;
+  const toastContainer = document.getElementById('toast-container');
+  const toastCooldown = new Map();
+  const CAPACITY = 4;
+
+  const showToast = (variant, message) => {
+    if (!toastContainer || !message) {
+      return;
+    }
+    const node = document.createElement('div');
+    node.className = `toast toast-${variant || 'info'}`;
+    node.textContent = message;
+    toastContainer.appendChild(node);
+    while (toastContainer.children.length > CAPACITY) {
+      toastContainer.removeChild(toastContainer.firstElementChild);
+    }
+    const remove = () => {
+      if (node.parentNode) {
+        node.parentNode.removeChild(node);
+      }
+    };
+    node.addEventListener('click', remove);
+    setTimeout(remove, 5000);
+  };
+
+  const emitToast = (variant, message, key) => {
+    if (!message) {
+      return;
+    }
+    const token = key || message;
+    const now = Date.now();
+    const previous = toastCooldown.get(token) || 0;
+    if (now - previous < 45000) {
+      return;
+    }
+    toastCooldown.set(token, now);
+    showToast(variant, message);
+  };
+
+  if (typeof window !== 'undefined') {
+    window.emitRLToast = emitToast;
+    window.showRLToast = showToast;
+  }
+
   if (!statusEl) {
     return;
   }
@@ -74,6 +117,7 @@
         ibkrConnectBtn.disabled = false;
         ibkrConnectBtn.textContent = RETRY_LABEL;
       }
+      emitToast('error', 'Unable to reach IBKR bridge. Check bridge process.', 'ibkr-status');
     }
   };
 
@@ -98,12 +142,14 @@
       }
       await refreshIbkrStatus();
       statusUpdated = true;
+      emitToast('success', 'IBKR bridge connected.', 'ibkr-connect-ok');
     } catch (error) {
       console.error('Failed to initiate IBKR connection', error);
       updateIbkrBadge('error', 'IBKR: Connect failed');
       if (ibkrConnectBtn) {
         ibkrConnectBtn.textContent = RETRY_LABEL;
       }
+      emitToast('error', `IBKR connect failed: ${error.message || 'See bridge logs'}`, 'ibkr-connect');
     } finally {
       if (ibkrConnectBtn) {
         ibkrConnectBtn.disabled = false;
@@ -325,6 +371,7 @@
       if (payload.status !== 'ok') {
         console.warn('RL summary unavailable', payload);
         setErrorState(payload.detail || 'IBKR bridge unavailable');
+        emitToast('error', payload.detail || 'Live summary unavailable.', 'rl-summary');
         return;
       }
       const metrics = payload.metrics || {};
@@ -335,6 +382,7 @@
     } catch (error) {
       console.error('Failed to refresh RL live summary', error);
       setErrorState('Error loading summary');
+      emitToast('error', 'Failed to refresh live summary.', 'rl-summary');
     }
   };
 

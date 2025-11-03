@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import json
 import os
+import shutil
 import sys
 import subprocess
 import threading
@@ -61,6 +63,122 @@ else:
 
 
 router = APIRouter(prefix="/api/rl", tags=["RL"])
+
+
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[2]
+
+
+_PROMOTION_STATE_LOCK = threading.Lock()
+_PROMOTION_BASE_DIR = _repo_root() / 'rl' / 'models' / 'ppo_portfolio'
+_PROMOTION_STATE_PATH = _PROMOTION_BASE_DIR / 'promotion_state.json'
+_PROMOTION_CHAMPION_DIR = _PROMOTION_BASE_DIR / 'champion'
+
+
+def _promotion_sanitize(obj: Any) -> Any:
+    if isinstance(obj, Path):
+        return obj.as_posix()
+    if isinstance(obj, dict):
+        return {str(k): _promotion_sanitize(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_promotion_sanitize(x) for x in obj]
+    if isinstance(obj, (str, int, float, bool)) or obj is None:
+        return obj
+    return str(obj)
+
+
+def _promotion_read_state() -> Dict[str, Any]:
+    with _PROMOTION_STATE_LOCK:
+        if _PROMOTION_STATE_PATH.exists():
+            try:
+                with _PROMOTION_STATE_PATH.open('r', encoding='utf-8') as fh:
+                    data = json.load(fh)
+                if not isinstance(data, dict):
+                    data = {}
+            except Exception:
+                data = {}
+        else:
+            data = {}
+        data.setdefault('candidate', None)
+        data.setdefault('champion', None)
+        history = data.get('history')
+        if not isinstance(history, list):
+            data['history'] = []
+        champion_meta = _promotion_load_champion_meta()
+        if champion_meta:
+            data['champion'] = champion_meta
+        return data
+
+
+def _promotion_write_state(data: Dict[str, Any]) -> None:
+    with _PROMOTION_STATE_LOCK:
+        tmp_path = _PROMOTION_STATE_PATH.with_suffix('.json.tmp')
+        _PROMOTION_STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with tmp_path.open('w', encoding='utf-8') as fh:
+            json.dump(_promotion_sanitize(data), fh, indent=2)
+        tmp_path.replace(_PROMOTION_STATE_PATH)
+
+
+def _promotion_score(summary: Optional[Dict[str, Any]]) -> float:
+    if not isinstance(summary, dict):
+        return float('-inf')
+    sharpe = _promotion_safe_float(summary.get('sharpe'))
+    mdd = abs(_promotion_safe_float(summary.get('max_drawdown') or summary.get('max_dd')))
+    return sharpe - 0.5 * mdd
+
+
+def _promotion_safe_float(value: Any, default: float = 0.0) -> float:
+    try:
+        if value is None:
+            return default
+        if isinstance(value, (int, float)):
+            return float(value)
+        if isinstance(value, str):
+            cleaned = value.strip().replace('%', '')
+            return float(cleaned) if cleaned else default
+        return float(value)
+    except Exception:
+        return default
+
+
+def _promotion_load_champion_meta() -> Optional[Dict[str, Any]]:
+    meta_path = _PROMOTION_CHAMPION_DIR / 'meta.json'
+    if not meta_path.exists():
+        return None
+    try:
+        with meta_path.open('r', encoding='utf-8') as fh:
+            meta = json.load(fh)
+        if isinstance(meta, dict):
+            return meta
+    except Exception:
+        return None
+    return None
+
+
+def _promotion_write_champion_meta(meta: Dict[str, Any]) -> None:
+    _PROMOTION_CHAMPION_DIR.mkdir(parents=True, exist_ok=True)
+    meta_path = _PROMOTION_CHAMPION_DIR / 'meta.json'
+    with meta_path.open('w', encoding='utf-8') as fh:
+        json.dump(_promotion_sanitize(meta), fh, indent=2)
+
+
+def _promotion_register_candidate(candidate: Dict[str, Any]) -> None:
+    if not candidate or not candidate.get('model_path'):
+        return
+    snapshot = dict(candidate)
+    snapshot.setdefault('status', 'pending')
+    snapshot.setdefault('updated_at', datetime.utcnow().isoformat() + 'Z')
+    state = _promotion_read_state()
+    history = state.get('history') or []
+    history.append(snapshot)
+    state['history'] = history[-10:]
+    state['candidate'] = snapshot
+    if not state.get('champion'):
+        champion_meta = _promotion_load_champion_meta()
+        if champion_meta:
+            state['champion'] = champion_meta
+    state['updated_at'] = datetime.utcnow().isoformat() + 'Z'
+    _promotion_write_state(state)
 
 
 def _executor_unavailable_detail() -> Optional[str]:
@@ -383,7 +501,7 @@ def _rla_log(msg: str) -> None:
 
 
 def _auto_tune_runner(config: Dict[str, Any]) -> None:
-    from time import sleep
+    import time
     with _rla_auto_tune_lock:
         _rla_auto_tune_state.update({
             "status": "running",
@@ -431,14 +549,36 @@ def _auto_tune_runner(config: Dict[str, Any]) -> None:
 
     seeds = config.get('seeds') or [0]
     best: Optional[Dict[str, Any]] = None
+    time_budget_hours = float(config.get('time_budget_hours') or 0.0)
+    budget_seconds = max(0.0, time_budget_hours * 3600.0)
+    start_monotonic = time.monotonic()
+
+    def ensure_budget(proc: Optional[subprocess.Popen] = None) -> None:
+        if budget_seconds <= 0:
+            return
+        elapsed = time.monotonic() - start_monotonic
+        if elapsed >= budget_seconds:
+            if proc and proc.poll() is None:
+                try:
+                    proc.terminate()
+                except Exception:
+                    try:
+                        proc.kill()
+                    except Exception:
+                        pass
+            raise TimeoutError('Auto-tune time budget exceeded')
 
     try:
         for sd in seeds:
+            ensure_budget()
             for cand in candidates:
+                ensure_budget()
                 with _rla_auto_tune_lock:
                     if _rla_auto_tune_state.get('stop'):
                         raise KeyboardInterrupt('Auto-tune stopped by user')
                     _rla_auto_tune_state['current'] = {'seed': sd, 'name': cand['name']}
+
+                last_model_path: Optional[str] = None
 
                 cmd = [
                     sys.executable, '-m', 'rl.training.train_ppo_portfolio',
@@ -462,12 +602,24 @@ def _auto_tune_runner(config: Dict[str, Any]) -> None:
                         _rla_auto_tune_state['pid'] = proc.pid
                         _rla_auto_tune_state['cmd'] = ' '.join(cmd)
                     for line in proc.stdout or []:
-                        _rla_log(line.rstrip())
+                        ensure_budget(proc)
+                        text = line.rstrip()
+                        _rla_log(text)
+                        if 'Saved PPO portfolio model to' in text:
+                            try:
+                                candidate_path = text.split('Saved PPO portfolio model to', 1)[1].strip()
+                                if candidate_path.startswith(':'):
+                                    candidate_path = candidate_path[1:].strip()
+                                if candidate_path:
+                                    last_model_path = candidate_path
+                            except Exception:
+                                pass
                         with _rla_auto_tune_lock:
                             prev = _rla_auto_tune_state.get('stdout', '') or ''
-                            snap = (prev + ('\n' if prev else '') + line.rstrip())
+                            snap = (prev + ('\n' if prev else '') + text)
                             _rla_auto_tune_state['stdout'] = snap[-2000:]
                     proc.wait()
+                    ensure_budget(proc)
                     rc = proc.returncode
                 except Exception as e:
                     rc = -1
@@ -492,8 +644,10 @@ def _auto_tune_runner(config: Dict[str, Any]) -> None:
                         _rla_auto_tune_state['pid'] = proc2.pid
                         _rla_auto_tune_state['cmd'] = ' '.join(ev_cmd)
                     for line in proc2.stdout or []:
+                        ensure_budget(proc2)
                         _rla_log(line.rstrip())
                     proc2.wait()
+                    ensure_budget(proc2)
                 except Exception as e:
                     _rla_log(f"Error running evaluation: {e}")
 
@@ -511,7 +665,13 @@ def _auto_tune_runner(config: Dict[str, Any]) -> None:
                 except Exception:
                     summary = None
 
-                trial = {'name': cand['name'], 'seed': sd, 'status': 'completed' if summary else 'no_summary', 'summary': summary}
+                trial = {
+                    'name': cand['name'],
+                    'seed': sd,
+                    'status': 'completed' if summary else 'no_summary',
+                    'summary': summary,
+                    'model_path': last_model_path,
+                }
                 with _rla_auto_tune_lock:
                     trials = _rla_auto_tune_state.get('trials', [])
                     trials.append(trial)
@@ -524,11 +684,34 @@ def _auto_tune_runner(config: Dict[str, Any]) -> None:
                         score = sharpe - 0.5 * mdd
                     except Exception:
                         score = -1e9
-                    rec = {'trial': trial, 'score': score, 'dir': eval_out.as_posix()}
+                    rec = {
+                        'trial': trial,
+                        'score': score,
+                        'dir': eval_out.as_posix(),
+                        'model_path': last_model_path,
+                        'summary': summary,
+                    }
+                    candidate_payload: Optional[Dict[str, Any]] = None
                     if best is None or score > best.get('score', -1e9):
                         best = rec
                         with _rla_auto_tune_lock:
                             _rla_auto_tune_state['best'] = rec
+                        if last_model_path:
+                            candidate_payload = {
+                                'source': 'auto_tune',
+                                'score': score,
+                                'model_path': last_model_path,
+                                'eval_dir': eval_out.as_posix(),
+                                'summary': summary,
+                                'trial': trial,
+                                'symbols': symbols,
+                                'window': window,
+                                'timesteps': timesteps,
+                                'seed': sd,
+                                'config': cand.get('args', {}),
+                            }
+                    if candidate_payload:
+                        _promotion_register_candidate(candidate_payload)
 
         with _rla_auto_tune_lock:
             _rla_auto_tune_state['status'] = 'completed'
@@ -537,6 +720,13 @@ def _auto_tune_runner(config: Dict[str, Any]) -> None:
     except KeyboardInterrupt:
         with _rla_auto_tune_lock:
             _rla_auto_tune_state['status'] = 'cancelled'
+            _rla_auto_tune_state['pid'] = None
+            _rla_auto_tune_state['cmd'] = None
+    except TimeoutError as e:
+        _rla_log(str(e))
+        with _rla_auto_tune_lock:
+            _rla_auto_tune_state['status'] = 'timeout'
+            _rla_auto_tune_state['stderr'] = str(e)
             _rla_auto_tune_state['pid'] = None
             _rla_auto_tune_state['cmd'] = None
     except Exception as e:
@@ -620,6 +810,103 @@ async def rl_auto_tune_stop():
         return {'status': 'ok', 'data': _rla_auto_tune_state}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Auto-tune stop failed: {e}")
+
+
+# ============================================================
+# RL Promotion Endpoints
+# ============================================================
+
+
+@router.get('/promotion/state')
+async def rl_promotion_state():
+    state = _promotion_read_state()
+    return {'status': 'ok', 'data': _promotion_sanitize(state)}
+
+
+@router.post('/promotion/promote')
+async def rl_promotion_promote(force: bool = Query(False)):
+    state = _promotion_read_state()
+    candidate = state.get('candidate') or {}
+    model_path_raw = candidate.get('model_path')
+    if not model_path_raw:
+        raise HTTPException(status_code=404, detail='No promotion candidate available')
+
+    model_path = Path(str(model_path_raw)).expanduser()
+    if not model_path.exists():
+        raise HTTPException(status_code=400, detail='Candidate model file not found')
+
+    candidate_summary = candidate.get('summary') or (candidate.get('trial') or {}).get('summary')
+    candidate_score = candidate.get('score')
+    if candidate_score is None:
+        candidate_score = _promotion_score(candidate_summary)
+    else:
+        try:
+            candidate_score = float(candidate_score)
+        except Exception:
+            candidate_score = _promotion_score(candidate_summary)
+
+    champion_meta = state.get('champion') or _promotion_load_champion_meta()
+    champion_summary = None
+    champion_score = None
+    if isinstance(champion_meta, dict):
+        champion_summary = champion_meta.get('summary') or (champion_meta.get('trial') or {}).get('summary')
+        raw_score = champion_meta.get('score')
+        if raw_score is not None:
+            try:
+                champion_score = float(raw_score)
+            except Exception:
+                champion_score = _promotion_score(champion_summary)
+        else:
+            champion_score = _promotion_score(champion_summary)
+
+    if not force and champion_score is not None and champion_score != float('-inf'):
+        if candidate_score <= champion_score:
+            raise HTTPException(status_code=409, detail=f'Candidate score {candidate_score:.3f} does not beat champion {champion_score:.3f}')
+        cand_sharpe = _promotion_safe_float((candidate_summary or {}).get('sharpe'))
+        champ_sharpe = _promotion_safe_float((champion_summary or {}).get('sharpe'))
+        if champ_sharpe and cand_sharpe < champ_sharpe - 0.05:
+            raise HTTPException(status_code=409, detail='Candidate Sharpe below champion guardrail')
+        cand_mdd = abs(_promotion_safe_float((candidate_summary or {}).get('max_drawdown') or (candidate_summary or {}).get('max_dd')))
+        champ_mdd = abs(_promotion_safe_float((champion_summary or {}).get('max_drawdown') or (champion_summary or {}).get('max_dd')))
+        if champ_mdd and cand_mdd > champ_mdd * 1.05:
+            raise HTTPException(status_code=409, detail='Candidate max drawdown exceeds guardrail')
+
+    _PROMOTION_CHAMPION_DIR.mkdir(parents=True, exist_ok=True)
+    dest_model_path = _PROMOTION_CHAMPION_DIR / 'model.zip'
+    try:
+        shutil.copy2(model_path, dest_model_path)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f'Failed to copy model: {exc}')
+
+    eval_dir = candidate.get('eval_dir')
+    if isinstance(eval_dir, str):
+        summary_src = Path(eval_dir) / 'summary.csv'
+        if summary_src.exists():
+            try:
+                shutil.copy2(summary_src, _PROMOTION_CHAMPION_DIR / 'summary.csv')
+            except Exception:
+                pass
+
+    promoted_at = datetime.utcnow().isoformat() + 'Z'
+    champion_payload = dict(candidate)
+    champion_payload.update({
+        'status': 'champion',
+        'promoted_at': promoted_at,
+        'champion_model_path': dest_model_path.as_posix(),
+        'source_model_path': model_path.as_posix(),
+        'score': candidate_score,
+    })
+    _promotion_write_champion_meta(champion_payload)
+
+    state['champion'] = champion_payload
+    promoted_candidate = dict(candidate)
+    promoted_candidate['status'] = 'promoted'
+    promoted_candidate['promoted_at'] = promoted_at
+    state['candidate'] = promoted_candidate
+    state['updated_at'] = promoted_at
+    _promotion_write_state(state)
+
+    return {'status': 'promoted', 'data': _promotion_sanitize({'champion': champion_payload, 'candidate': promoted_candidate})}
 
 
 # ============================================================

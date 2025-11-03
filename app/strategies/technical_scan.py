@@ -64,39 +64,43 @@ def _compute_convergence_score(symbol: str, df: pd.DataFrame) -> Dict[str, Any]:
         
         # === FILTERS (with flexibility) ===
         filters = {}
-        
-        # Filter 1: ADX > 15 (more flexible than 20 to catch early trends)
-        filters['adx'] = adx_t > 15 if np.isfinite(adx_t) else False
-        
-        # Filter 2: MACD < 0 AND Signal < 0 (negative zone)
-        # Allow MACD slightly positive if very close to zero (within 5% of recent range)
+
+        # Filter 1: ADX > 12 (more flexible to catch early trends)
+        filters['adx'] = adx_t > 12 if np.isfinite(adx_t) else False
+
+        # Filter 2: MACD & Signal near/below zero (negative zone with tolerance)
         macd_range = np.ptp(macd[-20:]) if len(macd) >= 20 else 1.0
-        tolerance = macd_range * 0.05
-        filters['negative_zone'] = (m_t < tolerance) and (s_t < 0)
+        tolerance = max(macd_range * 0.08, 0.05)
+        filters['negative_zone'] = (m_t <= tolerance) and (s_t <= tolerance)
         
         # Filter 3: Volume < VOL_SMA (seller exhaustion)
         if vol_sma_t > 0:
-            filters['volume_dry'] = vol_t < vol_sma_t * 1.1  # Allow up to 10% above SMA
+            filters['volume_dry'] = vol_t < vol_sma_t * 1.25  # Allow up to 25% above SMA
         else:
             filters['volume_dry'] = True  # Skip if no volume data
         
         # Filter 4: Histogram rising (check last 2-3 bars for flexibility)
-        k_buy = 2  # Reduced from 3 for earlier signals
-        hist_rising = True
-        if len(hist) >= k_buy + 1:
-            for i in range(-k_buy, 0):
-                if not (np.isfinite(hist[i]) and np.isfinite(hist[i-1])):
-                    hist_rising = False
-                    break
-                if not (hist[i] > hist[i-1]):
-                    hist_rising = False
-                    break
-        else:
-            hist_rising = False
+        lookback = min(len(hist), 4)
+        hist_rising = False
+        if lookback >= 3:
+            rises = 0
+            valid_pairs = 0
+            start_idx = len(hist) - lookback
+            end_idx = len(hist) - 1
+            for i in range(start_idx, end_idx):
+                a = hist[i]
+                b = hist[i + 1]
+                if not (np.isfinite(a) and np.isfinite(b)):
+                    continue
+                valid_pairs += 1
+                if b > a:
+                    rises += 1
+            if valid_pairs >= 2 and rises >= max(1, valid_pairs - 1):
+                hist_rising = True
         filters['hist_rising'] = hist_rising
         
         # Filter 5: conv_ratio <= 50% (more flexible than 40%)
-        filters['convergence'] = conv_ratio <= 0.50
+        filters['convergence'] = conv_ratio <= 0.65
         
         # === SCORING ===
         # Count how many filters pass
@@ -129,8 +133,8 @@ def _compute_convergence_score(symbol: str, df: pd.DataFrame) -> Dict[str, Any]:
         
         final_score = min(base_score + bonus, 100.0)
         
-        # Determine if meets criteria (at least 4/5 filters + reasonable score)
-        meets_criteria = (passed_filters >= 4) and (final_score >= 60.0)
+        # Determine if meets criteria (at least 3/5 filters + reasonable score)
+        meets_criteria = (passed_filters >= 3) and (final_score >= 50.0)
 
         # Ensure all filter values are native Python types (no numpy.bool_ etc.)
         try:
@@ -298,7 +302,7 @@ def _compute_local_metrics(symbol: str) -> Optional[Dict[str, Any]]:
         return None
 
 
-def scan_technical(limit: Optional[int] = None, min_score: float = 60.0, symbols: Optional[List[str]] = None) -> Dict[str, Any]:
+def scan_technical(limit: Optional[int] = None, min_score: float = 55.0, symbols: Optional[List[str]] = None) -> Dict[str, Any]:
     """
     Scan for stocks meeting technical convergence criteria.
 

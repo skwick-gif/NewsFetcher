@@ -45,14 +45,39 @@ class ScannerState:
         self.train_symbols_status: Dict[str, str] = {}
         self.train_started_at: Optional[float] = None
         self.train_last_persisted_at: Optional[float] = None
+
+        # Scan lifecycle tracking
+        self.scan_state: str = 'idle'
+        self.scan_progress: float = 0.0
+        self.scan_message: Optional[str] = None
+        self.scan_mode: Optional[str] = None
+        self.scan_started_at: Optional[float] = None
+        self.scan_completed_at: Optional[float] = None
+        self.scan_total_symbols: Optional[int] = None
+        self.scan_processed_symbols: Optional[int] = None
     
     def to_status(self) -> Dict[str, Any]:
         """Return scanner status summary"""
+        eta_seconds = self._scan_eta_seconds()
+        message = self.scan_message
+        if not message and self.scan_state == 'completed' and self.top:
+            message = f"Latest run returned {len(self.top)} symbols"
+        if not message and self.scan_state == 'idle' and self.top:
+            message = "Results ready"
+
         return {
-            "state": "idle" if not self.top else "ready",
+            "state": self.scan_state,
+            "progress": self.scan_progress,
+            "message": message,
+            "eta_seconds": eta_seconds,
+            "mode": self.scan_mode,
             "top_count": len(self.top),
             "filter_state": self.filter_state,
             "train_status": self.train_status,
+            "scan_started_at": self.scan_started_at,
+            "scan_completed_at": self.scan_completed_at,
+            "scan_total": self.scan_total_symbols,
+            "scan_processed": self.scan_processed_symbols,
         }
 
     def reset_training_tracking(self) -> None:
@@ -66,6 +91,18 @@ class ScannerState:
         self.train_symbols_status = {}
         self.train_started_at = None
         self.train_last_persisted_at = None
+
+    def _scan_eta_seconds(self) -> Optional[float]:
+        if self.scan_state != 'running' or self.scan_started_at is None:
+            return None
+        if self.scan_progress is None or self.scan_progress <= 0.0 or self.scan_progress >= 1.0:
+            return None
+        elapsed = time.time() - self.scan_started_at
+        if elapsed <= 0:
+            return None
+        estimated_total = elapsed / max(self.scan_progress, 1e-6)
+        remaining = max(estimated_total - elapsed, 0.0)
+        return remaining
 
 _scanner_state = ScannerState()
 
@@ -537,8 +574,18 @@ async def _run_scan(mode: str, limit: Optional[int]):
     """Background task: run scanner and update _scanner_state.top"""
     try:
         limit_desc = limit if (limit is not None and limit > 0) else 'all'
-        logger.info(f"Starting scanner run (mode={mode}, limit={limit_desc})")
-        _scanner_state.filter_state = 'running'
+        mode_key = (mode or 'ml').lower()
+        logger.info(f"Starting scanner run (mode={mode_key}, limit={limit_desc})")
+
+        # Initialise scan state for UI polling
+        _scanner_state.scan_state = 'running'
+        _scanner_state.scan_progress = 0.0
+        _scanner_state.scan_message = f"Running {mode_key.upper()} scan"
+        _scanner_state.scan_mode = mode_key
+        _scanner_state.scan_started_at = time.time()
+        _scanner_state.scan_completed_at = None
+        _scanner_state.scan_processed_symbols = None
+        _scanner_state.scan_total_symbols = None
 
         filtered_items = list(_scanner_state.filter_items or [])
         filtered_symbols: List[str] = []
@@ -549,58 +596,103 @@ async def _run_scan(mode: str, limit: Optional[int]):
 
         candidates: Optional[List[str]] = None
         if filtered_symbols:
-            if mode.lower() == 'ml':
-                candidates = []
+            if mode_key == 'ml':
+                selected: List[str] = []
                 for item in filtered_items:
                     symbol = (item.get('symbol') or '').upper()
                     if symbol and item.get('has_model'):
-                        candidates.append(symbol)
+                        selected.append(symbol)
+                candidates = selected
                 logger.info(
                     "Scanner ML mode using %s symbols with trained models from filter results",
                     len(candidates)
                 )
-            elif mode.lower() == 'technical':
+            else:
                 candidates = filtered_symbols.copy()
                 logger.info(
-                    "Scanner technical mode using %s filtered symbols",
+                    "Scanner %s mode using %s filtered symbols",
+                    mode_key,
                     len(candidates)
                 )
+            _scanner_state.scan_total_symbols = len(candidates)
         else:
             logger.info("No cached filter results; scanner will use full universe")
 
-        # Import scan strategies
-        if mode.lower() == 'technical':
-            from app.strategies.technical_scan import scan_technical
-            result = await asyncio.to_thread(
-                scan_technical,
-                limit=limit if limit and limit > 0 else None,
-                symbols=candidates
-            )
-        elif mode.lower() == 'ml':
-            from app.strategies.ml_scan import scan_ml
-            result = await asyncio.to_thread(
-                scan_ml,
-                limit=limit if limit and limit > 0 else None,
-                symbols=candidates
-            )
+        limit_arg = limit if limit and limit > 0 else None
+
+        if mode_key == 'technical':
+            from app.strategies.technical_scan import scan_technical as scan_fn
+        elif mode_key == 'growth':
+            from app.strategies.growth_scan import scan_growth as scan_fn
+        elif mode_key == 'quality':
+            from app.strategies.quality_scan import scan_quality as scan_fn
+        elif mode_key == 'value':
+            from app.strategies.value_scan import scan_value as scan_fn
         else:
-            # Default to ML scan
-            from app.strategies.ml_scan import scan_ml
-            result = await asyncio.to_thread(
-                scan_ml,
-                limit=limit if limit and limit > 0 else None,
-                symbols=candidates
-            )
+            mode_key = 'ml'
+            _scanner_state.scan_mode = mode_key
+            from app.strategies.ml_scan import scan_ml as scan_fn
+
+        result = await asyncio.to_thread(
+            scan_fn,
+            limit=limit_arg,
+            symbols=candidates
+        )
 
         if isinstance(result, dict) and result.get('status') == 'success':
-            stocks = result.get('data', {}).get('stocks', [])
+            data = result.get('data') or {}
+
+            stocks = data.get('stocks')
+            if stocks is None:
+                stocks = data.get('hot_stocks', [])
+
+            if isinstance(stocks, list):
+                for entry in stocks:
+                    if isinstance(entry, dict) and 'strategy' not in entry:
+                        entry['strategy'] = mode_key
+
             _scanner_state.top = stocks
+
+            total_scanned_raw = data.get('total_scanned')
+            total_scanned: Optional[int] = None
+            if total_scanned_raw is not None:
+                try:
+                    total_scanned = int(total_scanned_raw)
+                except (TypeError, ValueError):
+                    total_scanned = None
+
+            if total_scanned is not None:
+                _scanner_state.scan_processed_symbols = total_scanned
+                if not _scanner_state.scan_total_symbols:
+                    _scanner_state.scan_total_symbols = total_scanned
+            elif _scanner_state.scan_processed_symbols is None:
+                _scanner_state.scan_processed_symbols = len(stocks)
+
+            returned = len(stocks)
+            total_desc = (
+                f" from {total_scanned} symbols" if total_scanned is not None else ""
+            )
+            _scanner_state.scan_message = (
+                f"Completed {returned} results ({mode_key.upper()}){total_desc}"
+            )
+            _scanner_state.scan_progress = 1.0
+            _scanner_state.scan_state = 'completed'
+            _scanner_state.scan_completed_at = time.time()
             logger.info(f"Scanner completed: found {len(stocks)} stocks")
-        
-        _scanner_state.filter_state = 'completed'
+        else:
+            error_message = None
+            if isinstance(result, dict):
+                error_message = result.get('message') or result.get('detail')
+            _scanner_state.scan_message = error_message or "Scan did not return results"
+            _scanner_state.scan_state = 'error'
+            _scanner_state.scan_progress = 0.0
+            _scanner_state.scan_completed_at = time.time()
     except Exception as e:
         logger.error(f"Scanner run failed: {e}")
-        _scanner_state.filter_state = 'error'
+        _scanner_state.scan_message = str(e)
+        _scanner_state.scan_state = 'error'
+        _scanner_state.scan_progress = 0.0
+        _scanner_state.scan_completed_at = time.time()
 
 
 def _run_filter_job(price_min: float, adv_min: float):
@@ -725,6 +817,9 @@ async def scanner_top(limit: Optional[int] = None):
             r = await _get_hot_stocks_internal(limit=fallback_limit or 100)
             if isinstance(r, dict) and r.get('status') == 'success':
                 items = (r.get('data') or {}).get('hot_stocks') or []
+                for entry in items:
+                    if isinstance(entry, dict) and 'strategy' not in entry:
+                        entry['strategy'] = 'hot'
         
         # Build ranked table rows
         ranked = []
@@ -733,12 +828,31 @@ async def scanner_top(limit: Optional[int] = None):
             visible_items = items[:limit]
 
         for i, it in enumerate(visible_items, start=1):
+            strategy_score = it.get('strategy_score')
+            expected_return = it.get('expected_return')
+            technical_score = it.get('technical_score')
+            final_score = None
+            if strategy_score is not None:
+                final_score = strategy_score
+            elif expected_return is not None:
+                final_score = expected_return
+            elif technical_score is not None:
+                final_score = technical_score
+
+            secondary_score = it.get('ml_score')
+            if secondary_score is None and strategy_score is not None:
+                secondary_score = expected_return
+            fallback_score = it.get('change_percent')
+            if fallback_score is None:
+                fallback_score = it.get('momentum')
+
             ranked.append({
                 'rank': i,
                 'symbol': it.get('symbol'),
-                'final_score': it.get('expected_return'),
-                'ml_score': it.get('ml_score'),
-                'fallback_score': it.get('change_percent'),
+                'strategy': it.get('strategy'),
+                'final_score': final_score,
+                'ml_score': secondary_score,
+                'fallback_score': fallback_score,
                 'current_price': it.get('current_price'),
             })
         return {

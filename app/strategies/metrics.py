@@ -11,6 +11,17 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 
+def _safe_float(value: Any) -> Optional[float]:
+    """Best-effort conversion to finite float."""
+    try:
+        f = float(value)
+    except (TypeError, ValueError):
+        return None
+    if np.isnan(f) or np.isinf(f):
+        return None
+    return f
+
+
 def _compute_convergence_score(symbol: str, df: pd.DataFrame) -> Dict[str, Any]:
     """
     Calculate technical score based on MACD Convergence strategy criteria.
@@ -199,6 +210,24 @@ def _compute_local_metrics(symbol: str) -> Optional[Dict[str, Any]]:
         sector = None
         industry = None
 
+        revenue_growth = None
+        earnings_growth = None
+        profit_margin = None
+        operating_margin = None
+        gross_margin = None
+        free_cash_flow = None
+        free_cash_flow_yield = None
+        return_on_equity = None
+        return_on_assets = None
+        debt_to_equity = None
+        current_ratio = None
+        quick_ratio = None
+        dividend_yield = None
+        price_to_sales = None
+        beta = None
+        analyst_rating = None
+        peg_ratio = None
+
         try:
             import json
             fundamentals_path = project_root / 'stock_data' / symbol / f'{symbol}_advanced.json'
@@ -206,15 +235,33 @@ def _compute_local_metrics(symbol: str) -> Optional[Dict[str, Any]]:
                 with open(fundamentals_path, 'r', encoding='utf-8') as f:
                     fundamentals = json.load(f)
 
-                # Get market cap from fundamentals
                 market_cap = fundamentals.get('marketCap', 0)
-
-                # Micro-cap definition: Market Cap < $300M
                 is_micro_cap = (market_cap > 0 and market_cap < 300_000_000)
-
-                # Get sector and industry
                 sector = fundamentals.get('sector', None)
                 industry = fundamentals.get('industry', None)
+
+                revenue_growth = _safe_float(fundamentals.get('revenueGrowth'))
+                earnings_growth = _safe_float(fundamentals.get('earningsGrowth'))
+                profit_margin = _safe_float(fundamentals.get('profitMargins'))
+                operating_margin = _safe_float(fundamentals.get('operatingMargins'))
+                gross_margin = _safe_float(fundamentals.get('grossMargins'))
+                free_cash_flow = _safe_float(fundamentals.get('freeCashflow'))
+                return_on_equity = _safe_float(fundamentals.get('returnOnEquity'))
+                return_on_assets = _safe_float(fundamentals.get('returnOnAssets'))
+                debt_to_equity = _safe_float(fundamentals.get('debtToEquity'))
+                current_ratio = _safe_float(fundamentals.get('currentRatio'))
+                quick_ratio = _safe_float(fundamentals.get('quickRatio'))
+                dividend_yield = _safe_float(fundamentals.get('dividendYield'))
+                price_to_sales = _safe_float(fundamentals.get('priceToSalesTrailing12Months'))
+                beta = _safe_float(fundamentals.get('beta'))
+                analyst_rating = _safe_float(fundamentals.get('recommendationMean'))
+                peg_ratio = _safe_float(fundamentals.get('trailingPegRatio'))
+
+                if free_cash_flow is not None and market_cap:
+                    try:
+                        free_cash_flow_yield = float(free_cash_flow) / float(market_cap)
+                    except (TypeError, ValueError):
+                        free_cash_flow_yield = None
         except Exception as e:
             logger.debug(f"Could not load fundamentals for {symbol}: {e}")
             # Fallback to estimation if fundamentals unavailable
@@ -289,6 +336,23 @@ def _compute_local_metrics(symbol: str) -> Optional[Dict[str, Any]]:
             'technical_score': float(technical_score),
             'convergence_data': convergence_data,
             'has_model': bool(has_model),
+            'revenue_growth': float(revenue_growth) if revenue_growth is not None else None,
+            'earnings_growth': float(earnings_growth) if earnings_growth is not None else None,
+            'profit_margin': float(profit_margin) if profit_margin is not None else None,
+            'operating_margin': float(operating_margin) if operating_margin is not None else None,
+            'gross_margin': float(gross_margin) if gross_margin is not None else None,
+            'free_cash_flow': float(free_cash_flow) if free_cash_flow is not None else None,
+            'free_cash_flow_yield': float(free_cash_flow_yield) if free_cash_flow_yield is not None else None,
+            'return_on_equity': float(return_on_equity) if return_on_equity is not None else None,
+            'return_on_assets': float(return_on_assets) if return_on_assets is not None else None,
+            'debt_to_equity': float(debt_to_equity) if debt_to_equity is not None else None,
+            'current_ratio': float(current_ratio) if current_ratio is not None else None,
+            'quick_ratio': float(quick_ratio) if quick_ratio is not None else None,
+            'dividend_yield': float(dividend_yield) if dividend_yield is not None else None,
+            'price_to_sales': float(price_to_sales) if price_to_sales is not None else None,
+            'beta': float(beta) if beta is not None else None,
+            'analyst_rating': float(analyst_rating) if analyst_rating is not None else None,
+            'peg_ratio': float(peg_ratio) if peg_ratio is not None else None,
         }
 
     except Exception as e:

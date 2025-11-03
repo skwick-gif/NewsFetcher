@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>RL Dashboard Reference</title>
+  <style>
+  body { font-family: "Segoe UI", Tahoma, sans-serif; background:#0f172a; color:#e2e8f0; margin:0; padding:32px 20px 80px; line-height:1.6; direction:rtl; text-align:right; }
+    a { color:#38bdf8; }
+    h1, h2, h3 { color:#f8fafc; }
+    h1 { margin-top:0; }
+    section { margin-bottom:40px; }
+    code { background:rgba(148,163,184,0.15); padding:2px 4px; border-radius:4px; }
+    .toc { background:rgba(30,41,59,0.6); border:1px solid rgba(148,163,184,0.2); border-radius:10px; padding:16px; margin-bottom:28px; }
+    .toc h2 { margin-top:0; font-size:1.1em; }
+  .toc ul { list-style:none; padding-right:0; margin:0; }
+    .toc li { margin:6px 0; }
+  .callout { background:rgba(59,130,246,0.1); border-right:4px solid #38bdf8; padding:12px 16px; border-radius:6px; margin:16px 0; }
+    table { width:100%; border-collapse:collapse; margin-top:12px; }
+  th, td { border:1px solid rgba(148,163,184,0.25); padding:8px; text-align:right; }
+    th { background:rgba(30,41,59,0.7); }
+  </style>
+</head>
+<body>
+  <h1 id="overview">RL Dashboard Reference</h1>
+  <p>המדריך מסביר את כל מקטעי לשונית ה‑RL, כיצד לפרש תוצאות, ומה עושים עם המודלים והדוחות שנוצרים בדרך אל הבוט המסחר החי.</p>
+
+  <div class="toc">
+    <h2>ניווט מהיר</h2>
+    <ul>
+      <li><a href="#workflow">תרשים זרימה מומלץ</a></li>
+      <li><a href="#live-ops">Live Ops</a></li>
+      <li><a href="#automation">Automation</a></li>
+      <li><a href="#simulations">Simulations</a></li>
+      <li><a href="#training">Training &amp; Reports</a></li>
+      <li><a href="#data">כלי נתונים ותשתית</a></li>
+      <li><a href="#quality">מהי תוצאה טובה?</a></li>
+      <li><a href="#agent">חיבור לסוכן החי</a></li>
+      <li><a href="#indicators">בחירת אינדיקטורים</a></li>
+      <li><a href="#faq">שאלות נפוצות</a></li>
+    </ul>
+  </div>
+
+  <section id="workflow">
+    <h2>תרשים זרימה מומלץ</h2>
+    <ol>
+      <li>עדכן נתונים: מחירי סוף יום, fundamental, אינדיקטורים (באמצעות Ensure או סקריפטים ייעודיים).</li>
+      <li>הרץ <strong>Simulations</strong> לבדיקת רעיון מהיר ולכיוון פרמטרים.</li>
+      <li>הפעל <strong>Auto-Tune</strong> עם תקציב זמן פנוי – הוא יחפש סט פיצ׳רים/מודל מיטבי.</li>
+      <li>בדוק דוחות ב‑<strong>Training &amp; Reports</strong>: Walk-forward, Portfolio Evaluate, Logs.</li>
+      <li>בחר מודל מיטבי, העלה אותו ל‑Live Preview/Paper Mode ובדוק התנהגות.</li>
+      <li>כשמספק, העבר את הנתיב ל‑Agent החי (scheduler/bg) והפעל מסחר חי.</li>
+    </ol>
+  </section>
+
+  <section id="live-ops">
+    <h2>Live Ops tab</h2>
+    <p>מיועד לניטור מצב חשבון (IBKR bridge) ותיק Paper/Live. מאפשר לאמת במהירות שהמודל המופעל מייצר החלטות סבירות.</p>
+    <h3>כרטיסים עיקריים</h3>
+    <ul>
+      <li><strong>Status / Positions / PnL / Open Orders</strong> – נתוני סיכום מה‑IBKR bridge. ערכים בירוק/אדום לפי רווח/הפסד.</li>
+      <li><strong>Live Preview</strong> – מחשב הקצאות עדכניות למודל שנבחר. השתמש ב‑<code>Use Latest</code> או ספק נתיב מודל מ‑Auto-Tune.</li>
+      <li><strong>Paper Mode</strong> – מפעיל מסחר Paper מתוזמן. בודק ביצועים יומיים, תנועות והשפעת בנדים.</li>
+      <li><strong>Recent Decisions</strong> – תצוגת החלטות אחרונות (פוזיציה, confidence, stops). טובה לזיהוי אנומליות.</li>
+      <li><strong>News Export</strong> – מפיק תמצית חדשות יומית/היסטורית לשילוב בנתוני אימון.</li>
+    </ul>
+    <p><em>טיפ:</em> זמן רענון ברירת מחדל 15 שניות לסיכום RL ו‑20 שניות לסטטוס IBKR. Toastים מודיעים על כשל תקשורת או הצלחה.</p>
+  </section>
+
+  <section id="automation">
+    <h2>Automation tab</h2>
+    <p>מאגד תהליכים אוטומטיים שמריצים אימון, הערכה ועדכון מודלים.</p>
+    <h3>Auto-Tune</h3>
+    <ul>
+      <li><strong>Mode</strong>: Stock בודד או סל ETFs.</li>
+      <li><strong>Time Budget</strong>: מספר שעות לריצה. לאחר חידוש 2025‑11, הריצה נעצרת אוטומטית בסטטוס <code>timeout</code> ומפיקה Toast מתאים.</li>
+      <li>במהלך ההרצה נבדקים קומבינציות של פיצ׳רים (Price בלבד, News, VIX, Indicators). כל ניסיון = אימון PPO + הפקת דוח ביצועים.</li>
+      <li>קובץ לוג: <code>logs/auto_tune_stdout.log</code>. דוחות נכתבים ל: <code>reports/rl/auto_tune_YYYYMMDD_HHMMSS/&lt;trial&gt;/</code>.</li>
+      <li>ערכים מומלצים: Timesteps ≥ 300k, Window תואם ל‑Ensure, Seeds להרחבת חיפושים.</li>
+    </ul>
+    <h3>Champion Promotion</h3>
+    <ul>
+      <li>כרטיס חדש מציג את המועמד האחרון מאוטו-טיונינג מול ה-Champion הנוכחי (Sharpe, Max DD, Score).</li>
+      <li>כפתור <strong>Promote Candidate</strong> מעתיק את המודל והסיכום לתיקיית <code>rl/models/ppo_portfolio/champion/</code> רק אם עבר את ספי הביצועים.</li>
+      <li>Toast יציג הצלחה/כשל. ניתן לרענן ידנית עם כפתור <strong>Refresh</strong> כדי למשוך תוצאות אחרונות.</li>
+    </ul>
+    <h3>IBKR Bridge</h3>
+    <p>לשונית Live Ops כוללת כפתור <strong>Connect IBKR</strong>. Automation מספק badge מצב וכפתור Reconnect.</p>
+  </section>
+
+  <section id="simulations">
+    <h2>Simulations tab</h2>
+    <p>נותן יכולת להריץ סימולציית backtest מהירה לפני אימון מלא.</p>
+    <ul>
+      <li><strong>Symbol/Days/Window/Policy</strong> – מגדירים את סביבת הסימולציה.</li>
+      <li><strong>Plan</strong> מחשב טווחי תאריכים מומלצים מהנתונים המקומיים.</li>
+      <li><strong>Run Simulation</strong> מפיק תרשימים (Line או Candlestick), אינדיקטורים וסטטיסטיקות בסיסיות.</li>
+      <li>החלטות אחרונות מתעדכנות בתוך הלשונית, כולל פרמטרים של Progressive ML אם קיימים.</li>
+    </ul>
+    <p>הסימולציה אינה מחליפה Walk-forward אך מספקת אינדיקציה מהירה אם אסטרטגיה מתיישרת עם ציפיות.</p>
+  </section>
+
+  <section id="training">
+    <h2>Training &amp; Reports tab</h2>
+    <p>נבנה סביב שלושה תהליכים משלימים.</p>
+    <h3>Train PPO</h3>
+    <ul>
+      <li>הפעלת <code>Plan</code> מחלצת פרמטרים מהרשומות הקיימות (תאריכים, timesteps משוערים).</li>
+      <li><code>Train PPO</code> מניע את אותו סקריפט כמו Auto-Tune אך ללא חיפוש רב-קומבינציות.</li>
+      <li>לוגים מצטברים ב‑<code>ppo-logs</code>; סיום מעדכן סטטוס ומציג Toast.</li>
+    </ul>
+    <h3>Portfolio Evaluate</h3>
+    <p>מחשב דוח ביצועים מפורט (Sharpe, MDD, CAGR, Points). התוצאה נשמרת בתיקיית <code>reports/rl</code>. אידאלי לבדוק מודל לפני הפעלה.</p>
+    <h3>Walk-forward Evaluation</h3>
+    <p>מריץ בדיקה על חלונות עוקבים (Rolling/Re-training), מדגיש עקביות לאורך זמן. שימושי להציף Overfitting.</p>
+  </section>
+
+  <section id="data">
+    <h2>כלי נתונים ותשתית</h2>
+    <h3>Ensure &amp; Ensure-All</h3>
+    <p>מרענן נתוני מחירים, אינדיקטורים ופיצ׳רים עבור רשימת סמלים מוגדרת. מומלץ להריץ לפני Auto-Tune/Training כדי להבטיח התאמה לנתונים העדכניים ביותר.</p>
+    <h3>קבצי נתונים זמינים</h3>
+    <ul>
+      <li><strong>מחירים</strong>: תיקיית <code>stock_data/&lt;SYMBOL&gt;/</code> – הקפד לעדכן עד יום המסחר האחרון.</li>
+      <li><strong>Fundamental</strong>: קובצי Parquet/CSV באותה תיקייה – ניתן לשלב באמצעות custom indicators או סקריפטי preprocessing.</li>
+      <li><strong>Indicators</strong>: קובץ ייעודי (למשל <code>_indicators.csv</code>) שמוזן באמצעות <code>indicator_cols</code>.</li>
+    </ul>
+    <p>תהליכים שונים מניחים שהמחירים והאינדיקטורים מיושרים בזמן. בדוק גודל/תאריכים טרם האימון.</p>
+  </section>
+
+  <section id="quality">
+    <h2>מהי תוצאה טובה?</h2>
+    <table>
+      <thead>
+        <tr><th>מדד</th><th>יעד סביר</th><th>נורת אזהרה</th><th>הערות</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Sharpe</td><td>&gt; 1.0</td><td>&lt; 0.6</td><td>בודק יציבות תשואה מול תנודתיות.</td></tr>
+        <tr><td>Max Drawdown</td><td>&lt; 0.25</td><td>&gt; 0.35</td><td>עדיפות לדו"ח עם DD נמוך לאורך כל חלונות ה‑Walk-forward.</td></tr>
+        <tr><td>CAGR</td><td>&gt; 12% בשנה</td><td>&lt; 5%</td><td>גידול הון שנתי; השווה ל‑benchmark (QQQ, SPY).</td></tr>
+        <tr><td>Hit Rate / Coverage</td><td>&gt; 60%</td><td>&lt; 50%</td><td>Coverage נמוך מרמז שחסרים נתונים/פיצ׳רים.</td></tr>
+        <tr><td>PnL Paper</td><td>חיובי לאורך ≥ 3 שבועות</td><td>ירידה רציפה</td><td>מומלץ לבדוק בבנדים שונים ולנתח לוגים.</td></tr>
+      </tbody>
+    </table>
+    <p>בעת בחירת מודל, בדוק גם יציבות בין חלונות Walk-forward ולא רק את ה"שיא" של Sharpe.</p>
+  </section>
+
+  <section id="agent">
+    <h2>שילוב עם הסוכן החי</h2>
+    <ol>
+      <li>אחרי Auto-Tune/Training, בחר את הקובץ עם הציון הטוב ביותר (בד"כ: <code>reports/rl/.../ppo_model.zip</code>).</li>
+      <li>העבר את הנתיב ל‑Scheduler/Agent (למשל בקובץ קונפיג או ב‑UI Paper Mode &rarr; <code>Use Latest</code>).</li>
+      <li>הרץ Paper Mode למשך מספר ימים ובחן לוגים (מיקום: <code>logs/</code>, <code>paper-logs</code> ב‑UI).</li>
+      <li>אם Paper משביע רצון, עדכן Credentials וחיבור IBKR והפעל Live. שמור snapshot מודל/קונפיג.</li>
+      <li>חזור על התהליך כאשר נתונים חדשים זמינים או Performance חורג מהסף שהוגדר.</li>
+    </ol>
+  </section>
+
+  <section id="indicators">
+    <h2>בחירת אינדיקטורים</h2>
+    <p>Auto-Tune כבר בוחן מספר קומבינציות בסיס (Price בלבד, News, VIX, Indicators). כדי למדוד אינדיקטורים נוספים:</p>
+    <ol>
+      <li>הוסף עמודות חדשות לקובץ ה‑indicators המתוחזק ע"י Ensure (דוגמה: <code>ema21</code>, <code>keltner_width</code>).</li>
+      <li>עדכן את הפרמטר <code>indicator_cols</code> ב‑Auto-Tune או Train PPO כך שיכלול רק את המדדים שברצונך לבחון. ניתן להזין רשימה בעמודת UI.</li>
+      <li>הרץ Auto-Tune עם תקציב זמן קצר והשווה אילו Trials מסיימים עם ציון טוב יותר. השווה Sharpe ושמור את שמות הקנדידטים המובילים.</li>
+      <li>לניתוח מעמיק, פתח את <code>summary.csv</code> בכל Trial והשווה תרומות (Sharpe, CAGR) לצד עלויות חישוב.</li>
+      <li>קבצי Fundamental (לדוגמה ב‑<code>stock_data/SYMBOL/SYMBOL_fundamental.parquet</code>) ניתן לשלב ע"י יצירת אינדיקטור חדש (נורמליזציה/Rank) והזנה כעמודה חיצונית.</li>
+    </ol>
+    <div class="callout">
+      <strong>דאטה עדכני:</strong> מאחר שאתה כבר מעדכן מחירים עד סוף יום, ודא שגם קבצי אינדיקטורים ו‑fundamental מסונכרנים (אותם תאריכים, ללא חורים). חוסר סנכרון הוא סיבה נפוצה לכיסוי חלקי ולציוני Sharpe נמוכים.
+    </div>
+  </section>
+
+  <section id="faq">
+    <h2>שאלות נפוצות</h2>
+    <h3>איך אדע שהריצה הסתיימה?</h3>
+    <p>הסטטוס בלשונית משתנה ל‑<code>completed</code>/<code>timeout</code>/<code>failed</code> ו‑Toast מוצג. בנוסף אסוף את לוגי הזמן ב‑<code>auto_tune_stdout.log</code>.</p>
+    <h3>מה לעשות אם אין שיפור?</h3>
+    <p>נסה להרחיב רשימת Seeds, להוסיף אינדיקטורים/פיצ׳רים fundamental, לשנות חלון אימון (למשל 90 יום), ולהריץ Walk-forward לאבחון Overfitting.</p>
+    <h3>האם Auto-Tune רץ על נתונים קבועים?</h3>
+    <p>הוא מסתמך על הקבצים המקומיים בזמן הריצה. אם עדכנת מחירים/אינדיקטורים לפני ההרצה, הוא ישתמש בנתונים החדשים. לכן מומלץ להריץ Ensure או משימות עדכון לפני כל סשן.</p>
+  </section>
+</body>
+</html>

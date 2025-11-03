@@ -14,9 +14,13 @@
     .nav { display:flex; gap:8px; }
     .nav a { text-decoration:none; color:#e2e8f0; background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); padding:8px 12px; border-radius:6px; }
     .nav a.active { background: rgba(34,197,94,0.2); border-color:#22c55e; }
-    .card { background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px; margin-bottom:16px; }
-    .row { display:flex; gap:16px; }
-    .row > .card { flex:1; }
+  .card { background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px; margin-bottom:16px; }
+  .row { display:flex; gap:16px; }
+  .row > .card { flex:1; }
+  .section-switcher { display:flex; gap:8px; align-items:center; margin-bottom:20px; flex-wrap:wrap; }
+  .section-switcher button { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:8px 14px; border-radius:999px; cursor:pointer; font-size:0.85em; transition:background 0.2s ease,border-color 0.2s ease,color 0.2s ease; }
+  .section-switcher button:hover:not(.active) { background:rgba(59,130,246,0.18); border-color:rgba(59,130,246,0.45); }
+  .section-switcher button.active { background:rgba(34,197,94,0.2); border-color:#22c55e; color:#bbf7d0; }
   .title { margin:0 0 12px; }
   .badge { display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:999px; font-size:0.85em; border:1px solid rgba(255,255,255,0.12); background:rgba(148,163,184,0.15); color:#e2e8f0; transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
   .badge .dot { width:8px; height:8px; border-radius:50%; background:#f87171; box-shadow:0 0 6px rgba(248,113,113,0.6); animation: badgePulse 1.6s ease-in-out infinite; }
@@ -49,15 +53,30 @@
   .market-controls { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
   .market-controls label { display:flex; flex-direction:column; gap:6px; font-size:0.8em; opacity:0.85; }
   .market-controls select { min-width:140px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; padding:6px 8px; border-radius:6px; }
+    #rl-open-orders table { width:100%; border-collapse:collapse; font-size:0.82em; }
+    #rl-open-orders th, #rl-open-orders td { padding:4px 6px; border-bottom:1px solid rgba(148,163,184,0.18); }
+    #rl-open-orders th { text-align:left; color:#cbd5f5; }
+    .toast-container { position:fixed; top:20px; right:20px; display:flex; flex-direction:column; gap:10px; z-index:9999; width:260px; }
+    .toast { padding:10px 14px; border-radius:8px; font-size:0.85em; box-shadow:0 6px 18px rgba(15,23,42,0.45); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,0.1); animation:fadeIn 0.2s ease forwards; }
+    .toast-info { background:rgba(59,130,246,0.18); color:#bfdbfe; }
+    .toast-error { background:rgba(239,68,68,0.18); color:#fecaca; }
+    .toast-success { background:rgba(34,197,94,0.18); color:#bbf7d0; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
   /* RL Auto-Tune layout tweaks */
     .rla-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:14px; align-items:end; }
     .rla-actions { display:flex; gap:8px; align-items:center; }
     .rla-actions button { white-space:nowrap; }
     .rla-time input { width: 120px !important; }
+    .promotion-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:10px; margin-top:10px; }
+    .promotion-block { background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:10px; font-size:0.85em; line-height:1.4; }
+    .promotion-block h4 { margin:0 0 6px; font-size:1em; color:#e2e8f0; }
+    .promotion-empty { opacity:0.7; }
+    .promotion-candidate { border-color: rgba(34,197,94,0.45); box-shadow:0 0 0 1px rgba(34,197,94,0.3); }
   </style>
 </head>
-<body>
-  <div class="container">
+<body data-rl-section="live">
+  <div class="toast-container" id="toast-container"></div>
+  <div class="container rl-dashboard">
     <div class="header">
       <h2 class="title" style="margin:0;">RL Dashboard</h2>
       <div class="badge-actions">
@@ -75,7 +94,27 @@
       </div>
     </div>
 
-    <div class="card" style="margin-bottom:20px;">
+    <div class="section-switcher" role="toolbar" aria-label="RL dashboard sections">
+      <button type="button" class="active" data-section-target="live">Live Ops</button>
+      <button type="button" data-section-target="automation">Automation</button>
+      <button type="button" data-section-target="simulations">Simulations</button>
+      <button type="button" data-section-target="training">Training &amp; Reports</button>
+    </div>
+
+    <div class="section-help" data-section="live" style="margin:10px 0 18px; text-align:right;">
+      <a href="/static/docs/rl_dashboard_reference.html#live-ops" target="_blank" style="color:#38bdf8; text-decoration:none;">מדריך Live Ops ↗</a>
+    </div>
+    <div class="section-help" data-section="automation" style="display:none; margin:10px 0 18px; text-align:right;">
+      <a href="/static/docs/rl_dashboard_reference.html#automation" target="_blank" style="color:#38bdf8; text-decoration:none;">מדריך Automation ↗</a>
+    </div>
+    <div class="section-help" data-section="simulations" style="display:none; margin:10px 0 18px; text-align:right;">
+      <a href="/static/docs/rl_dashboard_reference.html#simulations" target="_blank" style="color:#38bdf8; text-decoration:none;">מדריך Simulations ↗</a>
+    </div>
+    <div class="section-help" data-section="training" style="display:none; margin:10px 0 18px; text-align:right;">
+      <a href="/static/docs/rl_dashboard_reference.html#training" target="_blank" style="color:#38bdf8; text-decoration:none;">מדריך Training &amp; Reports ↗</a>
+    </div>
+
+    <div class="card" style="margin-bottom:20px;" data-section="live">
       <div class="market-header">
         <div>
           <h3 style="margin-bottom:4px;">Market View</h3>
@@ -113,7 +152,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-section="automation">
       <h3>RL Auto-Tune Runner</h3>
       <p style="opacity:0.9; margin-bottom:10px;">Launch an auto-tune session with presets for Stock-focused or Leveraged ETF-focused runs. Configure a time budget.</p>
       <div class="rla-grid">
@@ -144,7 +183,20 @@
       </div>
       <div id="rla-status" style="margin-top:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Courier New', monospace;"></div>
     </div>
-    <div class="card">
+    <div class="card" data-section="automation">
+      <h3>Champion Promotion</h3>
+      <p style="opacity:0.9; margin-bottom:10px;">Review the latest auto-tune candidate and promote it to the champion slot once metrics clear the guardrails.</p>
+      <div class="promotion-grid">
+        <div id="promotion-candidate" class="promotion-block promotion-empty">No candidate pending promotion.</div>
+        <div id="promotion-champion" class="promotion-block promotion-empty">No champion recorded yet.</div>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
+        <button id="promotion-promote-btn" type="button" style="background:#f97316; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;" onclick="promoteCandidate()" disabled>Promote Candidate</button>
+        <button type="button" style="background:#4b5563; border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer;" onclick="refreshPromotionState()">Refresh</button>
+      </div>
+      <div id="promotion-status" style="margin-top:8px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Courier New', monospace; opacity:0.85;"></div>
+    </div>
+    <div class="card" data-section="automation">
       <h3>Data Ensure</h3>
       <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
         <label>Symbols</label>
@@ -184,7 +236,7 @@
       <div id="ens-status" style="margin-top:8px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Courier New', monospace;"></div>
       <pre id="ens-logs" style="max-height:180px; overflow:auto; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px; font-size:12px;"></pre>
     </div>
-    <div class="card">
+    <div class="card" data-section="simulations">
       <h3>Quick Simulation</h3>
       <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
   <label>Symbol</label>
@@ -248,7 +300,7 @@
         <div id="rl-decisions-table" style="max-height:220px; overflow:auto; font-size:0.9em;"></div>
       </div>
     </div>
-    <div class="row">
+  <div class="row" data-section="live">
       <div class="card">
         <h3>Status</h3>
         <div id="rl-status">Idle</div>
@@ -261,8 +313,12 @@
         <h3>PnL</h3>
         <div id="rl-pnl">—</div>
       </div>
+      <div class="card" style="min-width:220px;">
+        <h3>Open Orders</h3>
+        <div id="rl-open-orders">—</div>
+      </div>
     </div>
-    <div class="card">
+    <div class="card" data-section="training">
       <h3>Train PPO (SB3)</h3>
       <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
         <label>Symbols</label>
@@ -289,7 +345,7 @@
       <div id="ppo-status" style="margin-top:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;"></div>
       <pre id="ppo-logs" style="max-height:200px; overflow:auto; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px; font-size:12px;"></pre>
     </div>
-    <div class="card">
+    <div class="card" data-section="training">
       <h3 title="מריץ את מודל ה‑PPO על הטווח ומחשב מדדים מול EW/QQQ. אם המודל אומן על סט סמלים אחר — יווצר שגיאה מתאימה.">Portfolio — Evaluate (2024)</h3>
       <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
         <label title="סט סמלים זהה לאימון (הסדר לא משנה).">Symbols</label>
@@ -304,7 +360,7 @@
       <pre id="pf-logs" style="max-height:200px; overflow:auto; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px; font-size:12px;"></pre>
       <div id="pf-summary" style="margin-top:10px;"></div>
     </div>
-    <div class="card">
+    <div class="card" data-section="training">
       <h3 title="בדיקה על כמה חלונות עוקבים. מחפשים עקביות בתוצאות (Sharpe>0, DD בשליטה).">Walk-forward Evaluation</h3>
       <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
         <label title="סט סמלים זהה לאימון">Symbols</label>
@@ -325,7 +381,7 @@
       <pre id="wf-logs" style="max-height:200px; overflow:auto; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px; font-size:12px;"></pre>
       <div id="wf-summary" style="margin-top:10px;"></div>
     </div>
-    <div class="card">
+    <div class="card" data-section="live">
       <h3>Live (Paper) — Preview</h3>
       <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
    <label title="רשימת ניירות (מופרדים בפסיק) לתצוגה מקדימה של משקולות. משפיע על היקף התיק. מומלץ להשתמש באותם סמלים כמו באימון/Ensure.">Symbols</label>
@@ -345,7 +401,7 @@
       </div>
       <div id="live-out" style="margin-top:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;"></div>
     </div>
-    <div class="card">
+    <div class="card" data-section="live">
       <h3>Live (Paper) — Mode</h3>
       <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
    <label title="רשימת ניירות (מופרדים בפסיק) למסחר Paper. מומלץ להשתמש באותם סמלים שאומנו/Ensure.">Symbols</label>
@@ -440,6 +496,174 @@
   <script src="/static/js/modules/chart-manager.js"></script>
   <script src="/static/js/rl.js"></script>
   <script>
+    const toastOrAlert = (variant, message) => {
+      if (window.emitRLToast && message) {
+        window.emitRLToast(variant, message);
+      } else if (message) {
+        alert(message);
+      }
+    };
+
+    let _autoTuneStatusInitialized = false;
+    let _lastAutoTuneStatus = null;
+    let _ppoStatusInitialized = false;
+    let _lastPPOStatus = null;
+    let _activePPOJobId = null;
+    let _activePpoSymbols = '';
+  let _promotionState = null;
+  let _promotionRefreshing = false;
+
+    const promotionNumber = (value) => {
+      if (value === null || value === undefined) {
+        return NaN;
+      }
+      if (typeof value === 'string') {
+        const trimmed = value.trim();
+        if (!trimmed) {
+          return NaN;
+        }
+        value = trimmed;
+      }
+      const num = Number(value);
+      return Number.isFinite(num) ? num : NaN;
+    };
+
+    function buildPromotionBlock(title, payload) {
+      if (!payload) {
+        return `<div class="promotion-block promotion-empty"><h4>${title}</h4><div>No data available.</div></div>`;
+      }
+      const summary = payload.summary || (payload.trial && payload.trial.summary) || {};
+      const score = promotionNumber(payload.score);
+      const sharpe = promotionNumber(summary.sharpe ?? summary.Sharpe);
+      const maxDd = promotionNumber(summary.max_drawdown ?? summary.max_dd);
+      const totalReturn = promotionNumber(summary.total_return ?? summary.totalReturn);
+      const parts = [];
+      if (payload.symbols) {
+        const symLabel = Array.isArray(payload.symbols) ? payload.symbols.join(', ') : String(payload.symbols);
+        parts.push(`<div>Symbols: ${symLabel}</div>`);
+      }
+      if (payload.window) {
+        parts.push(`<div>Window: ${payload.window}</div>`);
+      }
+      if (payload.timesteps) {
+        parts.push(`<div>Timesteps: ${payload.timesteps}</div>`);
+      }
+      if (Number.isFinite(score)) {
+        parts.push(`<div>Score: ${score.toFixed(3)}</div>`);
+      }
+      if (Number.isFinite(sharpe)) {
+        parts.push(`<div>Sharpe: ${sharpe.toFixed(2)}</div>`);
+      }
+      if (Number.isFinite(maxDd)) {
+        parts.push(`<div>Max DD: ${(maxDd * 100).toFixed(1)}%</div>`);
+      }
+      if (Number.isFinite(totalReturn)) {
+        parts.push(`<div>Return: ${(totalReturn * 100).toFixed(1)}%</div>`);
+      }
+      const modelPath = payload.champion_model_path || payload.model_path;
+      if (modelPath) {
+        const tokens = String(modelPath).split(/[\\/]/);
+        parts.push(`<div>Model: ${tokens[tokens.length - 1]}</div>`);
+      }
+      if (payload.promoted_at) {
+        try { parts.push(`<div>Promoted: ${new Date(payload.promoted_at).toLocaleString()}</div>`); } catch (_) {}
+      } else if (payload.updated_at) {
+        try { parts.push(`<div>Updated: ${new Date(payload.updated_at).toLocaleString()}</div>`); } catch (_) {}
+      }
+      const statusSuffix = payload.status ? ` · ${payload.status}` : '';
+      const body = parts.length ? parts.join('') : '<div>No metrics yet.</div>';
+      const isCandidate = title.toLowerCase().includes('candidate');
+      return `<div class="promotion-block${isCandidate ? ' promotion-candidate' : ''}"><h4>${title}${statusSuffix}</h4>${body}</div>`;
+    }
+
+    function updatePromotionPanel(data) {
+      const candidateEl = document.getElementById('promotion-candidate');
+      const championEl = document.getElementById('promotion-champion');
+      const btn = document.getElementById('promotion-promote-btn');
+      const statusEl = document.getElementById('promotion-status');
+      if (candidateEl) {
+        candidateEl.innerHTML = buildPromotionBlock('Candidate', data && data.candidate);
+      }
+      if (championEl) {
+        championEl.innerHTML = buildPromotionBlock('Champion', data && data.champion);
+      }
+      if (btn) {
+        const hasCandidate = !!(data && data.candidate && data.candidate.model_path && data.candidate.status !== 'promoted');
+        btn.disabled = !hasCandidate || _promotionRefreshing;
+        if (!hasCandidate && !_promotionRefreshing) {
+          btn.textContent = 'Promote Candidate';
+        }
+      }
+      if (statusEl) {
+        if (data && data.candidate && data.candidate.status === 'promoted' && data.candidate.promoted_at) {
+          try {
+            statusEl.textContent = `Candidate promoted at ${new Date(data.candidate.promoted_at).toLocaleString()}`;
+          } catch (_) {
+            statusEl.textContent = 'Candidate promoted.';
+          }
+        } else if (data && data.candidate && data.candidate.updated_at) {
+          try {
+            statusEl.textContent = `Candidate updated ${new Date(data.candidate.updated_at).toLocaleString()}`;
+          } catch (_) {
+            statusEl.textContent = 'Candidate updated.';
+          }
+        } else {
+          statusEl.textContent = '';
+        }
+      }
+    }
+
+    async function refreshPromotionState() {
+      if (_promotionRefreshing) {
+        return;
+      }
+      _promotionRefreshing = true;
+      try {
+        const resp = await fetch('/api/rl/promotion/state');
+        const payload = await resp.json();
+        if (!resp.ok || payload.status !== 'ok') {
+          const detail = payload.detail || payload.message || `HTTP ${resp.status}`;
+          throw new Error(detail);
+        }
+        _promotionState = payload.data || {};
+        updatePromotionPanel(_promotionState);
+      } catch (err) {
+        if (err && err.message) {
+          toastOrAlert('error', `Promotion state error: ${err.message}`);
+        }
+        updatePromotionPanel(_promotionState);
+      } finally {
+        _promotionRefreshing = false;
+      }
+    }
+
+    async function promoteCandidate() {
+      const btn = document.getElementById('promotion-promote-btn');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Promoting…';
+      }
+      try {
+        const resp = await fetch('/api/rl/promotion/promote', { method: 'POST' });
+        const payload = await resp.json();
+        if (!resp.ok || payload.status !== 'promoted') {
+          const detail = payload.detail || payload.message || `HTTP ${resp.status}`;
+          throw new Error(detail);
+        }
+        _promotionState = payload.data || _promotionState;
+        updatePromotionPanel(_promotionState);
+        toastOrAlert('success', 'Candidate promoted to champion.');
+      } catch (err) {
+        const msg = err && err.message ? err.message : String(err);
+        toastOrAlert('error', `Promotion failed: ${msg}`);
+      } finally {
+        if (btn) {
+          btn.textContent = 'Promote Candidate';
+        }
+        await refreshPromotionState();
+      }
+    }
+
     // RL Auto-Tune (RL page)
     function onRLModeChangeRLPage(){
       const mode = document.getElementById('rla-mode').value;
@@ -454,10 +678,10 @@
       const payload = { mode, time_budget_hours: budget };
       if(mode==='stock'){
         payload.symbol = (document.getElementById('rla-stock').value || '').trim().toUpperCase();
-        if(!payload.symbol){ alert('Please enter a stock symbol'); return; }
+        if(!payload.symbol){ toastOrAlert('error', 'Please enter a stock symbol.'); return; }
       } else {
         const etfs = (document.getElementById('rla-etfs').value || '').split(',').map(s=>s.trim().toUpperCase()).filter(Boolean);
-        if(!etfs.length){ alert('Please enter at least one ETF'); return; }
+        if(!etfs.length){ toastOrAlert('error', 'Please enter at least one ETF ticker.'); return; }
         payload.etfs = etfs;
       }
       try{
@@ -466,6 +690,7 @@
         updateRLAutoTuneStatusBoxRLPage(j);
       }catch(e){
         document.getElementById('rla-status').innerHTML = `<span style="color:#ef4444;">Failed to start: ${e.message}</span>`;
+        toastOrAlert('error', `Auto-Tune start failed: ${e.message}`);
       }
     }
     async function refreshRLAutoTuneStatusRLPage(){
@@ -473,8 +698,10 @@
         const r = await fetch('/api/rl/auto-tune/status');
         const j = await r.json();
         updateRLAutoTuneStatusBoxRLPage(j);
+        refreshPromotionState();
       }catch(e){
         document.getElementById('rla-status').innerHTML = `<span style="color:#ef4444;">Failed to fetch status: ${e.message}</span>`;
+        toastOrAlert('error', `Auto-Tune status failed: ${e.message}`);
       }
     }
     async function stopRLAutoTuneRLPage(){
@@ -484,14 +711,46 @@
         updateRLAutoTuneStatusBoxRLPage(j);
       }catch(e){
         document.getElementById('rla-status').innerHTML = `<span style="color:#ef4444;">Failed to stop: ${e.message}</span>`;
+        toastOrAlert('error', `Auto-Tune stop failed: ${e.message}`);
       }
     }
     function updateRLAutoTuneStatusBoxRLPage(resp){
       const el = document.getElementById('rla-status');
-      if(!resp || !resp.data){ el.textContent = 'Idle'; return; }
+      if(!resp || !resp.data){
+        if(!_autoTuneStatusInitialized){
+          _autoTuneStatusInitialized = true;
+        }
+        _lastAutoTuneStatus = 'idle';
+        el.textContent = 'Idle';
+        return;
+      }
       const d = resp.data;
-      if(d.status==='idle'){ el.textContent = 'Idle'; return; }
-      const color = d.status==='running' ? '#ffd700' : (d.status==='completed' ? '#22c55e' : '#ef4444');
+      const status = typeof d.status === 'string' ? d.status.toLowerCase() : null;
+      if(status){
+        if(!_autoTuneStatusInitialized){
+          _autoTuneStatusInitialized = true;
+        } else if(status !== _lastAutoTuneStatus){
+          if(status === 'running'){
+            toastOrAlert('success', 'Auto-Tune job started.');
+          } else if(status === 'completed'){
+            toastOrAlert('success', 'Auto-Tune job completed successfully.');
+          } else if(status === 'failed' || status === 'error'){
+            toastOrAlert('error', 'Auto-Tune job ended with errors. Check status panel for details.');
+          } else if(status === 'timeout'){
+            toastOrAlert('info', 'Auto-Tune stopped after hitting the configured time budget.');
+          } else if(status === 'stopping'){
+            toastOrAlert('info', 'Auto-Tune job is stopping…');
+          } else if(status === 'idle'){
+            toastOrAlert('info', 'Auto-Tune job idle.');
+          }
+        }
+        _lastAutoTuneStatus = status;
+      }
+      if(status === 'idle'){
+        el.textContent = 'Idle';
+        return;
+      }
+      const color = status==='running' ? '#ffd700' : (status==='completed' ? '#22c55e' : '#ef4444');
       const parts = [];
       parts.push(`<div><strong>Status:</strong> <span style="color:${color}">${(d.status||'').toUpperCase()}</span></div>`);
       if(d.job_id) parts.push(`<div><strong>Job:</strong> ${d.job_id}</div>`);
@@ -866,7 +1125,7 @@
     async function startPPO(){
         // optional features from UI
       const symsRaw = (document.getElementById('ppo-syms').value || '').toUpperCase();
-      if(!symsRaw){ alert('Please enter symbol(s)'); return; }
+      if(!symsRaw){ toastOrAlert('error', 'Please enter symbol(s).'); return; }
       const windowSize = parseInt(document.getElementById('ppo-window').value || '60', 10);
       const steps = parseInt(document.getElementById('ppo-steps').value || '100000', 10);
       const sd = (document.getElementById('ppo-start').value || '').trim();
@@ -893,28 +1152,33 @@
       const j = await resp.json();
       if(j.status !== 'started'){
         const msg = (j && typeof j.detail === 'object') ? JSON.stringify(j.detail) : (j?.detail || j?.message || 'Failed to start PPO');
-        alert(msg);
+        toastOrAlert('error', msg);
         return;
       }
       const jobId = j.job_id;
       window._lastPPOJobId = jobId;
+      _activePPOJobId = jobId;
+      _activePpoSymbols = symsRaw;
+      _ppoStatusInitialized = false;
+      _lastPPOStatus = null;
       document.getElementById('ppo-status').textContent = `Job ${jobId} — running...`;
       if(_ppoPoll) clearInterval(_ppoPoll);
       _ppoPoll = setInterval(()=> pollPPO(jobId), 2000);
       pollPPO(jobId);
+      toastOrAlert('success', `PPO training started for ${symsRaw} (job ${jobId}).`);
     }
 
     async function planPPO(){
       const symsRaw = (document.getElementById('ppo-syms').value || '').toUpperCase();
       const parts = symsRaw.split(',').map(s=>s.trim()).filter(Boolean);
-      if(parts.length===0){ alert('Please enter symbol(s)'); return; }
+      if(parts.length===0){ toastOrAlert('error', 'Please enter symbol(s).'); return; }
       const winVal = parseInt(document.getElementById('ppo-window').value || '0', 10);
       const params = new URLSearchParams({ symbols: parts.join(',') });
       if(winVal>0){ params.set('window', String(winVal)); }
       try{
         const r = await fetch(`/api/rl/ppo/plan?${params.toString()}`);
         const j = await r.json();
-        if(j.status !== 'planned'){ alert(j.detail || 'Planning failed'); return; }
+  if(j.status !== 'planned'){ toastOrAlert('error', j.detail || 'Planning failed.'); return; }
         const p = j.plan || {};
         // Fill UI
         if(p.train_start_date){ document.getElementById('ppo-start').value = p.train_start_date; }
@@ -923,28 +1187,30 @@
         if(Number.isFinite(p.timesteps)){ document.getElementById('ppo-steps').value = String(p.timesteps); }
         // Plan card
         const card = document.getElementById('ppo-plan-card');
+        const planLabel = (p.symbols && Array.isArray(p.symbols) && p.symbols.length) ? p.symbols.join(',') : parts.join(',');
+        const cardLabel = (p.symbols && Array.isArray(p.symbols)) ? p.symbols.join(',') : parts[0];
         if(card){
           card.style.display = 'block';
-          const label = (p.symbols && Array.isArray(p.symbols)) ? p.symbols.join(',') : parts[0];
-          card.textContent = `Planned ${label}: ${p.train_start_date} → ${p.train_end_date} | window=${p.window}, steps=${p.timesteps} (days=${p.training_days})`;
+          card.textContent = `Planned ${cardLabel}: ${p.train_start_date} → ${p.train_end_date} | window=${p.window}, steps=${p.timesteps} (days=${p.training_days})`;
         }
+        toastOrAlert('success', `PPO plan ready for ${planLabel || symsRaw}.`);
       }catch(err){
         console.error('planPPO failed', err);
-        alert('Plan failed. See console for details.');
+        toastOrAlert('error', 'PPO planning failed. See console for details.');
       }
     }
     async function planAndTrainPPO(){
       const symsRaw = (document.getElementById('ppo-syms').value || '').toUpperCase();
       const parts = symsRaw.split(',').map(s=>s.trim()).filter(Boolean);
       const sym = (parts[0] || '').toUpperCase();
-      if(!sym){ alert('Please enter symbol(s)'); return; }
+      if(!sym){ toastOrAlert('error', 'Please enter symbol(s).'); return; }
       await planPPO();
       await startPPO();
     }
     async function stopPPO(){
       try{
         const jobId = window._lastPPOJobId;
-        if(!jobId){ alert('No running PPO job found'); return; }
+        if(!jobId){ toastOrAlert('error', 'No running PPO job found.'); return; }
         const r = await fetch(`/api/rl/ppo/train/stop/${encodeURIComponent(jobId)}`, { method:'POST' });
         const j = await r.json();
         if(!r.ok){ throw new Error(j?.detail || 'Failed to stop PPO'); }
@@ -952,8 +1218,9 @@
         document.getElementById('ppo-status').textContent = `Job ${jobId} — ${j.status}`;
         const logsEl = document.getElementById('ppo-logs');
         logsEl.textContent = (logsEl.textContent || '') + '\n🛑 Stop requested.';
+        toastOrAlert('info', `Stop requested for PPO job ${jobId}.`);
       }catch(e){
-        alert('Stop failed: ' + (e?.message || e));
+        toastOrAlert('error', 'PPO stop failed: ' + (e?.message || e));
       }
     }
     async function pollPPO(jobId){
@@ -967,8 +1234,26 @@
         document.getElementById('ppo-status').textContent = line1;
         const logs = (j.logs || []).join('\n');
         document.getElementById('ppo-logs').textContent = logs;
-        if(st === 'completed' || st === 'failed'){
+        if(jobId === _activePPOJobId){
+          if(!_ppoStatusInitialized){
+            _ppoStatusInitialized = true;
+          } else if(st !== _lastPPOStatus){
+            const symLabel = _activePpoSymbols || (Array.isArray(j.symbols) ? j.symbols.join(',') : 'selection');
+            if(st === 'completed'){
+              const suffix = j.model_path ? ` Model saved: ${j.model_path}` : '';
+              toastOrAlert('success', `PPO training completed for ${symLabel}.${suffix ? suffix : ''}`);
+            } else if(st === 'failed' || st === 'error'){
+              toastOrAlert('error', `PPO training failed for ${symLabel}. Review logs for details.`);
+            } else if(st === 'stopped'){
+              toastOrAlert('info', `PPO training stopped for ${symLabel}.`);
+            }
+          }
+          _lastPPOStatus = st;
+        }
+        if(st === 'completed' || st === 'failed' || st === 'error' || st === 'stopped'){
           if(_ppoPoll){ clearInterval(_ppoPoll); _ppoPoll = null; }
+          _activePPOJobId = null;
+          _activePpoSymbols = '';
         }
       }catch(e){
         // stop polling on error
@@ -1304,6 +1589,8 @@
     window.runRLSim = runRLSim;
     window.planRLSim = planRLSim;
     window.planAndRunRLSim = planAndRunRLSim;
+  window.refreshPromotionState = refreshPromotionState;
+  window.promoteCandidate = promoteCandidate;
   window.startPPO = startPPO;
   window.planPPO = planPPO;
   window.planAndTrainPPO = planAndTrainPPO;
@@ -1540,7 +1827,7 @@
     // Ensure data JS
     async function ensureData(){
       const syms = (document.getElementById('ens-syms').value || '').trim();
-      if(!syms){ alert('Enter symbols'); return; }
+      if(!syms){ toastOrAlert('error', 'Enter symbols to ensure.'); return; }
       const sd = (document.getElementById('ens-start').value || '').trim();
       const ed = (document.getElementById('ens-end').value || '').trim();
       const body = { symbols: syms, start: sd || undefined, end: ed || undefined };
@@ -1587,14 +1874,16 @@
         const fbBase = loc.protocol + '//' + loc.hostname + ':5000';
         try { resp = await tryStart(fbBase); if(resp && resp.ok){ apiBase = fbBase; } } catch(_) { /* ignore */ }
       }
-      if(!resp || !resp.ok){ alert('Failed to start ensure (endpoint not found)'); return; }
+      if(!resp || !resp.ok){ toastOrAlert('error', 'Failed to start ensure (endpoint not found).'); return; }
       const j = await resp.json();
-      if(j.status !== 'started'){ alert(j.detail || 'Failed to start ensure'); return; }
+      if(j.status !== 'started'){ toastOrAlert('error', j.detail || 'Failed to start ensure.'); return; }
       const jobId = j.job_id;
       // remember base for polling
       window._ensApiBase = apiBase;
       document.getElementById('ens-status').textContent = `Ensure job ${jobId} — running...`;
+      toastOrAlert('success', `Ensure job ${jobId} started.`);
       if(window._ensPoll){ clearInterval(window._ensPoll); }
+      let ensureFinalToastSent = false;
       const poll = async ()=>{
         try{
           const base = window._ensApiBase || '';
@@ -1608,9 +1897,19 @@
           }
           if(!rs.ok){ throw new Error('status not found'); }
           const js = await rs.json();
-          document.getElementById('ens-status').textContent = `Ensure job ${jobId} — ${js.status}`;
+          const status = js.status || 'unknown';
+          document.getElementById('ens-status').textContent = `Ensure job ${jobId} — ${status}`;
           document.getElementById('ens-logs').textContent = (js.logs||[]).join('\n');
-          if(js.status==='completed' || js.status==='failed' || js.status==='error'){
+          if(!ensureFinalToastSent){
+            if(status==='completed'){
+              toastOrAlert('success', `Ensure job ${jobId} completed.`);
+              ensureFinalToastSent = true;
+            } else if(status==='failed' || status==='error'){
+              toastOrAlert('error', `Ensure job ${jobId} ended with errors. See logs for details.`);
+              ensureFinalToastSent = true;
+            }
+          }
+          if(status==='completed' || status==='failed' || status==='error'){
             clearInterval(window._ensPoll); window._ensPoll = null;
           }
         }catch(e){ clearInterval(window._ensPoll); window._ensPoll = null; }
@@ -1656,13 +1955,15 @@
         const loc = window.location; const fbBase = loc.protocol + '//' + loc.hostname + ':5000';
         try { resp = await tryStart(fbBase); if(resp && resp.ok){ apiBase = fbBase; } } catch(_) {}
       }
-      if(!resp || !resp.ok){ alert('Failed to start ensure-all (endpoint not found)'); return; }
+      if(!resp || !resp.ok){ toastOrAlert('error', 'Failed to start ensure-all (endpoint not found).'); return; }
       const j = await resp.json();
-      if(j.status !== 'started'){ alert(j.detail || 'Failed to start ensure-all'); return; }
+      if(j.status !== 'started'){ toastOrAlert('error', j.detail || 'Failed to start ensure-all.'); return; }
       const jobId = j.job_id;
       window._ensApiBase = apiBase;
       document.getElementById('ens-status').textContent = `Ensure ALL job ${jobId} — running...`;
+      toastOrAlert('success', `Ensure-all job ${jobId} started.`);
       if(window._ensPoll){ clearInterval(window._ensPoll); }
+      let ensureAllFinalToastSent = false;
       const poll = async ()=>{
         try{
           const base = window._ensApiBase || '';
@@ -1673,9 +1974,19 @@
           }
           if(!rs.ok){ throw new Error('status not found'); }
           const js = await rs.json();
-          document.getElementById('ens-status').textContent = `Ensure ALL job ${jobId} — ${js.status}`;
+          const status = js.status || 'unknown';
+          document.getElementById('ens-status').textContent = `Ensure ALL job ${jobId} — ${status}`;
           document.getElementById('ens-logs').textContent = (js.logs||[]).join('\n');
-          if(js.status==='completed' || js.status==='failed' || js.status==='error'){
+          if(!ensureAllFinalToastSent){
+            if(status==='completed'){
+              toastOrAlert('success', `Ensure-all job ${jobId} completed.`);
+              ensureAllFinalToastSent = true;
+            } else if(status==='failed' || status==='error'){
+              toastOrAlert('error', `Ensure-all job ${jobId} ended with errors. See logs for details.`);
+              ensureAllFinalToastSent = true;
+            }
+          }
+          if(status==='completed' || status==='failed' || status==='error'){
             clearInterval(window._ensPoll); window._ensPoll = null;
           }
         }catch(e){ clearInterval(window._ensPoll); window._ensPoll = null; }
@@ -1683,9 +1994,35 @@
       window._ensPoll = setInterval(poll, 2000); poll();
     }
     window.ensureDataAll = ensureDataAll;
+
+    function setupSectionSwitcher() {
+      const buttons = document.querySelectorAll('.section-switcher button[data-section-target]');
+      const targets = document.querySelectorAll('.rl-dashboard [data-section]');
+      if (!buttons.length || !targets.length) {
+        return;
+      }
+      const apply = (section) => {
+        document.body.setAttribute('data-rl-section', section);
+        buttons.forEach((btn) => btn.classList.toggle('active', btn.dataset.sectionTarget === section));
+        targets.forEach((node) => {
+          if (node.getAttribute('data-section') === section) {
+            node.style.display = node.classList.contains('row') ? 'flex' : '';
+          } else {
+            node.style.display = 'none';
+          }
+        });
+      };
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => apply(btn.dataset.sectionTarget));
+      });
+      apply(document.body.getAttribute('data-rl-section') || 'live');
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
+      setupSectionSwitcher();
       onRLModeChangeRLPage();
       refreshRLAutoTuneStatusRLPage();
+      refreshPromotionState();
       if (window.ChartManager) {
         if (typeof Chart === 'undefined') {
           console.warn('Chart.js not available; skipping chart initialization');
