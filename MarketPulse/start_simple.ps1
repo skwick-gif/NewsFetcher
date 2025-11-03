@@ -11,7 +11,7 @@ param(
 $project = "D:\\Projects\\NewsFetcher"
 
 Write-Host "Starting Backend..."
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd $project; py app\\main_production.py"
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd $project; py -m uvicorn app.main:app --host 0.0.0.0 --port 8000"
 
 Write-Host "Waiting $waitSeconds seconds for backend to initialize..."
 Start-Sleep -Seconds $waitSeconds

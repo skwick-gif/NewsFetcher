@@ -6,7 +6,14 @@ from app.utils.proxy import proxy_to_backend
 ibkr_bp = Blueprint("ibkr", __name__)
 
 
-def _proxy(method: str, path: str, *, json_body: bool = False, forward_query: bool = True):
+def _proxy(
+    method: str,
+    path: str,
+    *,
+    json_body: bool = False,
+    forward_query: bool = True,
+    timeout: int | None = None,
+):
     payload = request.get_json(silent=True) if json_body else None
     params = request.args.to_dict(flat=True) if forward_query and request.args else None
     kwargs = {}
@@ -14,6 +21,8 @@ def _proxy(method: str, path: str, *, json_body: bool = False, forward_query: bo
         kwargs["json"] = payload
     if params:
         kwargs["params"] = params
+    if timeout is not None:
+        kwargs["timeout"] = timeout
     return proxy_to_backend(path, method=method, **kwargs)
 
 
@@ -69,7 +78,8 @@ def ibkr_order_updates_proxy():
 
 @ibkr_bp.route("/api/ibkr/market/historical")
 def ibkr_market_historical_proxy():
-    return _proxy("GET", "/api/ibkr/market/historical")
+    # Historical queries can take longer while IBKR aggregates bars, so relax the proxy timeout.
+    return _proxy("GET", "/api/ibkr/market/historical", timeout=30)
 
 
 @ibkr_bp.route("/api/ibkr/account")

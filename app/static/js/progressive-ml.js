@@ -616,16 +616,39 @@
       const info = await fetchJSON('/api/ml/progressive/status');
       const el = document.getElementById('progressive-ml-status-display');
       if(!el) return;
-      if(info && info.status === 'success'){
+      if(!info || info.status === 'error'){
+        el.textContent = 'Progressive ML: backend unavailable';
+        return;
+      }
+
+      if(info.status === 'success'){
         const d = info.data || {};
         const parts = [];
-        parts.push('Status: ' + (d.status || 'unknown'));
+        parts.push('Status: ' + (d.status || 'ready'));
         if(typeof d.jobs_running === 'number') parts.push(`Jobs: ${d.jobs_running}`);
         if(d.last_updated) parts.push(`Updated: ${new Date(d.last_updated).toLocaleString()}`);
         el.textContent = parts.join(' • ');
-      } else {
-        el.textContent = 'Progressive ML: backend unavailable';
+        return;
       }
+
+      if(info.status === 'available'){
+        const ready = [];
+        if(typeof info.data_loader === 'boolean') ready.push(`Loader: ${info.data_loader ? '✅' : '⚠️'}`);
+        if(typeof info.trainer === 'boolean') ready.push(`Trainer: ${info.trainer ? '✅' : '⚠️'}`);
+        if(typeof info.predictor === 'boolean') ready.push(`Predictor: ${info.predictor ? '✅' : '⚠️'}`);
+        const parts = ['Progressive ML: ready'];
+        if(ready.length) parts.push(ready.join(' • '));
+        if(info.timestamp) parts.push(`Updated: ${new Date(info.timestamp).toLocaleString()}`);
+        el.textContent = parts.join(' • ');
+        return;
+      }
+
+      if(info.status === 'unavailable'){
+        el.textContent = 'Progressive ML: backend disabled';
+        return;
+      }
+
+      el.textContent = `Progressive ML: ${info.status || 'unknown status'}`;
     } catch (err) {
       const el = document.getElementById('progressive-ml-status-display');
       if(el) el.textContent = 'Progressive ML: error reading status';

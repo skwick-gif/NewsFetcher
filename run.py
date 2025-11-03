@@ -7,8 +7,8 @@ import os
 # Add app directory to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'app'))
 
-# Now import and run
-from main_realtime import app
+# Now import and run the modular FastAPI application
+from app.main import app
 import uvicorn
 
 if __name__ == "__main__":

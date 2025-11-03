@@ -20,6 +20,18 @@
     .ai-card h4 { color: #ffd700; font-size: 0.95em; margin-bottom: 8px; }
     .ml-ready-line { display:flex; align-items:center; gap:8px; font-weight:600; }
     #progressive-ml-status-display > div:nth-child(2) { display: none !important; }
+  .backtest-input-grid { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; }
+  .backtest-input-grid .input-block { flex:0 0 150px; display:flex; flex-direction:column; gap:6px; }
+  .backtest-input-grid .input-block label { font-size:0.8em; color:#cbd5e0; }
+  .backtest-input-grid .input-block input,
+  .backtest-input-grid .input-block select { width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.2); border-radius:6px; padding:8px 10px; color:#e2e8f0; font-size:0.8em; }
+  .backtest-input-grid .range-wrap { flex:0 0 220px; display:flex; flex-direction:column; gap:6px; }
+  .backtest-input-grid .range-wrap label { font-size:0.8em; color:#cbd5e0; }
+  .backtest-input-grid .range-wrap input[type=range] { width:100%; }
+  .backtest-input-grid .toggle-wrap { flex:0 0 130px; display:flex; align-items:center; justify-content:space-between; padding:8px 12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.12); border-radius:6px; font-size:0.8em; color:#cbd5e0; }
+  .backtest-input-grid .toggle-wrap input { width:auto; accent-color:#3b82f6; }
+    .backtest-button-row { display:flex; flex-wrap:wrap; gap:12px; margin-top:14px; }
+    .backtest-button-row button { flex:1; min-width:150px; padding:10px; border-radius:6px; color:#fff; font-weight:600; font-size:0.85em; border:none; cursor:pointer; }
     @media (max-width: 1200px) { .ai-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 768px) { .ai-grid { grid-template-columns: 1fr; } }
   </style>
@@ -37,7 +49,6 @@
     </div>
 
     <div class="section">
-      <h3>🚀 Progressive ML Training System</h3>
 
       <!-- Simplified readiness: single status line -->
       <div id="ml-ready-strip" style="margin-bottom:16px; padding:8px 12px; background: rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.35); border-radius:8px;">
@@ -57,53 +68,48 @@
         <p style="font-size: 0.9em; opacity: 0.8; margin-bottom: 15px;">Train with expanding date windows and automatic accuracy improvement</p>
 
         <!-- Parameters Grid - All in Row including buttons -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; align-items: end;">
-          <div>
-            <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Start Date:</label>
-            <input type="date" id="backtest-start-date" value="2024-01-01" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+        <div class="backtest-input-grid">
+          <div class="input-block">
+            <label>Start Date:</label>
+            <input type="date" id="backtest-start-date" value="2024-01-01">
           </div>
 
-          <div>
-            <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">End Date:</label>
-            <input type="date" id="backtest-end-date" value="2025-10-07" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+          <div class="input-block">
+            <label>End Date:</label>
+            <input type="date" id="backtest-end-date" value="2025-10-07">
           </div>
 
-          <div>
-            <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Test Period:</label>
-            <input type="number" id="backtest-test-period" value="14" min="1" max="365" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+          <div class="input-block">
+            <label>Test Period:</label>
+            <input type="number" id="backtest-test-period" value="14" min="1" max="365">
           </div>
 
-          <div>
-            <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Iterations:</label>
-            <input type="number" id="backtest-max-iterations" value="10" min="1" max="50" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85em;">
+          <div class="input-block">
+            <label>Iterations:</label>
+            <input type="number" id="backtest-max-iterations" value="10" min="1" max="50">
           </div>
 
-          <div>
-            <label style="font-size: 0.85em; color: #cbd5e0; display: block; margin-bottom: 5px;">Target: <span id="accuracy-display" style="font-weight: bold; color: #10b981;">85%</span></label>
-            <input type="range" id="backtest-target-accuracy" min="50" max="100" value="85" style="width: 100%;">
+          <div class="range-wrap">
+            <label>Target: <span id="accuracy-display" style="font-weight: bold; color: #10b981;">85%</span></label>
+            <input type="range" id="backtest-target-accuracy" min="50" max="100" value="85">
           </div>
 
-          <div>
-            <label style="font-size: 0.75em; color: #cbd5e0; display: flex; align-items: center; cursor: pointer; padding: 8px; background: rgba(255,255,255,0.03); border-radius: 6px;">
-              <input type="checkbox" id="backtest-auto-stop" checked style="width: 16px; height: 16px; margin-left: 5px; accent-color: #3b82f6;">
-              Auto-stop
-            </label>
+          <div class="toggle-wrap">
+            <span>Auto-stop</span>
+            <input type="checkbox" id="backtest-auto-stop" checked>
           </div>
+        </div>
 
-          <div>
-            <button onclick="startBacktesting()" style="width: 100%; background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer; font-weight: bold; font-size: 0.85em;">
-              🔬 Start
-            </button>
-            <button onclick="startAutoBacktesting()" style="width: 100%; background: linear-gradient(135deg, #10b981, #3b82f6); border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer; font-weight: bold; font-size: 0.85em; margin-top:6px;">
-              🤖 Auto (Plan & Run)
-            </button>
-          </div>
-
-          <div>
-            <button onclick="stopBacktesting()" style="width: 100%; background: #ef4444; border: none; padding: 10px; border-radius: 6px; color: white; cursor: pointer; font-size: 0.85em;">
-              ⏹ Stop
-            </button>
-          </div>
+        <div class="backtest-button-row">
+          <button onclick="startBacktesting()" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+            🔬 Start
+          </button>
+          <button onclick="startAutoBacktesting()" style="background: linear-gradient(135deg, #10b981, #3b82f6);">
+            🤖 Auto (Plan & Run)
+          </button>
+          <button onclick="stopBacktesting()" style="background: #ef4444;">
+            ⏹ Stop
+          </button>
         </div>
 
         <!-- Indicator Parameters -->

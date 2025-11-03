@@ -99,14 +99,17 @@ def _promotion_read_state() -> Dict[str, Any]:
                 data = {}
         else:
             data = {}
+
         data.setdefault('candidate', None)
         data.setdefault('champion', None)
         history = data.get('history')
         if not isinstance(history, list):
             data['history'] = []
+
         champion_meta = _promotion_load_champion_meta()
         if champion_meta:
             data['champion'] = champion_meta
+
         return data
 
 
@@ -119,40 +122,179 @@ def _promotion_write_state(data: Dict[str, Any]) -> None:
         tmp_path.replace(_PROMOTION_STATE_PATH)
 
 
-def _promotion_score(summary: Optional[Dict[str, Any]]) -> float:
-    if not isinstance(summary, dict):
-        return float('-inf')
-    sharpe = _promotion_safe_float(summary.get('sharpe'))
-    mdd = abs(_promotion_safe_float(summary.get('max_drawdown') or summary.get('max_dd')))
-    return sharpe - 0.5 * mdd
+def _promotion_load_champion_meta() -> Optional[Dict[str, Any]]:
+    try:
+        meta_path = _PROMOTION_CHAMPION_DIR / 'meta.json'
+        if not meta_path.exists():
+            return None
+        with meta_path.open('r', encoding='utf-8') as fh:
+            data = json.load(fh)
+        return data if isinstance(data, dict) else None
+    except Exception:
+        return None
 
 
 def _promotion_safe_float(value: Any, default: float = 0.0) -> float:
+    if value is None:
+        return default
     try:
-        if value is None:
-            return default
-        if isinstance(value, (int, float)):
-            return float(value)
         if isinstance(value, str):
-            cleaned = value.strip().replace('%', '')
-            return float(cleaned) if cleaned else default
+            value = value.strip()
+            if value.endswith('%'):
+                return float(value[:-1]) / 100.0
         return float(value)
-    except Exception:
+    except (TypeError, ValueError):
         return default
 
 
-def _promotion_load_champion_meta() -> Optional[Dict[str, Any]]:
-    meta_path = _PROMOTION_CHAMPION_DIR / 'meta.json'
-    if not meta_path.exists():
-        return None
+def _promotion_score(summary: Optional[Dict[str, Any]]) -> float:
+    if not summary:
+        return float('-inf')
+
+    explicit = summary.get('score') if isinstance(summary, dict) else None
+    if explicit is not None:
+        try:
+            return float(explicit)
+        except (TypeError, ValueError):
+            pass
+
+    sharpe = _promotion_safe_float(summary.get('sharpe'), default=0.0)
+    sortino = _promotion_safe_float(summary.get('sortino'), default=sharpe)
+    win_rate = _promotion_safe_float(summary.get('win_rate') or summary.get('winning_rate'), default=0.0)
+    reward = _promotion_safe_float(summary.get('avg_reward') or summary.get('average_reward') or summary.get('total_reward'), default=0.0)
+    max_dd = abs(_promotion_safe_float(summary.get('max_drawdown') or summary.get('max_dd'), default=0.0))
+
+    score = sharpe * 10.0
+    score += sortino * 5.0
+    score += win_rate
+    score += reward * 0.1
+    score -= max_dd
+    return score
+
+
+def _detect_sb3() -> tuple[bool, Optional[str]]:
     try:
-        with meta_path.open('r', encoding='utf-8') as fh:
-            meta = json.load(fh)
-        if isinstance(meta, dict):
-            return meta
-    except Exception:
-        return None
+        from stable_baselines3 import PPO  # type: ignore # noqa: F401
+        import torch  # type: ignore # noqa: F401
+        return True, None
+    except Exception as exc:  # pragma: no cover - runtime availability check
+        return False, str(exc)
+
+
+def _latest_rl_model() -> Optional[Dict[str, Any]]:
+    """Return metadata for the most recent PPO artifact (if any)."""
+    search_roots = [
+        _repo_root() / 'rl' / 'models' / 'ppo',
+        _repo_root() / 'rl' / 'models' / 'ppo_portfolio',
+    ]
+    latest_path: Optional[Path] = None
+    latest_mtime: float = 0.0
+    for root in search_roots:
+        if not root.exists():
+            continue
+        for path in root.glob('**/*.zip'):
+            try:
+                stat = path.stat()
+            except FileNotFoundError:
+                continue
+            if stat.st_mtime > latest_mtime:
+                latest_path = path
+                latest_mtime = stat.st_mtime
+
+    if latest_path is not None:
+        return {
+            "type": "artifact",
+            "path": latest_path.as_posix(),
+            "filename": latest_path.name,
+            "modified": datetime.fromtimestamp(latest_mtime).isoformat(),
+        }
+
+    champion_meta = _promotion_load_champion_meta()
+    if champion_meta:
+        return {
+            "type": "champion",
+            "meta": champion_meta,
+            "path": champion_meta.get('champion_model_path') or champion_meta.get('model_path'),
+        }
     return None
+
+
+def _collect_job_snapshot() -> Dict[str, Any]:
+    jobs: List[Dict[str, Any]] = []
+    for job_id, meta in _rl_running_jobs.items():
+        record = dict(meta)
+        record['job_id'] = job_id
+        if 'logs' not in record:
+            record['logs'] = _rl_job_logs.get(job_id, [])[-5:]
+        jobs.append(record)
+    jobs.sort(key=lambda item: item.get('start_time', ''), reverse=True)
+    return {
+        "active": sum(1 for job in jobs if job.get('status') == 'running'),
+        "recent": jobs[:5],
+    }
+
+
+@router.get("/status")
+async def get_rl_status():
+    """Get RL system status and capabilities."""
+    try:
+        sb3_ok, sb3_error = _detect_sb3()
+        auto_tune_status = _rla_auto_tune_state.get("status", "idle")
+        auto_tune_running = auto_tune_status in {"starting", "running"}
+        ibkr_detail = _executor_unavailable_detail()
+        paper_running = bool(_paper_state.get("running"))
+        latest_model = _latest_rl_model()
+        job_snapshot = _collect_job_snapshot()
+
+        components = {
+            "ppo_training": {
+                "available": sb3_ok,
+                "status": "ready" if sb3_ok else "unavailable",
+                "detail": None if sb3_ok else (sb3_error or "stable-baselines3 not installed"),
+            },
+            "auto_tune": {
+                "available": sb3_ok,
+                "status": auto_tune_status,
+                "running": auto_tune_running,
+                "trials_completed": len(_rla_auto_tune_state.get("trials", [])),
+                "detail": _rla_auto_tune_state.get("last_error"),
+            },
+            "paper_trading": {
+                "available": True,
+                "running": paper_running,
+                "status": "running" if paper_running else "idle",
+                "equity": _paper_state.get("equity"),
+                "positions": len(_paper_state.get("positions", {})),
+            },
+            "ibkr_bridge": {
+                "available": ibkr_detail is None,
+                "status": "ready" if ibkr_detail is None else "offline",
+                "detail": ibkr_detail,
+            },
+        }
+
+        rl_status = {
+            "status": "success",
+            "timestamp": datetime.now().isoformat(),
+            "data": {
+                "ppo_training_available": components["ppo_training"]["available"],
+                "ppo_training_detail": components["ppo_training"].get("detail"),
+                "auto_tune_available": components["auto_tune"]["available"],
+                "auto_tune_status": auto_tune_status,
+                "live_trading_available": components["ibkr_bridge"]["available"],
+                "paper_trading_available": components["paper_trading"]["available"],
+                "components": components,
+                "jobs": job_snapshot,
+                "latest_model": latest_model,
+                "docs": {
+                    "pipeline": "docs/RL_DATA_PIPELINE.md",
+                    "dashboard": "docs/RL_DASHBOARD_GUIDE_HE.md",
+                },
+            },
+        }
+        return rl_status
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Failed to get RL status: {exc}")
 
 
 def _promotion_write_champion_meta(meta: Dict[str, Any]) -> None:
@@ -199,79 +341,6 @@ def _coerce_bool(value: Any, default: bool = False) -> bool:
     if isinstance(value, str):
         return value.strip().lower() in {"true", "1", "yes", "y", "on"}
     return default
-
-
-@router.get("/status")
-async def get_rl_status():
-    """Get RL system status and capabilities"""
-    try:
-        # Check available RL components
-        rl_status = {
-            "status": "success",
-            "data": {
-                "ppo_training_available": True,
-                "auto_tune_available": True,
-                "live_trading_available": True,
-                "paper_trading_available": True,
-                "components": {
-                    "ppo_trainer": {
-                        "status": "✅ Active",
-                        "type": "PPO Portfolio Training",
-                        "description": "Multi-symbol portfolio optimization with PPO"
-                    },
-                    "auto_tune": {
-                        "status": "✅ Active", 
-                        "type": "Hyperparameter Auto-Tuning",
-                        "description": "Automated feature and parameter optimization"
-                    },
-                    "live_preview": {
-                        "status": "✅ Active",
-                        "type": "Live Model Preview",
-                        "description": "Real-time portfolio allocation preview"
-                    },
-                    "paper_mode": {
-                        "status": "✅ Active",
-                        "type": "Paper Trading",
-                        "description": "Simulated trading with real market data"
-                    }
-                },
-                "supported_features": [
-                    "multi_symbol_portfolio",
-                    "news_integration", 
-                    "technical_indicators",
-                    "vix_features",
-                    "custom_indicators",
-                    "risk_management"
-                ],
-                "models": {
-                    "ppo_portfolio": {
-                        "framework": "Stable-Baselines3",
-                        "algorithm": "Proximal Policy Optimization",
-                        "environment": "Custom Portfolio Environment",
-                        "action_space": "Continuous (portfolio weights)",
-                        "observation_space": "Market data + features"
-                    }
-                },
-                "timestamp": datetime.now().isoformat(),
-            }
-        }
-        
-        # Add runtime info if available
-        try:
-            with _rla_auto_tune_lock:
-                auto_tune_status = _rla_auto_tune_state.get("status", "idle")
-            rl_status["data"]["runtime"] = {
-                "auto_tune_status": auto_tune_status,
-                "active_training_jobs": len([j for j in _rl_running_jobs.values() if j.get("status") == "running"]),
-                "paper_trading_active": _paper_state.get("running", False)
-            }
-        except Exception:
-            pass
-            
-        return rl_status
-        
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to get RL status: {e}")
 
 
 # ============================================================

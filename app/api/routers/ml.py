@@ -13,10 +13,10 @@ from app.core.config import (
     ml_trainer, ML_TRAINER_AVAILABLE, data_manager,
     progressive_data_loader, progressive_trainer
 )
+from app.services.progressive_backtesting import backtest_jobs, run_backtest_job
 
 # Global state for ML operations
 training_jobs: Dict[str, Dict[str, Any]] = {}
-backtest_jobs: Dict[str, Dict[str, Any]] = {}
 
 def run_training_job(job_id: str, symbol: str, model_types: List[str], mode: str):
     """Run training job in background"""
@@ -36,23 +36,6 @@ def run_training_job(job_id: str, symbol: str, model_types: List[str], mode: str
         training_jobs[job_id]["status"] = "error"
         training_jobs[job_id]["error"] = str(e)
 
-def run_backtest_job(job_id: str, request):
-    """Run backtest job in background"""
-    try:
-        backtest_jobs[job_id]["status"] = "running"
-        backtest_jobs[job_id]["current_step"] = "Running backtest..."
-        
-        # Simple backtest simulation - in real implementation this would call the actual backtester
-        import time
-        time.sleep(2)  # Simulate backtest time
-        
-        backtest_jobs[job_id]["status"] = "completed"
-        backtest_jobs[job_id]["progress"] = 100
-        backtest_jobs[job_id]["result"] = {"success": True, "accuracy": 0.85}
-        
-    except Exception as e:
-        backtest_jobs[job_id]["status"] = "error"
-        backtest_jobs[job_id]["error"] = str(e)
 
 router = APIRouter(prefix="/api/ml", tags=["ML"])
 
@@ -393,17 +376,6 @@ class BacktestRequest(BaseModel):
 async def start_backtest(request: BacktestRequest, background_tasks: BackgroundTasks):
     """Start progressive backtesting with date-range training."""
     try:
-        # Lazy import shared state and worker
-        from app.main_realtime import (
-            PROGRESSIVE_ML_AVAILABLE,
-            progressive_data_loader,
-            progressive_trainer,
-            progressive_predictor,
-            data_manager,
-            backtest_jobs,
-            run_backtest_job,
-        )
-
         if not PROGRESSIVE_ML_AVAILABLE:
             raise HTTPException(status_code=503, detail="Progressive ML system not available")
         if not progressive_data_loader or not progressive_trainer or not progressive_predictor:
@@ -542,7 +514,6 @@ async def start_backtest(request: BacktestRequest, background_tasks: BackgroundT
 @router.get("/progressive/backtest/status/{job_id}")
 async def get_backtest_status(job_id: str):
     try:
-        from app.main_realtime import backtest_jobs
         if job_id in backtest_jobs:
             job = backtest_jobs[job_id].copy()
             job["timestamp"] = datetime.now(timezone.utc).isoformat()
@@ -557,7 +528,6 @@ async def get_backtest_status(job_id: str):
 @router.post("/progressive/backtest/cancel/{job_id}")
 async def cancel_backtest(job_id: str):
     try:
-        from app.main_realtime import backtest_jobs
         if job_id not in backtest_jobs:
             raise HTTPException(status_code=404, detail=f"Backtest job {job_id} not found")
         backtest_jobs[job_id]["cancelled"] = True
@@ -574,7 +544,6 @@ async def cancel_backtest(job_id: str):
 @router.get("/progressive/backtest/results/{symbol}")
 async def get_backtest_results(symbol: str):
     try:
-        from app.main_realtime import PROGRESSIVE_ML_AVAILABLE
         if not PROGRESSIVE_ML_AVAILABLE:
             raise HTTPException(status_code=503, detail="Progressive ML system not available")
         import json
@@ -718,12 +687,6 @@ async def list_champions(symbol: str):
 @router.post("/progressive/champion/forward_test/{symbol}")
 async def champion_forward_test(symbol: str, job_id: str | None = None):
     try:
-        from app.main_realtime import (
-            PROGRESSIVE_ML_AVAILABLE,
-            progressive_data_loader,
-            progressive_trainer,
-            progressive_predictor,
-        )
         if not PROGRESSIVE_ML_AVAILABLE:
             raise HTTPException(status_code=503, detail="Progressive ML system not available")
         from pathlib import Path

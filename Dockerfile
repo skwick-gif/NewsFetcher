@@ -30,4 +30,4 @@ RUN mkdir -p logs data temp
 EXPOSE 8000
 
 # Use the production application with working imports
-CMD ["uvicorn", "main_realtime:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,9 +1,9 @@
 ibkr:
   rest_base_url: "http://localhost:5080"
-  signalr_url: "http://localhost:5080/marketDataHub"
+  signalr_url: "http://localhost:5080/hubs/marketdata"
   host: "127.0.0.1"
   port: 7497
   client_id: 1
   connect_timeout_seconds: 5
-  request_timeout_seconds: 10
+  request_timeout_seconds: 30
   heartbeat_interval_seconds: 30

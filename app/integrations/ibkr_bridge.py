@@ -82,7 +82,10 @@ class IBKRBridgeClient:
         try:
             response = await client.request(method, url, params=params, json=json)
         except httpx.RequestError as exc:  # pragma: no cover - network failure
-            raise IBKRBridgeError(f"Bridge request failed: {exc}") from exc
+            detail = str(exc).strip()
+            if not detail:
+                detail = exc.__class__.__name__
+            raise IBKRBridgeError(f"Bridge request failed: {detail}") from exc
         if response.status_code >= 400:
             detail = response.text
             try:
@@ -246,8 +249,7 @@ class IBKRBridgeClient:
                         options={
                             "verify_ssl": False,
                             "headers": {},
-                            "skip_negotiation": True,
-                            "transport": "websockets",
+                            "skip_negotiation": False,
                         },
                     )
                     .build()

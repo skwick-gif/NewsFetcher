@@ -72,6 +72,16 @@
     .promotion-block h4 { margin:0 0 6px; font-size:1em; color:#e2e8f0; }
     .promotion-empty { opacity:0.7; }
     .promotion-candidate { border-color: rgba(34,197,94,0.45); box-shadow:0 0 0 1px rgba(34,197,94,0.3); }
+    .status-status { display:flex; flex-direction:column; gap:12px; }
+    .status-grid { display:flex; flex-wrap:wrap; gap:12px; align-items:stretch; }
+    .status-item { flex:1 1 220px; min-width:210px; background:rgba(255,255,255,0.03); border:1px solid rgba(148,163,184,0.2); border-radius:10px; padding:12px; display:flex; flex-direction:column; gap:6px; transition:border-color 0.2s ease, box-shadow 0.2s ease; }
+    .status-item.available { border-color:rgba(34,197,94,0.4); box-shadow:0 0 0 1px rgba(34,197,94,0.18); }
+    .status-item.unavailable { border-color:rgba(248,113,113,0.4); box-shadow:0 0 0 1px rgba(248,113,113,0.16); }
+    .status-item-header { display:flex; gap:10px; align-items:flex-start; }
+    .status-icon { font-size:1.2em; }
+    .status-label { font-weight:600; font-size:0.95em; }
+    .status-name { font-size:0.78em; text-transform:uppercase; letter-spacing:0.05em; opacity:0.7; margin-top:2px; }
+    .status-item-details { font-size:0.75em; opacity:0.75; line-height:1.5; }
   </style>
 </head>
 <body data-rl-section="live">
@@ -327,6 +337,12 @@
       </div>
     </div>
     <div class="card" data-section="training">
+      <h3>System Status</h3>
+      <div id="rl-system-status" class="status-status" style="min-height:80px;">
+        <p style="opacity:0.75;">Loading RL status...</p>
+      </div>
+    </div>
+    <div class="card" data-section="training">
       <h3>Train PPO (SB3)</h3>
       <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
         <label>Symbols</label>
@@ -511,6 +527,138 @@
         alert(message);
       }
     };
+
+    const systemStatusEl = document.getElementById('rl-system-status');
+
+    const toPrettyDate = (value) => {
+      if (!value) {
+        return '';
+      }
+      try {
+        return new Date(value).toLocaleString();
+      } catch (_) {
+        return String(value);
+      }
+    };
+
+    const formatCurrencyLite = (value) => {
+      if (value === null || value === undefined) {
+        return null;
+      }
+      const num = Number(value);
+      if (!Number.isFinite(num)) {
+        return null;
+      }
+      return `$${num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    };
+
+    const renderSystemStatus = (payload) => {
+      if (!systemStatusEl) {
+        return;
+      }
+      if (!payload || payload.status !== 'success') {
+        systemStatusEl.innerHTML = '<p style="color:#fca5a5;">Failed to load RL status.</p>';
+        return;
+      }
+      const data = payload.data || {};
+      const components = data.components || {};
+      const labels = {
+        ppo_training: 'PPO Training',
+        auto_tune: 'Auto-Tune Runner',
+        paper_trading: 'Paper Trading (Preview)',
+        ibkr_bridge: 'IBKR Bridge',
+      };
+      const items = Object.entries(labels).map(([key, label]) => {
+        const component = components[key] || {};
+        const available = component.available !== false;
+        const icon = available ? '✅' : '⚠️';
+        const statusText = component.status ? String(component.status) : (available ? 'ready' : 'offline');
+        const detailParts = [];
+        if (component.detail) {
+          detailParts.push(String(component.detail));
+        }
+        if (component.running !== undefined) {
+          detailParts.push(`Running: ${component.running ? 'Yes' : 'No'}`);
+        }
+        if (component.trials_completed) {
+          detailParts.push(`Trials: ${component.trials_completed}`);
+        }
+        if (component.positions !== undefined && Number.isFinite(Number(component.positions))) {
+          detailParts.push(`Positions: ${component.positions}`);
+        }
+        if (component.equity !== undefined && component.equity !== null) {
+          const equityStr = formatCurrencyLite(component.equity);
+          if (equityStr) {
+            detailParts.push(`Equity: ${equityStr}`);
+          }
+        }
+        const latest = component.latest_model || (key === 'ppo_training' ? data.latest_model : null);
+        if (latest) {
+          const name = latest.filename || latest.path || (latest.meta && latest.meta.job_id) || 'model';
+          detailParts.push(`Latest: ${String(name)}`);
+          if (latest.modified) {
+            detailParts.push(`Saved: ${toPrettyDate(latest.modified)}`);
+          } else if (latest.meta && latest.meta.promoted_at) {
+            detailParts.push(`Promoted: ${toPrettyDate(latest.meta.promoted_at)}`);
+          }
+        }
+        const detailHtml = detailParts.length ? `<div class="status-item-details">${detailParts.join('<br>')}</div>` : '';
+        const headerHtml = `
+          <div class="status-item-header">
+            <span class="status-icon">${icon}</span>
+            <div>
+              <div class="status-label">${label}</div>
+              <div class="status-name">${statusText}</div>
+            </div>
+          </div>
+        `;
+        const statusClass = available ? 'available' : 'unavailable';
+        return `
+          <div class="status-item ${statusClass}">
+            ${headerHtml}
+            ${detailHtml}
+          </div>
+        `;
+      }).join('');
+
+      const jobs = data.jobs || {};
+      const jobList = Array.isArray(jobs.recent) ? jobs.recent : [];
+      const jobHtml = jobList.length
+        ? `<div style="margin-top:12px;"><h4 style="margin:0 0 6px; font-size:0.95em;">Recent PPO Jobs</h4><ul style="margin:0; padding-left:18px; font-size:0.85em; line-height:1.5;">${jobList.map((job) => {
+            const meta = [];
+            if (job.status) meta.push(job.status);
+            if (job.job_type) meta.push(job.job_type);
+            if (job.start_time) meta.push(toPrettyDate(job.start_time));
+            if (job.model_path) meta.push(`model: ${job.model_path}`);
+            return `<li><strong>${job.job_id || 'job'}</strong> · ${meta.join(' · ')}</li>`;
+          }).join('')}</ul></div>`
+        : '<div style="margin-top:12px; font-size:0.85em; opacity:0.75;">No recent PPO jobs.</div>';
+
+      const updated = payload.timestamp ? toPrettyDate(payload.timestamp) : new Date().toLocaleString();
+      systemStatusEl.innerHTML = `<div class="status-grid" style="margin-bottom:12px;">${items}</div>${jobHtml}<div style="margin-top:10px; font-size:0.75em; opacity:0.6;">Updated ${updated}</div>`;
+    };
+
+    const refreshSystemStatus = async () => {
+      if (!systemStatusEl) {
+        return;
+      }
+      try {
+        const response = await fetch('/api/rl/status');
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const payload = await response.json();
+        renderSystemStatus(payload);
+      } catch (error) {
+        console.error('Failed to refresh RL system status', error);
+        renderSystemStatus(null);
+      }
+    };
+
+    if (systemStatusEl) {
+      refreshSystemStatus();
+      setInterval(refreshSystemStatus, 30000);
+    }
 
     let _autoTuneStatusInitialized = false;
     let _lastAutoTuneStatus = null;

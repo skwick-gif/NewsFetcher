@@ -3,6 +3,5 @@ echo ===========================================================================
 echo Starting MarketPulse Financial Intelligence Platform
 echo ================================================================================
 cd /d "D:\Projects\NewsFetcher"
-cd app
-python main_realtime.py
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
 pause

@@ -12,6 +12,7 @@
 - [ ] Establish a maintainable backend structure (strategies/filters/indicators) that supports future expansion and testing.
 - [ ] Ensure metrics (e.g., win rate, total return, drawdown) remain accurate when new logic toggles are active.
 - [ ] Prepare three baseline strategy templates now so we can rename/tune them later without blocking UI work.
+- [ ] Introduce a composable condition tree so entry/exit logic can express AND/OR groups, indicator comparisons, and cross-indicator relationships (e.g., Stochastic + EMA convergence).
 
 ---
 
@@ -51,30 +52,48 @@
 - [ ] Validate incoming payload considering strategy-specific schema.
 - [ ] Pass filter configs into runner and ensure they update trade decisions (enter/exit/skip).
 
-### 2.3 Strategy/Filter Implementation
+### 2.3 Condition Tree & DSL
+
+- [ ] Define canonical JSON schema for condition groups:
+  ```json
+  {
+    "type": "group",
+    "logic": "AND",
+    "children": [
+      {"type": "condition", "indicator": "stochastic_k", "operator": ">=", "value": 70},
+      {"type": "condition", "indicator": "ema_spread", "operator": "<=", "value": 0.5, "value_type": "percent"}
+    ]
+  }
+  ```
+- [ ] Support nested groups (AND/OR) with stable node IDs (GUID) to simplify UI edits and server diffs.
+- [ ] Allow `value` to reference constants or other indicator outputs (e.g., EMA5 vs EMA20 spread) with type metadata.
+- [ ] Backend evaluator consumes tree, resolves indicator requests once, and emits boolean series for entry/exit decisions.
+- [ ] Provide migration path so legacy strategies can run with default single-group payload until rebuilt with the tree.
+
+### 2.4 Strategy/Filter Implementation
 
 - [ ] Base strategy class defines interface: `prepare()`, `generate_signals()`, `apply_filters()`, `simulate_trades()`.
 - [ ] Filters expose `should_enter(context)` / `should_exit(context)` to hook into strategy execution.
 - [ ] Indicators module computes arrays once per backtest and caches results for both charts and filters.
 - [ ] Ensure filters can request indicator arrays (e.g., RSI) without recomputing.
 
-### 2.4 Metrics & Reporting
+### 2.5 Metrics & Reporting
 
 - [ ] Centralize metric calculation in `app/backtest/metrics.py`.
 - [ ] When filters alter trades, metrics auto-update because they consume final equity/trade list.
 - [ ] Extend metrics to include filter-specific stats if desired (e.g., number of trades skipped by RSI).
 
-### 2.5 Testing & Validation
+### 2.6 Testing & Validation
 
 - [ ] Unit tests per strategy + filter combo.
 - [ ] Snapshot tests for API responses (baseline JSON files) to detect regressions.
 - [ ] Backtest smoke tests covering default strategy and one filter-enabled scenario.
 
-### 2.6 Current Backend Touchpoints
+### 2.7 Current Backend Touchpoints
 
 - `app/api/routers/scanner.py` remains the FastAPI entry point for Strategy Lab and scanner backtests. It will load the new registry modules once the skeletons above exist, keeping external clients unchanged while we refactor internals.
 
-### 2.7 Baseline Strategy Templates
+### 2.8 Baseline Strategy Templates
 
 - `trend_follow_basic`: moving-average cross with configurable fast/slow windows and optional ATR trailing stop.
 - `mean_reversion_basic`: RSI + Bollinger mean reversion with parameters for lookback, threshold bands, and max concurrent positions.
@@ -97,26 +116,35 @@
 - [ ] Move indicator toggles that affect logic into the Strategy Parameters card; overlay-only controls stay in Visuals.
 - [ ] Default symbol to `SPY` and remove auto-scroll after render.
 
-### 3.2 Dynamic Fields per Strategy
+### 3.2 Condition Builder Interface
+
+- [ ] Present entry/exit logic as grouped cards: each group displays its logic operator, member conditions, and quick controls for add/remove.
+- [ ] Provide clear `AND`/`OR` toggles between groups, color-coding or iconography to make nesting legible.
+- [ ] Each condition card includes `indicator` selector, `operator`, `value` input (numeric slider / reference target), and an overflow menu for advanced options.
+- [ ] Offer option to draft the builder inside a new “Advanced Logic” tab so existing Strategy Lab workflows remain untouched until rollout is approved.
+- [ ] Persist builder state as the JSON schema defined in §2.3 and surface validation errors inline before hitting the backend.
+- [ ] Allow quick presets that load known scenarios (e.g., “Convergence ETF”) to accelerate QA and onboarding.
+
+### 3.3 Dynamic Fields per Strategy
 
 - [ ] Fetch strategy schema (via new `/api/strategy/meta` or embedded JS object).
 - [ ] Render fields based on schema; hide irrelevant controls instead of disabling.
 - [ ] Display helper text/tooltips describing conditions.
 - [ ] Provide quick preset buttons that auto-select strategy and populate defaults.
 
-### 3.3 Indicator Integration Controls
+### 3.4 Indicator Integration Controls
 
 - [ ] Add checkbox/list for “Active Filters” (e.g., RSI filter). Selecting one reveals its parameters.
 - [ ] Ensure toggling a filter triggers a single rerun (debounced Apply button).
 - [ ] Update status line to reflect filters (e.g., `Filters: RSI(14/30-70)`).
 
-### 3.4 Playback & Status Updates
+### 3.5 Playback & Status Updates
 
 - [ ] Set playback starting pointer to the selected `end` date if provided (falling back to latest data available).
 - [ ] When result data lacks the exact end date, show warning but display closest available date.
 - [ ] Maintain existing timeline trimming so chart range matches runtime.
 
-### 3.5 Accessibility & Styling
+### 3.6 Accessibility & Styling
 
 - [ ] Ensure keyboard navigation across accordions and toggles.
 - [ ] Use consistent button sizes and spacing; add section headers with icons.
@@ -126,8 +154,8 @@
 
 ## 4. Data Flow Overview
 
-1. **User selects strategy + filters + overlays**.
-2. UI composes payload (`strategy_id`, `params`, `filters`, `date_range`).
+1. **User selects strategy + filters + overlays**, then (optionally) defines entry/exit logic via the condition builder (groups + conditions).
+2. UI composes payload (`strategy_id`, `params`, `filters`, `condition_tree`, `date_range`).
 3. Backend runner:
    - loads strategy module
    - computes required indicators
@@ -179,8 +207,9 @@
 ## 8. Next Steps
 
 1. Review this plan and finalize scope (choose initial indicator & strategy targets).
-2. Lock folder structure + create skeleton modules (including the three new baseline strategies).
-3. Implement backend schema/runner changes.
-4. Revamp UI layout & dynamic rendering.
-5. Integrate filters end-to-end and validate metrics.
-6. Document the changes + release notes.
+2. Draft wireframes for the condition builder (new tab vs. existing layout) and validate UX flow with stakeholders.
+3. Lock folder structure + create skeleton modules (including the three new baseline strategies).
+4. Implement backend schema/runner changes, including the condition tree evaluator and payload schema.
+5. Revamp UI layout & dynamic rendering.
+6. Integrate filters and condition builder end-to-end, then validate metrics.
+7. Document the changes + release notes.
