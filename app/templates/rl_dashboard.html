@@ -133,8 +133,15 @@
         </div>
       </div>
       <div class="market-toolbar">
-        <div class="timeframe-buttons">
-          <button class="chart-timeframe active" data-timeframe="1D">1D</button>
+        <div class="timeframe-buttons" role="group" aria-label="Chart timeframes">
+          <button class="chart-timeframe" data-timeframe="1m">1m</button>
+          <button class="chart-timeframe active" data-timeframe="5m">5m</button>
+          <button class="chart-timeframe" data-timeframe="15m">15m</button>
+          <button class="chart-timeframe" data-timeframe="30m">30m</button>
+          <button class="chart-timeframe" data-timeframe="1h">1h</button>
+          <button class="chart-timeframe" data-timeframe="2h">2h</button>
+          <button class="chart-timeframe" data-timeframe="4h">4h</button>
+          <button class="chart-timeframe" data-timeframe="1D">1D</button>
           <button class="chart-timeframe" data-timeframe="1W">1W</button>
           <button class="chart-timeframe" data-timeframe="1M">1M</button>
           <button class="chart-timeframe" data-timeframe="3M">3M</button>
@@ -150,6 +157,7 @@
       <div class="chart-wrapper">
         <canvas id="priceChart"></canvas>
       </div>
+      <div id="chart-error-notice" style="display:none; margin-top:8px; font-size:0.8em; color:#fca5a5;"></div>
     </div>
 
     <div class="card" data-section="automation">
