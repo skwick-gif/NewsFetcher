@@ -90,3 +90,18 @@ def api_rl_live_paper_stop_proxy():
 @rl_bp.route('/api/rl/live/paper/status')
 def api_rl_live_paper_status_proxy():
     return proxy_to_backend('/api/rl/live/paper/status')
+
+
+# RL Promotion endpoints (missing proxies)
+
+@rl_bp.route('/api/rl/promotion/state')
+def api_rl_promotion_state_proxy():
+    params = request.args.to_dict(flat=True)
+    return proxy_to_backend('/api/rl/promotion/state', params=params)
+
+
+@rl_bp.route('/api/rl/promotion/promote', methods=['POST'])
+def api_rl_promotion_promote_proxy():
+    data = request.get_json(silent=True) or {}
+    params = request.args.to_dict(flat=True)
+    return proxy_to_backend('/api/rl/promotion/promote', method='POST', params=params, json=data)

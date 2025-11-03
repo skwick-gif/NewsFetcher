@@ -135,6 +135,8 @@ class IBKRBridgeClient:
             "exchange": exchange,
             "timeInForce": time_in_force,
             "outsideRth": str(bool(outside_regular_trading_hours)).lower(),
+            # Support new C# parameter name as well
+            "outsideRegularTradingHours": str(bool(outside_regular_trading_hours)).lower(),
             "allowPartialFills": str(bool(allow_partial_fills)).lower(),
         }
         if limit_price is not None:
