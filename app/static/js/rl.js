@@ -5,6 +5,7 @@
   const ordersEl = document.getElementById('rl-open-orders');
   const ibkrStatusEl = document.getElementById('ibkr-connection');
   const ibkrStatusText = ibkrStatusEl ? ibkrStatusEl.querySelector('.badge-text') : null;
+  const ibkrPortSelect = document.getElementById('ibkr-port-select');
   const ibkrConnectBtn = document.getElementById('ibkr-connect-btn');
   const CONNECT_LABEL = 'Connect IBKR';
   const RECONNECT_LABEL = 'Reconnect IBKR';
@@ -94,6 +95,18 @@
         throw new Error(`HTTP ${response.status}`);
       }
       const payload = await response.json();
+      const bridgePort = payload.port ?? payload.ibPort ?? payload.gatewayPort;
+      if (ibkrPortSelect && bridgePort) {
+        const normalizedPort = String(bridgePort);
+        const existing = Array.from(ibkrPortSelect.options).some((option) => option.value === normalizedPort);
+        if (!existing) {
+          const option = document.createElement('option');
+          option.value = normalizedPort;
+          option.textContent = `${normalizedPort} · Custom`;
+          ibkrPortSelect.appendChild(option);
+        }
+        ibkrPortSelect.value = normalizedPort;
+      }
       const connected = payload.isConnected ?? payload.connected ?? false;
       if (connected) {
         const endpoint = payload.host && payload.port ? `${payload.host}:${payload.port}` : payload.port ? `Port ${payload.port}` : 'Live';
@@ -128,12 +141,22 @@
     let statusUpdated = false;
     ibkrConnectBtn.disabled = true;
     ibkrConnectBtn.textContent = CONNECTING_LABEL;
+    if (ibkrPortSelect) {
+      ibkrPortSelect.disabled = true;
+    }
     updateIbkrBadge('loading', 'IBKR: Connecting…');
     try {
+      const requestBody = {};
+      if (ibkrPortSelect) {
+        const parsedPort = parseInt(ibkrPortSelect.value, 10);
+        if (Number.isFinite(parsedPort)) {
+          requestBody.port = parsedPort;
+        }
+      }
       const response = await fetch('/api/ibkr/connect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({}),
+        body: JSON.stringify(requestBody),
       });
       if (!response.ok) {
         let detail = await response.text().catch(()=>'');
@@ -156,6 +179,9 @@
         if (!statusUpdated && ibkrConnectBtn.textContent === CONNECTING_LABEL) {
           ibkrConnectBtn.textContent = RETRY_LABEL;
         }
+      }
+      if (ibkrPortSelect) {
+        ibkrPortSelect.disabled = false;
       }
     }
   };

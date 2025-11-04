@@ -88,6 +88,8 @@
 - [ ] Unit tests per strategy + filter combo.
 - [ ] Snapshot tests for API responses (baseline JSON files) to detect regressions.
 - [ ] Backtest smoke tests covering default strategy and one filter-enabled scenario.
+- [ ] Manual QA script for condition builder: create/edit/delete groups, toggle AND⇄OR, undo invalid states, run Convergence preset.
+- [ ] UX acceptance checklist signed off by product (ensures discoverability, inline errors, and fallbacks to classic form).
 
 ### 2.7 Current Backend Touchpoints
 
@@ -124,6 +126,9 @@
 - [ ] Offer option to draft the builder inside a new “Advanced Logic” tab so existing Strategy Lab workflows remain untouched until rollout is approved.
 - [ ] Persist builder state as the JSON schema defined in §2.3 and surface validation errors inline before hitting the backend.
 - [ ] Allow quick presets that load known scenarios (e.g., “Convergence ETF”) to accelerate QA and onboarding.
+- [ ] Clarify default experience: classic simple form remains the default; enabling "Advanced Logic" reveals the builder and copies existing params into a starter group.
+- [ ] Add inline validation + undo/redo hooks so users can rollback invalid edits without losing progress.
+- [ ] Success criteria check: (a) new user can activate preset and run backtest in <2 clicks, (b) power user can express nested AND/OR logic without leaving the tab, (c) errors highlight the problematic node with guidance.
 
 ### 3.3 Dynamic Fields per Strategy
 
@@ -192,6 +197,7 @@
 - [ ] Update `docs/SCANNER_DETAILED_OVERVIEW.md` equivalent for Strategy Lab (new doc).
 - [ ] Provide how-to for adding a new indicator filter (step-by-step for developers).
 - [ ] Update README/UI guides with screenshots post-refresh.
+- [ ] Publish "Condition Builder Quick Start" doc with Convergence ETF example + troubleshooting tips.
 
 ---
 
@@ -201,6 +207,7 @@
 - Should filters be mutually exclusive or can multiple combine (AND/OR logic)?
 - Do we need backward compatibility mode for saved presets/URLs?
 - Will strategy defaults come from YAML/DB or remain hardcoded? (Impacts dynamic schema delivery.)
+- How will condition trees be saved/shared (per-user presets, export to JSON, URL encoding)?
 
 ---
 

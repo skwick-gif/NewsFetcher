@@ -36,6 +36,9 @@
   .badge-action-btn { background:rgba(34,197,94,0.18); border:1px solid rgba(34,197,94,0.55); color:#bbf7d0; padding:6px 12px; border-radius:999px; font-size:0.85em; cursor:pointer; transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
   .badge-action-btn:hover:not([disabled]) { background:rgba(34,197,94,0.28); border-color:rgba(34,197,94,0.75); color:#dcfce7; }
   .badge-action-btn[disabled] { cursor:wait; opacity:0.7; }
+  .ibkr-port-picker { display:flex; flex-direction:column; gap:4px; font-size:0.75em; opacity:0.85; }
+  .ibkr-port-picker select { min-width:130px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); color:#e2e8f0; padding:4px 8px; border-radius:6px; font-size:0.9em; }
+  .ibkr-port-picker select option { color:#0f172a; background:#f8fafc; }
   @keyframes badgePulse { 0%, 100% { transform: scale(1); opacity:1; } 50% { transform: scale(1.3); opacity:0.6; } }
   .market-header { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:16px; flex-wrap:wrap; }
   .market-header h3 { margin:0; }
@@ -94,6 +97,14 @@
           <span class="dot"></span>
           <span class="badge-text">IBKR: Checking…</span>
         </div>
+        <label class="ibkr-port-picker">
+          <span>Gateway Port</span>
+          <select id="ibkr-port-select" aria-label="IBKR gateway port">
+            <option value="7497" selected>7497 · TWS Live / Paper (default)</option>
+            <option value="4001">4001 · Gateway Paper</option>
+            <option value="4002">4002 · Gateway Live</option>
+          </select>
+        </label>
         <button id="ibkr-connect-btn" type="button" class="badge-action-btn">Connect IBKR</button>
         <div class="nav">
           <a href="/rl" class="active">RL</a>
